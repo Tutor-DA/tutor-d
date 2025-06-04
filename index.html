@@ -75,7 +75,34 @@
       padding: 1rem;
       font-size: 0.9rem;
     }
-  </style>
+      
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 1s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .highlight {
+      background-color: #f0f8ff;
+      padding: 1rem;
+      border-left: 4px solid #003973;
+      border-radius: 4px;
+    }
+    
+    section img.featured {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    section img.featured:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+</style>
 </head>
 <body>
   <header>
@@ -87,61 +114,74 @@
         <a href="pages/about.html">About</a>
         <a href="pages/contact.html">Contact</a>
         <a href="pages/elearn.html">ELEARN</a>
-      </nav>
+      <a href="pages/courses.html">Courses</a>
+        <a href="pages/team.html">Our Team</a>
+        <a href="pages/faq.html">FAQ</a>
+        <a href="pages/testimonials.html">Testimonials</a>
+        $1
     </div>
   </header>
 
   <main>
-    <section>
-      <h2>Welcome to TutorDA</h2>
-      <p>Advanced math education for school and college students.</p>
-      <img src="assets/images/image1.png" alt="TutorDA Student" class="featured">
+    <section class="fade-in">
+<img src="assets/images/image1.png" alt="Focused student learning math" class="featured">
+      <p class="highlight">Our platform empowers learners to develop a deep understanding of mathematics through modern digital tools and expert guidance.</p>
+    </section>
+
+    <section class="fade-in">
+      <h2>Our Interactive Platform</h2>
       <img src="assets/images/image2.png" alt="Teacher in Classroom" class="featured">
+      <p>Students engage with lessons through live instruction, collaborative problem-solving, and real-time feedback, enhancing both understanding and confidence.</p>
     </section>
 
-    <section>
-      <h2>Engaging Lessons for Every Learner</h2>
-      <p>Our experienced instructors lead interactive sessions that focus on core concepts and problem-solving skills. We nurture every student to confidently approach mathematics.</p>
-      <img src="assets/images/image3.png" alt="Teacher explaining graph" class="featured">
-    </section>
-
-    <section>
-      <h2>Students Who Lead with Questions</h2>
-      <p>We create a classroom culture where students are encouraged to ask, explore, and lead the discussion. Critical thinking is fostered at every level.</p>
-      <img src="assets/images/image4.png" alt="Student raising hand" class="featured">
-    </section>
-
-    <section>
-      <h2>Learning Tools and Innovation</h2>
-      <p>Our digital tools and classroom practices work together to give students a rich and rewarding learning experience — both in-person and online.</p>
-      <img src="assets/images/image5.png" alt="TutorDA Chalkboard Logo" class="featured">
-    </section>
-
-    <section>
-      <h2>Our Learning Environment</h2>
-      <p>Students thrive in our supportive environment where curiosity is encouraged, and everyone is given space to grow. We combine structure with creativity to help learners stay motivated.</p>
-      <img src="assets/images/image6.png" alt="Student with Notebook and Chalkboard" class="featured">
-    </section>
-
-    <section>
-      <h2>Inspiring Educators</h2>
-      <p>Our instructors bring passion and clarity to each class. They connect with students, adapt to different learning styles, and bring math to life through relatable examples.</p>
+    <section class="fade-in">
+      <h2>Empowering Independent Learning</h2>
       <img src="assets/images/image7.png" alt="Male Teacher with Book and Chalkboard" class="featured">
+      <p>At TutorDA, we provide resources that encourage learners to take initiative, build discipline, and explore mathematics beyond the classroom.</p>
     </section>
 
-    <section>
-      <h2>Get in Touch</h2>
-      <p>We're here to answer your questions. Whether you're a parent, student, or teacher, reach out anytime to discuss how we can support your math learning goals.</p>
+    <section class="fade-in">
+      <h2>Global Reach, Local Relevance</h2>
       <img src="assets/images/image8.png" alt="Smiling Student Holding Notebook" class="featured">
+      <p>With students from across the country and beyond, TutorDA's curriculum reflects a global standard while aligning with national boards and exams.</p>
+    </section>
+
+    <section class="fade-in">
+      <h2>Learn Anywhere, Anytime</h2>
+      <img src="assets/images/image9.png" alt="Student Studying in Library" class="featured">
+      <p>Flexible e-learning access allows students to study from home, on the go, or in our tech-equipped centers — at their pace and convenience.</p>
+    </section>
+
+    <section class="fade-in">
+      <h2>Personalized Support</h2>
+      <img src="assets/images/image10.png" alt="Focused Student Writing Notes" class="featured">
+      <p>Our instructors and support team ensure students receive guidance tailored to their strengths, weaknesses, and academic goals.</p>
+    </section>
+
+    $1
+      <img src="../assets/images/image3.png" alt="Teacher explaining graph" class="featured">
+      <p>We offer a wide range of courses including Algebra, Calculus, Geometry, and exam preparation for JEE, NEET, and SAT. Each course is designed to build strong mathematical foundations and problem-solving skills.</p>
     </section>
 
     <section>
-      <h2>Self-Guided and Online Learning</h2>
-      <p>Access our e-learning portal to study at your own pace. From recorded lectures to practice problems and live help, we have tools tailored for flexible learning.</p>
-      <img src="assets/images/image9.png" alt="Student Studying in Library" class="featured">
-      <img src="assets/images/image10.png" alt="Focused Student Writing Notes" class="featured">
+      <h2>Meet Our Team</h2>
+      <img src="../assets/images/image4.png" alt="Student raising hand" class="featured">
+      <p>Our team includes experienced educators, curriculum designers, and technology experts who work together to deliver high-quality learning experiences tailored to students' needs.</p>
     </section>
-  </main>
+
+    <section>
+      <h2>Frequently Asked Questions</h2>
+      <img src="../assets/images/image5.png" alt="TutorDA Chalkboard Logo" class="featured">
+      <p>Have questions about enrollment, class schedules, or technical support? Visit our FAQ page for quick answers to the most common inquiries.</p>
+    </section>
+
+    <section>
+      <h2>What Students Say</h2>
+      <img src="../assets/images/image6.png" alt="Student with Notebook and Chalkboard" class="featured">
+      <p>“TutorDA transformed my learning journey.” — A. Kumar<br>“The best online math platform I’ve used.” — R. Sharma<br>Read more testimonials from our students who’ve excelled with TutorDA.</p>
+    </section>
+
+    $1
 
   <footer>
     <p>&copy; 2025 TutorDA. All rights reserved.</p>
