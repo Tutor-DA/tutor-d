@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Team | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <div id="header-container"><h1>Team</h1></div><!-- end header -->
+  <main>
+    
+<section class="fade-in">
+  <h2>Meet Our Team</h2>
+  <img src="assets/images/image4.png" alt="Student raising hand" class="featured">
+  <p class="highlight">Our educators are the heart of TutorDA — a team of passionate professionals with years of experience in teaching and mentoring students.</p>
+  <p>Our faculty members are alumni of top institutions, and they specialize in simplifying complex mathematical concepts, creating interactive learning environments, and providing personalized guidance to every learner.</p>
+</section>
+
+  </main>
+  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+
+<script>
+  fetch('../components/header.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('header-container').innerHTML = data);
+  fetch('../components/footer.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('footer-container').innerHTML = data);
+</script>
+</body>
+</html>

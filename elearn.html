@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Elearn | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <div id="header-container"><h1>Elearn</h1></div><!-- end header -->
+  <main>
+    
+<section class="fade-in">
+  <h2>Online Learning Platform</h2>
+  <img src="assets/images/image2.png" alt="Teacher in e-learning setup" class="featured">
+  <p>Access interactive video lessons, quizzes, live sessions, and downloadable notes anytime at <a href="https://tutorda.gnomio.com" target="_blank">tutorda.gnomio.com</a>.</p>
+</section>
+
+  </main>
+  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+
+<script>
+  fetch('../components/header.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('header-container').innerHTML = data);
+  fetch('../components/footer.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('footer-container').innerHTML = data);
+</script>
+</body>
+</html>

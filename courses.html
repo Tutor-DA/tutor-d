@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Courses | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+  <div id="header-container"><h1>Courses</h1></div><!-- end header -->
+  <main>
+    
+<section class="fade-in">
+  <h2>Courses We Offer</h2>
+  <img src="assets/images/image1.png" alt="Student focused on math" class="featured">
+  <p class="highlight">Explore a range of mathematics courses including:</p>
+  <ul>
+    <li>Foundation Math for School Levels</li>
+    <li>Algebra, Geometry, and Trigonometry</li>
+    <li>Calculus I, II, and III</li>
+    <li>Statistics & Probability</li>
+    <li>Competitive Exams (JEE, NEET, SAT)</li>
+  </ul>
+</section>
+
+  </main>
+  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+
+<script>
+  fetch('../components/header.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('header-container').innerHTML = data);
+  fetch('../components/footer.html')
+    .then(res => res.text())
+    .then(data => document.getElementById('footer-container').innerHTML = data);
+</script>
+</body>
+</html>
