@@ -1,22 +1,25 @@
-name: Deploy to GitHub Pages
+name: Deploy static site
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload to GitHub Pages
+      - name: Upload static files
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: .   # ✅ use current directory instead of _site/
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
