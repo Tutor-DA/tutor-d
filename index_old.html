@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@500;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="header-container" style="background: linear-gradient(to right, #003973, #E5E5BE); color: white; padding: 1.5rem; text-align: center; font-family: 'Playfair Display', serif;">
+  <header style="background: linear-gradient(to right, #003973, #E5E5BE); color: white; padding: 1.5rem; text-align: center; font-family: 'Playfair Display', serif;">
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
       <img src="assets/images/logo.png" alt="TutorDA Logo" style="height: 60px; border-radius: 8px; border: 2px solid white; background-color: white; padding: 2px; margin-right: 1rem;">
       <h1 style="flex: 1;">TutorDA</h1>
@@ -24,7 +24,7 @@
         <a href="pages/testimonials.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Testimonials</a>
       </nav>
     </div>
-  </div><!-- end header -->
+  </header>
 
   <main style="padding: 2rem; max-width: 1000px; margin: auto; font-family: 'Open Sans', sans-serif;">
     <section style="margin-bottom: 3rem;">
@@ -58,17 +58,8 @@
     </section>
   </main>
 
-  <div id="footer-container" style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
+  <footer style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
     <p>&copy; 2025 TutorDA. All rights reserved.</p>
-  </div><!-- end footer -->
-
-<script>
-  fetch('components/header.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('header-container').innerHTML = data);
-  fetch('components/footer.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('footer-container').innerHTML = data);
-</script>
+  </footer>
 </body>
 </html>
