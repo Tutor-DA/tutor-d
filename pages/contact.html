@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Contact | TutorDA</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-    <h1>Contact Us</h1>
-    <p>Email us at: <a href="mailto:support@tutorda.org">support@tutorda.org</a></p>
+  <div id="header-container"></div>
 
-  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+  <main style="padding: 2rem; max-width: 800px; margin: auto; font-family: 'Open Sans', sans-serif;">
+    <h2 style="color: #003973;">Get in Touch with Us</h2>
+    <p>If you have any questions, feedback, or want to learn more about TutorDA, feel free to reach out!</p>
+    
+    <form style="margin-top: 2rem;">
+      <label for="name" style="display:block; margin-bottom: 0.5rem;">Your Name:</label>
+      <input type="text" id="name" name="name" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: 1px solid #ccc;">
+
+      <label for="email" style="display:block; margin-bottom: 0.5rem;">Your Email:</label>
+      <input type="email" id="email" name="email" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: 1px solid #ccc;">
+
+      <label for="message" style="display:block; margin-bottom: 0.5rem;">Message:</label>
+      <textarea id="message" name="message" rows="5" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+
+      <button type="submit" style="background-color: #003973; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; font-weight: bold;">Send Message</button>
+    </form>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('header-container').innerHTML = data);
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('footer-container').innerHTML = data);
+  </script>
 </body>
 </html>
