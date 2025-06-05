@@ -180,8 +180,16 @@ nav a:hover,
   margin-bottom: 0.5rem;
   font-weight: 500;
   text-indent: 0;         /* Ensure no extra hanging indent */
-  padding-left: 0.5rem;   /* Slight inner space if needed */
+  padding-left: 1.2rem;   /* Slight inner space if needed */
   transition: all 0.3s ease;
+}
+
+.features-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #003973;
+  font-weight: bold;
 }
 
 .features-list li:hover {
