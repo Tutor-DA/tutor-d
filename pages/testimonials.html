@@ -2,100 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Testimonials | TutorDA</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
-  <style>
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: #fdfdfd;
-      margin: 0;
-    }
-
-    section {
-      padding: 3rem 2rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    h2 {
-      color: #003973;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .intro {
-      text-align: justify;
-      margin-bottom: 3rem;
-      line-height: 1.8;
-      background-color: #f0f6fa;
-      padding: 1.5rem;
-      border-left: 5px solid #003973;
-      border-radius: 6px;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-    }
-
-    .testimonial {
-      background-color: #ffffff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      font-style: italic;
-    }
-
-    .testimonial::before {
-      content: "“";
-      font-size: 2rem;
-      color: #003973;
-    }
-
-    .testimonial::after {
-      content: "”";
-      font-size: 2rem;
-      color: #003973;
-    }
-
-    .testimonial cite {
-      display: block;
-      margin-top: 1rem;
-      font-style: normal;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .featured {
-      display: block;
-      max-width: 300px;
-      margin: 2rem auto;
-    }
-  </style>
 </head>
 <body>
-  <div id="header-container"><h1>Testimonials</h1></div><!-- end header -->
+  <div id="header-container"></div>
 
   <main>
- <section class="fade-in section-flex">
+    <section class="fade-in testimonials-section">
       <h2>What Our Students Say</h2>
 
       <div class="intro">
-       <p class="intro">
-  At <strong>TutorDA</strong>, student voices are not only heard — they are embedded into the core of our teaching innovation. We actively incorporate <strong>student feedback</strong> into every stage of our instructional design and delivery. Following each e-assessment, students receive system-generated, data-driven performance reports powered by analytics tools. These detailed insights highlight strengths, pinpoint misconceptions, and recommend targeted revision strategies.<br><br>
+        At <strong>TutorDA</strong>, student voices are not only heard — they are embedded into the core of our teaching innovation. We actively incorporate <strong>student feedback</strong> into every stage of our instructional design and delivery. Following each e-assessment, students receive system-generated, data-driven performance reports powered by analytics tools. These detailed insights highlight strengths, pinpoint misconceptions, and recommend targeted revision strategies.
+        <br><br>
+        Beyond assessments, we routinely collect qualitative and quantitative feedback from learners through interactive polls, adaptive surveys, and learning behavior analytics. By analyzing trends in engagement, response accuracy, and time-on-task, our platform identifies each student's preferred learning modality — whether visual, analytical, or conceptual.
+        <br><br>
+        What sets TutorDA apart is our integration of <strong>AI-powered learning personalization</strong>. Our system utilizes machine learning models to suggest optimized teaching strategies for instructors based on real-time classroom data. This includes recommending when to switch to visual aids, when to reinforce topics with practice, or when to re-teach using alternative explanations. Instructors are supported with intelligent dashboards that visualize class-level and student-level learning outcomes.
+        <br><br>
+        This fusion of pedagogy and technology allows us to dynamically adapt our instructional methods — whether by simplifying content delivery, adding scaffolded examples, or embedding interactive tools like GeoGebra or H5P. Through this responsive, learner-centric approach, students are not just recipients of content but active collaborators in shaping their learning journey.
+      </div>
 
-  Beyond assessments, we routinely collect qualitative and quantitative feedback from learners through interactive polls, adaptive surveys, and learning behavior analytics. By analyzing trends in engagement, response accuracy, and time-on-task, our platform identifies each student's preferred learning modality — whether visual, analytical, or conceptual.<br><br>
+      <img src="../assets/images/image6.png" alt="Student with Notebook" class="featured" />
 
-  What sets TutorDA apart is our integration of <strong>AI-powered learning personalization</strong>. Our system utilizes machine learning models to suggest optimized teaching strategies for instructors based on real-time classroom data. This includes recommending when to switch to visual aids, when to reinforce topics with practice, or when to re-teach using alternative explanations. Instructors are supported with intelligent dashboards that visualize class-level and student-level learning outcomes.<br><br>
-
-  This fusion of pedagogy and technology allows us to dynamically adapt our instructional methods — whether by simplifying content delivery, adding scaffolded examples, or embedding interactive tools like GeoGebra or H5P. Through this responsive, learner-centric approach, students are not just recipients of content but active collaborators in shaping their learning journey.
-</p>
-</div>
-
-      <img src="../assets/images/image6.png" alt="Student with Notebook" class="featured">
-
-      <!-- Testimonials in 4 columns -->
       <div class="testimonials-grid">
         <div class="testimonial">
           TutorDA helped me crack JEE with confidence. The lectures were crystal clear, and I loved the practice sets.
@@ -117,7 +46,7 @@
     </section>
   </main>
 
-  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+  <div id="footer-container"></div>
 
   <script>
     fetch('../components/header.html')

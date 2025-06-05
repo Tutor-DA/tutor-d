@@ -9,12 +9,10 @@
 <body>
   <div id="header-container"></div>
 
-  <!-- Contact Section -->
   <section id="contact">
     <h2>Contact Us</h2>
 
     <div class="contact-grid">
-      <!-- Contact Form -->
       <div class="form-section">
         <form action="mailto:your@email.com" method="post" enctype="text/plain">
           <label for="name">Full Name:</label>
@@ -30,7 +28,6 @@
         </form>
       </div>
 
-      <!-- Office Addresses -->
       <div class="office">
         <h4>India Office</h4>
         <p>
@@ -52,7 +49,6 @@
 
     <hr>
 
-    <!-- Social Media -->
     <div class="social">
       <h4>Connect with Us</h4>
       <a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a>
@@ -62,14 +58,12 @@
     </div>
   </section>
 
-  <!-- WhatsApp Quick Chat Button -->
-  <a href="https://wa.me/919999988888" target="_blank" style="position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white; border-radius: 50px; padding: 10px 20px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
+  <a href="https://wa.me/919999988888" target="_blank" class="whatsapp-btn">
     💬 Chat on WhatsApp
   </a>
 
   <div id="footer-container"></div>
 
-  <!-- Load header/footer -->
   <script>
     fetch('../components/header.html')
       .then(res => res.text())
