@@ -7,58 +7,65 @@
 </head>
 <body>
   <div id="header-container"><h1>Elearn</h1></div><!-- end header -->
+
   <main>
-    
-<section id="elearn" style="padding: 3rem 2rem; font-family: 'Open Sans', sans-serif; background-color: #f4f8fb;">
-  <div style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
-    
-    <!-- Text Content (Left Side) -->
-    <div style="flex: 1 1 500px;">
-      <h2 style="color: #003973; margin-bottom: 1rem;">E-LEARN with Moodle at TutorDA</h2>
-      <p style="text-align: justify; line-height: 1.8;">
-        At <strong>TutorDA</strong>, we utilize <strong>Moodle</strong>, the world’s most trusted open-source Learning Management System (LMS), to provide an enriched, interactive, and curriculum-aligned e-learning experience for school and college students. Our platform ensures personalized, flexible learning supported by modern digital tools and teacher mentorship.
-      </p>
+    <section id="elearn" style="padding: 3rem 2rem; font-family: 'Open Sans', sans-serif; background-color: #f4f8fb;">
+      <div style="max-width: 1200px; margin: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 2rem;">
+        
+        <!-- Text Content (Left Side) -->
+        <div style="flex: 1 1 500px;">
+          <h2 style="color: #003973; margin-bottom: 1rem;">eLearning Portal at TutorDA</h2>
 
-      <h3 style="color: #003973; margin-top: 2rem;">Why Moodle?</h3>
-      <ul style="line-height: 1.8; padding-left: 1.2rem;">
-        <li>🎓 Curriculum-aligned interactive courses</li>
-        <li>🧠 Auto-graded quizzes, assignments, and feedback</li>
-        <li>📊 Track student progress with detailed analytics</li>
-        <li>📲 Access via Moodle mobile app (iOS & Android)</li>
-        <li>🧰 Integrates tools like GeoGebra, LibreTexts, H5P</li>
-        <li>👨‍🏫 One-to-one mentoring and support</li>
-      </ul>
+          <p style="text-align: justify; line-height: 1.8;">
+            At <strong>TutorDA</strong>, we offer a comprehensive <strong>eLearning portal</strong> that enables students to experience flexible, engaging, and interactive learning. Designed for school and college learners, our platform supports self-paced study, real-time feedback, and personalized academic guidance—all led by experienced educators using cutting-edge digital tools.
+          </p>
 
-      <!-- Center-aligned Button -->
-      <div style="text-align: center; margin-top: 2rem;">
-        <a href="https://tutorda.gnomio.com/login/index.php" target="_blank" style="background-color: #003973; color: white; padding: 0.75rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: bold;">Go to Moodle Portal</a>
+          <h3 style="color: #003973; margin-top: 2rem;">🌟 Key Features</h3>
+          <ul style="line-height: 1.8; padding-left: 1.2rem;">
+            <li>🎓 Curriculum-aligned interactive lessons for school and college levels</li>
+            <li>🧠 Auto-graded quizzes, assignments, and instant feedback</li>
+            <li>📊 Track student progress with detailed performance analytics</li>
+            <li>📱 Mobile access through a dedicated learning app (Android & iOS)</li>
+            <li>🔗 Integrated with GeoGebra, LibreTexts, H5P, and other digital tools</li>
+            <li>👨‍🏫 Individual mentorship and progress monitoring for each learner</li>
+            <li>💬 Forums, discussion boards, and collaborative activities</li>
+            <li>🏆 Badges, certificates, and gamified engagement for motivation</li>
+          </ul>
+
+          <!-- Center-aligned Button -->
+          <div style="text-align: center; margin-top: 2rem;">
+            <a href="https://tutorda.gnomio.com/login/index.php" target="_blank"
+              style="background-color: #003973; color: white; padding: 0.75rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: bold;">
+              Go to eLearning Portal
+            </a>
+          </div>
+        </div>
+
+        <!-- Image (Right Side) -->
+        <div style="flex: 1 1 400px; text-align: center;">
+          <img src="../assets/images/elearn-portal.png" alt="eLearning Experience at TutorDA"
+            style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+        </div>
       </div>
-    </div>
 
-    <!-- Image (Right Side) -->
-    <div style="flex: 1 1 400px; text-align: center;">
-      <img src="../assets/images/moodle-elearn.png" alt="Moodle Learning Experience" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-    </div>
-  </div>
-
-  <!-- Quote at Bottom -->
-  <div style="margin-top: 3rem; background-color: #e1effa; padding: 1.5rem; border-left: 5px solid #003973; border-radius: 6px;">
-    <p style="margin: 0; font-style: italic;">
-      "Education should be smart, accessible, and measurable — Moodle helps us deliver exactly that at TutorDA."
-    </p>
-  </div>
-</section>
-
+      <!-- Quote at Bottom -->
+      <div style="margin-top: 3rem; background-color: #e1effa; padding: 1.5rem; border-left: 5px solid #003973; border-radius: 6px;">
+        <p style="margin: 0; font-style: italic;">
+          "Education should be smart, accessible, and measurable — our eLearning portal at TutorDA makes this possible for every learner."
+        </p>
+      </div>
+    </section>
   </main>
+
   <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
 
-<script>
-  fetch('../components/header.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('header-container').innerHTML = data);
-  fetch('../components/footer.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('footer-container').innerHTML = data);
-</script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('header-container').innerHTML = data);
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('footer-container').innerHTML = data);
+  </script>
 </body>
 </html>
