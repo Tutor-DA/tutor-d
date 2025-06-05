@@ -1,95 +1,3 @@
-
-/* ====== Base Typography ====== */
-body, h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', sans-serif;
-  color: #003973;
-}
-
-/* ====== Bullet Point Indent Fix ====== */
-ul li {
-  padding-left: 0.5rem;
-  text-indent: -0.5rem;
-  margin-left: 1.5rem;
-}
-
-/* ====== Testimonials Section ====== */
-.testimonials-section {
-  padding: 3rem 2rem;
-  max-width: 1200px;
-  margin: auto;
-}
-
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-}
-
-.testimonial {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  font-style: italic;
-  position: relative;
-}
-
-.testimonial::before,
-.testimonial::after {
-  font-size: 2rem;
-  color: #003973;
-  position: absolute;
-}
-
-.testimonial::before {
-  content: "“";
-  top: -10px;
-  left: -10px;
-}
-
-.testimonial::after {
-  content: "”";
-  bottom: -10px;
-  right: -10px;
-}
-
-.testimonial cite {
-  display: block;
-  margin-top: 1rem;
-  font-style: normal;
-  font-weight: bold;
-  color: #333;
-  text-align: right;
-}
-
-/* ====== E-Learn Image Styling ====== */
-.elearn-image {
-  flex: 1 1 400px;
-  text-align: center;
-}
-
-.elearn-image img {
-  max-width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* ====== Mobile Fixes ====== */
-@media (max-width: 768px) {
-  .section-flex,
-  .contact-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .section-flex > div,
-  .contact-grid > div {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-/* ====== Original style.css ====== */
 /* ========== Base Styles ========== */
 body {
   font-family: 'Open Sans', sans-serif;
@@ -271,7 +179,17 @@ nav a:hover,
 .features-list li {
   margin-bottom: 0.5rem;
   font-weight: 500;
+  text-indent: 0rem;         /* Ensure no extra hanging indent */
+  padding-left: 1.0rem;   /* Slight inner space if needed */
   transition: all 0.3s ease;
+}
+
+.features-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #003973;
+  font-weight: bold;
 }
 
 .features-list li:hover {
@@ -346,11 +264,13 @@ footer {
 .header-inner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch; /* default or flex-start */
 }
 
 .logo-title {
   display: flex;
+  flex-direction: row-reverse; /* This flips the order: logo on right */
+  justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 1rem;
@@ -594,3 +514,77 @@ section {
     width: 100%;
   }
 }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+
+    #contact {
+      max-width: 1200px;
+      margin: auto;
+      padding: 3rem 2rem;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+    }
+
+    h2, h3, h4 {
+      color: #003973;
+    }
+
+    form {
+      margin-bottom: 2rem;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #003973;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #002550;
+    }
+
+    .contact-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .office, .social, .form-section {
+      flex: 1 1 300px;
+    }
+
+    .social a {
+      display: inline-block;
+      margin: 0.5rem 0.5rem 0 0;
+      text-decoration: none;
+      color: #003973;
+      font-weight: 600;
+    }
+
+    .social a:hover {
+      text-decoration: underline;
+    }
+
+    hr {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
