@@ -52,7 +52,7 @@ header,
 .logo-nav img,
 .logo,
 .header-logo {
-  height: 60px;
+  height: 80px;
   border-radius: 8px;
   border: 2px solid white;
   background-color: white;
@@ -254,11 +254,13 @@ footer {
 .header-inner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch; /* default or flex-start */
 }
 
 .logo-title {
   display: flex;
+  flex-direction: row-reverse; /* This flips the order: logo on right */
+  justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 1rem;
