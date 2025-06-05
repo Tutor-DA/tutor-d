@@ -82,4 +82,43 @@
       <h2>What Our Students Say</h2>
 
       <div class="intro">
-        At <strong>TutorDA</strong>, student voices matter. We actively incorporate <strong>student feedback</strong> into every stage of our teaching methodology. After every e-assessment, students receive detaile
+        At <strong>TutorDA</strong>, student voices matter. We actively incorporate <strong>student feedback</strong> into every stage of our teaching methodology. After every e-assessment, students receive detailed feedback to reflect on their performance. In addition, we collect input from learners regularly to better understand their preferences, struggles, and learning styles.<br><br>
+        This enables our instructors to adapt their teaching methods—whether by simplifying delivery, offering more examples, or incorporating digital tools—to match how students best understand a concept. Through this responsive approach, students are not just participants but partners in shaping their learning experience.
+      </div>
+
+      <img src="../assets/images/image6.png" alt="Student with Notebook" class="featured">
+
+      <!-- Testimonials in 4 columns -->
+      <div class="testimonials-grid">
+        <div class="testimonial">
+          TutorDA helped me crack JEE with confidence. The lectures were crystal clear, and I loved the practice sets.
+          <cite>— A. Kumar</cite>
+        </div>
+        <div class="testimonial">
+          I used to fear math. Now I look forward to every class and feel more confident than ever before.
+          <cite>— Z. Fatima</cite>
+        </div>
+        <div class="testimonial">
+          The flexibility and personal support made TutorDA my favorite learning platform.
+          <cite>— R. Sharma</cite>
+        </div>
+        <div class="testimonial">
+          After every test, I knew exactly where I stood and what to improve—thanks to the feedback system!
+          <cite>— V. Ramesh</cite>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
+
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('header-container').innerHTML = data);
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('footer-container').innerHTML = data);
+  </script>
+</body>
+</html>
