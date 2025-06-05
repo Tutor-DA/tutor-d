@@ -4,29 +4,82 @@
   <meta charset="UTF-8" />
   <title>Testimonials | TutorDA</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #fdfdfd;
+      margin: 0;
+    }
+
+    section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #003973;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .intro {
+      text-align: justify;
+      margin-bottom: 3rem;
+      line-height: 1.8;
+      background-color: #f0f6fa;
+      padding: 1.5rem;
+      border-left: 5px solid #003973;
+      border-radius: 6px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .testimonial {
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      font-style: italic;
+    }
+
+    .testimonial::before {
+      content: "“";
+      font-size: 2rem;
+      color: #003973;
+    }
+
+    .testimonial::after {
+      content: "”";
+      font-size: 2rem;
+      color: #003973;
+    }
+
+    .testimonial cite {
+      display: block;
+      margin-top: 1rem;
+      font-style: normal;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .featured {
+      display: block;
+      max-width: 300px;
+      margin: 2rem auto;
+    }
+  </style>
 </head>
 <body>
   <div id="header-container"><h1>Testimonials</h1></div><!-- end header -->
+
   <main>
-    
-<section class="fade-in">
-  <h2>What Our Students Say</h2>
-  <img src="assets/images/image6.png" alt="Student with Notebook" class="featured">
-  <blockquote class="highlight">“TutorDA helped me crack JEE with confidence. The lectures were crystal clear, and I loved the practice sets.”<br>— A. Kumar</blockquote>
-  <blockquote>“I used to fear math. Now I look forward to every class.”<br>— Z. Fatima</blockquote>
-  <blockquote>“The flexibility and personal support made TutorDA my favorite learning platform.”<br>— R. Sharma</blockquote>
-</section>
+    <section>
+      <h2>What Our Students Say</h2>
 
-  </main>
-  <div id="footer-container"><p>&copy; 2025 TutorDA</p></div><!-- end footer -->
-
-<script>
-  fetch('../components/header.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('header-container').innerHTML = data);
-  fetch('../components/footer.html')
-    .then(res => res.text())
-    .then(data => document.getElementById('footer-container').innerHTML = data);
-</script>
-</body>
-</html>
+      <div class="intro">
+        At <strong>TutorDA</strong>, student voices matter. We actively incorporate <strong>student feedback</strong> into every stage of our teaching methodology. After every e-assessment, students receive detaile
