@@ -9,18 +9,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@500;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-<div class="search-box">
-      <input type="text" id="searchInput" onkeyup="searchSections()" placeholder="Search...">
-    </div>
 <body>
-  <div id="header-container">
-    <div class="logo-nav">
-      <img src="assets/images/logo.png" alt="TutorDA Logo">
-      <nav>
+
+  <!-- Search Box Positioned Below Header -->
+  <div class="search-box search-outside">
+    <input type="text" id="searchInput" onkeyup="searchSections()" placeholder="Search...">
+  </div>
+
+  <div id="header-container" class="page-header">
+    <div class="header-inner">
+      <div class="logo-title">
+        <img src="../assets/images/logo.png" alt="TutorDA Logo" class="header-logo">
+        <div class="page-title-container">
+          <h1 class="page-title">TutorDA</h1>
+          <p class="subtitle">Premium Mathematics Learning</p>
+        </div>
+      </div>
+      <nav class="main-nav">
         <a href="index.html">Home</a>
         <a href="pages/about.html">About</a>
         <a href="pages/courses.html">Courses</a>
-        <a href="pages/elearn.html">E-Learn</a>
+        <a href="pages/elearn.html">ELEARN</a>
         <a href="pages/team.html">Our Team</a>
         <a href="pages/faq.html">FAQ</a>
         <a href="pages/testimonials.html">Testimonials</a>
@@ -28,9 +37,7 @@
       </nav>
     </div>
   </div>
-     <div class="search-box">
-      <input type="text" id="searchInput" onkeyup="searchSections()" placeholder="Search...">
-    </div>
+
   <main>
  
     <div class="text-content">
@@ -146,9 +153,13 @@
 
   </main>
 
+
   <div id="footer-container">
     <p>&copy; 2025 TutorDA. All rights reserved.</p>
   </div>
+
+  <!-- Back to Top Button -->
+  <div id="backToTop" onclick="scrollToTop()">↑</div>
 
   <script>
     function searchSections() {
@@ -159,6 +170,15 @@
         const text = section.textContent.toLowerCase();
         section.style.display = text.includes(input) ? 'flex' : 'none';
       });
+    }
+
+    // Back to Top Button Functionality
+    window.onscroll = function() {
+      document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
 

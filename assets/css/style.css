@@ -320,3 +320,185 @@ footer {
     text-align: center;
   }
 }
+
+/* Base Styles */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #fdfdfd;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  color: #003973;
+  font-weight: 600;
+}
+
+main {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+p {
+  text-align: justify;
+  hyphens: auto;
+  word-spacing: 0.05em;
+}
+
+section {
+  margin-bottom: 3rem;
+}
+
+/* Header */
+.page-header {
+  background: linear-gradient(to right, #003973, #E5E5BE);
+  color: white;
+  padding: 1.5rem 2rem;
+}
+
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.header-logo {
+  height: 70px;
+  border-radius: 8px;
+  background-color: white;
+  padding: 4px;
+  border: 2px solid white;
+}
+
+.page-title-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 2rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.main-nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.main-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Search Box */
+.search-box.search-outside {
+  background-color: #f0f8ff;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.search-box.search-outside input {
+  padding: 0.5rem 1rem;
+  width: 220px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-box.search-outside input:focus {
+  box-shadow: 0 0 6px rgba(0, 57, 115, 0.3);
+}
+
+/* Back to Top Button */
+#backToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #003973;
+  color: white;
+  padding: 0.7rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: none;
+  z-index: 1000;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Collapsible FAQ */
+.faq-question {
+  background-color: #003973;
+  color: white;
+  padding: 1rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+  background-color: #002a5c;
+}
+
+.faq-answer {
+  display: none;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  background-color: #f0f8ff;
+  border-left: 4px solid #003973;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-inner {
+    align-items: center;
+  }
+
+  .logo-title {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .main-nav {
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .search-box.search-outside input {
+    width: 100%;
+  }
+}
