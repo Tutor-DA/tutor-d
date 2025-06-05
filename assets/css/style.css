@@ -15,6 +15,46 @@ header, .site-header {
   font-family: 'Playfair Display', serif;
 }
 
+.section-flex {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.section-flex img.featured {
+  flex: 1 1 40%;
+  max-width: 480px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-flex .text-content {
+  flex: 1 1 55%;
+}
+
+.features-list {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 1rem;
+  color: #333;
+}
+
+.features-list li {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.features-list li:hover {
+  color: #003973;
+  transform: translateX(4px);
+}
+
+
+
 .logo-nav {
   display: flex;
   align-items: center;
