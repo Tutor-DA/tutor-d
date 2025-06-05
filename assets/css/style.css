@@ -231,3 +231,24 @@ footer {
   border-left: 4px solid #003973;
   border-radius: 4px;
 }
+
+/* search bar */
+.search-box.search-outside {
+  background-color: #f0f8ff;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.search-box.search-outside input {
+  padding: 0.5rem 1rem;
+  width: 220px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-box.search-outside input:focus {
+  box-shadow: 0 0 6px rgba(0, 57, 115, 0.3);
+}
