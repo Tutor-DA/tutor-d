@@ -8,17 +8,90 @@
 </head>
 <body>
   <div id="header-container"></div>
+<!-- Contact Us Page -->
+<section id="contact" style="padding: 2rem; font-family: 'Open Sans', sans-serif;">
+  <h2>Contact Us</h2>
 
-  <main style="padding: 2rem; max-width: 600px; margin: auto; font-family: 'Open Sans', sans-serif;">
-    <h2 style="color: #003973; text-align: center;">Contact Us</h2>
-    <p style="text-align: center;">We’d love to hear from you. You can reach us through email or phone below:</p>
-    
-    <div style="margin-top: 2rem;">
-      <p><strong>Email:</strong> support@tutorda.org</p>
-      <p><strong>Phone:</strong> +91-9876543210</p>
-      <p><strong>Office Address:</strong> TutorDA, Math Learning Hub, Chennai, India</p>
+  <!-- Contact Form -->
+  <form action="mailto:your@email.com" method="post" enctype="text/plain" style="max-width: 600px;">
+    <label for="name">Full Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Email Address:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="message">Your Message:</label><br>
+    <textarea id="message" name="message" rows="5" required></textarea><br><br>
+
+    <button type="submit">Send Message</button>
+  </form>
+
+  <hr>
+
+<section id="schedule" style="margin-top: 2rem;">
+  <h3>Book a Call with Us</h3>
+  <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-USERNAME/15min" style="min-width:320px;height:630px;"></div>
+  <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</section>
+
+  <hr>
+
+  <!-- Addresses -->
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem;">
+    <div>
+      <h4>India Office</h4>
+      <p>
+        TutorDA Learning Center<br>
+        123 College Road, Chennai, Tamil Nadu<br>
+        India – 600001<br>
+        📞 +91-99999 88888
+      </p>
     </div>
-  </main>
+    <div>
+      <h4>Gulf Office</h4>
+      <p>
+        TutorDA Gulf Branch<br>
+        Al Khuwair, Muscat<br>
+        Sultanate of Oman<br>
+        📞 +968-1234 5678
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Social Media Icons -->
+  <div style="margin-top: 1.5rem;">
+    <h4>Follow Us</h4>
+    <a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a> |
+    <a href="https://instagram.com/tutorda" target="_blank">📸 Instagram</a> |
+    <a href="https://wa.me/yourwhatsappnumber" target="_blank">💬 WhatsApp</a> |
+    <a href="tel:+919999988888">📱 Call Us</a>
+  </div>
+
+  <hr>
+
+</section>
+
+
+<!-- WhatsApp Quick Chat -->
+<a href="https://wa.me/919999988888" target="_blank" style="position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white; border-radius: 50px; padding: 10px 20px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;">
+  💬 Chat on WhatsApp
+</a>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/68417a2acba13b19071aa1fd/1isvsaeep';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 
   <div id="footer-container"></div>
 
