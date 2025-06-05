@@ -106,21 +106,24 @@ nav a:hover {
 }
 
 /* Layout Sections */
-.content-row, .section-flex {
+.content-row,
+.section-flex {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
-.content-text, .section-flex .text-content {
+.content-text,
+.section-flex .text-content {
   flex: 1;
   min-width: 280px;
 }
 
-.content-image, .section-flex img.featured {
+.content-image,
+.section-flex img.featured {
   flex: 1;
   max-width: 45%;
 }
@@ -128,6 +131,10 @@ nav a:hover {
 .section-flex img.featured {
   flex: 1 1 40%;
   max-width: 480px;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  margin-top: 1rem;
 }
 
 /* Features List */
@@ -135,6 +142,7 @@ nav a:hover {
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-top: 1rem;
+  margin-bottom: 1rem;
   color: #333;
 }
 
@@ -164,7 +172,8 @@ nav a:hover {
 }
 
 /* Footer */
-#footer-container, footer {
+#footer-container,
+footer {
   background-color: #003973;
   color: white;
   text-align: center;
@@ -174,12 +183,17 @@ nav a:hover {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .content-row, .section-flex {
+  .content-row,
+  .section-flex {
     flex-direction: column;
+    align-items: center;
   }
 
-  .content-image {
+  .content-image,
+  .section-flex img.featured {
     max-width: 100%;
+    width: 100%;
+    margin-top: 1rem;
   }
 
   .search-box {
