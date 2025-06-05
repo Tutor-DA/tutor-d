@@ -8,63 +8,212 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@500;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background-color: #fdfdfd;
+      color: #333;
+    }
+
+    #header-container {
+      position: relative;
+      background: linear-gradient(to right, #003973, #E5E5BE);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .logo-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo-nav img {
+      height: 60px;
+      border-radius: 8px;
+      border: 2px solid white;
+      background-color: white;
+      padding: 2px;
+      margin-right: 1rem;
+    }
+
+    nav a {
+      margin: 0 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .search-box {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+    }
+
+    .search-box input {
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      width: 180px;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .content-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .content-text {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .content-text h2 {
+      color: #003973;
+    }
+
+    .content-image {
+      flex: 1;
+      max-width: 45%;
+    }
+
+    .content-image img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    #footer-container {
+      background-color: #003973;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .content-row {
+        flex-direction: column;
+      }
+
+      .content-image {
+        max-width: 100%;
+      }
+
+      .search-box {
+        position: static;
+        margin-top: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <div style="background: linear-gradient(to right, #003973, #E5E5BE); color: white; padding: 1.5rem; text-align: center; font-family: 'Playfair Display', serif;">
-    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-      <img src="assets/images/logo.png" alt="TutorDA Logo" style="height: 60px; border-radius: 8px; border: 2px solid white; background-color: white; padding: 2px; margin-right: 1rem;">
+
+  <div id="header-container">
+    <div class="logo-nav">
+      <img src="assets/images/logo.png" alt="TutorDA Logo">
       <nav>
-        <a href="index.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Home</a>
-        <a href="pages/about.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">About</a>
-        <a href="pages/courses.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Courses</a>
-        <a href="pages/elearn.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">ELEARN</a>
-        <a href="pages/team.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Our Team</a>
-        <a href="pages/faq.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">FAQ</a>
-        <a href="pages/testimonials.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Testimonials</a>
-        <a href="pages/contact.html" style="margin: 0 10px; color: white; text-decoration: none; font-weight: 600;">Contact</a>
+        <a href="index.html">Home</a>
+        <a href="pages/about.html">About</a>
+        <a href="pages/courses.html">Courses</a>
+        <a href="pages/elearn.html">ELEARN</a>
+        <a href="pages/team.html">Our Team</a>
+        <a href="pages/faq.html">FAQ</a>
+        <a href="pages/testimonials.html">Testimonials</a>
+        <a href="pages/contact.html">Contact</a>
       </nav>
+    </div>
+    <div class="search-box">
+      <input type="text" id="searchInput" onkeyup="searchSections()" placeholder="Search...">
     </div>
   </div>
 
-  <!-- Main Content -->
-  <main style="padding: 2rem; max-width: 1000px; margin: auto; font-family: 'Open Sans', sans-serif;">
-    <section style="margin-bottom: 3rem;">
-      <img src="assets/images/image1.png" alt="Focused student learning math" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-      <p style="background-color: #f0f8ff; padding: 1rem; border-left: 4px solid #003973; border-radius: 4px;">
-        Our platform empowers learners to develop a deep understanding of mathematics through modern digital tools and expert guidance.
-      </p>
+  <main>
+    <section class="content-row">
+      <div class="content-text">
+        <h2>Our Interactive Platform</h2>
+        <p>Students engage with lessons through live instruction, collaborative problem-solving, and real-time feedback, enhancing both understanding and confidence.</p>
+      </div>
+      <div class="content-image">
+        <img src="assets/images/image2.png" alt="Teacher in Classroom">
+      </div>
     </section>
-    <section style="margin-bottom: 3rem;">
-      <h2 style="color: #003973;">Our Interactive Platform</h2>
-      <img src="assets/images/image2.png" alt="Teacher in Classroom" style="max-width: 100%; border-radius: 8px;">
-      <p>Students engage with lessons through live instruction, collaborative problem-solving, and real-time feedback, enhancing both understanding and confidence.</p>
+
+    <section class="content-row">
+      <div class="content-text">
+        <h2>Empowering Independent Learning</h2>
+        <p>At TutorDA, we provide resources that encourage learners to take initiative, build discipline, and explore mathematics beyond the classroom.</p>
+      </div>
+      <div class="content-image">
+        <img src="assets/images/image7.png" alt="Male Teacher with Book and Chalkboard">
+      </div>
     </section>
-    <section style="margin-bottom: 3rem;">
-      <h2 style="color: #003973;">Empowering Independent Learning</h2>
-      <img src="assets/images/image7.png" alt="Male Teacher with Book and Chalkboard" style="max-width: 100%; border-radius: 8px;">
-      <p>At TutorDA, we provide resources that encourage learners to take initiative, build discipline, and explore mathematics beyond the classroom.</p>
+
+    <section class="content-row">
+      <div class="content-text">
+        <h2>Global Reach, Local Relevance</h2>
+        <p>With students from across the country and beyond, TutorDA's curriculum reflects a global standard while aligning with national boards and exams.</p>
+      </div>
+      <div class="content-image">
+        <img src="assets/images/image8.png" alt="Smiling Student Holding Notebook">
+      </div>
     </section>
-    <section style="margin-bottom: 3rem;">
-      <h2 style="color: #003973;">Global Reach, Local Relevance</h2>
-      <img src="assets/images/image8.png" alt="Smiling Student Holding Notebook" style="max-width: 100%; border-radius: 8px;">
-      <p>With students from across the country and beyond, TutorDA's curriculum reflects a global standard while aligning with national boards and exams.</p>
+
+    <section class="content-row">
+      <div class="content-text">
+        <h2>Learn Anywhere, Anytime</h2>
+        <p>Flexible e-learning access allows students to study from home, on the go, or in our tech-equipped centers — at their pace and convenience.</p>
+      </div>
+      <div class="content-image">
+        <img src="assets/images/image9.png" alt="Student Studying in Library">
+      </div>
     </section>
-    <section style="margin-bottom: 3rem;">
-      <h2 style="color: #003973;">Learn Anywhere, Anytime</h2>
-      <img src="assets/images/image9.png" alt="Student Studying in Library" style="max-width: 100%; border-radius: 8px;">
-      <p>Flexible e-learning access allows students to study from home, on the go, or in our tech-equipped centers — at their pace and convenience.</p>
-    </section>
-    <section style="margin-bottom: 3rem;">
-      <h2 style="color: #003973;">Personalized Support</h2>
-      <img src="assets/images/image10.png" alt="Focused Student Writing Notes" style="max-width: 100%; border-radius: 8px;">
-      <p>Our instructors and support team ensure students receive guidance tailored to their strengths, weaknesses, and academic goals.</p>
+
+    <section class="content-row">
+      <div class="content-text">
+        <h2>Personalized Support</h2>
+        <p>Our instructors and support team ensure students receive guidance tailored to their strengths, weaknesses, and academic goals.</p>
+      </div>
+      <div class="content-image">
+        <img src="assets/images/image10.png" alt="Focused Student Writing Notes">
+      </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <div style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
+  <div id="footer-container">
     <p>&copy; 2025 TutorDA. All rights reserved.</p>
   </div>
+
+  <script>
+    function searchSections() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const sections = document.querySelectorAll('main section');
+
+      sections.forEach(section => {
+        const text = section.textContent.toLowerCase();
+        section.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  </script>
+
 </body>
 </html>
