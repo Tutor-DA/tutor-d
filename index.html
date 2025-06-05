@@ -16,8 +16,7 @@
     <input type="text" id="searchInput" onkeyup="searchSections()" placeholder="Search...">
   </div>
 
-   <!-- Header placeholder -->
-  <div id="header-container"></div>
+<div id="header-container"></div>
 
   <main>
      <div class="text-content">
@@ -134,9 +133,14 @@
   </main>
 
 
-  <div id="footer-container">
-    <p>&copy; 2025 TutorDA. All rights reserved.</p>
-  </div>
+ <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('header-container').innerHTML = data);
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(data => document.getElementById('footer-container').innerHTML = data);
+  </script>
 
   <!-- Back to Top Button -->
   <div id="backToTop" onclick="scrollToTop()">↑</div>
