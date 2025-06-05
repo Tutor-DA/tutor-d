@@ -202,3 +202,32 @@ footer {
     text-align: center;
   }
 }
+
+/* collapsible FAQ format */
+.faq-question {
+  background-color: #003973;
+  color: white;
+  padding: 1rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+  background-color: #002a5c;
+}
+
+.faq-answer {
+  display: none;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  background-color: #f0f8ff;
+  border-left: 4px solid #003973;
+  border-radius: 4px;
+}

@@ -12,12 +12,76 @@
 <section class="fade-in">
   <h2>Frequently Asked Questions</h2>
   <img src="../assets/images/image5.png" alt="TutorDA Chalkboard Logo" class="featured">
-  <h3>How do I enroll?</h3>
-  <p>Visit our Courses page, choose your program, and fill out the online registration form. Our team will guide you through the rest.</p>
-  <h3>What courses are available?</h3>
-  <p>We offer Algebra, Geometry, Calculus, Statistics, and exam prep for JEE, NEET, and SAT.</p>
-  <h3>What support do I get?</h3>
-  <p>Every enrolled student gets access to recorded sessions, notes, regular assessments, and teacher guidance via chat or email.</p>
+
+  <div class="faq-item">
+    <button class="faq-question">How do I enroll?</button>
+    <div class="faq-answer">
+      <p>Visit our Courses page, choose your program, and fill out the online registration form. Our team will guide you through the rest.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What courses are available?</button>
+    <div class="faq-answer">
+      <p>We offer Algebra, Geometry, Calculus, Statistics, and exam prep for JEE, NEET, and SAT. We also cover foundational school math for CBSE and State Board syllabi.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">What support do I get?</button>
+    <div class="faq-answer">
+      <p>Every enrolled student gets access to recorded sessions, topic-wise notes, regular assessments, and teacher guidance via WhatsApp, chat, or email.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Is the learning self-paced or live?</button>
+    <div class="faq-answer">
+      <p>Our platform blends both. Students can attend live classes for real-time interaction and also access pre-recorded lessons and quizzes for self-paced learning.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">How are assessments conducted?</button>
+    <div class="faq-answer">
+      <p>All assessments are conducted through our secure eLearning portal. They include automated grading, instant feedback, and adaptive question sets using random values.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Do I need to install any software?</button>
+    <div class="faq-answer">
+      <p>No software is needed. Our platform is browser-based and mobile-friendly. You can also access courses using the Moodle app for convenience.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Can I get personalized help?</button>
+    <div class="faq-answer">
+      <p>Yes! Every student is assigned a mentor. One-on-one doubt sessions, feedback discussions, and learning progress reviews are scheduled regularly.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Is TutorDA suitable for competitive exams?</button>
+    <div class="faq-answer">
+      <p>Absolutely. We offer structured preparation for JEE, NEET, and SAT with topic-wise tests, time-bound practice, and expert guidance from experienced faculty.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">Are there any trial classes?</button>
+    <div class="faq-answer">
+      <p>Yes. We offer free demo sessions so students can experience our teaching approach and digital platform before enrolling.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">How do I track my progress?</button>
+    <div class="faq-answer">
+      <p>Your personalized dashboard displays your scores, attendance, topic completion status, and suggested areas for revision.</p>
+    </div>
+  </div>
 </section>
 
   </main>
@@ -31,5 +95,6 @@
     .then(res => res.text())
     .then(data => document.getElementById('footer-container').innerHTML = data);
 </script>
+<script src="../assets/js/faq-toggle.js"></script>
 </body>
 </html>
