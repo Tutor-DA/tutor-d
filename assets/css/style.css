@@ -179,8 +179,8 @@ nav a:hover,
 .features-list li {
   margin-bottom: 0.5rem;
   font-weight: 500;
-  text-indent: 0;         /* Ensure no extra hanging indent */
-  padding-left: 1.2rem;   /* Slight inner space if needed */
+  text-indent: -0.5rem;         /* Ensure no extra hanging indent */
+  padding-left: 1.0rem;   /* Slight inner space if needed */
   transition: all 0.3s ease;
 }
 
