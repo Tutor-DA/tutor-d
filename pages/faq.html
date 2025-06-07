@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
+
   <div id="header-container"></div>
 
   <main>
@@ -82,88 +83,22 @@
           <p>Your dashboard shows your quiz scores, attendance, topic mastery, and next steps.</p>
         </div>
       </div>
-    </section>
+  </section>
   </main>
 
   <div id="footer-container"></div>
+  <div id="backToTop">↑</div>
 
-  <!-- Load Header & Footer -->
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
   <script>
     fetch('../components/header.html')
       .then(res => res.text())
-      .then(data => document.getElementById('header-container').innerHTML = data);
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
     fetch('../components/footer.html')
       .then(res => res.text())
-      .then(data => document.getElementById('footer-container').innerHTML = data);
+      .then(html => document.getElementById('footer-container').innerHTML = html);
   </script>
-
-<!-- Back to Top -->
-<button id="backToTop" onclick="scrollToTop()">↑</button>
-
-  <!-- FAQ Accordion Behavior -->
-  <script src="../assets/js/faq-toggle.js"></script>
-
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-    // Slide toggle helper function
-    function slideToggle(element, duration = 300) {
-      if (window.getComputedStyle(element).display === "none") {
-        element.style.removeProperty('display');
-        let display = window.getComputedStyle(element).display;
-        element.style.display = display === 'none' ? 'block' : display;
-        let height = element.offsetHeight;
-        element.style.height = 0;
-        element.style.overflow = 'hidden';
-        element.style.transition = `height ${duration}ms ease`;
-        setTimeout(() => element.style.height = height + 'px', 10);
-        setTimeout(() => {
-          element.style.removeProperty('height');
-          element.style.removeProperty('overflow');
-          element.style.removeProperty('transition');
-        }, duration);
-      } else {
-        element.style.height = element.offsetHeight + 'px';
-        element.style.overflow = 'hidden';
-        element.style.transition = `height ${duration}ms ease`;
-        setTimeout(() => element.style.height = '0px', 10);
-        setTimeout(() => {
-          element.style.display = 'none';
-          element.style.removeProperty('height');
-          element.style.removeProperty('overflow');
-          element.style.removeProperty('transition');
-        }, duration);
-      }
-    }
-
-    // FAQ accordion logic
-    const questions = document.querySelectorAll('.faq-question');
-    questions.forEach(button => {
-      button.addEventListener('click', () => {
-        const answer = button.nextElementSibling;
-
-        // Close all other answers
-        document.querySelectorAll('.faq-answer').forEach(ans => {
-          if (ans !== answer && window.getComputedStyle(ans).display === 'block') {
-            slideToggle(ans, 300);
-          }
-        });
-
-        // Toggle clicked one
-        slideToggle(answer, 300);
-      });
-    });
-
-    // Back to Top logic
-    window.onscroll = function () {
-      document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
-    };
-
-    window.scrollToTop = function () {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-  });
-</script>
-
 </body>
 </html>

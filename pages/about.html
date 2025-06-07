@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-<div id="header-container"></div>
-
   <main>
     <section class="fade-in section-flex">
       <!-- Left: Text Content -->
@@ -28,19 +26,19 @@
     </section>
   </main>
 
-  <!-- Footer placeholder -->
   <div id="footer-container"></div>
+  <div id="backToTop">↑</div>
 
-  <!-- Load shared header/footer -->
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
   <script>
     fetch('../components/header.html')
       .then(res => res.text())
-      .then(data => document.getElementById('header-container').innerHTML = data);
+      .then(html => document.getElementById('header-container').innerHTML = html);
 
     fetch('../components/footer.html')
       .then(res => res.text())
-      .then(data => document.getElementById('footer-container').innerHTML = data);
+      .then(html => document.getElementById('footer-container').innerHTML = html);
   </script>
-
 </body>
 </html>
