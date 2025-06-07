@@ -21,30 +21,36 @@ body {
   margin-bottom: 2rem;
 }
 
-.contact-grid {
+/* ========== Three-Column Grid ========== */
+.contact-grid-three {
   display: flex;
-  flex-wrap: wrap;
   gap: 2rem;
+  flex-wrap: wrap;
   justify-content: space-between;
+  margin-top: 2rem;
 }
 
-.form-section,
-.office {
+.contact-grid-three > div {
   flex: 1 1 300px;
+  background-color: #fdfdfd;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.05);
 }
 
-form {
+/* ========== Form Styles ========== */
+.form-section form {
   display: flex;
   flex-direction: column;
 }
 
-form label {
+.form-section label {
   font-weight: 600;
   margin-top: 1rem;
 }
 
-form input,
-form textarea {
+.form-section input,
+.form-section textarea {
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #ccc;
@@ -53,7 +59,7 @@ form textarea {
   font-size: 1rem;
 }
 
-button[type="submit"] {
+.form-section button {
   background-color: #003973;
   color: white;
   padding: 0.7rem 1.5rem;
@@ -65,14 +71,13 @@ button[type="submit"] {
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.form-section button:hover {
   background-color: #002550;
 }
 
-/* Address alignment to the right */
-/* Office Info Styling */
+/* ========== Office Info Styles ========== */
 .office {
-  text-align: right; /* Align all text to the right */
+  text-align: right;
   padding-left: 2rem;
   flex: 1 1 300px;
   color: #333;
@@ -85,21 +90,12 @@ button[type="submit"]:hover {
 }
 
 .office p {
-   text-align: right;
+  text-align: right;
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
 
-/* Responsive Alignment */
-@media (max-width: 768px) {
-  .office {
-    text-align: center;
-    padding-left: 0;
-  }
-}
-
-
-/* Social Links */
+/* ========== Social Links ========== */
 .social {
   text-align: center;
   margin-top: 2rem;
@@ -122,20 +118,29 @@ button[type="submit"]:hover {
   color: #0056a3;
 }
 
-/* Divider */
+/* ========== Divider ========== */
 hr {
   margin: 2rem 0;
   border: none;
   border-top: 1px solid #ccc;
 }
 
-/* Responsive */
+/* ========== Responsive ========== */
 @media (max-width: 768px) {
-  .contact-grid {
+  .contact-grid-three {
     flex-direction: column;
   }
 
+  .contact-grid-three > div {
+    text-align: center;
+    padding-left: 0;
+  }
+
   .office {
+    text-align: center;
+  }
+
+  .social {
     text-align: center;
   }
 }

@@ -16,50 +16,53 @@
   <section id="contact">
   <h2>Contact Us</h2>
 
-  <form
-  action="https://formspree.io/f/mpwrqnny"
-  method="POST"
-  class="styled-contact-form"
-  id="contactForm"
->
-  <label for="email">Your Email:</label>
-  <input type="email" id="email" name="email" required>
+  <div class="contact-grid-three">
+  <div class="form-section">
+    <form
+      action="https://formspree.io/f/mpwrqnny"
+      method="POST"
+      class="styled-contact-form"
+      id="contactForm"
+    >
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" name="email" required autocomplete="email">
 
-  <label for="message">Your Message:</label>
-  <textarea id="message" name="message" rows="5" required></textarea>
+      <label for="message">Your Message:</label>
+      <textarea id="message" name="message" rows="5" required autocomplete="on"></textarea>
 
-  <button type="submit">Send Message</button>
-</form>
+      <button type="submit">Send Message</button>
+    </form>
 
-<!-- This will be shown after submit -->
-<div id="thankYouMessage" style="display:none; text-align:center; margin-top:2rem; font-size:1.2rem; color:green;">
-  ✅ Thank you for reaching out! We’ll get back to you soon.
-</div>
-
-<!-- Office Info Column -->
-<div class="office">
-  <h4>India Office</h4>
-  <p>
-    TutorDA Learning Center<br>
-    123 MG Road, Trivendrum<br>
-    India – 600001<br>
-  </p>
-
-  <h4>Gulf Office</h4>
-  <p>
-    TutorDA Gulf Branch<br>
-    Al Khuwair, Muscat<br>
-    Sultanate of Oman<br>
-  </p>
-</div>
-    <!-- Social Media Links -->
-    <div class="social">
-      <h4>Social Media Links</h4>
-      <p><a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a></p>
-      <p><a href="https://instagram.com/tutorda" target="_blank">📸 Instagram</a></p>
-      <p><a href="https://wa.me/919744048698" target="_blank">💬 WhatsApp</a></p>
-      <p><a href="tel:+919744048698">📱 Call Us</a></p>
+    <div id="thankYouMessage" style="display:none; text-align:center; margin-top:2rem; font-size:1.2rem; color:green;">
+      ✅ Thank you for reaching out! We’ll get back to you soon.
     </div>
+  </div>
+
+  <div class="office">
+    <h4>India Office</h4>
+    <p>
+      TutorDA Learning Center<br>
+      123 MG Road, Trivandrum<br>
+      India – 600001<br>
+    </p>
+
+    <h4>Gulf Office</h4>
+    <p>
+      TutorDA Gulf Branch<br>
+      Al Khuwair, Muscat<br>
+      Sultanate of Oman<br>
+    </p>
+  </div>
+
+  <div class="social">
+    <h4>Social Media Links</h4>
+    <p><a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a></p>
+    <p><a href="https://instagram.com/tutorda" target="_blank">📸 Instagram</a></p>
+    <p><a href="https://wa.me/919744048698" target="_blank">💬 WhatsApp</a></p>
+    <p><a href="tel:+919744048698">📱 Call Us</a></p>
+  </div>
+</div>
+
   </section>
 
   <!-- Footer and Back to Top -->
