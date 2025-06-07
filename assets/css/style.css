@@ -29,7 +29,6 @@ section {
   margin-bottom: 3rem;
 }
 
-
 /* ========== Header & Navigation ========== */
 #header-container,
 header,
@@ -67,15 +66,14 @@ header,
 
 .logo-container {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;  /* aligns content to the right */
+  align-items: center;        /* vertically centers logo inside container */
 }
 
 .logo-img {
   height: 60px;
   max-width: 100%;
 }
-
-
 
 /* ========== Search Box ========== */
 .search-box {
@@ -112,7 +110,6 @@ header,
   box-shadow: 0 0 6px rgba(0, 57, 115, 0.3);
 }
 
-
 /* ========== Images & Blocks ========== */
 .featured,
 .content-image img,
@@ -136,7 +133,6 @@ header,
   border-left: 4px solid #003973;
   border-radius: 4px;
 }
-
 
 /* ========== Layout Sections ========== */
 .content-row,
@@ -170,7 +166,6 @@ header,
   margin-top: 1rem;
 }
 
-
 /* ========== Features List ========== */
 .features-list {
   list-style-type: disc;
@@ -199,7 +194,6 @@ header,
   color: #003973;
   transform: translateX(4px);
 }
-
 
 /* ========== FAQ Accordion ========== */
 .faq-question {
@@ -240,7 +234,6 @@ header,
   background-color: #0056a3;
 }
 
-
 /* ========== Animation ========== */
 .fade-in {
   opacity: 0;
@@ -248,14 +241,12 @@ header,
   animation: fadeIn 1s ease-out forwards;
 }
 
-@keyframes fadeIn {
   to {
     opacity: 1;
     transform: translateY(0);
   }
+
 }
-
-
 /* ========== Footer ========== */
 #footer-container,
 footer {
@@ -265,7 +256,6 @@ footer {
   padding: 1rem;
   font-size: 0.9rem;
 }
-
 
 /* ========== Header with Title Layout ========== */
 .page-header {
@@ -306,7 +296,6 @@ footer {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-
 .page-title-container {
   display: flex;
   flex-direction: column;
@@ -325,10 +314,7 @@ footer {
   font-style: italic;
 }
 
-
 /* ========== Responsive ========== */
-@media (max-width: 768px) {
-  .content-row,
   .section-flex {
     flex-direction: column;
     align-items: center;
@@ -378,39 +364,9 @@ footer {
     flex-wrap: wrap;
     text-align: center;
   }
-}
 
+}
 /* Base Styles */
-body {
-  font-family: 'Open Sans', sans-serif;
-  background-color: #fdfdfd;
-  color: #333;
-  line-height: 1.6;
-  margin: 0;
-}
-
-h2 {
-  font-family: 'Poppins', sans-serif;
-  color: #003973;
-  font-weight: 600;
-}
-
-main {
-  padding: 2rem;
-  max-width: 1000px;
-  margin: auto;
-}
-
-p {
-  text-align: justify;
-  hyphens: auto;
-  word-spacing: 0.05em;
-}
-
-section {
-  margin-bottom: 3rem;
-}
-
 /* Header */
 .page-header {
   background: linear-gradient(to right, #003973, #E5E5BE);
@@ -439,24 +395,6 @@ section {
   border: 2px solid white;
 }
 
-.page-title-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.page-title {
-  margin: 0;
-  font-size: 2rem;
-  font-family: 'Playfair Display', serif;
-}
-
-.subtitle {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 300;
-  font-style: italic;
-}
-
 .main-nav {
   display: flex;
   flex-wrap: wrap;
@@ -474,26 +412,6 @@ section {
 }
 
 /* Search Box */
-.search-box.search-outside {
-  background-color: #f0f8ff;
-  padding: 1rem 2rem;
-  text-align: center;
-  border-bottom: 1px solid #ccc;
-}
-
-.search-box.search-outside input {
-  padding: 0.5rem 1rem;
-  width: 220px;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  outline: none;
-  transition: box-shadow 0.3s ease;
-}
-
-.search-box.search-outside input:focus {
-  box-shadow: 0 0 6px rgba(0, 57, 115, 0.3);
-}
-
 /* Back to Top Button */
 #backToTop {
   position: fixed;
@@ -540,28 +458,11 @@ section {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .header-inner {
-    align-items: center;
-  }
-
-  .logo-title {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .main-nav {
-    justify-content: center;
-    flex-wrap: wrap;
-    text-align: center;
-  }
-
   .search-box.search-outside input {
     width: 100%;
   }
-}
 
+}
     body {
       font-family: 'Open Sans', sans-serif;
       margin: 0;
@@ -739,7 +640,6 @@ section {
 }
 
 /* Optional: Tweak layout on very small screens */
-@media (max-width: 480px) {
   .cta-button {
     font-size: 14px;
     padding: 10px 20px;
@@ -748,4 +648,5 @@ section {
   .btn-container {
     margin-top: 16px;
   }
+
 }
