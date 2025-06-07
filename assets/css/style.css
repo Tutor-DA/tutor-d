@@ -35,43 +35,46 @@ section {
 header,
 .site-header {
   background: linear-gradient(to right, #003973, #E5E5BE);
+  padding: 1.2rem;
   color: white;
-  padding: 1.5rem;
-  font-family: 'Playfair Display', serif;
-  position: relative;
-  text-align: center;
 }
 
-.logo-nav {
+.header-inner {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
 }
 
-.logo-nav img,
-.logo,
-.header-logo {
-  height: 60px;
-  border-radius: 8px;
-  border: 2px solid white;
-  background-color: white;
-  padding: 2px;
-  margin-right: 1rem;
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-nav a,
-.main-nav a {
-  margin: 0 10px;
+.nav-links a {
   color: white;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: color 0.3s;
 }
 
-nav a:hover,
-.main-nav a:hover {
-  text-decoration: underline;
+.nav-links a:hover {
+  color: #ffc107;
 }
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 60px;
+  max-width: 100%;
+}
+
 
 
 /* ========== Search Box ========== */
