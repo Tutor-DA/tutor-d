@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TutorDA | Premium Mathematics Learning</title>
+  <meta name="description" content="TutorDA offers personalized math learning with e-learning tools, quizzes, and support for CBSE, NEET, JEE, and global exams.">
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -143,23 +144,14 @@
 
   </main>
 
-
- <script>
-    fetch('../components/header.html')
-      .then(res => res.text())
-      .then(data => document.getElementById('header-container').innerHTML = data);
-    fetch('../components/footer.html')
-      .then(res => res.text())
-      .then(data => document.getElementById('footer-container').innerHTML = data);
-  </script>
-
   <!-- Back to Top Button -->
   <div id="backToTop" onclick="scrollToTop()">↑</div>
 
-<footer style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
-  <p>&copy; 2025 TutorDA. All rights reserved.</p>
-</footer>
-<script>
+  <footer style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
+    <p>&copy; 2025 TutorDA. All rights reserved.</p>
+  </footer>
+
+  <script>
     // Back to Top Button Functionality
     window.onscroll = function() {
       document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
@@ -169,7 +161,8 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
-<!-- Tawk.to Live Chat -->
+
+  <!-- Tawk.to Live Chat -->
   <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
     (function(){
@@ -181,5 +174,6 @@
       s0.parentNode.insertBefore(s1,s0);
     })();
   </script>
+
 </body>
 </html>
