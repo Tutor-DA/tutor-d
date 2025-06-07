@@ -4,7 +4,7 @@
   color: white;
   padding: 2rem 1rem 1rem;
   font-family: 'Open Sans', sans-serif;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
 }
 
 .footer-content {
@@ -42,7 +42,7 @@
 .footer-column ul li a {
   color: #e1effa;
   text-decoration: none;
-  font-size: 0.5rem;
+  font-size: 0.8rem;
   transition: color 0.3s ease;
 }
 
