@@ -8,11 +8,16 @@
   <link rel="stylesheet" href="../assets/css/contact.css" />
 </head>
 <body>
-<div id="header-container"></div>
+
+  <!-- Header will be loaded dynamically -->
+  <div id="header-container"></div>
+
+  <!-- Contact Section -->
   <section id="contact">
     <h2>Contact Us</h2>
 
     <div class="contact-grid">
+      <!-- Form Column -->
       <div class="form-section">
         <form action="mailto:your@email.com" method="post" enctype="text/plain">
           <label for="name">Full Name:</label>
@@ -28,13 +33,13 @@
         </form>
       </div>
 
+      <!-- Office Info Column -->
       <div class="office">
         <h4>India Office</h4>
         <p>
           TutorDA Learning Center<br>
           123 College Road, Chennai, Tamil Nadu<br>
           India – 600001<br>
-          📞 +91-99999 88888
         </p>
 
         <h4>Gulf Office</h4>
@@ -42,13 +47,13 @@
           TutorDA Gulf Branch<br>
           Al Khuwair, Muscat<br>
           Sultanate of Oman<br>
-          📞 +968-1234 5678
         </p>
       </div>
     </div>
 
     <hr>
 
+    <!-- Social Media Links -->
     <div class="social">
       <h4>Connect with Us</h4>
       <a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a>
@@ -58,10 +63,11 @@
     </div>
   </section>
 
+  <!-- Footer and Back to Top -->
   <div id="footer-container"></div>
   <div id="backToTop">↑</div>
 
-  <!-- Script to load header/footer and handle toggles -->
+  <!-- Scripts -->
   <script src="../assets/js/faq-toggle.js"></script>
   <script>
     fetch('../components/header.html')
@@ -72,5 +78,6 @@
       .then(res => res.text())
       .then(html => document.getElementById('footer-container').innerHTML = html);
   </script>
+
 </body>
 </html>
