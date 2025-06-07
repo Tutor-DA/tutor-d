@@ -144,36 +144,19 @@
 
   </main>
 
-  <!-- Back to Top Button -->
-  <div id="backToTop" onclick="scrollToTop()">↑</div>
+   <div id="footer-container"></div>
+  <div id="backToTop">↑</div>
 
-  <footer style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
-    <p>&copy; 2025 TutorDA. All rights reserved.</p>
-  </footer>
-
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
   <script>
-    // Back to Top Button Functionality
-    window.onscroll = function() {
-      document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
-    };
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
 
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
   </script>
-
-  <!-- Tawk.to Live Chat -->
-  <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/68417a2acba13b19071aa1fd/1isvsaeep';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
-    })();
-  </script>
-
 </body>
 </html>
