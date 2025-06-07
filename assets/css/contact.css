@@ -24,9 +24,10 @@ body {
 /* ========== Three-Column Grid ========== */
 .contact-grid-three {
   display: flex;
-  gap: 2rem;
   flex-wrap: wrap;
+  gap: 2rem;
   justify-content: space-between;
+  align-items: stretch; /* ✅ Apply here for equal-height columns */
   margin-top: 2rem;
 }
 
@@ -36,9 +37,11 @@ body {
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 0 6px rgba(0,0,0,0.05);
-  min-height: 100%;
-  align-items: stretch;
+  display: flex;              /* ✅ Now this container stacks internal content */
+  flex-direction: column;
+  justify-content: space-between;
 }
+
 
 /* ========== Form Styles ========== */
 .form-section form {
