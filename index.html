@@ -11,6 +11,24 @@
 </head>
 <body>
 
+  <header id="header-container" class="page-header">
+    <div class="header-inner">
+      <nav class="main-nav">
+        <a href="../index.html">Home</a>
+        <a href="../pages/about.html">About</a>
+        <a href="../pages/courses.html">Courses</a>
+        <a href="../pages/elearn.html">E-Learn</a>
+        <a href="../pages/team.html">Our Team</a>
+        <a href="../pages/faq.html">FAQ</a>
+        <a href="../pages/testimonials.html">Testimonials</a>
+        <a href="../pages/contact.html">Contact</a>
+      </nav>
+      <div class="logo-title">
+        <img src="../assets/images/logo.png" alt="TutorDA Logo" class="header-logo">
+      </div>
+    </div>
+  </header>
+
   <main>
      <div class="text-content">
     <p>At <strong>TutorDA</strong>, we believe that true learning begins not with instruction, but with curiosity. When a student feels the need to understand, explore, or solve, learning becomes self-driven and powerful. Our mission is to ignite that need — to simulate curiosity — through thoughtfully crafted problems, real-life mathematical scenarios, and interactive tools. By aligning our teaching with the student’s natural inquiry, we transform passive absorption into active discovery. With every concept, we empower learners to unlock their fullest potential, making mathematics not just a subject, but a personal journey of exploration, growth, and mastery.</p>
@@ -135,6 +153,22 @@
       .then(data => document.getElementById('footer-container').innerHTML = data);
   </script>
 
+  <!-- Back to Top Button -->
+  <div id="backToTop" onclick="scrollToTop()">↑</div>
+
+<footer style="background-color: #003973; color: white; text-align: center; padding: 1rem; font-size: 0.9rem;">
+  <p>&copy; 2025 TutorDA. All rights reserved.</p>
+</footer>
+<script>
+    // Back to Top Button Functionality
+    window.onscroll = function() {
+      document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 <!-- Tawk.to Live Chat -->
   <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
