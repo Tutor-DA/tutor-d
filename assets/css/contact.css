@@ -70,19 +70,33 @@ button[type="submit"]:hover {
 }
 
 /* Address alignment to the right */
+/* Office Info Styling */
 .office {
-  text-align: right;
+  text-align: right; /* Align all text to the right */
+  padding-left: 2rem;
+  flex: 1 1 300px;
+  color: #333;
 }
 
 .office h4 {
-  margin-top: 0;
   color: #003973;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
 }
 
 .office p {
-  margin: 0.5rem 0 1.5rem;
+  margin-bottom: 1.5rem;
   line-height: 1.6;
 }
+
+/* Responsive Alignment */
+@media (max-width: 768px) {
+  .office {
+    text-align: center;
+    padding-left: 0;
+  }
+}
+
 
 /* Social Links */
 .social {
