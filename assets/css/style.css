@@ -411,12 +411,45 @@ footer,
   }
 }
 
-/* ====== google form ====== */
-.google-form-container {
+/* ====== form ====== */
+.styled-contact-form {
   max-width: 600px;
-  margin: auto;
-  padding: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  background-color: white;
-  border-radius: 8px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  font-family: 'Open Sans', sans-serif;
+}
+
+.styled-contact-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #003973;
+}
+
+.styled-contact-form input,
+.styled-contact-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.styled-contact-form button {
+  background-color: #003973;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.styled-contact-form button:hover {
+  background-color: #0056a3;
 }
