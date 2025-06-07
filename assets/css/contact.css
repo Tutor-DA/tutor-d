@@ -23,22 +23,21 @@ body {
 
 /* ========== Three-Column Grid ========== */
 .contact-grid-three {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  align-items: stretch; /* ✅ Apply here for equal-height columns */
   margin-top: 2rem;
 }
 
 .contact-grid-three > div {
-  flex: 1 1 300px;
   background-color: #fdfdfd;
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 0 6px rgba(0,0,0,0.05);
-  display: flex;              /* ✅ Now this container stacks internal content */
+  display: flex;
   flex-direction: column;
 }
+
 
 
 /* ========== Form Styles ========== */
