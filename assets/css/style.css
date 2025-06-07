@@ -258,25 +258,71 @@ footer {
 }
 
 /* ========== Header with Title Layout ========== */
-.page-header {
+/* Header layout */
+.site-header {
   background: linear-gradient(to right, #003973, #E5E5BE);
-  padding: 1rem;
   color: white;
+  padding: 1.2rem 2rem;
 }
 
 .header-inner {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   max-width: 1200px;
   margin: auto;
 }
 
-.logo-title img.header-logo {
-  max-height: 60px;
-  height: auto;
+/* Navigation styling */
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
 }
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.nav-links a:hover {
+  color: #ffc107;
+}
+
+/* Logo styling */
+.logo-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header-logo {
+  height: 60px;
+  max-width: 100%;
+}
+
+/* Responsive: stack nav and logo vertically on small screens */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-container {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-links {
+    justify-content: center;
+  }
+}
+
 
 .main-nav {
   display: flex;
