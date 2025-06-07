@@ -133,7 +133,7 @@ header,
 .section-flex img.featured {
   display: block;
   max-width: 100%;
-  height: auto;
+  max-height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -177,7 +177,7 @@ header,
   flex: 1 1 40%;
   max-width: 480px;
   width: 100%;
-  max-height: auto;
+  height: 100%;
   object-fit: cover;
   margin-top: 1rem;
 }
@@ -291,7 +291,7 @@ footer,
   display: block;
   margin: 0 auto;
   max-width: 90%;
-  height: auto;
+  height: 100%;
 }
 
 .btn-container {
