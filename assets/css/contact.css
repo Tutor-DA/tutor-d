@@ -26,7 +26,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  justify-content: space-between;
   align-items: stretch; /* ✅ Apply here for equal-height columns */
   margin-top: 2rem;
 }
@@ -39,7 +38,6 @@ body {
   box-shadow: 0 0 6px rgba(0,0,0,0.05);
   display: flex;              /* ✅ Now this container stacks internal content */
   flex-direction: column;
-  justify-content: space-between;
 }
 
 
