@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Careers | TutorDA</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/footer.css" />
+
+  <style>
+    .job-card {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .job-card h3 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    .job-card p {
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .view-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #ff8c00;
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #fff;
+      max-width: 760px;
+      width: 94%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: 14px;
+      padding: 30px;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal-box h3 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    .modal-box ul {
+      margin-left: 18px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="header-container"></div>
+
+<main>
+  <section class="fade-in section-flex">
+    <div class="text-content">
+
+      <h2>Careers at TutorDA</h2>
+      <p>
+        TutorDA.org is building a high-quality digital mathematics learning ecosystem.
+        We invite skilled professionals passionate about mathematics, technology,
+        and education to join our academic content team.
+      </p>
+
+      <!-- ================= COURSE DEVELOPER ================= -->
+      <div class="job-card">
+        <h3>Course Developer – Mathematics</h3>
+        <p>Design and deploy structured math courses using Moodle and LaTeX.</p>
+        <span class="view-btn" onclick="openModal('course-dev')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= CONTENT DEVELOPER ================= -->
+      <div class="job-card">
+        <h3>Mathematics Content Developer</h3>
+        <p>Create clear math lessons, examples, and assessments.</p>
+        <span class="view-btn" onclick="openModal('content-dev')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= VIDEO EDITOR ================= -->
+      <div class="job-card">
+        <h3>Mathematics Video Editor</h3>
+        <p>Edit educational math videos, reels, and YouTube Shorts.</p>
+        <span class="view-btn" onclick="openModal('video-editor')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= QUALITY CHECKER ================= -->
+      <div class="job-card">
+        <h3>Quality Checker – Mathematics & LaTeX</h3>
+        <p>Verify math accuracy and debug LaTeX content.</p>
+        <span class="view-btn" onclick="openModal('quality-checker')">
+          View Job Description
+        </span>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="footer-container"></div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- COURSE DEVELOPER -->
+<div class="modal-overlay" id="course-dev">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('course-dev')">✖</span>
+
+    <h3>Course Developer – Mathematics</h3>
+
+    <p>
+      The Course Developer is responsible for designing, structuring,
+      and deploying mathematics courses on the TutorDA platform using
+      <strong>Moodle LMS and LaTeX</strong>.
+    </p>
+
+    <p><strong>Key Responsibilities:</strong></p>
+    <ul>
+      <li>Design end-to-end math courses (school & university level)</li>
+      <li>Create lessons, quizzes, question banks, and assessments in Moodle</li>
+      <li>Develop academic content using LaTeX (notes, exams, MCQs)</li>
+      <li>Configure Moodle quizzes, grading, and activities</li>
+      <li>Ensure syllabus alignment and learning outcomes</li>
+    </ul>
+
+    <p><strong>Mandatory Requirements:</strong></p>
+    <ul>
+      <li><strong>Strong Mathematics background</strong></li>
+      <li><strong>Hands-on Moodle LMS experience (MANDATORY)</strong></li>
+      <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
+      <li>Ability to debug and edit LaTeX files</li>
+    </ul>
+
+    <p><strong>Apply:</strong><br>
+      <a href="mailto:careers@tutorda.org">careers@tutorda.org</a><br>
+      <em>Subject: Application – Course Developer – TutorDA</em>
+    </p>
+  </div>
+</div>
+
+<!-- CONTENT DEVELOPER -->
+<div class="modal-overlay" id="content-dev">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('content-dev')">✖</span>
+
+    <h3>Mathematics Content Developer</h3>
+
+    <ul>
+      <li>Create math lessons, worked examples, and practice problems</li>
+      <li>Design MCQs and assessments</li>
+      <li>Ensure conceptual clarity and correctness</li>
+    </ul>
+  </div>
+</div>
+
+<!-- VIDEO EDITOR -->
+<div class="modal-overlay" id="video-editor">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('video-editor')">✖</span>
+
+    <h3>Mathematics Video Editor</h3>
+
+    <ul>
+      <li>Edit math explainer videos and shorts</li>
+      <li>Add captions, highlights, and animations</li>
+      <li>Maintain TutorDA branding</li>
+    </ul>
+  </div>
+</div>
+
+<!-- QUALITY CHECKER -->
+<div class="modal-overlay" id="quality-checker">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('quality-checker')">✖</span>
+
+    <h3>Quality Checker – Mathematics & LaTeX</h3>
+
+    <ul>
+      <li>Verify mathematical correctness</li>
+      <li>Debug and improve LaTeX files</li>
+      <li>Check assessments and solutions</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  fetch('../components/header.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('header-container').innerHTML = html);
+
+  fetch('../components/footer.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('footer-container').innerHTML = html);
+</script>
+
+</body>
+</html>
