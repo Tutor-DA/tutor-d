@@ -1,47 +1,364 @@
-<footer class="site-footer">
-  <div class="footer-content">
-    <div class="footer-column">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+  --f-orange:  #ff8c00;
+  --f-orange2: #ff6600;
+  --f-gold:    #ffd700;
+  --f-dark:    #0d0d1a;
+  --f-card:    #111122;
+  --f-text:    #e8e8ff;
+  --f-muted:   #6868a0;
+  --f-border:  rgba(255,140,0,.12);
+  --f-hover:   rgba(255,140,0,.08);
+}
+
+.tda-footer, .tda-footer * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Outer shell ── */
+.tda-footer {
+  position: relative;
+  background: var(--f-dark);
+  border-top: 1px solid var(--f-border);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Top accent line ── */
+.tda-footer::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--f-orange) 25%,
+    var(--f-gold)   50%,
+    var(--f-orange) 75%,
+    transparent 100%);
+  opacity: .6;
+}
+
+/* ── Background glow orbs ── */
+.tda-footer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 600px 300px at 15% 110%, rgba(255,140,0,.06) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 200px at 85% 120%, rgba(255,215,0,.04) 0%, transparent 70%);
+}
+
+/* ── Main grid ── */
+.tda-footer-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 40px 48px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 56px 28px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Brand column ── */
+.tda-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tda-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.tda-footer-logo img {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 0 6px rgba(255,140,0,.35));
+  transition: filter .3s;
+}
+
+.tda-footer-logo:hover img {
+  filter: drop-shadow(0 0 14px rgba(255,140,0,.75));
+}
+
+.tda-footer-logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: .06em;
+  background: linear-gradient(135deg, #fff 0%, var(--f-orange) 60%, var(--f-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tda-footer-tagline {
+  font-size: .83rem;
+  color: var(--f-muted);
+  line-height: 1.65;
+  max-width: 280px;
+}
+
+/* ── Social row ── */
+.tda-footer-social {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.tda-social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px;
+  color: var(--f-muted);
+  font-size: .78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all .2s;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.tda-social-btn:hover {
+  background: var(--f-hover);
+  border-color: var(--f-orange);
+  color: var(--f-orange);
+  transform: translateY(-1px);
+}
+
+/* ── Link columns ── */
+.tda-footer-col h4 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--f-orange);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--f-border);
+}
+
+.tda-footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tda-footer-col a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: .83rem;
+  color: var(--f-muted);
+  text-decoration: none;
+  border-radius: 7px;
+  transition: color .2s, background .2s, transform .2s;
+  margin-left: -10px;
+}
+
+.tda-footer-col a::before {
+  content: '›';
+  color: var(--f-orange);
+  font-size: .9rem;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity .2s, transform .2s;
+}
+
+.tda-footer-col a:hover {
+  color: var(--f-text);
+  background: var(--f-hover);
+  transform: translateX(3px);
+}
+
+.tda-footer-col a:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Games special pill ── */
+.tda-footer-games {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: rgba(255,140,0,.12);
+  border: 1px solid rgba(255,140,0,.30);
+  border-radius: 999px;
+  color: var(--f-orange);
+  font-size: .8rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: .04em;
+  margin-top: 8px;
+  transition: all .2s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tda-footer-games:hover {
+  background: var(--f-orange);
+  color: #000;
+  box-shadow: 0 0 20px rgba(255,140,0,.45);
+  transform: translateY(-1px);
+}
+
+/* ── Divider ── */
+.tda-footer-divider {
+  max-width: 1240px;
+  margin: 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--f-border), transparent);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Bottom bar ── */
+.tda-footer-bottom {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.tda-footer-bottom p {
+  font-size: .78rem;
+  color: var(--f-muted);
+}
+
+.tda-footer-bottom p span {
+  color: var(--f-orange);
+}
+
+.tda-footer-bottom-links {
+  display: flex;
+  gap: 20px;
+}
+
+.tda-footer-bottom-links a {
+  font-size: .75rem;
+  color: var(--f-muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.tda-footer-bottom-links a:hover { color: var(--f-orange); }
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .tda-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 32px;
+    padding: 44px 24px 40px;
+  }
+  .tda-footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .tda-footer-grid {
+    grid-template-columns: 1fr;
+    padding: 36px 20px 32px;
+    gap: 32px;
+  }
+  .tda-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 20px;
+  }
+}
+</style>
+
+<footer class="tda-footer">
+
+  <div class="tda-footer-grid">
+
+    <!-- ── Brand Column ── -->
+    <div class="tda-footer-brand">
+      <a href="/index.html" class="tda-footer-logo">
+        <img src="/assets/images/TutorDAfooter.gif" alt="TutorDA Logo" />
+        <span class="tda-footer-logo-text">TutorDA</span>
+      </a>
+      <p class="tda-footer-tagline">
+        Igniting curiosity through mathematics. Personalized learning, gamified practice, and expert mentorship — for every learner, everywhere.
+      </p>
+      <div class="tda-footer-social">
+        <a class="tda-social-btn" href="https://facebook.com/tutorda" target="_blank" rel="noopener">📘 Facebook</a>
+        <a class="tda-social-btn" href="https://instagram.com/tutorda" target="_blank" rel="noopener">📸 Instagram</a>
+        <a class="tda-social-btn" href="https://wa.me/919744048698" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <a class="tda-social-btn" href="https://www.youtube.com/@TutorDA" target="_blank" rel="noopener">▶️ YouTube</a>
+      </div>
+      <a class="tda-footer-games" href="/pages/games.html">🎮 Play Math Games</a>
+    </div>
+
+    <!-- ── Quick Links ── -->
+    <div class="tda-footer-col">
       <h4>Quick Links</h4>
       <ul>
         <li><a href="/index.html">Home</a></li>
+        <li><a href="/pages/about.html">About</a></li>
         <li><a href="/pages/courses.html">Courses</a></li>
         <li><a href="/pages/elearn.html">E-Learn</a></li>
+        <li><a href="/pages/team.html">Our Team</a></li>
         <li><a href="/pages/contact.html">Contact Us</a></li>
       </ul>
     </div>
 
-    <div class="footer-column">
+    <!-- ── Free Resources ── -->
+    <div class="tda-footer-col">
       <h4>Free Resources</h4>
       <ul>
-        <li><a href="https://www.ck12.org/student/" target="_blank">CK-12</a></li>
-        <li><a href="https://www.khanacademy.org/math" target="_blank">Khan Academy</a></li>
-        <li><a href="https://www.geogebra.org/" target="_blank">GeoGebra</a></li>
-        <li><a href="https://www.desmos.com/" target="_blank">Desmos</a></li>
+        <li><a href="https://www.ck12.org/student/" target="_blank" rel="noopener">CK-12</a></li>
+        <li><a href="https://www.khanacademy.org/math" target="_blank" rel="noopener">Khan Academy</a></li>
+        <li><a href="https://www.geogebra.org/" target="_blank" rel="noopener">GeoGebra</a></li>
+        <li><a href="https://www.desmos.com/" target="_blank" rel="noopener">Desmos</a></li>
+        <li><a href="https://libretexts.org/" target="_blank" rel="noopener">LibreTexts</a></li>
+        <li><a href="https://mathigon.org/" target="_blank" rel="noopener">Mathigon</a></li>
       </ul>
     </div>
 
-    <div class="footer-column">
-      <h4>More Tools</h4>
-      <ul>
-        <li><a href="https://libretexts.org/" target="_blank">LibreTexts</a></li>
-        <li><a href="https://mathigon.org/" target="_blank">Mathigon</a></li>
-        <li><a href="https://moodle.tutorda.org/" target="_blank">Moodle Portal</a></li>        
-        <li><a href="https://www.youtube.com/@TutorDA" target="_blank" rel="noopener">YouTube Channel</a></li>
-      </ul>
-    </div>
-
-    <div class="footer-column">
+    <!-- ── Support ── -->
+    <div class="tda-footer-col">
       <h4>Support</h4>
       <ul>
-        <li><a href="https://wa.me/919744048698" target="_blank">WhatsApp Help</a></li>
+        <li><a href="https://moodle.tutorda.org/" target="_blank" rel="noopener">Moodle Portal</a></li>
+        <li><a href="https://wa.me/919744048698" target="_blank" rel="noopener">WhatsApp Help</a></li>
         <li><a href="mailto:support@tutorda.org">Email Support</a></li>
         <li><a href="/pages/faq.html">FAQ</a></li>
         <li><a href="/pages/careers.html">Careers</a></li>
+        <li><a href="/pages/testimonials.html">Testimonials</a></li>
       </ul>
+    </div>
+
+  </div>
+
+  <div class="tda-footer-divider"></div>
+
+  <div class="tda-footer-bottom">
+    <p>&copy; 2025 <span>TutorDA</span>. All rights reserved.</p>
+    <div class="tda-footer-bottom-links">
+      <a href="/pages/about.html">About</a>
+      <a href="/pages/contact.html">Contact</a>
+      <a href="/pages/faq.html">FAQ</a>
+      <a href="mailto:support@tutorda.org">support@tutorda.org</a>
     </div>
   </div>
 
-  <div class="footer-bottom">
-    <p>&copy; 2025 TutorDA. All rights reserved.</p>
-  </div>
 </footer>
