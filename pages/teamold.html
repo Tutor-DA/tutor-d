@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+    <div id="header-container"></div>
+  <main>
+    <section class="fade-in section-flex">
+      <div class="text-content">
+        <h2>Meet Our Team</h2>
+        <p class="highlight">
+          Our educators are the heart of TutorDA — a team of passionate professionals with years of experience in teaching and mentoring students.
+        </p>
+        <p>
+          Our faculty members are alumni of top institutions and specialize in simplifying complex mathematical concepts, creating interactive learning environments, and providing personalized guidance to every learner.
+        </p>
+      </div>
+      <div class="content-image">
+        <img src="../assets/images/image4.png" alt="Student raising hand" class="featured" />
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+</body>
+</html>

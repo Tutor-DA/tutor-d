@@ -4,347 +4,314 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Careers | TutorDA</title>
-
-  <link rel="stylesheet" href="../assets/css/style.css" />
-  <link rel="stylesheet" href="../assets/css/footer.css" />
-
+  <meta name="description" content="Join TutorDA — open positions for mathematics educators, content developers, video editors, and QA analysts.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    .job-card {
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --orange:#ff8c00; --gold:#ffd700; --dark:#0d0d1a;
+      --card:#141428; --card2:#1a1a35; --text:#e8e8ff;
+      --muted:#7878a0; --border:rgba(255,140,0,.15);
     }
+    body { background:var(--dark); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; }
 
-    .job-card h3 {
-      margin-top: 0;
-      color: #222;
-    }
+    .page-main { max-width:960px; margin:0 auto; padding:64px 28px 80px; }
 
-    .job-card p {
-      color: #555;
-      margin-bottom: 14px;
-    }
+    .page-hero { text-align:center; margin-bottom:56px; }
+    .page-hero .eyebrow { font-family:'Orbitron',sans-serif; font-size:.72rem; letter-spacing:.18em; color:var(--orange); text-transform:uppercase; margin-bottom:12px; }
+    .page-hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,5vw,3rem); font-weight:900; background:linear-gradient(135deg,#fff 0%,var(--orange) 60%,var(--gold) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.15; margin-bottom:16px; }
+    .page-hero p { color:var(--muted); max-width:580px; margin:0 auto; font-size:1rem; line-height:1.7; }
 
-    .view-btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background: #ff8c00;
-      color: #fff;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-    }
+    /* Job cards */
+    .jobs-list { display:flex; flex-direction:column; gap:16px; margin-bottom:48px; }
+
+    .job-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px 28px; display:grid; grid-template-columns:auto 1fr auto; gap:20px 24px; align-items:center; transition:border-color .2s, box-shadow .2s; }
+    .job-card:hover { border-color:var(--orange); box-shadow:0 0 20px rgba(255,140,0,.12); }
+
+    .job-icon { font-size:2rem; width:52px; height:52px; background:var(--card2); border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .job-info h3 { font-family:'Orbitron',sans-serif; font-size:.88rem; color:var(--text); letter-spacing:.04em; margin-bottom:5px; }
+    .job-info p { color:var(--muted); font-size:.83rem; line-height:1.5; }
+    .job-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+    .j-tag { font-size:.65rem; padding:2px 9px; border-radius:999px; background:rgba(255,140,0,.1); color:var(--orange); border:1px solid rgba(255,140,0,.2); }
+    .j-tag.mandatory { background:rgba(239,68,68,.1); color:#f87171; border-color:rgba(239,68,68,.25); }
+
+    .view-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 20px; background:rgba(255,140,0,.1); border:1px solid rgba(255,140,0,.28); border-radius:8px; color:var(--orange); font-size:.82rem; font-weight:600; cursor:pointer; transition:all .2s; white-space:nowrap; font-family:'Poppins',sans-serif; }
+    .view-btn:hover { background:var(--orange); color:#000; }
 
     /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-    }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.82); z-index:1000; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+    .modal-overlay.open { display:flex; }
 
-    .modal-box {
-      background: #fff;
-      max-width: 760px;
-      width: 94%;
-      max-height: 85vh;
-      overflow-y: auto;
-      border-radius: 14px;
-      padding: 30px;
-      position: relative;
-      animation: slideUp 0.3s ease;
-    }
+    .modal-box { background:var(--card); border:1px solid rgba(255,140,0,.2); border-radius:20px; width:100%; max-width:640px; max-height:88vh; overflow-y:auto; padding:36px; position:relative; animation:popIn .3s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from{transform:scale(.88);opacity:0;} to{transform:scale(1);opacity:1;} }
 
-    .modal-box h3 {
-      margin-top: 0;
-      color: #222;
-    }
+    .modal-close { position:absolute; top:18px; right:20px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:1.1rem; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:sans-serif; }
+    .modal-close:hover { border-color:var(--orange); color:var(--orange); }
 
-    .modal-box ul {
-      margin-left: 18px;
-    }
+    .modal-box h2 { font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--orange); letter-spacing:.06em; margin-bottom:4px; }
+    .modal-box .m-sub { color:var(--muted); font-size:.8rem; margin-bottom:24px; }
 
-    .close-btn {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      font-size: 22px;
-      cursor: pointer;
-      color: #888;
-    }
+    .m-section { margin-bottom:20px; }
+    .m-section h3 { font-size:.78rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
+    .m-section p { color:var(--muted); font-size:.875rem; line-height:1.7; }
+    .m-section ul { list-style:none; display:flex; flex-direction:column; gap:7px; }
+    .m-section li { display:flex; align-items:flex-start; gap:9px; font-size:.875rem; color:var(--muted); line-height:1.55; }
+    .m-section li::before { content:'›'; color:var(--orange); font-size:1rem; flex-shrink:0; }
+    .m-section li strong { color:var(--text); }
 
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .m-apply { background:var(--card2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:24px; }
+    .m-apply h3 { color:var(--orange); font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
+    .m-apply a { color:var(--orange); text-decoration:none; font-weight:600; }
+    .m-apply a:hover { text-decoration:underline; }
+    .m-apply p { color:var(--muted); font-size:.85rem; line-height:1.65; }
+    .work-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.2); border-radius:999px; font-size:.72rem; color:#4ade80; font-weight:600; margin-bottom:12px; }
+
+    #backToTop { position:fixed; bottom:24px; right:24px; background:var(--card); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; z-index:500; }
+    #backToTop:hover { border-color:var(--orange); }
+
+    @media (max-width:640px) {
+      .job-card { grid-template-columns:auto 1fr; }
+      .view-btn { grid-column:1/-1; width:100%; justify-content:center; }
+      .page-main { padding:44px 18px 60px; }
+      .modal-box { padding:24px 18px; }
     }
   </style>
 </head>
-
 <body>
-
 <div id="header-container"></div>
 
-<main>
-  <section class="fade-in section-flex">
-    <div class="text-content">
+<main class="page-main">
 
-      <h2>Careers at TutorDA</h2>
-      <p>
-        TutorDA.org is building a high-quality digital mathematics learning ecosystem.
-        We invite skilled professionals passionate about mathematics, technology,
-        and education to join our academic content team.
-      </p>
+  <div class="page-hero">
+    <div class="eyebrow">Work With Us</div>
+    <h1>Careers at TutorDA</h1>
+    <p>We're building a high-quality digital mathematics learning ecosystem. Join our team of educators, developers, and creators.</p>
+  </div>
 
-      <!-- ================= COURSE DEVELOPER ================= -->
-      <div class="job-card">
+  <div class="jobs-list">
+
+    <!-- Course Developer -->
+    <div class="job-card">
+      <div class="job-icon">📚</div>
+      <div class="job-info">
         <h3>Course Developer</h3>
-        <p>Design and deploy structured math courses using MOODLE and LaTeX.</p>
-        <span class="view-btn" onclick="openModal('course-dev')">
-          View Job Description
-        </span>
+        <p>Design and deploy structured mathematics courses using Moodle LMS and LaTeX.</p>
+        <div class="job-tags">
+          <span class="j-tag mandatory">Moodle MANDATORY</span>
+          <span class="j-tag mandatory">LaTeX MANDATORY</span>
+          <span class="j-tag">Remote</span>
+        </div>
       </div>
-
-      <!-- ================= CONTENT DEVELOPER ================= -->
-      <div class="job-card">
-        <h3>Content Developer</h3>
-        <p>Create clear math lessons, examples, and assessments.</p>
-        <span class="view-btn" onclick="openModal('content-dev')">
-          View Job Description
-        </span>
-      </div>
-
-      <!-- ================= VIDEO EDITOR ================= -->
-      <div class="job-card">
-        <h3>Video Editor</h3>
-        <p>Edit educational math videos, reels, and YouTube Shorts.</p>
-        <span class="view-btn" onclick="openModal('video-editor')">
-          View Job Description
-        </span>
-      </div>
-
-      <!-- ================= QUALITY CHECKER ================= -->
-      <div class="job-card">
-        <h3>QA Analyst</h3>
-        <p>Ensure the Quality and Verify math accuracy and debug LaTeX content.</p>
-        <span class="view-btn" onclick="openModal('quality-checker')">
-          View Job Description
-        </span>
-      </div>
-
+      <button class="view-btn" onclick="openModal('course-dev')">View JD →</button>
     </div>
-  </section>
+
+    <!-- Content Developer -->
+    <div class="job-card">
+      <div class="job-icon">✏️</div>
+      <div class="job-info">
+        <h3>Content Developer</h3>
+        <p>Create clear, structured mathematics lessons, worked examples, and assessments.</p>
+        <div class="job-tags">
+          <span class="j-tag">Strong Math Background</span>
+          <span class="j-tag">Remote</span>
+          <span class="j-tag">Freelance</span>
+        </div>
+      </div>
+      <button class="view-btn" onclick="openModal('content-dev')">View JD →</button>
+    </div>
+
+    <!-- Video Editor -->
+    <div class="job-card">
+      <div class="job-icon">🎬</div>
+      <div class="job-info">
+        <h3>Video Editor</h3>
+        <p>Edit educational mathematics videos, YouTube Shorts, and tutorial reels.</p>
+        <div class="job-tags">
+          <span class="j-tag">CapCut / Premiere</span>
+          <span class="j-tag">Remote</span>
+          <span class="j-tag">Project-based</span>
+        </div>
+      </div>
+      <button class="view-btn" onclick="openModal('video-editor')">View JD →</button>
+    </div>
+
+    <!-- QA Analyst -->
+    <div class="job-card">
+      <div class="job-icon">🔍</div>
+      <div class="job-info">
+        <h3>QA Analyst</h3>
+        <p>Ensure mathematical accuracy and debug LaTeX content for publication-ready quality.</p>
+        <div class="job-tags">
+          <span class="j-tag mandatory">LaTeX MANDATORY</span>
+          <span class="j-tag">Strong Math</span>
+          <span class="j-tag">Remote</span>
+        </div>
+      </div>
+      <button class="view-btn" onclick="openModal('qa')">View JD →</button>
+    </div>
+
+  </div>
+
 </main>
 
+<!-- ═══ MODALS ═══ -->
+
+<!-- Course Developer -->
+<div class="modal-overlay" id="modal-course-dev">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('course-dev')">✕</button>
+    <h2>Course Developer – Mathematics</h2>
+    <p class="m-sub">Design, structure, and deploy mathematics courses on TutorDA's platform.</p>
+    <div class="work-badge">🌐 Remote / Part-time / Freelance</div>
+    <div class="m-section">
+      <h3>Key Responsibilities</h3>
+      <ul>
+        <li>Design end-to-end math courses for school &amp; university levels</li>
+        <li>Create lessons, quizzes, question banks, and assessments in <strong>Moodle</strong></li>
+        <li>Develop academic content using <strong>LaTeX</strong> (notes, exams, MCQs)</li>
+        <li>Configure Moodle quizzes, grading, and course activities</li>
+        <li>Ensure syllabus alignment and clear learning outcomes</li>
+      </ul>
+    </div>
+    <div class="m-section">
+      <h3>Mandatory Requirements</h3>
+      <ul>
+        <li><strong>Strong Mathematics background</strong></li>
+        <li><strong>Hands-on Moodle LMS experience (MANDATORY)</strong></li>
+        <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
+        <li>Ability to debug and edit LaTeX files</li>
+      </ul>
+    </div>
+    <div class="m-apply">
+      <h3>How to Apply</h3>
+      <p>Email: <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>Subject: <em>Application – Course Developer – TutorDA</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- Content Developer -->
+<div class="modal-overlay" id="modal-content-dev">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('content-dev')">✕</button>
+    <h2>Mathematics Content Developer</h2>
+    <p class="m-sub">Create concept-driven, accurate mathematics learning content for TutorDA.</p>
+    <div class="work-badge">🌐 Remote / Part-time / Freelance</div>
+    <div class="m-section">
+      <h3>Key Responsibilities</h3>
+      <ul>
+        <li>Develop structured lessons aligned with school/university syllabi</li>
+        <li>Create worked examples, practice problems, and assessments</li>
+        <li>Design MCQs, short-answer, and descriptive questions</li>
+        <li>Ensure conceptual correctness and logical progression</li>
+        <li>Collaborate with Course Developers and Video Editors</li>
+      </ul>
+    </div>
+    <div class="m-section">
+      <h3>Requirements</h3>
+      <ul>
+        <li><strong>Strong Mathematics foundation</strong> (UG/PG level)</li>
+        <li>Ability to explain mathematics clearly and systematically</li>
+        <li>Experience in academic content development or teaching (preferred)</li>
+        <li>Basic LaTeX knowledge (preferred)</li>
+      </ul>
+    </div>
+    <div class="m-apply">
+      <h3>How to Apply</h3>
+      <p>Email: <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>Subject: <em>Application – Mathematics Content Developer – TutorDA</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- Video Editor -->
+<div class="modal-overlay" id="modal-video-editor">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('video-editor')">✕</button>
+    <h2>Mathematics Video Editor</h2>
+    <p class="m-sub">Transform academic math content into engaging educational videos.</p>
+    <div class="work-badge">🌐 Remote / Freelance / Project-based</div>
+    <div class="m-section">
+      <h3>Key Responsibilities</h3>
+      <ul>
+        <li>Edit math explainer videos, tutorials, and YouTube Shorts</li>
+        <li>Synchronise visuals with mathematical explanations accurately</li>
+        <li>Add captions, highlights, animations, and transitions</li>
+        <li>Maintain TutorDA branding (colors, fonts, layout)</li>
+        <li>Optimise for vertical (9:16) and standard formats</li>
+      </ul>
+    </div>
+    <div class="m-section">
+      <h3>Requirements</h3>
+      <ul>
+        <li><strong>Proficiency in CapCut / Premiere Pro / DaVinci Resolve</strong></li>
+        <li>Ability to handle screen-recorded math content</li>
+        <li>Good pacing sense for educational videos</li>
+        <li>Familiarity with OBS screen recordings (preferred)</li>
+      </ul>
+    </div>
+    <div class="m-apply">
+      <h3>How to Apply</h3>
+      <p>Email: <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>Subject: <em>Application – Mathematics Video Editor – TutorDA</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- QA Analyst -->
+<div class="modal-overlay" id="modal-qa">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('qa')">✕</button>
+    <h2>QA Analyst – Mathematics &amp; LaTeX</h2>
+    <p class="m-sub">Ensure all content is error-free, consistent, and publication-ready.</p>
+    <div class="work-badge">🌐 Remote / Part-time / Freelance</div>
+    <div class="m-section">
+      <h3>Key Responsibilities</h3>
+      <ul>
+        <li>Review mathematical correctness of all content and solutions</li>
+        <li>Debug, edit, and optimise LaTeX source files</li>
+        <li>Ensure correct formatting of equations and symbols</li>
+        <li>Verify MCQs, answer keys, and explanations</li>
+        <li>Check alignment with syllabus and learning objectives</li>
+      </ul>
+    </div>
+    <div class="m-section">
+      <h3>Mandatory Requirements</h3>
+      <ul>
+        <li><strong>Strong Mathematics background</strong></li>
+        <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
+        <li>High attention to detail and academic rigor</li>
+        <li>Experience with exam papers or question banks (preferred)</li>
+      </ul>
+    </div>
+    <div class="m-apply">
+      <h3>How to Apply</h3>
+      <p>Email: <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>Subject: <em>Application – QA Analyst (Math &amp; LaTeX) – TutorDA</em></p>
+    </div>
+  </div>
+</div>
+
 <div id="footer-container"></div>
+<div id="backToTop">🔝</div>
 
-<!-- ================= MODALS ================= -->
-
-<!-- COURSE DEVELOPER -->
-<div class="modal-overlay" id="course-dev">
-  <div class="modal-box">
-    <span class="close-btn" onclick="closeModal('course-dev')">✖</span>
-
-    <h3>Course Developer – Mathematics</h3>
-
-    <p>
-      The Course Developer is responsible for designing, structuring,
-      and deploying mathematics courses on the TutorDA platform using
-      <strong>Moodle LMS and LaTeX</strong>.
-    </p>
-
-    <p><strong>Key Responsibilities:</strong></p>
-    <ul>
-      <li>Design end-to-end math courses (school & university level)</li>
-      <li>Create lessons, quizzes, question banks, and assessments in Moodle</li>
-      <li>Develop academic content using LaTeX (notes, exams, MCQs)</li>
-      <li>Configure Moodle quizzes, grading, and activities</li>
-      <li>Ensure syllabus alignment and learning outcomes</li>
-    </ul>
-
-    <p><strong>Mandatory Requirements:</strong></p>
-    <ul>
-      <li><strong>Strong Mathematics background</strong></li>
-      <li><strong>Hands-on Moodle LMS experience (MANDATORY)</strong></li>
-      <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
-      <li>Ability to debug and edit LaTeX files</li>
-    </ul>
-
-    <p><strong>Apply:</strong><br>
-      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
-      <em>Subject: Application – Course Developer – TutorDA</em>
-    </p>
-  </div>
-</div>
-
-<!-- CONTENT DEVELOPER -->
-<div class="modal-overlay" id="content-dev">
-  <div class="modal-box">
-    <span class="close-btn" onclick="closeModal('content-dev')">✖</span>
-
-    <h3>Mathematics Content Developer</h3>
-
-    <p>
-      The Mathematics Content Developer will be responsible for creating
-      high-quality, concept-driven mathematics learning content for TutorDA.
-      The role focuses on <strong>clarity, structure, and academic accuracy</strong>,
-      suitable for school and university learners.
-    </p>
-
-    <p><strong>Key Responsibilities:</strong></p>
-    <ul>
-      <li>Develop structured mathematics lessons aligned with syllabus</li>
-      <li>Create worked examples, practice problems, and assessments</li>
-      <li>Design MCQs, short-answer, and descriptive questions</li>
-      <li>Ensure conceptual correctness and logical progression</li>
-      <li>Collaborate with Course Developers and Video Editors</li>
-    </ul>
-
-    <p><strong>Mandatory Requirements:</strong></p>
-    <ul>
-      <li>Strong foundation in Mathematics (UG/PG level)</li>
-      <li>Excellent conceptual understanding and problem-solving skills</li>
-      <li>Ability to explain mathematics clearly and systematically</li>
-    </ul>
-
-    <p><strong>Preferred Skills:</strong></p>
-    <ul>
-      <li>Experience in academic content development or teaching</li>
-      <li>Basic knowledge of LaTeX for mathematical typing</li>
-      <li>Familiarity with CBSE / university-level curriculum</li>
-    </ul>
-
-    <p><strong>Work Mode:</strong> Remote / Part-time / Freelance</p>
-
-    <p>
-      <strong>Apply:</strong><br>
-      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
-      <em>Subject: Application – Mathematics Content Developer – TutorDA</em>
-    </p>
-  </div>
-</div>
-
-<!-- VIDEO EDITOR -->
-<div class="modal-overlay" id="video-editor">
-  <div class="modal-box">
-    <span class="close-btn" onclick="closeModal('video-editor')">✖</span>
-
-    <h3>Mathematics Video Editor</h3>
-
-    <p>
-      The Mathematics Video Editor will transform academic math content
-      into engaging educational videos for TutorDA’s digital platforms.
-      This role requires both <strong>technical video editing skills</strong>
-      and an <strong>understanding of mathematical presentation</strong>.
-    </p>
-
-    <p><strong>Key Responsibilities:</strong></p>
-    <ul>
-      <li>Edit math explainer videos, tutorials, and YouTube Shorts</li>
-      <li>Synchronize visuals with math explanations accurately</li>
-      <li>Add captions, highlights, animations, and transitions</li>
-      <li>Maintain TutorDA branding (colors, fonts, layout)</li>
-      <li>Optimize videos for vertical (9:16) and standard formats</li>
-    </ul>
-
-    <p><strong>Mandatory Requirements:</strong></p>
-    <ul>
-      <li>Proficiency in CapCut / Premiere Pro / DaVinci Resolve or similar</li>
-      <li>Ability to handle screen-recorded math content</li>
-      <li>Good sense of pacing for educational videos</li>
-    </ul>
-
-    <p><strong>Preferred Skills:</strong></p>
-    <ul>
-      <li>Experience editing educational or math-related videos</li>
-      <li>Basic understanding of mathematical notation</li>
-      <li>Familiarity with OBS screen recordings</li>
-    </ul>
-
-    <p><strong>Work Mode:</strong> Remote / Freelance / Project-based</p>
-
-    <p>
-      <strong>Apply:</strong><br>
-      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
-      <em>Subject: Application – Mathematics Video Editor – TutorDA</em>
-    </p>
-  </div>
-</div>
-
-
-<!-- QUALITY CHECKER -->
-<div class="modal-overlay" id="quality-checker">
-  <div class="modal-box">
-    <span class="close-btn" onclick="closeModal('quality-checker')">✖</span>
-
-    <h3>Quality Checker – Mathematics & LaTeX</h3>
-
-    <p>
-      The Quality Checker plays a critical role in maintaining
-      TutorDA’s academic standards. This position ensures that all
-      mathematics content and LaTeX files are
-      <strong>error-free, consistent, and publication-ready</strong>.
-    </p>
-
-    <p><strong>Key Responsibilities:</strong></p>
-    <ul>
-      <li>Review mathematical correctness of content and solutions</li>
-      <li>Debug, edit, and optimize LaTeX source files</li>
-      <li>Ensure correct formatting of equations and symbols</li>
-      <li>Verify MCQs, answer keys, and explanations</li>
-      <li>Check alignment with syllabus and learning objectives</li>
-    </ul>
-
-    <p><strong>Mandatory Requirements:</strong></p>
-    <ul>
-      <li>Strong Mathematics background</li>
-      <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
-      <li>Ability to identify conceptual, logical, and formatting errors</li>
-      <li>High attention to detail and academic rigor</li>
-    </ul>
-
-    <p><strong>Preferred Skills:</strong></p>
-    <ul>
-      <li>Experience with exam papers or question banks</li>
-      <li>Familiarity with Moodle or LMS content</li>
-      <li>Experience in academic publishing</li>
-    </ul>
-
-    <p><strong>Work Mode:</strong> Remote / Part-time / Freelance</p>
-
-    <p>
-      <strong>Apply:</strong><br>
-      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
-      <em>Subject: Application – Quality Checker (Math & LaTeX) – TutorDA</em>
-    </p>
-  </div>
-</div>
-
-
-<!-- ================= SCRIPTS ================= -->
 <script>
+  fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+  fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
   function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
+    document.getElementById('modal-'+id).classList.add('open');
+    document.body.style.overflow='hidden';
   }
-
   function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
+    document.getElementById('modal-'+id).classList.remove('open');
+    document.body.style.overflow='';
   }
+  // Close on backdrop click
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', function(e) { if(e.target===this) closeModal(this.id.replace('modal-','')); });
+  });
 
-  fetch('../components/header.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('header-container').innerHTML = html);
-
-  fetch('../components/footer.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('footer-container').innerHTML = html);
+  const btt=document.getElementById('backToTop');
+  window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'flex':'none');
+  btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 </script>
-
 </body>
 </html>

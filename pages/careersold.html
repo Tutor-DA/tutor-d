@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Careers | TutorDA</title>
+
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/footer.css" />
+
+  <style>
+    .job-card {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+
+    .job-card h3 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    .job-card p {
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    .view-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #ff8c00;
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #fff;
+      max-width: 760px;
+      width: 94%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: 14px;
+      padding: 30px;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal-box h3 {
+      margin-top: 0;
+      color: #222;
+    }
+
+    .modal-box ul {
+      margin-left: 18px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="header-container"></div>
+
+<main>
+  <section class="fade-in section-flex">
+    <div class="text-content">
+
+      <h2>Careers at TutorDA</h2>
+      <p>
+        TutorDA.org is building a high-quality digital mathematics learning ecosystem.
+        We invite skilled professionals passionate about mathematics, technology,
+        and education to join our academic content team.
+      </p>
+
+      <!-- ================= COURSE DEVELOPER ================= -->
+      <div class="job-card">
+        <h3>Course Developer</h3>
+        <p>Design and deploy structured math courses using MOODLE and LaTeX.</p>
+        <span class="view-btn" onclick="openModal('course-dev')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= CONTENT DEVELOPER ================= -->
+      <div class="job-card">
+        <h3>Content Developer</h3>
+        <p>Create clear math lessons, examples, and assessments.</p>
+        <span class="view-btn" onclick="openModal('content-dev')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= VIDEO EDITOR ================= -->
+      <div class="job-card">
+        <h3>Video Editor</h3>
+        <p>Edit educational math videos, reels, and YouTube Shorts.</p>
+        <span class="view-btn" onclick="openModal('video-editor')">
+          View Job Description
+        </span>
+      </div>
+
+      <!-- ================= QUALITY CHECKER ================= -->
+      <div class="job-card">
+        <h3>QA Analyst</h3>
+        <p>Ensure the Quality and Verify math accuracy and debug LaTeX content.</p>
+        <span class="view-btn" onclick="openModal('quality-checker')">
+          View Job Description
+        </span>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="footer-container"></div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- COURSE DEVELOPER -->
+<div class="modal-overlay" id="course-dev">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('course-dev')">✖</span>
+
+    <h3>Course Developer – Mathematics</h3>
+
+    <p>
+      The Course Developer is responsible for designing, structuring,
+      and deploying mathematics courses on the TutorDA platform using
+      <strong>Moodle LMS and LaTeX</strong>.
+    </p>
+
+    <p><strong>Key Responsibilities:</strong></p>
+    <ul>
+      <li>Design end-to-end math courses (school & university level)</li>
+      <li>Create lessons, quizzes, question banks, and assessments in Moodle</li>
+      <li>Develop academic content using LaTeX (notes, exams, MCQs)</li>
+      <li>Configure Moodle quizzes, grading, and activities</li>
+      <li>Ensure syllabus alignment and learning outcomes</li>
+    </ul>
+
+    <p><strong>Mandatory Requirements:</strong></p>
+    <ul>
+      <li><strong>Strong Mathematics background</strong></li>
+      <li><strong>Hands-on Moodle LMS experience (MANDATORY)</strong></li>
+      <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
+      <li>Ability to debug and edit LaTeX files</li>
+    </ul>
+
+    <p><strong>Apply:</strong><br>
+      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
+      <em>Subject: Application – Course Developer – TutorDA</em>
+    </p>
+  </div>
+</div>
+
+<!-- CONTENT DEVELOPER -->
+<div class="modal-overlay" id="content-dev">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('content-dev')">✖</span>
+
+    <h3>Mathematics Content Developer</h3>
+
+    <p>
+      The Mathematics Content Developer will be responsible for creating
+      high-quality, concept-driven mathematics learning content for TutorDA.
+      The role focuses on <strong>clarity, structure, and academic accuracy</strong>,
+      suitable for school and university learners.
+    </p>
+
+    <p><strong>Key Responsibilities:</strong></p>
+    <ul>
+      <li>Develop structured mathematics lessons aligned with syllabus</li>
+      <li>Create worked examples, practice problems, and assessments</li>
+      <li>Design MCQs, short-answer, and descriptive questions</li>
+      <li>Ensure conceptual correctness and logical progression</li>
+      <li>Collaborate with Course Developers and Video Editors</li>
+    </ul>
+
+    <p><strong>Mandatory Requirements:</strong></p>
+    <ul>
+      <li>Strong foundation in Mathematics (UG/PG level)</li>
+      <li>Excellent conceptual understanding and problem-solving skills</li>
+      <li>Ability to explain mathematics clearly and systematically</li>
+    </ul>
+
+    <p><strong>Preferred Skills:</strong></p>
+    <ul>
+      <li>Experience in academic content development or teaching</li>
+      <li>Basic knowledge of LaTeX for mathematical typing</li>
+      <li>Familiarity with CBSE / university-level curriculum</li>
+    </ul>
+
+    <p><strong>Work Mode:</strong> Remote / Part-time / Freelance</p>
+
+    <p>
+      <strong>Apply:</strong><br>
+      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
+      <em>Subject: Application – Mathematics Content Developer – TutorDA</em>
+    </p>
+  </div>
+</div>
+
+<!-- VIDEO EDITOR -->
+<div class="modal-overlay" id="video-editor">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('video-editor')">✖</span>
+
+    <h3>Mathematics Video Editor</h3>
+
+    <p>
+      The Mathematics Video Editor will transform academic math content
+      into engaging educational videos for TutorDA’s digital platforms.
+      This role requires both <strong>technical video editing skills</strong>
+      and an <strong>understanding of mathematical presentation</strong>.
+    </p>
+
+    <p><strong>Key Responsibilities:</strong></p>
+    <ul>
+      <li>Edit math explainer videos, tutorials, and YouTube Shorts</li>
+      <li>Synchronize visuals with math explanations accurately</li>
+      <li>Add captions, highlights, animations, and transitions</li>
+      <li>Maintain TutorDA branding (colors, fonts, layout)</li>
+      <li>Optimize videos for vertical (9:16) and standard formats</li>
+    </ul>
+
+    <p><strong>Mandatory Requirements:</strong></p>
+    <ul>
+      <li>Proficiency in CapCut / Premiere Pro / DaVinci Resolve or similar</li>
+      <li>Ability to handle screen-recorded math content</li>
+      <li>Good sense of pacing for educational videos</li>
+    </ul>
+
+    <p><strong>Preferred Skills:</strong></p>
+    <ul>
+      <li>Experience editing educational or math-related videos</li>
+      <li>Basic understanding of mathematical notation</li>
+      <li>Familiarity with OBS screen recordings</li>
+    </ul>
+
+    <p><strong>Work Mode:</strong> Remote / Freelance / Project-based</p>
+
+    <p>
+      <strong>Apply:</strong><br>
+      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
+      <em>Subject: Application – Mathematics Video Editor – TutorDA</em>
+    </p>
+  </div>
+</div>
+
+
+<!-- QUALITY CHECKER -->
+<div class="modal-overlay" id="quality-checker">
+  <div class="modal-box">
+    <span class="close-btn" onclick="closeModal('quality-checker')">✖</span>
+
+    <h3>Quality Checker – Mathematics & LaTeX</h3>
+
+    <p>
+      The Quality Checker plays a critical role in maintaining
+      TutorDA’s academic standards. This position ensures that all
+      mathematics content and LaTeX files are
+      <strong>error-free, consistent, and publication-ready</strong>.
+    </p>
+
+    <p><strong>Key Responsibilities:</strong></p>
+    <ul>
+      <li>Review mathematical correctness of content and solutions</li>
+      <li>Debug, edit, and optimize LaTeX source files</li>
+      <li>Ensure correct formatting of equations and symbols</li>
+      <li>Verify MCQs, answer keys, and explanations</li>
+      <li>Check alignment with syllabus and learning objectives</li>
+    </ul>
+
+    <p><strong>Mandatory Requirements:</strong></p>
+    <ul>
+      <li>Strong Mathematics background</li>
+      <li><strong>Good command of LaTeX (MANDATORY)</strong></li>
+      <li>Ability to identify conceptual, logical, and formatting errors</li>
+      <li>High attention to detail and academic rigor</li>
+    </ul>
+
+    <p><strong>Preferred Skills:</strong></p>
+    <ul>
+      <li>Experience with exam papers or question banks</li>
+      <li>Familiarity with Moodle or LMS content</li>
+      <li>Experience in academic publishing</li>
+    </ul>
+
+    <p><strong>Work Mode:</strong> Remote / Part-time / Freelance</p>
+
+    <p>
+      <strong>Apply:</strong><br>
+      <a href="mailto:support@tutorda.org">support@tutorda.org</a><br>
+      <em>Subject: Application – Quality Checker (Math & LaTeX) – TutorDA</em>
+    </p>
+  </div>
+</div>
+
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  fetch('../components/header.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('header-container').innerHTML = html);
+
+  fetch('../components/footer.html')
+    .then(res => res.text())
+    .then(html => document.getElementById('footer-container').innerHTML = html);
+</script>
+
+</body>
+</html>

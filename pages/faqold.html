@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main>
+    <section class="fade-in faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item">
+        <button class="faq-question">How do I enroll?</button>
+        <div class="faq-answer">
+          <p>Visit our Courses page, choose your program, and fill out the online registration form. Our team will guide you through the rest.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">What courses are available?</button>
+        <div class="faq-answer">
+          <p>We offer Algebra, Geometry, Calculus, Statistics, and exam prep for JEE, NEET, and SAT. We also cover foundational school math for CBSE and State Board syllabi.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">What support do I get?</button>
+        <div class="faq-answer">
+          <p>Access to recorded sessions, notes, regular assessments, and guidance via WhatsApp or email.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Is the learning self-paced or live?</button>
+        <div class="faq-answer">
+          <p>We blend both live sessions and self-paced modules, giving students flexibility with structure.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">How are assessments conducted?</button>
+        <div class="faq-answer">
+          <p>Through our secure platform — quizzes are randomized and auto-evaluated with feedback.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Do I need to install any software?</button>
+        <div class="faq-answer">
+          <p>No. Our portal works in any browser and is also available via the Moodle app.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Can I get personalized help?</button>
+        <div class="faq-answer">
+          <p>Yes, every student has a mentor for personal progress tracking and support.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Is TutorDA suitable for competitive exams?</button>
+        <div class="faq-answer">
+          <p>Yes! We offer structured prep for JEE, NEET, SAT with topic-wise tests and guidance.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">Are there any trial classes?</button>
+        <div class="faq-answer">
+          <p>Yes. We offer free demo sessions for new students to explore our teaching approach.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question">How do I track my progress?</button>
+        <div class="faq-answer">
+          <p>Your dashboard shows your quiz scores, attendance, topic mastery, and next steps.</p>
+        </div>
+      </div>
+  </section>
+  </main>
+
+  <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+</body>
+</html>

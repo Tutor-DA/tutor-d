@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+    <div id="header-container"></div>
+  <main>
+    <section class="fade-in section-flex">
+      <!-- Left: Text Content -->
+      <div class="text-content">
+        <p class="highlight">
+          TutorDA is committed to making mathematics accessible, engaging, and empowering. Our mission is to nurture curiosity, boost academic confidence, and prepare students for lifelong success by providing high-quality instruction led by experienced educators and supported by innovative digital tools.
+        </p>
+        <p>
+          Founded by a team of passionate educators and mathematicians, TutorDA combines the best of digital tools and traditional pedagogy to serve learners across different levels — from basic numeracy to advanced problem solving. All programs are aligned with school and college curricula, ensuring relevance and coherence. Our teachers are trained in the latest teaching and learning technologies, including ICT-based tools that enhance both classroom and online instruction. Each learning resource is peer-reviewed to ensure academic rigor and clarity. In addition, an advisory team continuously monitors content and teaching quality. Every student is also assigned a dedicated mentor who tracks academic progress, provides guidance, and supports personal growth throughout the learning journey.
+        </p>
+      </div>
+
+      <!-- Right: Image -->
+      <div class="content-image">
+        <img src="../assets/images/image4.png" alt="Teacher explaining graph" class="featured">
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+</body>
+</html>

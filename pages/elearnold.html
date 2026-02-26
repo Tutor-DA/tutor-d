@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elearn | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+    <div id="header-container"></div>
+   <main>
+    <section class="fade-in section-flex elearn-section">
+      
+      <!-- Text Section -->
+      <div class="text-content">
+        <h2>eLearning Portal at TutorDA</h2>
+        <p>
+          At <strong>TutorDA</strong>, we offer a comprehensive <strong>eLearning portal</strong> that enables students to experience flexible, engaging, and interactive learning. Designed for school and college learners, our platform supports self-paced study, real-time feedback, and personalized academic guidance—all led by experienced educators using cutting-edge digital tools.
+        </p>
+
+        <h3>🌟 Key Features</h3>
+        <ul class="features-list">
+          <li>🎓 Curriculum-aligned interactive lessons for school and college levels</li>
+          <li>🧠 Auto-graded quizzes, assignments, and instant feedback</li>
+          <li>📊 Track student progress with detailed performance analytics</li>
+          <li>📱 Mobile access through a dedicated learning app (Android & iOS)</li>
+          <li>🔗 Integrated with GeoGebra, LibreTexts, H5P, and other digital tools</li>
+          <li>👨‍🏫 Individual mentorship and progress monitoring for each learner</li>
+          <li>💬 Forums, discussion boards, and collaborative activities</li>
+          <li>🏆 Badges, certificates, and gamified engagement for motivation</li>
+        </ul>
+
+<div class="btn-container">
+          <a href="https://moodle.tutorda.org" target="_blank" class="cta-button">
+            Go to eLearning Portal
+          </a>
+        </div>
+      </div>
+      <!-- Image Section -->
+      <div class="content-image">
+        <img src="../assets/images/elearn-portal.png" alt="eLearning Experience at TutorDA" class="featured" />
+        
+      
+      </div>
+    </section>
+
+    <div class="quote-box">
+      <p>
+        "Education should be smart, accessible, and measurable — our eLearning portal at TutorDA makes this possible for every learner."
+      </p>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+</body>
+</html>

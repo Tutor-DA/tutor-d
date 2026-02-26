@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/contact.css" />
+  <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+
+  <!-- Header will be loaded dynamically -->
+  <div id="header-container"></div>
+
+  <section id="contact">
+  <h2>Contact Us</h2>
+
+  <div class="contact-grid-three">
+  <div class="form-section">
+    <form
+      action="https://formspree.io/f/mpwrqnny"
+      method="POST"
+      class="styled-contact-form"
+      id="contactForm"
+    >
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" name="email" required autocomplete="email">
+
+      <label for="message">Your Message:</label>
+      <textarea id="message" name="message" rows="5" required autocomplete="on"></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div id="thankYouMessage" style="display:none; text-align:center; margin-top:2rem; font-size:1.2rem; color:green;">
+      ✅ Thank you for reaching out! We’ll get back to you soon.
+    </div>
+  </div>
+
+  <div class="office">
+    <h4>India Office</h4>
+    <p>
+      TutorDA<br>
+      Will be Updated soon,<br>
+      
+    </p>
+
+    <h4>Gulf Office</h4>
+    <p>
+      Will be Updated soon,<br>
+    </p>
+  </div>
+
+  <div class="social">
+    <h4>Social Media Links</h4>
+    <p><a href="https://facebook.com/tutorda" target="_blank">📘 Facebook</a></p>
+    <p><a href="https://instagram.com/tutorda" target="_blank">📸 Instagram</a></p>
+    <p><a href="https://wa.me/919744048698" target="_blank">💬 WhatsApp</a></p>
+    <p><a href="tel:+919744048698">📱 Call Us</a></p>
+  </div>
+</div>
+
+  </section>
+
+  <!-- Footer and Back to Top -->
+  <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const thankYouMessage = document.getElementById('thankYouMessage');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); // prevent default submission
+    const data = new FormData(form);
+
+    fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        form.style.display = 'none';
+        thankYouMessage.style.display = 'block';
+      } else {
+        alert('Oops! There was a problem submitting your form.');
+      }
+    }).catch(error => {
+      alert('There was a problem submitting the form. Please try again.');
+    });
+  });
+</script>
+
+</body>
+</html>

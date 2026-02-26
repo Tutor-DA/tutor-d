@@ -4,47 +4,207 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Courses | TutorDA</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="stylesheet" href="../assets/css/footer.css" />
+  <meta name="description" content="Explore TutorDA's mathematics courses — from school foundations to JEE, NEET, and SAT preparation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange:#ff8c00; --gold:#ffd700; --dark:#0d0d1a;
+      --card:#141428; --card2:#1a1a35; --text:#e8e8ff;
+      --muted:#7878a0; --border:rgba(255,140,0,.15);
+      --green:#22c55e; --blue:#3b82f6; --purple:#a855f7;
+    }
+    body { background:var(--dark); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; }
+
+    .page-main { max-width:1100px; margin:0 auto; padding:64px 28px 80px; }
+
+    .page-hero { text-align:center; margin-bottom:64px; }
+    .page-hero .eyebrow { font-family:'Orbitron',sans-serif; font-size:.72rem; letter-spacing:.18em; color:var(--orange); text-transform:uppercase; margin-bottom:12px; }
+    .page-hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; background:linear-gradient(135deg,#fff 0%,var(--orange) 60%,var(--gold) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.15; margin-bottom:16px; }
+    .page-hero p { color:var(--muted); max-width:600px; margin:0 auto; font-size:1rem; line-height:1.7; }
+
+    /* Course cards */
+    .courses-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px; margin-bottom:64px; }
+
+    .course-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:28px; display:flex;
+      flex-direction:column; gap:14px;
+      transition:transform .25s, border-color .25s, box-shadow .25s;
+    }
+    .course-card:hover { transform:translateY(-4px); border-color:var(--orange); box-shadow:0 0 24px rgba(255,140,0,.2); }
+
+    .course-icon { font-size:2.2rem; }
+    .course-card h3 { font-family:'Orbitron',sans-serif; font-size:.95rem; color:var(--orange); letter-spacing:.05em; }
+    .course-card p { color:var(--muted); font-size:.875rem; line-height:1.65; flex:1; }
+
+    .course-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag {
+      font-size:.68rem; padding:3px 10px; border-radius:999px;
+      font-weight:600; letter-spacing:.04em;
+    }
+    .tag-board  { background:rgba(255,140,0,.12); color:var(--orange);  border:1px solid rgba(255,140,0,.25); }
+    .tag-level  { background:rgba(59,130,246,.12); color:#7bb8ff;       border:1px solid rgba(59,130,246,.25); }
+    .tag-exam   { background:rgba(168,85,247,.12); color:#d099ff;       border:1px solid rgba(168,85,247,.25); }
+    .tag-new    { background:rgba(34,197,94,.12);  color:#4ade80;       border:1px solid rgba(34,197,94,.25); }
+
+    .course-meta { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid rgba(255,255,255,.06); }
+    .course-meta span { font-size:.78rem; color:var(--muted); }
+
+    /* Info banner */
+    .info-banner {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:36px 40px;
+      display:grid; grid-template-columns:1fr 1fr; gap:40px;
+      align-items:center; margin-bottom:48px;
+    }
+    .info-banner h2 { font-family:'Orbitron',sans-serif; font-size:1.1rem; color:var(--gold); margin-bottom:14px; }
+    .info-banner p { color:var(--muted); font-size:.9rem; line-height:1.7; }
+    .feat-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+    .feat-list li { display:flex; align-items:flex-start; gap:10px; font-size:.88rem; color:var(--muted); line-height:1.6; }
+    .feat-list li::before { content:'◆'; color:var(--orange); font-size:.6rem; flex-shrink:0; margin-top:4px; }
+    .feat-list li strong { color:var(--text); }
+
+    .cta-row { text-align:center; margin-top:48px; }
+    .cta-btn { display:inline-flex; align-items:center; gap:10px; padding:14px 36px; background:linear-gradient(135deg,var(--orange),var(--gold)); color:#000; font-family:'Poppins',sans-serif; font-weight:700; font-size:1rem; border-radius:999px; text-decoration:none; letter-spacing:.04em; transition:opacity .2s,transform .15s,box-shadow .2s; box-shadow:0 0 24px rgba(255,140,0,.3); }
+    .cta-btn:hover { opacity:.9; transform:translateY(-2px); box-shadow:0 0 36px rgba(255,140,0,.5); }
+
+    #backToTop { position:fixed; bottom:24px; right:24px; background:var(--card); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; z-index:500; transition:border-color .2s; }
+    #backToTop:hover { border-color:var(--orange); }
+
+    @media (max-width:768px) {
+      .info-banner { grid-template-columns:1fr; gap:24px; padding:28px 24px; }
+      .page-main { padding:44px 18px 60px; }
+    }
+  </style>
 </head>
 <body>
 <div id="header-container"></div>
 
-  <main>
-    <section class="fade-in section-flex">
-      
-      <!-- Left: Course Details -->
-      <div class="text-content">
-        <h2>Courses We Offer</h2>
-        <p class="highlight">Explore a range of mathematics courses including:</p>
-        <ul class="features-list">
-          <li>Foundation Math for School Levels</li>
-          <li>Algebra, Geometry, and Trigonometry</li>
-          <li>Calculus I, II, and III</li>
-          <li>Statistics & Probability</li>
-          <li>Competitive Exams (JEE, NEET, SAT)</li>
-        </ul>
+<main class="page-main">
+
+  <div class="page-hero">
+    <div class="eyebrow">What We Teach</div>
+    <h1>Our Courses</h1>
+    <p>Curriculum-aligned mathematics programs for school, college, and competitive exam preparation — taught by expert educators.</p>
+  </div>
+
+  <div class="courses-grid">
+    <div class="course-card">
+      <div class="course-icon">🔢</div>
+      <h3>Foundation Mathematics</h3>
+      <p>Build strong numeracy and arithmetic skills. Covers number systems, basic operations, fractions, decimals, and percentages for school-level learners.</p>
+      <div class="course-tags">
+        <span class="tag tag-board">CBSE</span>
+        <span class="tag tag-board">State Board</span>
+        <span class="tag tag-level">Grades 6–8</span>
       </div>
+      <div class="course-meta"><span>📚 Self-paced + Live</span><span>⭐ Beginner</span></div>
+    </div>
 
-      <!-- Right: Image -->
-      <div class="content-image">
-        <img src="../assets/images/image1.png" alt="Student focused on math" class="featured">
+    <div class="course-card">
+      <div class="course-icon">📐</div>
+      <h3>Algebra & Geometry</h3>
+      <p>Master linear equations, polynomials, coordinate geometry, triangles, circles, and constructions with visual tools and real-world applications.</p>
+      <div class="course-tags">
+        <span class="tag tag-board">CBSE</span>
+        <span class="tag tag-board">IGCSE</span>
+        <span class="tag tag-level">Grades 8–10</span>
       </div>
-    </section>
-  </main>
+      <div class="course-meta"><span>📚 Blended</span><span>⭐ Intermediate</span></div>
+    </div>
 
- <div id="footer-container"></div>
-  <div id="backToTop">🔝</div>
+    <div class="course-card">
+      <div class="course-icon">📏</div>
+      <h3>Trigonometry</h3>
+      <p>From basic ratios to advanced identities — heights and distances, inverse functions, and applications in physics and engineering contexts.</p>
+      <div class="course-tags">
+        <span class="tag tag-board">CBSE</span>
+        <span class="tag tag-exam">JEE Prep</span>
+        <span class="tag tag-level">Grades 10–11</span>
+      </div>
+      <div class="course-meta"><span>📚 Blended</span><span>⭐⭐ Intermediate</span></div>
+    </div>
 
-  <!-- Script to load header/footer and handle toggles -->
-  <script src="../assets/js/faq-toggle.js"></script>
-  <script>
-    fetch('../components/header.html')
-      .then(res => res.text())
-      .then(html => document.getElementById('header-container').innerHTML = html);
+    <div class="course-card">
+      <div class="course-icon">∫</div>
+      <h3>Calculus I, II & III</h3>
+      <p>Limits, derivatives, integration, multivariable calculus, and differential equations. Rigorous treatment with conceptual clarity and exam strategy.</p>
+      <div class="course-tags">
+        <span class="tag tag-exam">JEE</span>
+        <span class="tag tag-board">University</span>
+        <span class="tag tag-level">Grade 12+</span>
+      </div>
+      <div class="course-meta"><span>📚 Live + Recorded</span><span>⭐⭐⭐ Advanced</span></div>
+    </div>
 
-    fetch('../components/footer.html')
-      .then(res => res.text())
-      .then(html => document.getElementById('footer-container').innerHTML = html);
-  </script>
+    <div class="course-card">
+      <div class="course-icon">📊</div>
+      <h3>Statistics & Probability</h3>
+      <p>Data interpretation, mean/median/mode, distributions, probability theory, Bayes theorem, and statistical reasoning for exams and real-world analysis.</p>
+      <div class="course-tags">
+        <span class="tag tag-exam">SAT</span>
+        <span class="tag tag-exam">NEET</span>
+        <span class="tag tag-board">CBSE</span>
+      </div>
+      <div class="course-meta"><span>📚 Self-paced</span><span>⭐⭐ Intermediate</span></div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-icon">🏆</div>
+      <h3>JEE / NEET / SAT Prep</h3>
+      <p>Structured competitive exam preparation with topic-wise tests, mock exams, time management strategies, and dedicated mentorship for top results.</p>
+      <div class="course-tags">
+        <span class="tag tag-exam">JEE Mains</span>
+        <span class="tag tag-exam">JEE Advanced</span>
+        <span class="tag tag-exam">SAT</span>
+        <span class="tag tag-new">Popular</span>
+      </div>
+      <div class="course-meta"><span>📚 Live Batches</span><span>⭐⭐⭐ Advanced</span></div>
+    </div>
+  </div>
+
+  <!-- Info Banner -->
+  <div class="info-banner">
+    <div>
+      <h2>Why Choose TutorDA Courses?</h2>
+      <p>Every course is designed by experienced educators, aligned with board curricula, and enhanced with digital tools to maximise learning outcomes.</p>
+      <ul class="feat-list">
+        <li><strong>Randomised assessments</strong> for unlimited practice without repetition</li>
+        <li><strong>Personal mentor</strong> assigned to every enrolled student</li>
+        <li><strong>WhatsApp doubt clearing</strong> with rapid response times</li>
+        <li><strong>Recorded sessions</strong> available 24/7 for revision</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Platforms Covered</h2>
+      <ul class="feat-list">
+        <li><strong>CBSE</strong> — Classes 6 to 12</li>
+        <li><strong>Tamil Nadu State Board</strong> — Full coverage</li>
+        <li><strong>IGCSE / Cambridge</strong> — International curriculum</li>
+        <li><strong>JEE Mains & Advanced</strong> — Engineering entrance</li>
+        <li><strong>NEET</strong> — Medical entrance mathematics</li>
+        <li><strong>SAT / ACT</strong> — Global university admissions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cta-row">
+    <a href="https://moodle.tutorda.org" target="_blank" class="cta-btn">🎓 Enroll on Moodle Portal →</a>
+  </div>
+
+</main>
+
+<div id="footer-container"></div>
+<div id="backToTop">🔝</div>
+
+<script>
+  fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+  fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+  const btt=document.getElementById('backToTop');
+  window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'flex':'none');
+  btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
 </html>

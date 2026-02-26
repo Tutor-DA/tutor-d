@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Courses | TutorDA</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/footer.css" />
+</head>
+<body>
+<div id="header-container"></div>
+
+  <main>
+    <section class="fade-in section-flex">
+      
+      <!-- Left: Course Details -->
+      <div class="text-content">
+        <h2>Courses We Offer</h2>
+        <p class="highlight">Explore a range of mathematics courses including:</p>
+        <ul class="features-list">
+          <li>Foundation Math for School Levels</li>
+          <li>Algebra, Geometry, and Trigonometry</li>
+          <li>Calculus I, II, and III</li>
+          <li>Statistics & Probability</li>
+          <li>Competitive Exams (JEE, NEET, SAT)</li>
+        </ul>
+      </div>
+
+      <!-- Right: Image -->
+      <div class="content-image">
+        <img src="../assets/images/image1.png" alt="Student focused on math" class="featured">
+      </div>
+    </section>
+  </main>
+
+ <div id="footer-container"></div>
+  <div id="backToTop">🔝</div>
+
+  <!-- Script to load header/footer and handle toggles -->
+  <script src="../assets/js/faq-toggle.js"></script>
+  <script>
+    fetch('../components/header.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('header-container').innerHTML = html);
+
+    fetch('../components/footer.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('footer-container').innerHTML = html);
+  </script>
+</html>
