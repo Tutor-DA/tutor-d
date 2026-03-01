@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ─── CSS Variables ─────────────────────────────────── */
     :root {
       --orange:   #ff8c00;
       --orange2:  #ff6600;
@@ -25,11 +24,12 @@
       --red:      #ef4444;
       --blue:     #3b82f6;
       --purple:   #a855f7;
+      --cyan:     #06b6d4;
+      --pink:     #ec4899;
       --radius:   14px;
       --glow:     0 0 24px rgba(255,140,0,.35);
     }
 
-    /* ─── Base Reset ─────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -39,7 +39,6 @@
       min-height: 100vh;
     }
 
-    /* ─── Starfield Background ───────────────────────────── */
     .stars {
       position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background: radial-gradient(ellipse at 20% 50%, #1a0a3d 0%, transparent 60%),
@@ -61,48 +60,44 @@
         radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,.7) 0%, transparent 100%);
     }
 
-    /* ─── Page Wrapper ───────────────────────────────────── */
     .games-wrapper { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
 
-    /* ─── Hero Banner ────────────────────────────────────── */
-    .games-hero {
-      text-align: center;
-      padding: 56px 24px 32px;
-    }
+    .games-hero { text-align: center; padding: 56px 24px 32px; }
     .games-hero .eyebrow {
       font-family: 'Orbitron', sans-serif;
       font-size: .75rem; letter-spacing: .18em;
-      color: var(--orange); text-transform: uppercase;
-      margin-bottom: 12px;
+      color: var(--orange); text-transform: uppercase; margin-bottom: 12px;
     }
     .games-hero h1 {
       font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2rem, 6vw, 3.4rem);
-      font-weight: 900;
+      font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 900;
       background: linear-gradient(135deg, #fff 0%, var(--orange) 60%, var(--gold) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       line-height: 1.15; margin-bottom: 16px;
     }
-    .games-hero p {
-      color: var(--muted); max-width: 600px; margin: 0 auto 32px;
-      font-size: 1.05rem; line-height: 1.6;
-    }
+    .games-hero p { color: var(--muted); max-width: 600px; margin: 0 auto 32px; font-size: 1.05rem; line-height: 1.6; }
 
-    /* ─── Player Bar ─────────────────────────────────────── */
+    /* Section divider */
+    .section-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px; padding-left: 4px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::after { content:''; flex:1; height:1px; background: #2a2a4a; }
+
     .player-bar {
       display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
       justify-content: center;
       background: var(--card-bg); border: 1px solid #2a2a4a;
-      border-radius: var(--radius); padding: 16px 24px;
-      margin-bottom: 36px;
+      border-radius: var(--radius); padding: 16px 24px; margin-bottom: 36px;
     }
     .player-name-section { display: flex; gap: 8px; align-items: center; }
     .player-name-section input {
       background: #0d0d1a; border: 1px solid #3a3a5a;
       color: var(--text); border-radius: 8px;
       padding: 8px 14px; font-family: 'Poppins', sans-serif;
-      font-size: .9rem; width: 160px; outline: none;
-      transition: border-color .2s;
+      font-size: .9rem; width: 160px; outline: none; transition: border-color .2s;
     }
     .player-name-section input:focus { border-color: var(--orange); }
     .player-name-section button {
@@ -116,21 +111,13 @@
     .stat-chip {
       display: flex; align-items: center; gap: 6px;
       background: #0d0d1a; border: 1px solid #2a2a4a;
-      border-radius: 999px; padding: 6px 16px;
-      font-size: .9rem;
+      border-radius: 999px; padding: 6px 16px; font-size: .9rem;
     }
     .stat-chip .label { color: var(--muted); font-size: .8rem; }
     .stat-chip .value { font-weight: 700; color: var(--orange); }
-    #xp-bar-wrap {
-      width: 100%; background: #1a1a35; border-radius: 999px;
-      height: 8px; overflow: hidden;
-    }
-    #xp-bar {
-      height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold));
-      border-radius: 999px; transition: width .6s ease;
-    }
+    #xp-bar-wrap { width: 100%; background: #1a1a35; border-radius: 999px; height: 8px; overflow: hidden; }
+    #xp-bar { height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold)); border-radius: 999px; transition: width .6s ease; }
 
-    /* ─── Games Grid ─────────────────────────────────────── */
     .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -138,19 +125,14 @@
     }
 
     .game-card {
-      background: var(--card-bg);
-      border: 1px solid #2a2a4a;
-      border-radius: var(--radius);
-      overflow: hidden;
+      background: var(--card-bg); border: 1px solid #2a2a4a;
+      border-radius: var(--radius); overflow: hidden;
       transition: transform .25s, box-shadow .25s, border-color .25s;
       display: flex; flex-direction: column;
     }
     .game-card:hover { transform: translateY(-4px); box-shadow: var(--glow); border-color: var(--orange); }
 
-    .game-card-header {
-      padding: 24px 24px 16px;
-      display: flex; align-items: flex-start; gap: 14px;
-    }
+    .game-card-header { padding: 24px 24px 16px; display: flex; align-items: flex-start; gap: 14px; }
     .game-icon {
       font-size: 2.2rem; width: 54px; height: 54px;
       display: flex; align-items: center; justify-content: center;
@@ -159,16 +141,13 @@
     .game-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
     .game-card .desc { color: var(--muted); font-size: .85rem; line-height: 1.5; }
 
-    .game-meta {
-      display: flex; gap: 8px; padding: 0 24px 16px; flex-wrap: wrap;
-    }
-    .badge-pill {
-      font-size: .72rem; padding: 3px 10px; border-radius: 999px;
-      font-weight: 600; letter-spacing: .04em;
-    }
-    .pill-xp   { background: rgba(255,140,0,.15); color: var(--orange); border: 1px solid rgba(255,140,0,.3); }
-    .pill-level{ background: rgba(59,130,246,.15); color: #7bb8ff;      border: 1px solid rgba(59,130,246,.3); }
-    .pill-topic{ background: rgba(168,85,247,.15); color: #d099ff;      border: 1px solid rgba(168,85,247,.3); }
+    .game-meta { display: flex; gap: 8px; padding: 0 24px 16px; flex-wrap: wrap; }
+    .badge-pill { font-size: .72rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; letter-spacing: .04em; }
+    .pill-xp    { background: rgba(255,140,0,.15); color: var(--orange); border: 1px solid rgba(255,140,0,.3); }
+    .pill-level { background: rgba(59,130,246,.15); color: #7bb8ff;      border: 1px solid rgba(59,130,246,.3); }
+    .pill-topic { background: rgba(168,85,247,.15); color: #d099ff;      border: 1px solid rgba(168,85,247,.3); }
+    .pill-new   { background: rgba(34,197,94,.2);   color: #4ade80;      border: 1px solid rgba(34,197,94,.4); animation: pulse-new 2s infinite; }
+    @keyframes pulse-new { 0%,100%{opacity:1} 50%{opacity:.6} }
 
     .game-card-body { padding: 0 24px 24px; flex: 1; display: flex; flex-direction: column; }
 
@@ -184,28 +163,22 @@
     .play-btn:hover { opacity: .9; transform: scale(1.02); }
     .play-btn:active { transform: scale(.98); }
 
-    /* ─── Modal Overlay ──────────────────────────────────── */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.85); z-index: 1000;
-      align-items: center; justify-content: center;
-      padding: 16px;
+      align-items: center; justify-content: center; padding: 16px;
     }
     .modal-overlay.open { display: flex; }
 
     .modal-box {
-      background: var(--card-bg);
-      border: 1px solid #3a3a5a;
-      border-radius: 18px;
-      width: 100%; max-width: 520px;
+      background: var(--card-bg); border: 1px solid #3a3a5a;
+      border-radius: 18px; width: 100%; max-width: 520px;
       max-height: 90vh; overflow-y: auto;
       padding: 32px; position: relative;
       animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
     }
-    @keyframes popIn {
-      from { transform: scale(.85); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
-    }
+    @keyframes popIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
     .modal-close {
       position: absolute; top: 16px; right: 20px;
       background: none; border: none; color: var(--muted);
@@ -213,17 +186,10 @@
     }
     .modal-close:hover { color: var(--text); }
 
-    .modal-box h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.3rem; margin-bottom: 6px;
-      color: var(--orange);
-    }
+    .modal-box h2 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 6px; color: var(--orange); }
     .modal-box .subtitle { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
 
-    /* ─── Game Shared UI ─────────────────────────────────── */
-    .game-score-row {
-      display: flex; justify-content: space-between; margin-bottom: 18px;
-    }
+    .game-score-row { display: flex; justify-content: space-between; margin-bottom: 18px; }
     .score-item { text-align: center; }
     .score-item .s-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
     .score-item .s-val { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); }
@@ -237,8 +203,7 @@
     .question-text {
       font-family: 'Orbitron', sans-serif;
       font-size: clamp(1.4rem, 5vw, 2.2rem);
-      font-weight: 700; color: #fff;
-      letter-spacing: .05em;
+      font-weight: 700; color: #fff; letter-spacing: .05em;
     }
 
     .answer-input {
@@ -247,8 +212,7 @@
       border-radius: 10px; padding: 12px 16px;
       font-family: 'Orbitron', sans-serif;
       font-size: 1.3rem; text-align: center;
-      outline: none; margin-bottom: 14px;
-      transition: border-color .2s;
+      outline: none; margin-bottom: 14px; transition: border-color .2s;
     }
     .answer-input:focus { border-color: var(--orange); }
     .answer-input.correct { border-color: var(--green); background: rgba(34,197,94,.08); }
@@ -262,17 +226,13 @@
       background: #1a1a35; border: 2px solid #2a2a4a;
       color: var(--text); border-radius: 10px;
       padding: 14px; font-family: 'Poppins', sans-serif;
-      font-size: 1rem; font-weight: 600; cursor: pointer;
-      transition: all .15s;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .15s;
     }
     .opt-btn:hover { border-color: var(--orange); color: var(--orange); }
     .opt-btn.correct { border-color: var(--green); background: rgba(34,197,94,.15); color: var(--green); }
     .opt-btn.wrong   { border-color: var(--red);   background: rgba(239,68,68,.1);  color: var(--red); }
 
-    .feedback-msg {
-      text-align: center; font-weight: 700; font-size: 1.05rem;
-      min-height: 28px; margin-bottom: 8px; border-radius: 8px; padding: 4px;
-    }
+    .feedback-msg { text-align: center; font-weight: 700; font-size: 1.05rem; min-height: 28px; margin-bottom: 8px; border-radius: 8px; padding: 4px; }
     .feedback-msg.ok  { color: var(--green); }
     .feedback-msg.bad { color: var(--red); }
 
@@ -286,9 +246,7 @@
     .action-btn:hover { opacity: .9; }
     .action-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-    .result-screen {
-      display: none; text-align: center; padding: 12px 0;
-    }
+    .result-screen { display: none; text-align: center; padding: 12px 0; }
     .result-screen.show { display: block; }
     .result-emoji { font-size: 3.5rem; margin-bottom: 10px; }
     .result-title { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 900; color: var(--gold); }
@@ -300,49 +258,29 @@
       padding: 8px 24px; border-radius: 999px; margin-bottom: 20px;
     }
 
-    /* Progress bar inside modal */
-    .progress-track {
-      background: #1a1a35; border-radius: 999px; height: 6px;
-      margin-bottom: 20px; overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold));
-      border-radius: 999px; transition: width .4s;
-    }
+    .progress-track { background: #1a1a35; border-radius: 999px; height: 6px; margin-bottom: 20px; overflow: hidden; }
+    .progress-fill  { height: 100%; background: linear-gradient(90deg, var(--orange), var(--gold)); border-radius: 999px; transition: width .4s; }
 
-    /* ─── Difficulty Selector ────────────────────────────── */
-    .diff-select {
-      display: flex; gap: 8px; justify-content: center; margin-bottom: 18px;
-    }
+    .diff-select { display: flex; gap: 8px; justify-content: center; margin-bottom: 18px; }
     .diff-btn {
       padding: 7px 18px; border-radius: 999px;
       border: 2px solid #2a2a4a; background: transparent;
       color: var(--muted); font-family: 'Poppins', sans-serif;
-      font-size: .85rem; font-weight: 600; cursor: pointer;
-      transition: all .15s;
+      font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .15s;
     }
     .diff-btn.active, .diff-btn:hover { border-color: var(--orange); color: var(--orange); background: rgba(255,140,0,.1); }
 
-    /* ─── Leaderboard ────────────────────────────────────── */
     .leaderboard-section {
       background: var(--card-bg); border: 1px solid #2a2a4a;
       border-radius: var(--radius); padding: 28px; margin-bottom: 36px;
     }
     .leaderboard-section h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem; color: var(--gold); margin-bottom: 20px;
-      display: flex; align-items: center; gap: 10px;
+      font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--gold);
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
     }
     .lb-table { width: 100%; border-collapse: collapse; }
-    .lb-table th {
-      text-align: left; color: var(--muted); font-size: .78rem;
-      text-transform: uppercase; letter-spacing: .1em;
-      padding: 8px 12px; border-bottom: 1px solid #2a2a4a;
-    }
-    .lb-table td {
-      padding: 10px 12px; font-size: .9rem;
-      border-bottom: 1px solid #1a1a2e;
-    }
+    .lb-table th { text-align: left; color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; padding: 8px 12px; border-bottom: 1px solid #2a2a4a; }
+    .lb-table td { padding: 10px 12px; font-size: .9rem; border-bottom: 1px solid #1a1a2e; }
     .lb-table tr:last-child td { border-bottom: none; }
     .lb-rank { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--muted); }
     .lb-rank.gold   { color: var(--gold); }
@@ -351,94 +289,128 @@
     .lb-xp { color: var(--orange); font-weight: 700; }
     .lb-empty { color: var(--muted); text-align: center; padding: 24px; }
 
-    /* ─── Badges Section ─────────────────────────────────── */
     .badges-section {
       background: var(--card-bg); border: 1px solid #2a2a4a;
       border-radius: var(--radius); padding: 28px;
     }
     .badges-section h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem; color: var(--purple); margin-bottom: 20px;
-      display: flex; align-items: center; gap: 10px;
+      font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--purple);
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
     }
-    .badges-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 14px;
-    }
-    .badge-card {
-      background: #0d0d1a; border: 1px solid #2a2a4a;
-      border-radius: 12px; padding: 18px 12px;
-      text-align: center; transition: all .2s;
-    }
+    .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; }
+    .badge-card { background: #0d0d1a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 18px 12px; text-align: center; transition: all .2s; }
     .badge-card.unlocked { border-color: var(--gold); background: rgba(255,215,0,.05); }
     .badge-card .badge-emoji { font-size: 2.2rem; margin-bottom: 6px; }
     .badge-card .badge-name { font-size: .75rem; font-weight: 600; color: var(--muted); }
     .badge-card.unlocked .badge-name { color: var(--gold); }
     .badge-card.locked .badge-emoji { filter: grayscale(1) opacity(.35); }
 
-    /* ─── Toast Notifications ────────────────────────────── */
-    #toast-container {
-      position: fixed; bottom: 24px; right: 24px;
-      z-index: 9999; display: flex; flex-direction: column; gap: 10px;
-    }
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
     .toast {
       background: var(--card-bg); border: 1px solid #3a3a5a;
       border-radius: 10px; padding: 12px 20px;
       color: var(--text); font-size: .9rem;
       animation: slideIn .3s ease, slideOut .3s ease 2.7s forwards;
-      display: flex; align-items: center; gap: 10px;
-      max-width: 300px;
+      display: flex; align-items: center; gap: 10px; max-width: 300px;
     }
     @keyframes slideIn  { from { transform: translateX(120%); opacity: 0; } to { transform: none; opacity: 1; } }
     @keyframes slideOut { to   { transform: translateX(120%); opacity: 0; } }
 
-    /* ─── Responsive ─────────────────────────────────────── */
     @media (max-width: 540px) {
       .modal-box { padding: 22px 18px; }
       .answer-opts { grid-template-columns: 1fr; }
       .games-grid { grid-template-columns: 1fr; }
     }
 
-    /* ─── Number Guesser Specific ────────────────────────── */
-    .guess-hint {
-      background: #1a1a35; border-radius: 10px; padding: 14px;
-      text-align: center; margin-bottom: 14px; min-height: 50px;
-      font-size: 1rem; color: var(--muted);
-    }
+    .guess-hint { background: #1a1a35; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 14px; min-height: 50px; font-size: 1rem; color: var(--muted); }
     .guess-history { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .guess-chip {
-      padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600;
-    }
+    .guess-chip { padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
     .guess-chip.high  { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
     .guess-chip.low   { background: rgba(59,130,246,.15); color: #7bb8ff; border: 1px solid rgba(59,130,246,.3); }
     .guess-chip.exact { background: rgba(34,197,94,.15);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
 
-    /* Fraction specific */
-    .fraction-display {
-      display: flex; align-items: center; justify-content: center;
-      gap: 24px; font-size: 2.2rem; font-weight: 900;
-    }
+    .fraction-display { display: flex; align-items: center; justify-content: center; gap: 24px; font-size: 2.2rem; font-weight: 900; }
     .frac { display: inline-flex; flex-direction: column; align-items: center; }
     .frac span { display: block; font-family: 'Orbitron', sans-serif; line-height: 1.1; }
     .frac .line { width: 100%; height: 3px; background: currentColor; margin: 3px 0; border-radius: 2px; }
 
-    /* Prime hunter */
-    .number-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr);
-      gap: 8px; margin-bottom: 14px;
-    }
+    .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
     .num-tile {
       aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
       background: #1a1a35; border: 2px solid #2a2a4a;
       border-radius: 10px; font-family: 'Orbitron', sans-serif;
-      font-weight: 700; font-size: 1rem; cursor: pointer;
-      transition: all .15s; user-select: none;
+      font-weight: 700; font-size: 1rem; cursor: pointer; transition: all .15s; user-select: none;
     }
     .num-tile:hover { border-color: var(--orange); color: var(--orange); }
-    .num-tile.selected-prime { border-color: var(--green); background: rgba(34,197,94,.15); color: var(--green); }
-    .num-tile.selected-wrong { border-color: var(--red); background: rgba(239,68,68,.1); color: var(--red); }
-    .num-tile.revealed-prime { border-color: var(--gold); background: rgba(255,215,0,.1); color: var(--gold); }
+    .num-tile.selected-prime  { border-color: var(--green); background: rgba(34,197,94,.15); color: var(--green); }
+    .num-tile.selected-wrong  { border-color: var(--red); background: rgba(239,68,68,.1); color: var(--red); }
+    .num-tile.revealed-prime  { border-color: var(--gold); background: rgba(255,215,0,.1); color: var(--gold); }
+    .num-tile.selected-square { border-color: var(--cyan); background: rgba(6,182,212,.15); color: var(--cyan); }
+    .num-tile.revealed-square { border-color: var(--gold); background: rgba(255,215,0,.08); color: var(--gold); }
+
+    /* ── Memory Grid ── */
+    .memory-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 14px;
+    }
+    .mem-card {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1a1a35, #0d0d1a);
+      border: 2px solid #2a2a4a; border-radius: 10px;
+      font-family: 'Orbitron', sans-serif; font-weight: 700;
+      font-size: .85rem; cursor: pointer; transition: all .2s;
+      color: transparent; user-select: none; position: relative; overflow: hidden;
+    }
+    .mem-card::before {
+      content: '?'; position: absolute; color: var(--muted);
+      font-size: 1.2rem; transition: opacity .2s;
+    }
+    .mem-card.flipped::before { opacity: 0; }
+    .mem-card.flipped { color: var(--text); border-color: var(--orange); background: #1a1a3d; }
+    .mem-card.matched { color: var(--green); border-color: var(--green); background: rgba(34,197,94,.08); cursor: default; }
+    .mem-card.matched::before { opacity: 0; }
+
+    /* ── Integer display ── */
+    .int-expr {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.2rem, 4vw, 1.9rem);
+      font-weight: 700; color: #fff; letter-spacing: .04em;
+      text-align: center;
+    }
+    .neg { color: #f87171; }
+    .pos { color: #7bb8ff; }
+
+    /* ── Percentage bar display ── */
+    .pct-visual {
+      background: #0d0d1a; border-radius: 10px; padding: 16px;
+      margin-bottom: 16px; text-align: center;
+    }
+    .pct-bar-wrap { background: #1a1a35; border-radius: 999px; height: 14px; overflow: hidden; margin: 10px 0 6px; }
+    .pct-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--cyan), var(--blue)); transition: width 1s ease; }
+    .pct-label { font-size: .8rem; color: var(--muted); }
+
+    /* ── BODMAS highlight ── */
+    .bodmas-expr {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      font-weight: 700; color: #fff;
+      letter-spacing: .04em; text-align: center; line-height: 1.4;
+    }
+    .bracket-col { color: var(--gold); }
+    .op-col { color: var(--orange); }
+
+    /* ── Memory info row ── */
+    .mem-info { display: flex; justify-content: space-between; margin-bottom: 14px; }
+    .mem-stat { text-align: center; }
+    .mem-stat .ms-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; }
+    .mem-stat .ms-val { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--cyan); }
+
+    /* New badge for new games */
+    .badge-new-tag {
+      font-size: .6rem; background: var(--green); color: #000;
+      font-weight: 800; padding: 1px 6px; border-radius: 4px;
+      vertical-align: middle; margin-left: 4px;
+    }
   </style>
 </head>
 
@@ -448,14 +420,13 @@
 
 <div class="games-wrapper">
 
-  <!-- ─── Hero ────────────────────────────────────────── -->
   <div class="games-hero">
     <div class="eyebrow">🎮 TutorDA Interactive</div>
     <h1>Math Games Hub</h1>
     <p>Play, compete, and level up your skills. Earn XP and badges across arithmetic, fractions, algebra, primes, and more.</p>
   </div>
 
-  <!-- ─── Player Bar ───────────────────────────────────── -->
+  <!-- Player Bar -->
   <div class="player-bar">
     <div class="player-name-section">
       <input type="text" id="player-name-input" placeholder="Enter your name…" maxlength="20">
@@ -470,7 +441,8 @@
     </div>
   </div>
 
-  <!-- ─── Game Cards Grid ──────────────────────────────── -->
+  <!-- ═══ Games Grid ═══ -->
+  <div class="section-label">Classic Games</div>
   <div class="games-grid">
 
     <!-- 1. Math Sprint -->
@@ -587,24 +559,146 @@
       </div>
     </div>
 
-  </div><!-- /games-grid -->
+  </div><!-- /classic games-grid -->
 
-  <!-- ─── Leaderboard ───────────────────────────────────── -->
+  <!-- ═══ NEW Games ═══ -->
+  <div class="section-label" style="color:var(--green);">✦ New Games</div>
+  <div class="games-grid">
+
+    <!-- 7. Percentage Blitz -->
+    <div class="game-card" style="border-color:#1a3a3a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(6,182,212,.15); color:var(--cyan);">%</div>
+        <div>
+          <h3>Percentage Blitz <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Calculate percentages of numbers fast! MCQ format — can you get 10 in a row?</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+12 XP / correct</span>
+        <span class="badge-pill pill-level">Intermediate</span>
+        <span class="badge-pill pill-topic">Percentages</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('pct')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 8. BODMAS Battle -->
+    <div class="game-card" style="border-color:#3a2a1a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(255,215,0,.12); color:var(--gold);">🧮</div>
+        <div>
+          <h3>BODMAS Battle <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Evaluate expressions with mixed operations and brackets. Order of operations matters!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+15 XP / correct</span>
+        <span class="badge-pill pill-level">Intermediate</span>
+        <span class="badge-pill pill-topic">Order of Ops</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('bodmas')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 9. Integer Invaders -->
+    <div class="game-card" style="border-color:#2a1a3a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(236,72,153,.15); color:var(--pink);">±</div>
+        <div>
+          <h3>Integer Invaders <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Battle with negative and positive numbers. Survive 10 rounds of signed arithmetic!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+10 XP / correct</span>
+        <span class="badge-pill pill-level">Beginner</span>
+        <span class="badge-pill pill-topic">Integers</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('integer')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 10. Square Root Rush -->
+    <div class="game-card" style="border-color:#1a2a3a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(59,130,246,.15); color:#7bb8ff;">√</div>
+        <div>
+          <h3>Square Root Rush <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Spot all perfect squares in the grid before time runs out. Test your number sense!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+20 XP / round</span>
+        <span class="badge-pill pill-level">Advanced</span>
+        <span class="badge-pill pill-topic">Number Theory</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('sqroot')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 11. Math Memory Match -->
+    <div class="game-card" style="border-color:#1a3a2a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(168,85,247,.15); color:#d099ff;">🃏</div>
+        <div>
+          <h3>Math Memory Match <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Flip cards and match each math problem with its answer. Train memory and arithmetic together!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+30 XP / win</span>
+        <span class="badge-pill pill-level">All Levels</span>
+        <span class="badge-pill pill-topic">Memory</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('memory')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 12. Speed Division -->
+    <div class="game-card" style="border-color:#3a1a1a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(239,68,68,.12); color:#f87171;">÷</div>
+        <div>
+          <h3>Speed Division <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">How fast can you divide? Timed MCQ rounds across divisibility and exact division challenges.</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+10 XP / correct</span>
+        <span class="badge-pill pill-level">All Levels</span>
+        <span class="badge-pill pill-topic">Division</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('division')">▶ Play Now</button>
+      </div>
+    </div>
+
+  </div><!-- /new games-grid -->
+
+  <!-- Leaderboard -->
   <div class="leaderboard-section">
     <h2>🏆 Leaderboard</h2>
     <table class="lb-table">
-      <thead>
-        <tr>
-          <th>#</th><th>Player</th><th>Level</th><th>XP</th>
-        </tr>
-      </thead>
+      <thead><tr><th>#</th><th>Player</th><th>Level</th><th>XP</th></tr></thead>
       <tbody id="lb-body">
         <tr><td colspan="4" class="lb-empty">No scores yet — be the first to play!</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- ─── Badges ────────────────────────────────────────── -->
+  <!-- Badges -->
   <div class="badges-section">
     <h2>🎖️ Badges</h2>
     <div class="badges-grid" id="badges-grid"></div>
@@ -612,9 +706,11 @@
 
 </div><!-- /games-wrapper -->
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Math Sprint
-═══════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     EXISTING MODALS
+══════════════════════════════════════════════════ -->
+
+<!-- Math Sprint -->
 <div class="modal-overlay" id="modal-sprint">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('sprint')">✕</button>
@@ -631,9 +727,7 @@
         <div class="score-item"><div class="s-label">Time</div><div class="s-val" id="timer-val">60</div></div>
         <div class="score-item"><div class="s-label">Streak</div><div class="s-val" id="sprint-streak">0</div></div>
       </div>
-      <div class="question-box">
-        <div class="question-text" id="sprint-q">?</div>
-      </div>
+      <div class="question-box"><div class="question-text" id="sprint-q">?</div></div>
       <input type="number" class="answer-input" id="sprint-ans" placeholder="?" onkeydown="if(event.key==='Enter')checkSprint()">
       <div class="feedback-msg" id="sprint-fb"></div>
       <button class="action-btn" onclick="checkSprint()">Submit Answer</button>
@@ -649,9 +743,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Number Quest
-═══════════════════════════════════════════════ -->
+<!-- Number Quest -->
 <div class="modal-overlay" id="modal-guess">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('guess')">✕</button>
@@ -660,8 +752,7 @@
     <div class="progress-track"><div class="progress-fill" id="guess-prog" style="width:0%"></div></div>
     <div class="guess-hint" id="guess-hint">Press Start to begin your quest…</div>
     <div class="guess-history" id="guess-history"></div>
-    <input type="number" class="answer-input" id="guess-ans" placeholder="Enter a number 1–100" min="1" max="100"
-           onkeydown="if(event.key==='Enter')checkGuess()" style="display:none;">
+    <input type="number" class="answer-input" id="guess-ans" placeholder="Enter a number 1–100" min="1" max="100" onkeydown="if(event.key==='Enter')checkGuess()" style="display:none;">
     <div class="feedback-msg" id="guess-fb"></div>
     <div class="result-screen" id="guess-result">
       <div class="result-emoji" id="guess-res-emoji">🎉</div>
@@ -675,9 +766,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Fraction Duel
-═══════════════════════════════════════════════ -->
+<!-- Fraction Duel -->
 <div class="modal-overlay" id="modal-fraction">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('fraction')">✕</button>
@@ -692,7 +781,7 @@
       <div class="fraction-display" id="frac-display"></div>
     </div>
     <div class="answer-opts" id="frac-opts" style="display:none;">
-      <button class="opt-btn" onclick="checkFraction('&lt;')"> &lt; </button>
+      <button class="opt-btn" onclick="checkFraction('&lt;')">&lt;</button>
       <button class="opt-btn" onclick="checkFraction('=')">=</button>
       <button class="opt-btn" onclick="checkFraction('&gt;')">&gt;</button>
       <button class="opt-btn" onclick="checkFraction('?')">🤔 Not Sure</button>
@@ -709,9 +798,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Algebra Escape
-═══════════════════════════════════════════════ -->
+<!-- Algebra Escape -->
 <div class="modal-overlay" id="modal-algebra">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('algebra')">✕</button>
@@ -725,8 +812,7 @@
     <div class="question-box" id="alg-q-box" style="display:none;">
       <div class="question-text" id="alg-q">?</div>
     </div>
-    <input type="number" class="answer-input" id="alg-ans" placeholder="x = ?" style="display:none;"
-           onkeydown="if(event.key==='Enter')checkAlgebra()">
+    <input type="number" class="answer-input" id="alg-ans" placeholder="x = ?" style="display:none;" onkeydown="if(event.key==='Enter')checkAlgebra()">
     <div class="feedback-msg" id="alg-fb"></div>
     <div class="result-screen" id="alg-result">
       <div class="result-emoji" id="alg-res-emoji">🔓</div>
@@ -740,9 +826,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Prime Hunter
-═══════════════════════════════════════════════ -->
+<!-- Prime Hunter -->
 <div class="modal-overlay" id="modal-prime">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('prime')">✕</button>
@@ -765,9 +849,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL: Times Table Blitz
-═══════════════════════════════════════════════ -->
+<!-- Times Table Blitz -->
 <div class="modal-overlay" id="modal-times">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('times')">✕</button>
@@ -794,37 +876,221 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════
+     NEW MODALS
+══════════════════════════════════════════════════ -->
+
+<!-- 7. Percentage Blitz -->
+<div class="modal-overlay" id="modal-pct">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('pct')">✕</button>
+    <h2 style="color:var(--cyan);">% Percentage Blitz</h2>
+    <p class="subtitle">Calculate percentages quickly — 10 questions per round!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="pct-score" style="color:var(--cyan);">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="pct-round">0/10</div></div>
+      <div class="score-item"><div class="s-label">Streak</div><div class="s-val" id="pct-streak" style="color:var(--cyan);">0</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pct-prog" style="width:0%; background:linear-gradient(90deg,var(--cyan),var(--blue));"></div></div>
+    <div class="question-box" id="pct-q-box" style="display:none;">
+      <div class="pct-visual">
+        <div class="pct-label" id="pct-q-text">What is ?% of ?</div>
+        <div class="pct-bar-wrap"><div class="pct-bar-fill" id="pct-bar" style="width:0%"></div></div>
+        <div class="pct-label" id="pct-bar-label"></div>
+      </div>
+    </div>
+    <div class="answer-opts" id="pct-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="pct-fb"></div>
+    <div class="result-screen" id="pct-result">
+      <div class="result-emoji" id="pct-res-emoji">💯</div>
+      <div class="result-title" id="pct-res-title">Round Complete!</div>
+      <div class="result-sub" id="pct-res-sub"></div>
+      <div class="xp-earned-badge" id="pct-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startPct()">Play Again</button>
+    </div>
+    <button class="action-btn" id="pct-start-btn" onclick="startPct()">Start Blitz</button>
+  </div>
+</div>
+
+<!-- 8. BODMAS Battle -->
+<div class="modal-overlay" id="modal-bodmas">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('bodmas')">✕</button>
+    <h2 style="color:var(--gold);">🧮 BODMAS Battle</h2>
+    <p class="subtitle">Evaluate expressions using correct order of operations. 8 challenges!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="bodmas-score" style="color:var(--gold);">0</div></div>
+      <div class="score-item"><div class="s-label">Q</div><div class="s-val" id="bodmas-round">0/8</div></div>
+      <div class="score-item"><div class="s-label">Lives</div><div class="s-val" id="bodmas-lives">❤️❤️❤️</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="bodmas-prog" style="width:0%; background:linear-gradient(90deg,var(--gold),var(--orange));"></div></div>
+    <div class="question-box" id="bodmas-q-box" style="display:none;">
+      <div class="bodmas-expr" id="bodmas-expr">?</div>
+      <div style="font-size:.75rem; color:var(--muted); margin-top:10px;">BODMAS: Brackets → Orders → Division → Multiplication → Addition → Subtraction</div>
+    </div>
+    <input type="number" class="answer-input" id="bodmas-ans" placeholder="= ?" style="display:none;" onkeydown="if(event.key==='Enter')checkBodmas()">
+    <div class="feedback-msg" id="bodmas-fb"></div>
+    <div class="result-screen" id="bodmas-result">
+      <div class="result-emoji" id="bodmas-res-emoji">🧮</div>
+      <div class="result-title" id="bodmas-res-title">Battle Over!</div>
+      <div class="result-sub" id="bodmas-res-sub"></div>
+      <div class="xp-earned-badge" id="bodmas-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startBodmas()">Play Again</button>
+    </div>
+    <button class="action-btn" id="bodmas-action" onclick="checkBodmas()" style="display:none;">Submit</button>
+    <button class="action-btn" id="bodmas-start-btn" onclick="startBodmas()" style="margin-top:8px;">Start Battle</button>
+  </div>
+</div>
+
+<!-- 9. Integer Invaders -->
+<div class="modal-overlay" id="modal-integer">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('integer')">✕</button>
+    <h2 style="color:var(--pink);">± Integer Invaders</h2>
+    <p class="subtitle">Conquer signed number arithmetic — 10 rounds of integers!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="int-score" style="color:var(--pink);">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="int-round">0/10</div></div>
+    </div>
+    <div class="diff-select" id="int-diff">
+      <button class="diff-btn active" onclick="setDiff('integer','easy',this)">Easy (+/−)</button>
+      <button class="diff-btn" onclick="setDiff('integer','medium',this)">Medium (×)</button>
+      <button class="diff-btn" onclick="setDiff('integer','hard',this)">Hard (mixed)</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="int-prog" style="width:0%; background:linear-gradient(90deg,var(--pink),var(--purple));"></div></div>
+    <div class="question-box" id="int-q-box" style="display:none;">
+      <div class="int-expr" id="int-expr">?</div>
+    </div>
+    <div class="answer-opts" id="int-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="int-fb"></div>
+    <div class="result-screen" id="int-result">
+      <div class="result-emoji" id="int-res-emoji">±</div>
+      <div class="result-title" id="int-res-title">Invasion Over!</div>
+      <div class="result-sub" id="int-res-sub"></div>
+      <div class="xp-earned-badge" id="int-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startInteger()">Play Again</button>
+    </div>
+    <button class="action-btn" id="int-start-btn" onclick="startInteger()">Start Invasion</button>
+  </div>
+</div>
+
+<!-- 10. Square Root Rush -->
+<div class="modal-overlay" id="modal-sqroot">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('sqroot')">✕</button>
+    <h2 style="color:#7bb8ff;">√ Square Root Rush</h2>
+    <p class="subtitle">Tap every perfect square! Avoid non-squares. 30 seconds on the clock.</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="sq-score" style="color:#7bb8ff;">0</div></div>
+      <div class="score-item"><div class="s-label">Time</div><div class="s-val" id="sq-timer">30</div></div>
+      <div class="score-item"><div class="s-label">Missed</div><div class="s-val" id="sq-missed" style="color:var(--red);">0</div></div>
+    </div>
+    <div class="number-grid" id="sq-grid"></div>
+    <div class="feedback-msg" id="sq-fb"></div>
+    <div class="result-screen" id="sq-result">
+      <div class="result-emoji">√</div>
+      <div class="result-title" id="sq-res-title">Round Over!</div>
+      <div class="result-sub" id="sq-res-sub"></div>
+      <div class="xp-earned-badge" id="sq-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startSqRoot()">Play Again</button>
+    </div>
+    <button class="action-btn" id="sq-start-btn" onclick="startSqRoot()">Start Rush</button>
+  </div>
+</div>
+
+<!-- 11. Math Memory Match -->
+<div class="modal-overlay" id="modal-memory">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('memory')">✕</button>
+    <h2 style="color:#d099ff;">🃏 Math Memory Match</h2>
+    <p class="subtitle">Match each problem card with its answer card. Find all 8 pairs!</p>
+    <div class="mem-info">
+      <div class="mem-stat"><div class="ms-label">Moves</div><div class="ms-val" id="mem-moves">0</div></div>
+      <div class="mem-stat"><div class="ms-label">Matches</div><div class="ms-val" id="mem-matches">0/8</div></div>
+      <div class="mem-stat"><div class="ms-label">Time</div><div class="ms-val" id="mem-time">0s</div></div>
+    </div>
+    <div class="memory-grid" id="memory-grid"></div>
+    <div class="feedback-msg" id="mem-fb"></div>
+    <div class="result-screen" id="memory-result">
+      <div class="result-emoji">🃏</div>
+      <div class="result-title" id="mem-res-title">All Matched!</div>
+      <div class="result-sub" id="mem-res-sub"></div>
+      <div class="xp-earned-badge" id="mem-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startMemory()">Play Again</button>
+    </div>
+    <button class="action-btn" id="mem-start-btn" onclick="startMemory()">Start Game</button>
+  </div>
+</div>
+
+<!-- 12. Speed Division -->
+<div class="modal-overlay" id="modal-division">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('division')">✕</button>
+    <h2 style="color:#f87171;">÷ Speed Division</h2>
+    <p class="subtitle">Select the correct result for each division. 12 rounds!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="div-score" style="color:#f87171;">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="div-round">0/12</div></div>
+      <div class="score-item"><div class="s-label">Streak</div><div class="s-val" id="div-streak">0</div></div>
+    </div>
+    <div class="diff-select" id="div-diff">
+      <button class="diff-btn active" onclick="setDiff('division','easy',this)">Easy</button>
+      <button class="diff-btn" onclick="setDiff('division','medium',this)">Medium</button>
+      <button class="diff-btn" onclick="setDiff('division','hard',this)">Hard</button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="div-prog" style="width:0%; background:linear-gradient(90deg,#f87171,var(--red));"></div></div>
+    <div class="question-box" id="div-q-box" style="display:none;">
+      <div class="question-text" id="div-q">?</div>
+    </div>
+    <div class="answer-opts" id="div-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="div-fb"></div>
+    <div class="result-screen" id="div-result">
+      <div class="result-emoji">÷</div>
+      <div class="result-title" id="div-res-title">Division Complete!</div>
+      <div class="result-sub" id="div-res-sub"></div>
+      <div class="xp-earned-badge" id="div-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startDivision()">Play Again</button>
+    </div>
+    <button class="action-btn" id="div-start-btn" onclick="startDivision()">Start!</button>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div id="toast-container"></div>
-
 <div id="footer-container"></div>
 <div id="backToTop">🔝</div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════════════
      JAVASCRIPT
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════════════ -->
 <script>
-/* ─── Player State ──────────────────────────────────── */
+/* ─── Player State ─── */
 let player = JSON.parse(localStorage.getItem('tutorda_player') || '{"name":"Guest","xp":0,"level":1,"badges":[]}');
 let leaderboard = JSON.parse(localStorage.getItem('tutorda_lb') || '[]');
-
 const XP_PER_LEVEL = 200;
 
 const BADGES_DEF = [
-  { id:'first_game',  name:'First Game',    emoji:'🎮', cond: p => p.xp >= 1 },
-  { id:'level5',      name:'Level 5',       emoji:'⭐', cond: p => p.level >= 5 },
-  { id:'level10',     name:'Level 10',      emoji:'🌟', cond: p => p.level >= 10 },
-  { id:'sprint100',   name:'Sprint Master', emoji:'⚡', cond: p => (p.best_sprint||0) >= 10 },
-  { id:'xp500',       name:'XP Hunter',     emoji:'💎', cond: p => p.xp >= 500 },
-  { id:'xp1000',      name:'XP Legend',     emoji:'👑', cond: p => p.xp >= 1000 },
-  { id:'prime_ace',   name:'Prime Ace',     emoji:'🎯', cond: p => (p.best_prime||0) >= 8 },
-  { id:'fraction_wiz',name:'Fraction Wiz',  emoji:'🍕', cond: p => (p.frac_streak||0) >= 5 },
-  { id:'algebra_hero',name:'Algebra Hero',  emoji:'🔓', cond: p => (p.alg_wins||0) >= 1 },
-  { id:'guesser',     name:'Mind Reader',   emoji:'🔍', cond: p => (p.guess_min||99) <= 4 },
+  { id:'first_game',   name:'First Game',      emoji:'🎮', cond: p => p.xp >= 1 },
+  { id:'level5',       name:'Level 5',          emoji:'⭐', cond: p => p.level >= 5 },
+  { id:'level10',      name:'Level 10',         emoji:'🌟', cond: p => p.level >= 10 },
+  { id:'sprint100',    name:'Sprint Master',    emoji:'⚡', cond: p => (p.best_sprint||0) >= 10 },
+  { id:'xp500',        name:'XP Hunter',        emoji:'💎', cond: p => p.xp >= 500 },
+  { id:'xp1000',       name:'XP Legend',        emoji:'👑', cond: p => p.xp >= 1000 },
+  { id:'prime_ace',    name:'Prime Ace',        emoji:'🎯', cond: p => (p.best_prime||0) >= 8 },
+  { id:'fraction_wiz', name:'Fraction Wiz',     emoji:'🍕', cond: p => (p.frac_streak||0) >= 5 },
+  { id:'algebra_hero', name:'Algebra Hero',     emoji:'🔓', cond: p => (p.alg_wins||0) >= 1 },
+  { id:'guesser',      name:'Mind Reader',      emoji:'🔍', cond: p => (p.guess_min||99) <= 4 },
+  // New badges
+  { id:'pct_pro',      name:'Percentage Pro',   emoji:'%',  cond: p => (p.pct_streak||0) >= 5 },
+  { id:'bodmas_boss',  name:'BODMAS Boss',      emoji:'🧮', cond: p => (p.bodmas_perfect||0) >= 1 },
+  { id:'int_master',   name:'Integer Master',   emoji:'±',  cond: p => (p.int_score||0) >= 80 },
+  { id:'sq_finder',    name:'Square Finder',    emoji:'√',  cond: p => (p.best_sq||0) >= 8 },
+  { id:'mem_genius',   name:'Memory Genius',    emoji:'🃏', cond: p => (p.mem_best_moves||999) <= 10 },
+  { id:'div_ace',      name:'Division Ace',     emoji:'÷',  cond: p => (p.div_streak||0) >= 8 },
 ];
 
 function savePlayer() { localStorage.setItem('tutorda_player', JSON.stringify(player)); }
-function saveLB()      { localStorage.setItem('tutorda_lb', JSON.stringify(leaderboard)); }
+function saveLB()     { localStorage.setItem('tutorda_lb', JSON.stringify(leaderboard)); }
 
 function addXP(amount) {
   player.xp += amount;
@@ -853,8 +1119,7 @@ function setPlayerName() {
 function updateLB() {
   const idx = leaderboard.findIndex(e => e.name === player.name);
   const entry = { name: player.name, level: player.level, xp: player.xp };
-  if (idx >= 0) leaderboard[idx] = entry;
-  else leaderboard.push(entry);
+  if (idx >= 0) leaderboard[idx] = entry; else leaderboard.push(entry);
   leaderboard.sort((a,b) => b.xp - a.xp);
   if (leaderboard.length > 10) leaderboard = leaderboard.slice(0,10);
   saveLB(); renderLB();
@@ -864,7 +1129,7 @@ function renderLB() {
   const tb = document.getElementById('lb-body');
   if (!leaderboard.length) { tb.innerHTML = '<tr><td colspan="4" class="lb-empty">No scores yet — be the first to play!</td></tr>'; return; }
   tb.innerHTML = leaderboard.map((e,i) => {
-    const cls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const cls   = i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
     return `<tr><td class="lb-rank ${cls}">${medal||i+1}</td><td>${e.name}</td><td>${e.level}</td><td class="lb-xp">${e.xp}</td></tr>`;
   }).join('');
@@ -873,8 +1138,7 @@ function renderLB() {
 function checkBadges() {
   BADGES_DEF.forEach(b => {
     if (!player.badges.includes(b.id) && b.cond(player)) {
-      player.badges.push(b.id);
-      savePlayer();
+      player.badges.push(b.id); savePlayer();
       toast(`${b.emoji} Badge Unlocked: ${b.name}!`, '#a855f7');
     }
   });
@@ -891,7 +1155,6 @@ function renderBadges() {
   }).join('');
 }
 
-/* ─── Toast ──────────────────────────────────────────── */
 function toast(msg, color='#ff8c00') {
   const el = document.createElement('div');
   el.className = 'toast';
@@ -900,12 +1163,10 @@ function toast(msg, color='#ff8c00') {
   setTimeout(() => el.remove(), 3200);
 }
 
-/* ─── Modal Helpers ─────────────────────────────────── */
-function openGame(id) { document.getElementById('modal-'+id).classList.add('open'); }
-function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+function openGame(id)  { document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
 
-/* ─── Difficulty Settings ───────────────────────────── */
-const diffSettings = { sprint: 'easy', times: 'medium' };
+const diffSettings = { sprint:'easy', integer:'easy', division:'easy' };
 function setDiff(game, val, btn) {
   diffSettings[game] = val;
   btn.parentElement.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
@@ -913,20 +1174,20 @@ function setDiff(game, val, btn) {
 }
 
 function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
-function gcd(a,b){return b?gcd(b,a%b):a;}
 function isPrime(n){if(n<2)return false;for(let i=2;i<=Math.sqrt(n);i++)if(n%i===0)return false;return true;}
+function isPerfectSquare(n){ const s=Math.round(Math.sqrt(n)); return s*s===n; }
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    GAME 1: MATH SPRINT
-════════════════════════════════════════════════════ */
-let sprintState = { score:0, streak:0, timer:60, interval:null, diff:'easy' };
+════════════════════════════════════════ */
+let sprintState = { score:0, streak:0, timer:60, interval:null };
 
 function startSprint() {
-  sprintState = { score:0, streak:0, timer:60, interval:null, diff: diffSettings.sprint || 'easy' };
+  sprintState = { score:0, streak:0, timer:60, interval:null, diff: diffSettings.sprint||'easy' };
   document.getElementById('sprint-start-btn').style.display = 'none';
-  document.getElementById('sprint-diff').style.display = 'none';
+  document.getElementById('sprint-diff').style.display      = 'none';
   document.getElementById('sprint-result').classList.remove('show');
-  document.getElementById('sprint-play').style.display = 'block';
+  document.getElementById('sprint-play').style.display      = 'block';
   updateSprintUI(); genSprintQ();
   document.getElementById('sprint-ans').focus();
   sprintState.interval = setInterval(()=>{
@@ -937,40 +1198,30 @@ function startSprint() {
 }
 
 function genSprintQ() {
-  const ops = ['+','-','×'];
-  const op  = ops[randInt(0, ops.length-1)];
+  const ops=['+','-','×'], op=ops[randInt(0,2)];
   let a,b;
   if(sprintState.diff==='easy')  { a=randInt(1,12); b=randInt(1,12); }
   if(sprintState.diff==='medium'){ a=randInt(5,50); b=randInt(5,50); }
   if(sprintState.diff==='hard')  { a=randInt(10,99); b=randInt(10,99); }
   let ans;
   if(op==='+') ans=a+b;
-  else if(op==='-') { if(a<b)[a,b]=[b,a]; ans=a-b; }
+  else if(op==='-'){ if(a<b)[a,b]=[b,a]; ans=a-b; }
   else { a=randInt(1,12); b=randInt(1,12); ans=a*b; }
-  sprintState.q = `${a} ${op} ${b} = ?`;
-  sprintState.ans = ans;
-  document.getElementById('sprint-q').textContent = sprintState.q;
-  document.getElementById('sprint-ans').value = '';
-  document.getElementById('sprint-ans').className = 'answer-input';
-  document.getElementById('sprint-fb').textContent = '';
+  sprintState.q=`${a} ${op} ${b} = ?`; sprintState.ans=ans;
+  document.getElementById('sprint-q').textContent=sprintState.q;
+  document.getElementById('sprint-ans').value='';
+  document.getElementById('sprint-ans').className='answer-input';
+  document.getElementById('sprint-fb').textContent='';
 }
 
 function checkSprint() {
-  const val = parseInt(document.getElementById('sprint-ans').value);
+  const val=parseInt(document.getElementById('sprint-ans').value);
   if(isNaN(val)) return;
-  const inp = document.getElementById('sprint-ans');
-  const fb  = document.getElementById('sprint-fb');
-  if(val === sprintState.ans) {
-    sprintState.score += 10; sprintState.streak++;
-    inp.className = 'answer-input correct';
-    fb.textContent = '✓ Correct!'; fb.className='feedback-msg ok';
-  } else {
-    sprintState.streak = 0;
-    inp.className = 'answer-input wrong';
-    fb.textContent = `✗ Answer was ${sprintState.ans}`; fb.className='feedback-msg bad';
-  }
+  const inp=document.getElementById('sprint-ans'), fb=document.getElementById('sprint-fb');
+  if(val===sprintState.ans){ sprintState.score+=10; sprintState.streak++; inp.className='answer-input correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok'; }
+  else { sprintState.streak=0; inp.className='answer-input wrong'; fb.textContent=`✗ Answer was ${sprintState.ans}`; fb.className='feedback-msg bad'; }
   updateSprintUI();
-  setTimeout(() => { inp.className='answer-input'; genSprintQ(); inp.focus(); }, 350);
+  setTimeout(()=>{ inp.className='answer-input'; genSprintQ(); inp.focus(); }, 350);
 }
 
 function updateSprintUI() {
@@ -980,358 +1231,736 @@ function updateSprintUI() {
 
 function endSprint() {
   clearInterval(sprintState.interval);
-  document.getElementById('sprint-play').style.display = 'none';
-  const res = document.getElementById('sprint-result');
-  res.classList.add('show');
-  const correct = sprintState.score / 10;
-  const xp = sprintState.score;
-  document.getElementById('sprint-res-emoji').textContent = correct >= 15 ? '🏆' : correct >= 8 ? '🎉' : '😤';
-  document.getElementById('sprint-res-title').textContent = correct >= 15 ? 'Amazing Sprint!' : correct >= 8 ? 'Great Job!' : 'Keep Practising!';
-  document.getElementById('sprint-res-sub').textContent   = `You answered ${correct} correctly!`;
-  document.getElementById('sprint-xp-badge').textContent  = `+${xp} XP`;
-  if ((player.best_sprint||0) < correct) { player.best_sprint = correct; savePlayer(); }
+  document.getElementById('sprint-play').style.display='none';
+  const res=document.getElementById('sprint-result'); res.classList.add('show');
+  const correct=sprintState.score/10, xp=sprintState.score;
+  document.getElementById('sprint-res-emoji').textContent  = correct>=15?'🏆':correct>=8?'🎉':'😤';
+  document.getElementById('sprint-res-title').textContent  = correct>=15?'Amazing Sprint!':correct>=8?'Great Job!':'Keep Practising!';
+  document.getElementById('sprint-res-sub').textContent    = `You answered ${correct} correctly!`;
+  document.getElementById('sprint-xp-badge').textContent   = `+${xp} XP`;
+  if((player.best_sprint||0)<correct){ player.best_sprint=correct; savePlayer(); }
   addXP(xp); checkBadges();
-  document.getElementById('sprint-start-btn').style.display = 'block';
-  document.getElementById('sprint-diff').style.display = 'flex';
+  document.getElementById('sprint-start-btn').style.display='block';
+  document.getElementById('sprint-diff').style.display='flex';
 }
 
-/* ════════════════════════════════════════════════════
-   GAME 2: NUMBER QUEST (Guess the Number)
-════════════════════════════════════════════════════ */
-let guessState = { secret:0, tries:0, maxTries:7, active:false };
+/* ════════════════════════════════════════
+   GAME 2: NUMBER QUEST
+════════════════════════════════════════ */
+let guessState={ secret:0, tries:0, maxTries:7, active:false };
 
 function startGuess() {
-  guessState = { secret: randInt(1,100), tries:0, maxTries:7, active:true };
-  document.getElementById('guess-start-btn').style.display = 'none';
-  document.getElementById('guess-action').style.display = 'block';
-  document.getElementById('guess-ans').style.display = 'block';
-  document.getElementById('guess-ans').value = '';
-  document.getElementById('guess-history').innerHTML = '';
-  document.getElementById('guess-fb').textContent = '';
+  guessState={ secret:randInt(1,100), tries:0, maxTries:7, active:true };
+  document.getElementById('guess-start-btn').style.display='none';
+  document.getElementById('guess-action').style.display='block';
+  document.getElementById('guess-ans').style.display='block';
+  document.getElementById('guess-ans').value='';
+  document.getElementById('guess-history').innerHTML='';
+  document.getElementById('guess-fb').textContent='';
   document.getElementById('guess-result').classList.remove('show');
-  document.getElementById('guess-hint').textContent = `I'm thinking of a number between 1 and 100. You have ${guessState.maxTries} tries!`;
-  document.getElementById('guess-prog').style.width = '0%';
+  document.getElementById('guess-hint').textContent=`I'm thinking of a number between 1 and 100. You have ${guessState.maxTries} tries!`;
+  document.getElementById('guess-prog').style.width='0%';
   document.getElementById('guess-ans').focus();
 }
 
 function checkGuess() {
   if(!guessState.active) return;
-  const val = parseInt(document.getElementById('guess-ans').value);
-  if(isNaN(val)||val<1||val>100) { document.getElementById('guess-fb').textContent='Enter a number 1–100'; return; }
+  const val=parseInt(document.getElementById('guess-ans').value);
+  if(isNaN(val)||val<1||val>100){ document.getElementById('guess-fb').textContent='Enter a number 1–100'; return; }
   guessState.tries++;
-  document.getElementById('guess-prog').style.width = (guessState.tries/guessState.maxTries*100)+'%';
-  const diff = Math.abs(val - guessState.secret);
-  let hint, chipClass;
-  if(val === guessState.secret) {
-    addGuessChip(val,'exact');
-    endGuess(true);
-    return;
-  } else if(val > guessState.secret) {
-    hint = diff<=5?'🔥 Very hot! Go lower':diff<=15?'♨️ Warm! Try lower':diff<=30?'❄️ Cool, go lower':'🧊 Cold! Much lower';
-    chipClass = 'high';
-  } else {
-    hint = diff<=5?'🔥 Very hot! Go higher':diff<=15?'♨️ Warm! Try higher':diff<=30?'❄️ Cool, go higher':'🧊 Cold! Much higher';
-    chipClass = 'low';
-  }
-  document.getElementById('guess-hint').textContent = hint;
-  addGuessChip(val, chipClass);
-  document.getElementById('guess-ans').value = '';
+  document.getElementById('guess-prog').style.width=(guessState.tries/guessState.maxTries*100)+'%';
+  const diff=Math.abs(val-guessState.secret);
+  if(val===guessState.secret){ addGuessChip(val,'exact'); endGuess(true); return; }
+  let hint,cls;
+  if(val>guessState.secret){ hint=diff<=5?'🔥 Very hot! Go lower':diff<=15?'♨️ Warm! Try lower':diff<=30?'❄️ Cool, go lower':'🧊 Cold! Much lower'; cls='high'; }
+  else { hint=diff<=5?'🔥 Very hot! Go higher':diff<=15?'♨️ Warm! Try higher':diff<=30?'❄️ Cool, go higher':'🧊 Cold! Much higher'; cls='low'; }
+  document.getElementById('guess-hint').textContent=hint;
+  addGuessChip(val,cls);
+  document.getElementById('guess-ans').value='';
   document.getElementById('guess-ans').focus();
-  if(guessState.tries >= guessState.maxTries) endGuess(false);
+  if(guessState.tries>=guessState.maxTries) endGuess(false);
 }
 
-function addGuessChip(val, cls) {
-  const chip = document.createElement('span');
-  chip.className = `guess-chip ${cls}`;
-  chip.textContent = val + (cls==='high'?' ↓':cls==='low'?' ↑':'');
-  document.getElementById('guess-history').appendChild(chip);
+function addGuessChip(val,cls) {
+  const c=document.createElement('span'); c.className=`guess-chip ${cls}`;
+  c.textContent=val+(cls==='high'?' ↓':cls==='low'?' ↑':'');
+  document.getElementById('guess-history').appendChild(c);
 }
 
 function endGuess(won) {
-  guessState.active = false;
-  document.getElementById('guess-action').style.display = 'none';
-  document.getElementById('guess-ans').style.display = 'none';
-  const res = document.getElementById('guess-result');
-  res.classList.add('show');
-  const xp = won ? Math.max(50 - (guessState.tries-1)*8, 10) : 5;
-  document.getElementById('guess-res-emoji').textContent = won ? '🎯' : '😢';
-  document.getElementById('guess-res-title').textContent = won ? `Found in ${guessState.tries} tries!` : 'Better luck next time!';
-  document.getElementById('guess-res-sub').textContent   = won ? '' : `The number was ${guessState.secret}.`;
+  guessState.active=false;
+  document.getElementById('guess-action').style.display='none';
+  document.getElementById('guess-ans').style.display='none';
+  document.getElementById('guess-result').classList.add('show');
+  const xp=won?Math.max(50-(guessState.tries-1)*8,10):5;
+  document.getElementById('guess-res-emoji').textContent = won?'🎯':'😢';
+  document.getElementById('guess-res-title').textContent = won?`Found in ${guessState.tries} tries!`:'Better luck next time!';
+  document.getElementById('guess-res-sub').textContent   = won?'':`The number was ${guessState.secret}.`;
   document.getElementById('guess-xp-badge').textContent  = `+${xp} XP`;
-  if(won && guessState.tries < (player.guess_min||99)) { player.guess_min = guessState.tries; savePlayer(); }
+  if(won&&guessState.tries<(player.guess_min||99)){ player.guess_min=guessState.tries; savePlayer(); }
   addXP(xp); checkBadges();
-  document.getElementById('guess-start-btn').style.display = 'block';
+  document.getElementById('guess-start-btn').style.display='block';
 }
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    GAME 3: FRACTION DUEL
-════════════════════════════════════════════════════ */
-let fracState = { score:0, round:0, total:10, frac1:null, frac2:null, frac_streak:0 };
+════════════════════════════════════════ */
+let fracState={ score:0, round:0, total:10, frac1:null, frac2:null, frac_streak:0 };
 
 function startFraction() {
-  fracState = { score:0, round:0, total:10, frac1:null, frac2:null, frac_streak:0 };
-  document.getElementById('frac-start-btn').style.display = 'none';
+  fracState={ score:0, round:0, total:10, frac1:null, frac2:null, frac_streak:0 };
+  document.getElementById('frac-start-btn').style.display='none';
   document.getElementById('frac-result').classList.remove('show');
-  document.getElementById('frac-q-box').style.display = 'block';
-  document.getElementById('frac-opts').style.display = 'grid';
+  document.getElementById('frac-q-box').style.display='block';
+  document.getElementById('frac-opts').style.display='grid';
   nextFraction();
 }
 
 function nextFraction() {
   fracState.round++;
-  document.getElementById('frac-round').textContent = `${fracState.round}/${fracState.total}`;
-  document.getElementById('frac-prog').style.width = ((fracState.round-1)/fracState.total*100)+'%';
-  const n1=randInt(1,9), d1=randInt(2,9), n2=randInt(1,9), d2=randInt(2,9);
+  document.getElementById('frac-round').textContent=`${fracState.round}/${fracState.total}`;
+  document.getElementById('frac-prog').style.width=((fracState.round-1)/fracState.total*100)+'%';
+  const n1=randInt(1,9),d1=randInt(2,9),n2=randInt(1,9),d2=randInt(2,9);
   fracState.frac1={n:n1,d:d1}; fracState.frac2={n:n2,d:d2};
-  const v1=n1/d1, v2=n2/d2;
-  fracState.correct_ans = v1<v2?'<':v1>v2?'>':'=';
-  document.getElementById('frac-display').innerHTML =
+  const v1=n1/d1,v2=n2/d2;
+  fracState.correct_ans=v1<v2?'<':v1>v2?'>':'=';
+  document.getElementById('frac-display').innerHTML=
     `<div class="frac" style="color:#7bb8ff"><span>${n1}</span><div class="line"></div><span>${d1}</span></div>
      <span style="color:var(--muted);font-size:1.5rem;">?</span>
      <div class="frac" style="color:#d099ff"><span>${n2}</span><div class="line"></div><span>${d2}</span></div>`;
-  document.getElementById('frac-fb').textContent = '';
+  document.getElementById('frac-fb').textContent='';
   document.getElementById('frac-opts').querySelectorAll('.opt-btn').forEach(b=>b.className='opt-btn');
 }
 
 function checkFraction(choice) {
-  const correct = fracState.correct_ans;
-  const opts = document.getElementById('frac-opts').querySelectorAll('.opt-btn');
-  const fb   = document.getElementById('frac-fb');
-  opts.forEach(b => { if(b.textContent.trim() === choice) b.classList.add(choice===correct?'correct':'wrong'); });
-  if(choice === correct) {
-    fracState.score += 15; fracState.frac_streak++;
-    fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
-    document.getElementById('frac-score').textContent = fracState.score;
-  } else {
-    fracState.frac_streak = 0;
-    fb.textContent=`✗ It was ${fracState.frac1.n}/${fracState.frac1.d} ${correct} ${fracState.frac2.n}/${fracState.frac2.d}`;
-    fb.className='feedback-msg bad';
-  }
+  const correct=fracState.correct_ans;
+  document.getElementById('frac-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(b.textContent.trim()===choice) b.classList.add(choice===correct?'correct':'wrong'); });
+  const fb=document.getElementById('frac-fb');
+  if(choice===correct){ fracState.score+=15; fracState.frac_streak++; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok'; document.getElementById('frac-score').textContent=fracState.score; }
+  else { fracState.frac_streak=0; fb.textContent=`✗ It was ${fracState.frac1.n}/${fracState.frac1.d} ${correct} ${fracState.frac2.n}/${fracState.frac2.d}`; fb.className='feedback-msg bad'; }
   setTimeout(()=>{ if(fracState.round>=fracState.total) endFraction(); else nextFraction(); }, 900);
 }
 
 function endFraction() {
-  document.getElementById('frac-q-box').style.display = 'none';
-  document.getElementById('frac-opts').style.display = 'none';
-  document.getElementById('frac-prog').style.width = '100%';
-  const res = document.getElementById('frac-result');
-  res.classList.add('show');
-  const xp = fracState.score;
-  document.getElementById('frac-res-title').textContent = fracState.score>=120?'Fraction Master!':fracState.score>=75?'Well Done!':'Keep Practising!';
-  document.getElementById('frac-res-sub').textContent   = `Score: ${fracState.score} / ${fracState.total*15}`;
-  document.getElementById('frac-xp-badge').textContent  = `+${xp} XP`;
-  if(fracState.frac_streak > (player.frac_streak||0)) { player.frac_streak = fracState.frac_streak; savePlayer(); }
+  document.getElementById('frac-q-box').style.display='none';
+  document.getElementById('frac-opts').style.display='none';
+  document.getElementById('frac-prog').style.width='100%';
+  document.getElementById('frac-result').classList.add('show');
+  const xp=fracState.score;
+  document.getElementById('frac-res-title').textContent=fracState.score>=120?'Fraction Master!':fracState.score>=75?'Well Done!':'Keep Practising!';
+  document.getElementById('frac-res-sub').textContent=`Score: ${fracState.score} / ${fracState.total*15}`;
+  document.getElementById('frac-xp-badge').textContent=`+${xp} XP`;
+  if(fracState.frac_streak>(player.frac_streak||0)){ player.frac_streak=fracState.frac_streak; savePlayer(); }
   addXP(xp); checkBadges();
-  document.getElementById('frac-start-btn').style.display = 'block';
+  document.getElementById('frac-start-btn').style.display='block';
 }
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    GAME 4: ALGEBRA ESCAPE
-════════════════════════════════════════════════════ */
-let algState = { level:0, lives:3, ans:0, xpTotal:0 };
-const algEquations = [
-  { q:'x + 3 = 7',       a:4 },  { q:'2x = 10',          a:5 },
-  { q:'x − 4 = 9',       a:13 }, { q:'3x + 1 = 16',      a:5 },
-  { q:'x ÷ 2 = 6',       a:12 }, { q:'5x − 3 = 22',      a:5 },
-  { q:'2x + 7 = 19',     a:6 },  { q:'4x − 8 = 20',      a:7 },
+════════════════════════════════════════ */
+let algState={ level:0, lives:3, xpTotal:0 };
+const algEquations=[
+  {q:'x + 3 = 7',a:4},{q:'2x = 10',a:5},{q:'x − 4 = 9',a:13},{q:'3x + 1 = 16',a:5},
+  {q:'x ÷ 2 = 6',a:12},{q:'5x − 3 = 22',a:5},{q:'2x + 7 = 19',a:6},{q:'4x − 8 = 20',a:7},
 ];
 
 function startAlgebra() {
-  algState = { level:0, lives:3, xpTotal:0 };
-  document.getElementById('alg-start-btn').style.display = 'none';
+  algState={ level:0, lives:3, xpTotal:0 };
+  document.getElementById('alg-start-btn').style.display='none';
   document.getElementById('alg-result').classList.remove('show');
-  document.getElementById('alg-q-box').style.display = 'block';
-  document.getElementById('alg-ans').style.display = 'block';
-  document.getElementById('alg-action').style.display = 'block';
+  document.getElementById('alg-q-box').style.display='block';
+  document.getElementById('alg-ans').style.display='block';
+  document.getElementById('alg-action').style.display='block';
   loadAlgLevel();
 }
 
 function loadAlgLevel() {
-  const eq = algEquations[algState.level];
-  algState.ans = eq.a;
-  document.getElementById('alg-level').textContent = `${algState.level+1}/8`;
-  document.getElementById('alg-prog').style.width  = (algState.level/8*100)+'%';
-  document.getElementById('alg-q').textContent     = eq.q;
-  document.getElementById('alg-lives').textContent = '❤️'.repeat(algState.lives);
-  document.getElementById('alg-ans').value = '';
-  document.getElementById('alg-fb').textContent = '';
+  const eq=algEquations[algState.level]; algState.ans=eq.a;
+  document.getElementById('alg-level').textContent=`${algState.level+1}/8`;
+  document.getElementById('alg-prog').style.width=(algState.level/8*100)+'%';
+  document.getElementById('alg-q').textContent=eq.q;
+  document.getElementById('alg-lives').textContent='❤️'.repeat(algState.lives);
+  document.getElementById('alg-ans').value='';
+  document.getElementById('alg-fb').textContent='';
   document.getElementById('alg-ans').focus();
 }
 
 function checkAlgebra() {
-  const val = parseInt(document.getElementById('alg-ans').value);
+  const val=parseInt(document.getElementById('alg-ans').value);
   if(isNaN(val)) return;
-  const fb  = document.getElementById('alg-fb');
-  const inp = document.getElementById('alg-ans');
-  if(val === algState.ans) {
-    algState.xpTotal += 20; inp.className='answer-input correct';
-    fb.textContent='🔓 Unlocked!'; fb.className='feedback-msg ok';
-    setTimeout(()=>{
-      inp.className='answer-input';
-      algState.level++;
-      if(algState.level >= algEquations.length) endAlgebra(true);
-      else loadAlgLevel();
-    }, 600);
+  const fb=document.getElementById('alg-fb'), inp=document.getElementById('alg-ans');
+  if(val===algState.ans){
+    algState.xpTotal+=20; inp.className='answer-input correct'; fb.textContent='🔓 Unlocked!'; fb.className='feedback-msg ok';
+    setTimeout(()=>{ inp.className='answer-input'; algState.level++; if(algState.level>=algEquations.length) endAlgebra(true); else loadAlgLevel(); }, 600);
   } else {
     algState.lives--;
-    document.getElementById('alg-lives').textContent = '❤️'.repeat(Math.max(0,algState.lives));
-    fb.textContent = algState.lives<=0 ? `✗ Answer: x = ${algState.ans}. Game over!` : `✗ Try again (x = ?)`;
+    document.getElementById('alg-lives').textContent='❤️'.repeat(Math.max(0,algState.lives));
+    fb.textContent=algState.lives<=0?`✗ Answer: x = ${algState.ans}. Game over!`:`✗ Try again (x = ?)`;
     fb.className='feedback-msg bad'; inp.className='answer-input wrong';
     setTimeout(()=>{ inp.className='answer-input'; if(algState.lives<=0) endAlgebra(false); }, 700);
   }
 }
 
 function endAlgebra(won) {
-  document.getElementById('alg-q-box').style.display = 'none';
-  document.getElementById('alg-ans').style.display = 'none';
-  document.getElementById('alg-action').style.display = 'none';
-  document.getElementById('alg-prog').style.width = '100%';
-  const res = document.getElementById('alg-result');
-  res.classList.add('show');
-  document.getElementById('alg-res-emoji').textContent  = won?'🔓':'💔';
-  document.getElementById('alg-res-title').textContent  = won?'Escaped!':'Locked In!';
-  document.getElementById('alg-res-sub').textContent    = won?'You solved all 8 equations!':`You reached lock ${algState.level+1}/8.`;
-  document.getElementById('alg-xp-badge').textContent   = `+${algState.xpTotal} XP`;
-  if(won) { player.alg_wins = (player.alg_wins||0)+1; savePlayer(); }
+  document.getElementById('alg-q-box').style.display='none';
+  document.getElementById('alg-ans').style.display='none';
+  document.getElementById('alg-action').style.display='none';
+  document.getElementById('alg-prog').style.width='100%';
+  document.getElementById('alg-result').classList.add('show');
+  document.getElementById('alg-res-emoji').textContent=won?'🔓':'💔';
+  document.getElementById('alg-res-title').textContent=won?'Escaped!':'Locked In!';
+  document.getElementById('alg-res-sub').textContent=won?'You solved all 8 equations!':`You reached lock ${algState.level+1}/8.`;
+  document.getElementById('alg-xp-badge').textContent=`+${algState.xpTotal} XP`;
+  if(won){ player.alg_wins=(player.alg_wins||0)+1; savePlayer(); }
   addXP(algState.xpTotal); checkBadges();
-  document.getElementById('alg-start-btn').style.display = 'block';
+  document.getElementById('alg-start-btn').style.display='block';
 }
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    GAME 5: PRIME HUNTER
-════════════════════════════════════════════════════ */
-let primeState = { score:0, timer:30, interval:null, nums:[], selected:[] };
+════════════════════════════════════════ */
+let primeState={ score:0, timer:30, interval:null, nums:[], selected:[] };
 
 function startPrime() {
   clearInterval(primeState.interval);
-  primeState = { score:0, timer:30, interval:null, nums:[], selected:[] };
-  document.getElementById('prime-start-btn').style.display = 'none';
+  primeState={ score:0, timer:30, interval:null, nums:[], selected:[] };
+  document.getElementById('prime-start-btn').style.display='none';
   document.getElementById('prime-result').classList.remove('show');
-  document.getElementById('prime-fb').textContent = '';
+  document.getElementById('prime-fb').textContent='';
   genPrimeGrid();
-  primeState.interval = setInterval(()=>{
-    primeState.timer--;
-    document.getElementById('prime-timer').textContent = primeState.timer;
-    if(primeState.timer<=0) endPrime();
-  },1000);
+  primeState.interval=setInterval(()=>{ primeState.timer--; document.getElementById('prime-timer').textContent=primeState.timer; if(primeState.timer<=0) endPrime(); }, 1000);
 }
 
 function genPrimeGrid() {
-  const nums = new Set();
-  while(nums.size<20) nums.add(randInt(2,60));
-  primeState.nums = [...nums];
-  const grid = document.getElementById('prime-grid');
-  grid.innerHTML = primeState.nums.map((n,i)=>
-    `<div class="num-tile" id="pt-${i}" onclick="selectPrime(${i},${n})">${n}</div>`
-  ).join('');
+  const nums=new Set(); while(nums.size<20) nums.add(randInt(2,60));
+  primeState.nums=[...nums];
+  document.getElementById('prime-grid').innerHTML=primeState.nums.map((n,i)=>`<div class="num-tile" id="pt-${i}" onclick="selectPrime(${i},${n})">${n}</div>`).join('');
 }
 
-function selectPrime(idx, num) {
+function selectPrime(idx,num) {
   if(primeState.selected.includes(idx)) return;
   primeState.selected.push(idx);
-  const tile = document.getElementById(`pt-${idx}`);
-  const fb   = document.getElementById('prime-fb');
-  if(isPrime(num)) {
-    primeState.score++;
-    tile.className='num-tile selected-prime';
-    fb.textContent='✓ Prime!'; fb.className='feedback-msg ok';
-  } else {
-    primeState.score = Math.max(0, primeState.score-1);
-    tile.className='num-tile selected-wrong';
-    fb.textContent='✗ Not prime!'; fb.className='feedback-msg bad';
-  }
-  document.getElementById('prime-score').textContent = primeState.score;
+  const tile=document.getElementById(`pt-${idx}`), fb=document.getElementById('prime-fb');
+  if(isPrime(num)){ primeState.score++; tile.className='num-tile selected-prime'; fb.textContent='✓ Prime!'; fb.className='feedback-msg ok'; }
+  else { primeState.score=Math.max(0,primeState.score-1); tile.className='num-tile selected-wrong'; fb.textContent='✗ Not prime!'; fb.className='feedback-msg bad'; }
+  document.getElementById('prime-score').textContent=primeState.score;
 }
 
 function endPrime() {
   clearInterval(primeState.interval);
-  // reveal remaining primes
-  primeState.nums.forEach((n,i)=>{
-    if(isPrime(n)&&!primeState.selected.includes(i))
-      document.getElementById(`pt-${i}`).className='num-tile revealed-prime';
-  });
-  const res = document.getElementById('prime-result');
-  res.classList.add('show');
-  const xp = primeState.score * 25;
-  document.getElementById('prime-res-title').textContent = primeState.score>=8?'Prime Expert!':primeState.score>=5?'Good Hunter!':'Keep Hunting!';
-  document.getElementById('prime-res-sub').textContent   = `You identified ${primeState.score} primes correctly!`;
-  document.getElementById('prime-xp-badge').textContent  = `+${xp} XP`;
-  if(primeState.score > (player.best_prime||0)) { player.best_prime = primeState.score; savePlayer(); }
+  primeState.nums.forEach((n,i)=>{ if(isPrime(n)&&!primeState.selected.includes(i)) document.getElementById(`pt-${i}`).className='num-tile revealed-prime'; });
+  document.getElementById('prime-result').classList.add('show');
+  const xp=primeState.score*25;
+  document.getElementById('prime-res-title').textContent=primeState.score>=8?'Prime Expert!':primeState.score>=5?'Good Hunter!':'Keep Hunting!';
+  document.getElementById('prime-res-sub').textContent=`You identified ${primeState.score} primes correctly!`;
+  document.getElementById('prime-xp-badge').textContent=`+${xp} XP`;
+  if(primeState.score>(player.best_prime||0)){ player.best_prime=primeState.score; savePlayer(); }
   addXP(xp); checkBadges();
-  document.getElementById('prime-start-btn').style.display = 'block';
+  document.getElementById('prime-start-btn').style.display='block';
 }
 
-/* ════════════════════════════════════════════════════
+/* ════════════════════════════════════════
    GAME 6: TIMES TABLE BLITZ
-════════════════════════════════════════════════════ */
-let timesState = { score:0, round:0, total:12, correct:0, curAns:0 };
+════════════════════════════════════════ */
+let timesState={ score:0, round:0, total:12, correct:0, curAns:0 };
 
 function startTimes() {
-  timesState = { score:0, round:0, total:12, correct:0, curAns:0 };
-  document.getElementById('times-start-btn').style.display = 'none';
+  timesState={ score:0, round:0, total:12, correct:0, curAns:0 };
+  document.getElementById('times-start-btn').style.display='none';
   document.getElementById('times-result').classList.remove('show');
-  document.getElementById('times-q-box').style.display = 'block';
-  document.getElementById('times-opts').style.display = 'grid';
+  document.getElementById('times-q-box').style.display='block';
+  document.getElementById('times-opts').style.display='grid';
   nextTimes();
 }
 
 function nextTimes() {
   timesState.round++;
-  document.getElementById('times-round').textContent = `${timesState.round}/${timesState.total}`;
-  document.getElementById('times-prog').style.width  = ((timesState.round-1)/timesState.total*100)+'%';
-  const a = randInt(1,12), b = randInt(1,12);
-  timesState.curAns = a*b;
-  document.getElementById('times-q').textContent = `${a} × ${b} = ?`;
-  // generate 4 options
-  const opts = new Set([timesState.curAns]);
-  while(opts.size<4) opts.add(a*randInt(1,12));
-  const arr = [...opts].sort(()=>Math.random()-.5);
-  document.getElementById('times-opts').innerHTML = arr.map(v =>
-    `<button class="opt-btn" onclick="checkTimes(${v},this)">${v}</button>`
-  ).join('');
-  document.getElementById('times-fb').textContent = '';
+  document.getElementById('times-round').textContent=`${timesState.round}/${timesState.total}`;
+  document.getElementById('times-prog').style.width=((timesState.round-1)/timesState.total*100)+'%';
+  const a=randInt(1,12),b=randInt(1,12);
+  timesState.curAns=a*b;
+  document.getElementById('times-q').textContent=`${a} × ${b} = ?`;
+  const opts=new Set([timesState.curAns]); while(opts.size<4) opts.add(a*randInt(1,12));
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('times-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkTimes(${v},this)">${v}</button>`).join('');
+  document.getElementById('times-fb').textContent='';
 }
 
-function checkTimes(val, btn) {
-  const fb = document.getElementById('times-fb');
+function checkTimes(val,btn) {
   document.getElementById('times-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
-  if(val === timesState.curAns) {
-    timesState.score += 8; timesState.correct++;
-    btn.className='opt-btn correct';
-    fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
-  } else {
+  const fb=document.getElementById('times-fb');
+  if(val===timesState.curAns){ timesState.score+=8; timesState.correct++; btn.className='opt-btn correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok'; }
+  else {
     btn.className='opt-btn wrong';
-    document.getElementById('times-opts').querySelectorAll('.opt-btn').forEach(b=>{
-      if(parseInt(b.textContent)===timesState.curAns) b.className='opt-btn correct';
-    });
+    document.getElementById('times-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===timesState.curAns) b.className='opt-btn correct'; });
     fb.textContent=`✗ Answer was ${timesState.curAns}`; fb.className='feedback-msg bad';
   }
-  document.getElementById('times-score').textContent = timesState.score;
+  document.getElementById('times-score').textContent=timesState.score;
   setTimeout(()=>{ if(timesState.round>=timesState.total) endTimes(); else nextTimes(); }, 800);
 }
 
 function endTimes() {
-  document.getElementById('times-q-box').style.display = 'none';
-  document.getElementById('times-opts').style.display  = 'none';
-  document.getElementById('times-prog').style.width = '100%';
-  const res = document.getElementById('times-result');
-  res.classList.add('show');
-  const xp = timesState.score;
-  document.getElementById('times-res-title').textContent = timesState.correct>=10?'Blitz Master!':timesState.correct>=7?'Great Job!':'Keep Practising!';
-  document.getElementById('times-res-sub').textContent   = `${timesState.correct}/${timesState.total} correct — ${timesState.score} points`;
-  document.getElementById('times-xp-badge').textContent  = `+${xp} XP`;
+  document.getElementById('times-q-box').style.display='none';
+  document.getElementById('times-opts').style.display='none';
+  document.getElementById('times-prog').style.width='100%';
+  document.getElementById('times-result').classList.add('show');
+  const xp=timesState.score;
+  document.getElementById('times-res-title').textContent=timesState.correct>=10?'Blitz Master!':timesState.correct>=7?'Great Job!':'Keep Practising!';
+  document.getElementById('times-res-sub').textContent=`${timesState.correct}/${timesState.total} correct — ${timesState.score} points`;
+  document.getElementById('times-xp-badge').textContent=`+${xp} XP`;
   addXP(xp); checkBadges();
-  document.getElementById('times-start-btn').style.display = 'block';
+  document.getElementById('times-start-btn').style.display='block';
 }
 
-/* ─── Back to Top ───────────────────────────────────── */
-const btt = document.getElementById('backToTop');
-if(btt) { window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'block':'none'); btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); }
+/* ════════════════════════════════════════
+   GAME 7: PERCENTAGE BLITZ
+════════════════════════════════════════ */
+let pctState={ score:0, round:0, total:10, curAns:0, streak:0 };
 
-/* ─── Init ───────────────────────────────────────────── */
+function startPct() {
+  pctState={ score:0, round:0, total:10, curAns:0, streak:0 };
+  document.getElementById('pct-start-btn').style.display='none';
+  document.getElementById('pct-result').classList.remove('show');
+  document.getElementById('pct-q-box').style.display='block';
+  document.getElementById('pct-opts').style.display='grid';
+  nextPct();
+}
+
+function nextPct() {
+  pctState.round++;
+  document.getElementById('pct-round').textContent=`${pctState.round}/${pctState.total}`;
+  document.getElementById('pct-prog').style.width=((pctState.round-1)/pctState.total*100)+'%';
+  // Use clean percentages: multiples of 5 or 10, and round numbers
+  const pcts=[5,10,15,20,25,30,40,50,60,75];
+  const pct=pcts[randInt(0,pcts.length-1)];
+  // Round numbers to make clean answers
+  const bases=[20,40,50,60,80,100,120,150,200,250];
+  const base=bases[randInt(0,bases.length-1)];
+  pctState.curAns=Math.round(pct*base/100);
+  document.getElementById('pct-q-text').textContent=`What is ${pct}% of ${base}?`;
+  document.getElementById('pct-bar').style.width=pct+'%';
+  document.getElementById('pct-bar-label').textContent=`${pct}% of ${base}`;
+  // Generate 4 options
+  const opts=new Set([pctState.curAns]);
+  while(opts.size<4){ const delta=randInt(-20,20)*Math.ceil(pctState.curAns/10); opts.add(Math.max(1,pctState.curAns+delta)); }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('pct-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkPct(${v},this)">${v}</button>`).join('');
+  document.getElementById('pct-fb').textContent='';
+}
+
+function checkPct(val,btn) {
+  document.getElementById('pct-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('pct-fb');
+  if(val===pctState.curAns){
+    pctState.score+=12; pctState.streak++;
+    btn.className='opt-btn correct'; fb.textContent=`✓ Correct! ${val}`; fb.className='feedback-msg ok';
+  } else {
+    pctState.streak=0; btn.className='opt-btn wrong';
+    document.getElementById('pct-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===pctState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${pctState.curAns}`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('pct-score').textContent=pctState.score;
+  document.getElementById('pct-streak').textContent=pctState.streak;
+  setTimeout(()=>{ if(pctState.round>=pctState.total) endPct(); else nextPct(); }, 850);
+}
+
+function endPct() {
+  document.getElementById('pct-q-box').style.display='none';
+  document.getElementById('pct-opts').style.display='none';
+  document.getElementById('pct-prog').style.width='100%';
+  document.getElementById('pct-result').classList.add('show');
+  const correct=pctState.score/12, xp=pctState.score;
+  document.getElementById('pct-res-emoji').textContent=correct>=8?'💯':correct>=5?'🎉':'😅';
+  document.getElementById('pct-res-title').textContent=correct>=8?'Percentage Pro!':correct>=5?'Well Done!':'Keep Practising!';
+  document.getElementById('pct-res-sub').textContent=`${correct}/${pctState.total} correct — ${pctState.score} pts`;
+  document.getElementById('pct-xp-badge').textContent=`+${xp} XP`;
+  if(pctState.streak>(player.pct_streak||0)){ player.pct_streak=pctState.streak; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('pct-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 8: BODMAS BATTLE
+════════════════════════════════════════ */
+let bodmasState={ round:0, lives:3, score:0, ans:0 };
+
+// Pre-defined BODMAS questions for accuracy
+const bodmasQuestions=[
+  { expr:'2 + 3 × 4',            a:14,  hint:'× before +' },
+  { expr:'(2 + 3) × 4',          a:20,  hint:'Brackets first' },
+  { expr:'10 − 2 × 3',           a:4,   hint:'× before −' },
+  { expr:'(10 − 2) × 3',         a:24,  hint:'Brackets first' },
+  { expr:'8 ÷ 2 + 6',            a:10,  hint:'÷ before +' },
+  { expr:'8 ÷ (2 + 2)',          a:2,   hint:'Brackets first' },
+  { expr:'3 + 4² − 5',           a:14,  hint:'Orders (4²=16) before +/−' },
+  { expr:'(3 + 4)² ÷ 7',         a:7,   hint:'Brackets → Orders → ÷' },
+  { expr:'5 × 2 + 3 × 4',        a:22,  hint:'Both × first, then +' },
+  { expr:'20 ÷ 4 − 2 + 1',       a:4,   hint:'÷ first, then left to right' },
+  { expr:'2 × (3 + 5) − 6',      a:10,  hint:'Bracket → × → −' },
+  { expr:'(1 + 2)² × 2',         a:18,  hint:'Bracket → Order → ×' },
+];
+
+function startBodmas() {
+  bodmasState={ round:0, lives:3, score:0, ans:0 };
+  document.getElementById('bodmas-start-btn').style.display='none';
+  document.getElementById('bodmas-result').classList.remove('show');
+  document.getElementById('bodmas-q-box').style.display='block';
+  document.getElementById('bodmas-ans').style.display='block';
+  document.getElementById('bodmas-action').style.display='block';
+  loadBodmasQ();
+}
+
+function loadBodmasQ() {
+  // Pick 8 random from pool
+  if(!bodmasState.pool){ bodmasState.pool=[...bodmasQuestions].sort(()=>Math.random()-.5).slice(0,8); }
+  const q=bodmasState.pool[bodmasState.round];
+  bodmasState.ans=q.a;
+  document.getElementById('bodmas-round').textContent=`${bodmasState.round+1}/8`;
+  document.getElementById('bodmas-prog').style.width=(bodmasState.round/8*100)+'%';
+  // Colour-code the expression
+  const coloured=q.expr
+    .replace(/\(/g,'<span class="bracket-col">(</span>')
+    .replace(/\)/g,'<span class="bracket-col">)</span>')
+    .replace(/[×÷]/g,m=>`<span class="op-col">${m}</span>`)
+    .replace(/²/g,'<sup>2</sup>');
+  document.getElementById('bodmas-expr').innerHTML=coloured;
+  document.getElementById('bodmas-lives').textContent='❤️'.repeat(bodmasState.lives);
+  document.getElementById('bodmas-ans').value='';
+  document.getElementById('bodmas-fb').textContent='';
+  document.getElementById('bodmas-ans').focus();
+}
+
+function checkBodmas() {
+  const val=parseInt(document.getElementById('bodmas-ans').value);
+  if(isNaN(val)) return;
+  const fb=document.getElementById('bodmas-fb'), inp=document.getElementById('bodmas-ans');
+  if(val===bodmasState.ans){
+    bodmasState.score+=15; inp.className='answer-input correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
+    setTimeout(()=>{
+      inp.className='answer-input'; bodmasState.round++;
+      if(bodmasState.round>=8) endBodmas(true); else loadBodmasQ();
+    }, 600);
+  } else {
+    bodmasState.lives--;
+    document.getElementById('bodmas-lives').textContent='❤️'.repeat(Math.max(0,bodmasState.lives));
+    fb.textContent=bodmasState.lives<=0?`✗ Answer: ${bodmasState.ans}`:`✗ Wrong! (${bodmasState.pool[bodmasState.round].hint})`;
+    fb.className='feedback-msg bad'; inp.className='answer-input wrong';
+    setTimeout(()=>{ inp.className='answer-input'; if(bodmasState.lives<=0) endBodmas(false); }, 800);
+  }
+  document.getElementById('bodmas-score').textContent=bodmasState.score;
+}
+
+function endBodmas(won) {
+  delete bodmasState.pool;
+  document.getElementById('bodmas-q-box').style.display='none';
+  document.getElementById('bodmas-ans').style.display='none';
+  document.getElementById('bodmas-action').style.display='none';
+  document.getElementById('bodmas-prog').style.width='100%';
+  document.getElementById('bodmas-result').classList.add('show');
+  const perfect=won&&bodmasState.score===120;
+  document.getElementById('bodmas-res-emoji').textContent=perfect?'🏆':won?'🧮':'💔';
+  document.getElementById('bodmas-res-title').textContent=perfect?'Perfect BODMAS!':won?'Battle Won!':'Battle Lost!';
+  document.getElementById('bodmas-res-sub').textContent=`Score: ${bodmasState.score}/120`;
+  document.getElementById('bodmas-xp-badge').textContent=`+${bodmasState.score} XP`;
+  if(perfect){ player.bodmas_perfect=(player.bodmas_perfect||0)+1; savePlayer(); }
+  addXP(bodmasState.score); checkBadges();
+  document.getElementById('bodmas-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 9: INTEGER INVADERS
+════════════════════════════════════════ */
+let intState={ score:0, round:0, total:10, curAns:0 };
+
+function startInteger() {
+  intState={ score:0, round:0, total:10, curAns:0 };
+  document.getElementById('int-start-btn').style.display='none';
+  document.getElementById('int-diff').style.display='none';
+  document.getElementById('int-result').classList.remove('show');
+  document.getElementById('int-q-box').style.display='block';
+  document.getElementById('int-opts').style.display='grid';
+  nextInteger();
+}
+
+function genIntQ(diff) {
+  let a,b,op,ans,expr;
+  if(diff==='easy'){
+    a=randInt(-10,10); b=randInt(-10,10);
+    op=Math.random()<0.5?'+':'−';
+    ans=op==='+'?a+b:a-b;
+    expr=`(${a}) ${op} (${b})`;
+  } else if(diff==='medium'){
+    a=randInt(-9,9); b=randInt(-9,9);
+    op='×'; ans=a*b;
+    expr=`(${a}) × (${b})`;
+  } else {
+    const ops=['+','−','×'];
+    op=ops[randInt(0,2)];
+    a=randInt(-12,12); b=randInt(-12,12);
+    if(op==='+') ans=a+b;
+    else if(op==='−') ans=a-b;
+    else { a=randInt(-9,9); b=randInt(-9,9); ans=a*b; }
+    expr=`(${a}) ${op} (${b})`;
+  }
+  return { expr, ans };
+}
+
+function nextInteger() {
+  intState.round++;
+  document.getElementById('int-round').textContent=`${intState.round}/${intState.total}`;
+  document.getElementById('int-prog').style.width=((intState.round-1)/intState.total*100)+'%';
+  const diff=diffSettings.integer||'easy';
+  const { expr, ans }=genIntQ(diff);
+  intState.curAns=ans;
+  // Colour-code expression
+  const coloured=expr.replace(/−\d+|\(-\d+\)/g,m=>`<span class="neg">${m}</span>`).replace(/\+\d+|\(\d+\)/g,m=>`<span class="pos">${m}</span>`);
+  document.getElementById('int-expr').innerHTML=coloured+'<br>= ?';
+  const opts=new Set([ans]);
+  while(opts.size<4){ const d=randInt(-15,15); if(d!==0) opts.add(ans+d); }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('int-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkInteger(${v},this)">${v}</button>`).join('');
+  document.getElementById('int-fb').textContent='';
+}
+
+function checkInteger(val,btn) {
+  document.getElementById('int-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('int-fb');
+  if(val===intState.curAns){
+    intState.score+=10; btn.className='opt-btn correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
+  } else {
+    btn.className='opt-btn wrong';
+    document.getElementById('int-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===intState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${intState.curAns}`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('int-score').textContent=intState.score;
+  setTimeout(()=>{ if(intState.round>=intState.total) endInteger(); else nextInteger(); }, 850);
+}
+
+function endInteger() {
+  document.getElementById('int-q-box').style.display='none';
+  document.getElementById('int-opts').style.display='none';
+  document.getElementById('int-prog').style.width='100%';
+  document.getElementById('int-result').classList.add('show');
+  const correct=intState.score/10, xp=intState.score;
+  document.getElementById('int-res-emoji').textContent=correct>=8?'⚔️':correct>=5?'🎉':'😤';
+  document.getElementById('int-res-title').textContent=correct>=8?'Integer Master!':correct>=5?'Good Fighter!':'Keep Training!';
+  document.getElementById('int-res-sub').textContent=`${correct}/${intState.total} correct — ${intState.score} pts`;
+  document.getElementById('int-xp-badge').textContent=`+${xp} XP`;
+  if(intState.score>(player.int_score||0)){ player.int_score=intState.score; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('int-start-btn').style.display='block';
+  document.getElementById('int-diff').style.display='flex';
+}
+
+/* ════════════════════════════════════════
+   GAME 10: SQUARE ROOT RUSH
+════════════════════════════════════════ */
+let sqState={ score:0, missed:0, timer:30, interval:null, nums:[], selected:[] };
+
+function startSqRoot() {
+  clearInterval(sqState.interval);
+  sqState={ score:0, missed:0, timer:30, interval:null, nums:[], selected:[] };
+  document.getElementById('sq-start-btn').style.display='none';
+  document.getElementById('sq-result').classList.remove('show');
+  document.getElementById('sq-fb').textContent='';
+  genSqGrid();
+  sqState.interval=setInterval(()=>{
+    sqState.timer--;
+    document.getElementById('sq-timer').textContent=sqState.timer;
+    if(sqState.timer<=0) endSqRoot();
+  }, 1000);
+}
+
+function genSqGrid() {
+  // Perfect squares up to 200
+  const squares=[1,4,9,16,25,36,49,64,81,100,121,144,169,196];
+  const nonSquares=[];
+  while(nonSquares.length<14){ const n=randInt(2,199); if(!squares.includes(n)&&!nonSquares.includes(n)) nonSquares.push(n); }
+  // Pick 5 squares + 15 non-squares, shuffle
+  const chosen=[...squares.slice(0,5).sort(()=>Math.random()-.5), ...nonSquares.slice(0,15)].sort(()=>Math.random()-.5);
+  sqState.nums=chosen;
+  document.getElementById('sq-grid').innerHTML=chosen.map((n,i)=>`<div class="num-tile" id="sq-${i}" onclick="selectSquare(${i},${n})">${n}</div>`).join('');
+}
+
+function selectSquare(idx,num) {
+  if(sqState.selected.includes(idx)) return;
+  sqState.selected.push(idx);
+  const tile=document.getElementById(`sq-${idx}`), fb=document.getElementById('sq-fb');
+  if(isPerfectSquare(num)){
+    sqState.score++; tile.className='num-tile selected-square';
+    const root=Math.round(Math.sqrt(num));
+    fb.textContent=`✓ ${num} = ${root}² — Perfect Square!`; fb.className='feedback-msg ok';
+  } else {
+    sqState.missed++; tile.className='num-tile selected-wrong';
+    fb.textContent=`✗ ${num} is not a perfect square`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('sq-score').textContent=sqState.score;
+  document.getElementById('sq-missed').textContent=sqState.missed;
+}
+
+function endSqRoot() {
+  clearInterval(sqState.interval);
+  sqState.nums.forEach((n,i)=>{ if(isPerfectSquare(n)&&!sqState.selected.includes(i)) document.getElementById(`sq-${i}`).className='num-tile revealed-square'; });
+  document.getElementById('sq-result').classList.add('show');
+  const xp=sqState.score*20;
+  document.getElementById('sq-res-title').textContent=sqState.score>=8?'Square Genius!':sqState.score>=5?'Good Eye!':'Keep Practising!';
+  document.getElementById('sq-res-sub').textContent=`Found ${sqState.score} squares, missed ${sqState.missed} wrong picks`;
+  document.getElementById('sq-xp-badge').textContent=`+${xp} XP`;
+  if(sqState.score>(player.best_sq||0)){ player.best_sq=sqState.score; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('sq-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 11: MATH MEMORY MATCH
+════════════════════════════════════════ */
+let memState={ flipped:[], matched:0, moves:0, pairs:[], timer:null, elapsed:0, locked:false };
+
+const memPairs=[
+  {q:'3×4',a:'12'},{q:'7×8',a:'56'},{q:'√25',a:'5'},{q:'2⁴',a:'16'},
+  {q:'15%\nof 60',a:'9'},{q:'½+⅓',a:'5/6'},{q:'9²',a:'81'},{q:'48÷6',a:'8'},
+  {q:'11×12',a:'132'},{q:'6²',a:'36'},{q:'√144',a:'12'},{q:'25% of 80',a:'20'},
+];
+
+function startMemory() {
+  memState={ flipped:[], matched:0, moves:0, pairs:[], timer:null, elapsed:0, locked:false };
+  document.getElementById('mem-start-btn').style.display='none';
+  document.getElementById('memory-result').classList.remove('show');
+  document.getElementById('mem-fb').textContent='';
+  // Pick 8 random pairs
+  const chosen=[...memPairs].sort(()=>Math.random()-.5).slice(0,8);
+  const cards=[];
+  chosen.forEach((p,i)=>{ cards.push({id:i,type:'q',text:p.q,pair:i}); cards.push({id:i+8,type:'a',text:p.a,pair:i}); });
+  cards.sort(()=>Math.random()-.5);
+  memState.pairs=cards;
+  document.getElementById('memory-grid').innerHTML=cards.map((c,i)=>`<div class="mem-card" id="mc-${i}" data-idx="${i}" onclick="flipMemCard(${i})">${c.text}</div>`).join('');
+  document.getElementById('mem-moves').textContent='0';
+  document.getElementById('mem-matches').textContent='0/8';
+  document.getElementById('mem-time').textContent='0s';
+  clearInterval(memState.timer);
+  memState.timer=setInterval(()=>{ memState.elapsed++; document.getElementById('mem-time').textContent=memState.elapsed+'s'; }, 1000);
+}
+
+function flipMemCard(idx) {
+  if(memState.locked) return;
+  const card=document.getElementById(`mc-${idx}`);
+  if(card.classList.contains('flipped')||card.classList.contains('matched')) return;
+  card.classList.add('flipped');
+  memState.flipped.push(idx);
+  if(memState.flipped.length===2){
+    memState.locked=true; memState.moves++;
+    document.getElementById('mem-moves').textContent=memState.moves;
+    const [a,b]=memState.flipped;
+    const ca=memState.pairs[a], cb=memState.pairs[b];
+    if(ca.pair===cb.pair&&ca.type!==cb.type){
+      // Match!
+      setTimeout(()=>{
+        document.getElementById(`mc-${a}`).classList.replace('flipped','matched');
+        document.getElementById(`mc-${b}`).classList.replace('flipped','matched');
+        memState.matched++;
+        document.getElementById('mem-matches').textContent=`${memState.matched}/8`;
+        document.getElementById('mem-fb').textContent='✓ Match!'; document.getElementById('mem-fb').className='feedback-msg ok';
+        memState.flipped=[]; memState.locked=false;
+        if(memState.matched===8) endMemory();
+      }, 400);
+    } else {
+      setTimeout(()=>{
+        document.getElementById(`mc-${a}`).classList.remove('flipped');
+        document.getElementById(`mc-${b}`).classList.remove('flipped');
+        document.getElementById('mem-fb').textContent='✗ No match'; document.getElementById('mem-fb').className='feedback-msg bad';
+        memState.flipped=[]; memState.locked=false;
+      }, 800);
+    }
+  }
+}
+
+function endMemory() {
+  clearInterval(memState.timer);
+  document.getElementById('memory-result').classList.add('show');
+  const xp=Math.max(30,90-memState.moves*3);
+  document.getElementById('mem-res-title').textContent=memState.moves<=10?'Memory Master!':memState.moves<=16?'Well Done!':'Good Effort!';
+  document.getElementById('mem-res-sub').textContent=`Completed in ${memState.moves} moves & ${memState.elapsed}s`;
+  document.getElementById('mem-xp-badge').textContent=`+${xp} XP`;
+  if(!player.mem_best_moves||memState.moves<player.mem_best_moves){ player.mem_best_moves=memState.moves; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('mem-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 12: SPEED DIVISION
+════════════════════════════════════════ */
+let divState={ score:0, round:0, total:12, curAns:0, streak:0 };
+
+function startDivision() {
+  divState={ score:0, round:0, total:12, curAns:0, streak:0 };
+  document.getElementById('div-start-btn').style.display='none';
+  document.getElementById('div-diff').style.display='none';
+  document.getElementById('div-result').classList.remove('show');
+  document.getElementById('div-q-box').style.display='block';
+  document.getElementById('div-opts').style.display='grid';
+  nextDivision();
+}
+
+function genDivQ(diff) {
+  let a,b;
+  if(diff==='easy')  { b=randInt(1,5);  a=b*randInt(1,10); }
+  if(diff==='medium'){ b=randInt(2,12); a=b*randInt(1,12); }
+  if(diff==='hard')  { b=randInt(3,15); a=b*randInt(5,20); }
+  return { expr:`${a} ÷ ${b} = ?`, ans:a/b };
+}
+
+function nextDivision() {
+  divState.round++;
+  document.getElementById('div-round').textContent=`${divState.round}/${divState.total}`;
+  document.getElementById('div-prog').style.width=((divState.round-1)/divState.total*100)+'%';
+  const diff=diffSettings.division||'easy';
+  const {expr,ans}=genDivQ(diff);
+  divState.curAns=ans;
+  document.getElementById('div-q').textContent=expr;
+  const opts=new Set([ans]);
+  while(opts.size<4){ const delta=randInt(1,8)*(Math.random()<.5?1:-1); const v=ans+delta; if(v>0&&v!==ans) opts.add(v); }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('div-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkDivision(${v},this)">${v}</button>`).join('');
+  document.getElementById('div-fb').textContent='';
+}
+
+function checkDivision(val,btn) {
+  document.getElementById('div-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('div-fb');
+  if(val===divState.curAns){
+    divState.score+=10; divState.streak++;
+    btn.className='opt-btn correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
+  } else {
+    divState.streak=0; btn.className='opt-btn wrong';
+    document.getElementById('div-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseFloat(b.textContent)===divState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${divState.curAns}`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('div-score').textContent=divState.score;
+  document.getElementById('div-streak').textContent=divState.streak;
+  setTimeout(()=>{ if(divState.round>=divState.total) endDivision(); else nextDivision(); }, 850);
+}
+
+function endDivision() {
+  document.getElementById('div-q-box').style.display='none';
+  document.getElementById('div-opts').style.display='none';
+  document.getElementById('div-prog').style.width='100%';
+  document.getElementById('div-result').classList.add('show');
+  const correct=divState.score/10, xp=divState.score;
+  document.getElementById('div-res-title').textContent=correct>=10?'Division Ace!':correct>=7?'Great Work!':'Keep Dividing!';
+  document.getElementById('div-res-sub').textContent=`${correct}/${divState.total} correct — ${divState.score} pts`;
+  document.getElementById('div-xp-badge').textContent=`+${xp} XP`;
+  if(divState.streak>(player.div_streak||0)){ player.div_streak=divState.streak; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('div-start-btn').style.display='block';
+  document.getElementById('div-diff').style.display='flex';
+}
+
+/* ─── Back to Top ─── */
+const btt=document.getElementById('backToTop');
+if(btt){ window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'block':'none'); btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); }
+
+/* ─── Init ─── */
 updateUI();
-
-/* ─── Load Header / Footer ──────────────────────────── */
 fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
 </script>
