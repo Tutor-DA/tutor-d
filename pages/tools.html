@@ -104,7 +104,9 @@
       width:100%;background:#0d0d1a;border:1.5px solid var(--border);
       color:var(--text);border-radius:10px;padding:11px 14px;
       font-family:var(--mono);font-size:.95rem;outline:none;
-      transition:border-color .2s;-moz-appearance:textfield;appearance:textfield
+      transition:border-color .2s;
+      appearance: textfield;
+      -moz-appearance: textfield;
     }
     input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
     input:focus,select:focus,textarea:focus{border-color:var(--cyan)}
@@ -694,8 +696,6 @@
       </div>
     </div>
   </div>
-
-</div><!-- /wrapper -->
 
   <!-- ═══════════════════════════════════════════
        TOOL 6 – WORKSHEET GENERATOR
@@ -1533,7 +1533,10 @@ function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function generateWsQuestions(count) {
   const g = wsState.grade, t = wsState.topic, d = wsState.diff;
   const qs = [];
-  for(let i=0;i<count;i++) qs.push(makeQuestion(g,t,d,i));
+  for(let i=0;i<count;i++){
+    try { qs.push(makeQuestion(g,t,d,i)); }
+    catch(e){ qs.push({q:`Problem ${i+1}: Calculate carefully`, a:'See working'}); }
+  }
   return qs;
 }
 
@@ -2019,7 +2022,7 @@ window.addEventListener('DOMContentLoaded', () => {
   calcFDP(); calcGCDLCM();
   calcStats();
   buildMats();
-  initWorksheet();
+  try { initWorksheet(); } catch(e) { console.error('Worksheet init error:', e); }
 });
 
 fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
