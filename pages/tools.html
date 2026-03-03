@@ -9,6 +9,18 @@
   <link rel="stylesheet" href="../assets/css/footer.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$','$']],
+      displayMath: [['$$','$$']],
+      packages: {'[+]': ['ams']}
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+    startup: { typeset: false }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.min.js" id="MathJax-script" async></script>
 
   <style>
     /* ── Variables ─────────────────────────────── */
@@ -1521,9 +1533,11 @@ function wsPreview() {
   wsState.questions = qs;
   const preview = document.getElementById('ws-preview');
   preview.style.display = 'block';
-  document.getElementById('ws-preview-qs').innerHTML = qs.slice(0,6).map((q,i) =>
+  const previewQs = document.getElementById('ws-preview-qs');
+  previewQs.innerHTML = qs.slice(0,6).map((q,i) =>
     `<div class="ws-q-item"><div class="ws-q-num">Q${i+1}</div>${q.q}</div>`
   ).join('');
+  if(window.MathJax) MathJax.typesetPromise([previewQs]);
 }
 
 /* ── Question Generators ── */
@@ -2701,12 +2715,12 @@ function makeQuestion(g, topic, diff, idx) {
   if(topic==='Quadratic Equations (Factorisation)'||topic==='Quadratic Formula'){
     const r1=ri(-6,6)||1, r2=ri(-6,6)||-1;
     const b=-(r1+r2), c=r1*r2;
-    const bStr=b>=0?`+ ${b}`:`− ${Math.abs(b)}`, cStr=c>=0?`+ ${c}`:`− ${Math.abs(c)}`;
+    const bStr=b>=0?`+ ${b}`:`- ${Math.abs(b)}`, cStr=c>=0?`+ ${c}`:`- ${Math.abs(c)}`;
     const useFormula=topic.includes('Formula');
     return choice([
-      {q:`Solve by ${useFormula?'quadratic formula':'factorisation'}: x² ${bStr}x ${cStr} = 0`,a:`x = ${r1} or x = ${r2}`,hint:useFormula?'x = [−b ± √(b²−4ac)] / 2a':undefined},
-      {q:'Find the discriminant of 2x² − 4x + 2 = 0 and state nature of roots.',a:'Discriminant = b²−4ac = 16−16 = 0 → equal roots'},
-      {q:'Two numbers differ by 3 and their product is 54. Find the numbers.',a:'6 and 9 (x² − 3x − 54 = 0)'},
+      {q:`Solve by ${useFormula?'quadratic formula':'factorisation'}: $x^2 ${bStr}x ${cStr} = 0$`,a:`$x = ${r1}$ or $x = ${r2}$`,hint:useFormula?'$x = \\dfrac{-b \\pm \\sqrt{b^2-4ac}}{2a}$':undefined},
+      {q:'Find the discriminant of $2x^2 - 4x + 2 = 0$ and state the nature of roots.',a:'$D = b^2-4ac = 16-16 = 0$ → equal roots'},
+      {q:'Two numbers differ by 3 and their product is 54. Find the numbers.',a:'6 and 9 ($x^2 - 3x - 54 = 0$)'},
     ]);
   }
   if(topic==='Arithmetic Progressions (nth term)'||topic==='Arithmetic Progressions (Sum)'){
@@ -2730,13 +2744,13 @@ function makeQuestion(g, topic, diff, idx) {
   }
   if(topic==='Basic Trigonometry (sin, cos, tan)'||topic==='Trigonometric Identities'){
     const angles=[30,45,60];
-    const tv={30:{sin:'1/2',cos:'√3/2',tan:'1/√3'},45:{sin:'1/√2',cos:'1/√2',tan:'1'},60:{sin:'√3/2',cos:'1/2',tan:'√3'}};
+    const tv={30:{sin:'\\dfrac{1}{2}',cos:'\\dfrac{\\sqrt{3}}{2}',tan:'\\dfrac{1}{\\sqrt{3}}'},45:{sin:'\\dfrac{1}{\\sqrt{2}}',cos:'\\dfrac{1}{\\sqrt{2}}',tan:'1'},60:{sin:'\\dfrac{\\sqrt{3}}{2}',cos:'\\dfrac{1}{2}',tan:'\\sqrt{3}'}};
     const ang=choice(angles), fn=choice(['sin','cos','tan']);
     return choice([
-      {q:`Find the exact value of ${fn}(${ang}°)`,a:tv[ang][fn]},
-      {q:'Prove: sin²θ + cos²θ = 1',a:'This is the fundamental Pythagorean identity (from Pythagoras theorem in a right triangle)'},
-      {q:'Simplify: (1 − sin²θ)',a:'cos²θ'},
-      {q:'If sin A = 3/5, find cos A (A is acute).',a:'cos A = 4/5 (using sin²A + cos²A = 1)'},
+      {q:`Find the exact value of $\\${fn}(${ang}^\\circ)$`,a:`$${tv[ang][fn]}$`},
+      {q:'Prove: $\\sin^2\\theta + \\cos^2\\theta = 1$',a:'This is the fundamental Pythagorean identity (from Pythagoras theorem in a right triangle)'},
+      {q:'Simplify: $(1 - \\sin^2\\theta)$',a:'$\\cos^2\\theta$'},
+      {q:'If $\\sin A = \\dfrac{3}{5}$, find $\\cos A$ ($A$ is acute).',a:'$\\cos A = \\dfrac{4}{5}$ (using $\\sin^2 A + \\cos^2 A = 1$)'},
     ]);
   }
   if(topic==='Heights & Distances'){
@@ -2880,20 +2894,20 @@ function makeQuestion(g, topic, diff, idx) {
   }
   if(topic==='Limits (Algebraic)'){
     return choice([
-      {q:'Find: lim(x→2) of (x² − 4)/(x − 2)',a:'4',hint:'Factor: (x+2)(x−2)/(x−2) = x+2, substitute x=2'},
-      {q:'Find: lim(x→0) of sin(x)/x',a:'1 (standard limit)'},
-      {q:'Find: lim(x→3) of (x² − 9)/(x − 3)',a:'6'},
-      {q:'Find: lim(x→1) of (x³ − 1)/(x − 1)',a:'3',hint:'x³−1 = (x−1)(x²+x+1)'},
+      {q:'Find: $\\lim_{x \\to 2}\\dfrac{x^2-4}{x-2}$',a:'4',hint:'Factor: $\\dfrac{(x+2)(x-2)}{x-2}=x+2$, then substitute $x=2$'},
+      {q:'Find: $\\lim_{x \\to 0}\\dfrac{\\sin x}{x}$',a:'1 (standard limit)'},
+      {q:'Find: $\\lim_{x \\to 3}\\dfrac{x^2-9}{x-3}$',a:'6'},
+      {q:'Find: $\\lim_{x \\to 1}\\dfrac{x^3-1}{x-1}$',a:'3',hint:'$x^3-1=(x-1)(x^2+x+1)$'},
     ]);
   }
   if(topic==='Derivatives (Basic)'){
     const n=ri(2,5), a=ri(1,4);
     return choice([
-      {q:`Differentiate: y = ${a}x^${n}`,a:`dy/dx = ${a*n}x^${n-1}`,hint:'Power rule: d/dx(axⁿ) = n·axⁿ⁻¹'},
-      {q:'Differentiate: y = sin x',a:'dy/dx = cos x'},
-      {q:'Differentiate: y = cos x',a:'dy/dx = −sin x'},
-      {q:'Differentiate: y = e^x',a:'dy/dx = e^x'},
-      {q:'Differentiate: y = ln x',a:'dy/dx = 1/x'},
+      {q:`Differentiate: $y = ${a}x^{${n}}$`,a:`$\\dfrac{dy}{dx} = ${a*n}x^{${n-1}}$`,hint:'Power rule: $\\dfrac{d}{dx}(ax^n) = nax^{n-1}$'},
+      {q:'Differentiate: $y = \\sin x$',a:'$\\dfrac{dy}{dx} = \\cos x$'},
+      {q:'Differentiate: $y = \\cos x$',a:'$\\dfrac{dy}{dx} = -\\sin x$'},
+      {q:'Differentiate: $y = e^x$',a:'$\\dfrac{dy}{dx} = e^x$'},
+      {q:'Differentiate: $y = \\ln x$',a:'$\\dfrac{dy}{dx} = \\dfrac{1}{x}$'},
     ]);
   }
   if(topic==='Straight Lines (Equations)'){
@@ -2960,25 +2974,25 @@ function makeQuestion(g, topic, diff, idx) {
   }
   if(topic==='Continuity & Differentiability'){
     return choice([
-      {q:'What condition must f(x) satisfy to be continuous at x = a?',a:'lim(x→a) f(x) = f(a)'},
-      {q:'Is f(x) = |x| differentiable at x = 0?',a:'No — the left and right derivatives are −1 and +1 (not equal)'},
-      {q:'Differentiate: y = sin(x²)',a:'dy/dx = 2x·cos(x²)  (chain rule)'},
+      {q:'What condition must $f(x)$ satisfy to be continuous at $x = a$?',a:'$\\lim_{x \\to a} f(x) = f(a)$'},
+      {q:'Is $f(x) = |x|$ differentiable at $x = 0$?',a:'No — the left and right derivatives are $-1$ and $+1$ (not equal)'},
+      {q:'Differentiate: $y = \\sin(x^2)$',a:'$\\dfrac{dy}{dx} = 2x\\cos(x^2)$ (chain rule)'},
     ]);
   }
   if(topic==='Differentiation (Chain Rule)'||topic==='Application of Derivatives (Rate of Change)'||topic==='Second Order Derivatives'){
     const n=ri(2,5), a=ri(1,4);
     return choice([
-      {q:`Differentiate: y = (${a}x + 1)^${n}`,a:`dy/dx = ${n*a}(${a}x+1)^${n-1}`,hint:'Chain rule: dy/dx = n·uⁿ⁻¹·(du/dx)'},
-      {q:'The radius of a circle increases at 3 cm/s. Find the rate of increase of its area when r = 5 cm.',a:'30π cm²/s',hint:'A=πr², dA/dt = 2πr·(dr/dt)'},
-      {q:`Find d²y/dx² for y = ${a}x^${n}`,a:`${a*n*(n-1)}x^${n-2}`},
+      {q:`Differentiate: $y = (${a}x+1)^{${n}}$`,a:`$\\dfrac{dy}{dx} = ${n*a}(${a}x+1)^{${n-1}}$`,hint:'Chain rule: $\\dfrac{dy}{dx} = nu^{n-1}\\cdot\\dfrac{du}{dx}$'},
+      {q:'The radius of a circle increases at 3 cm/s. Find the rate of increase of its area when $r = 5$ cm.',a:'$30\\pi$ cm²/s',hint:'$A=\\pi r^2$, $\\dfrac{dA}{dt} = 2\\pi r\\cdot\\dfrac{dr}{dt}$'},
+      {q:`Find $\\dfrac{d^2y}{dx^2}$ for $y = ${a}x^{${n}}$`,a:`$${a*n*(n-1)}x^{${n-2}}$`},
     ]);
   }
   if(topic==='Application of Derivatives (Maxima & Minima)'){
     return choice([
-      {q:'Find the local maxima of f(x) = −x² + 4x − 1',a:'Maximum at x=2, f(2)=3'},
-      {q:'Find critical points of f(x) = x³ − 3x',a:"x = ±1  (f'(x) = 3x²−3 = 0)"},
-      {q:'State the second derivative test for maxima.',a:"If f'(c)=0 and f''(c)<0, then f has a local maximum at x=c"},
-      {q:'Find the maximum value of f(x) = x(50−x)',a:'625 at x=25'},
+      {q:'Find the local maxima of $f(x) = -x^2 + 4x - 1$',a:'Maximum at $x=2$, $f(2)=3$'},
+      {q:'Find critical points of $f(x) = x^3 - 3x$',a:"$x = \\pm 1$  ($f'(x) = 3x^2-3 = 0$)"},
+      {q:'State the second derivative test for maxima.',a:"If $f'(c)=0$ and $f''(c)<0$, then $f$ has a local maximum at $x=c$"},
+      {q:'Find the maximum value of $f(x) = x(50-x)$',a:'625 at $x=25$'},
     ]);
   }
   if(topic==='Integration (Indefinite)'||topic==='Integration by Substitution'){
@@ -2986,28 +3000,28 @@ function makeQuestion(g, topic, diff, idx) {
     const isSub=topic.includes('Substitution');
     return choice([
       isSub
-        ? {q:'Find ∫ 2x·cos(x²) dx',a:'sin(x²) + C',hint:'Let u = x², du = 2x dx'}
-        : {q:`Find ∫ ${a}x^${n} dx`,a:`${a}/${n+1} x^${n+1} + C`,hint:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C'},
-      {q:'Find ∫ (3x² + 2x − 5) dx',a:'x³ + x² − 5x + C'},
-      {q:'Find ∫ sin x dx',a:'−cos x + C'},
-      {q:'Find ∫ e^x dx',a:'e^x + C'},
+        ? {q:'Find $\\int 2x\\cos(x^2)\\,dx$',a:'$\\sin(x^2) + C$',hint:'Let $u = x^2$, $du = 2x\\,dx$'}
+        : {q:`Find $\\int ${a}x^{${n}}\\,dx$`,a:`$\\dfrac{${a}}{${n+1}} x^{${n+1}} + C$`,hint:'$\\int x^n\\,dx = \\dfrac{x^{n+1}}{n+1} + C$'},
+      {q:'Find $\\int (3x^2 + 2x - 5)\\,dx$',a:'$x^3 + x^2 - 5x + C$'},
+      {q:'Find $\\int \\sin x\\,dx$',a:'$-\\cos x + C$'},
+      {q:'Find $\\int e^x\\,dx$',a:'$e^x + C$'},
     ]);
   }
   if(topic==='Integration (Definite)'||topic==='Application of Integrals (Area)'){
     const isArea=topic.includes('Area');
     return choice([
       isArea
-        ? {q:'Find the area under y = x² from x=0 to x=3',a:'9 square units',hint:'∫₀³ x² dx = [x³/3]₀³ = 9'}
-        : {q:'Evaluate: ∫₀¹ (3x² + 2x) dx',a:'2',hint:'[x³+x²]₀¹ = 1+1−0 = 2'},
-      {q:'Evaluate: ∫₁² x dx',a:'3/2',hint:'[x²/2]₁² = 2 − 1/2 = 3/2'},
-      {q:'Evaluate: ∫₀^(π/2) cos x dx',a:'1',hint:'[sin x]₀^(π/2) = 1 − 0 = 1'},
+        ? {q:'Find the area under $y = x^2$ from $x=0$ to $x=3$',a:'9 square units',hint:'$\\int_0^3 x^2\\,dx = \\left[\\dfrac{x^3}{3}\\right]_0^3 = 9$'}
+        : {q:'Evaluate: $\\int_0^1 (3x^2 + 2x)\\,dx$',a:'2',hint:'$[x^3+x^2]_0^1 = 1+1-0 = 2$'},
+      {q:'Evaluate: $\\int_1^2 x\\,dx$',a:'$\\dfrac{3}{2}$',hint:'$\\left[\\dfrac{x^2}{2}\\right]_1^2 = 2 - \\dfrac{1}{2} = \\dfrac{3}{2}$'},
+      {q:'Evaluate: $\\int_0^{\\pi/2} \\cos x\\,dx$',a:'1',hint:'$[\\sin x]_0^{\\pi/2} = 1 - 0 = 1$'},
     ]);
   }
   if(topic==='Differential Equations (Order & Degree)'){
     return choice([
-      {q:'What is the order and degree of: d²y/dx² + 3(dy/dx)³ = 5y?',a:'Order = 2, Degree = 1'},
-      {q:'Solve: dy/dx = x',a:'y = x²/2 + C  (separate variables and integrate)'},
-      {q:'Solve: dy/dx = y',a:'y = Ce^x  (separable: dy/y = dx)'},
+      {q:'What is the order and degree of: $\\dfrac{d^2y}{dx^2} + 3\\left(\\dfrac{dy}{dx}\\right)^3 = 5y$?',a:'Order = 2, Degree = 1'},
+      {q:'Solve: $\\dfrac{dy}{dx} = x$',a:'$y = \\dfrac{x^2}{2} + C$ (separate variables and integrate)'},
+      {q:'Solve: $\\dfrac{dy}{dx} = y$',a:'$y = Ce^x$ (separable: $\\dfrac{dy}{y} = dx$)'},
       {q:'What is a differential equation?',a:'An equation involving derivatives of an unknown function'},
     ]);
   }
@@ -3245,6 +3259,8 @@ function generateWorksheet() {
     .ws-q{ break-inside:avoid; }
   }
 </style>
+<script>MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};<\/script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.min.js" id="MathJax-script" async><\/script>
 </head>
 <body>
 
@@ -3279,7 +3295,7 @@ ${ansKey==='separate'?answerKeyHtml:''}
   <span>Page 1</span>
 </div>
 
-<script>window.onload=()=>window.print();<\/script>
+<script>window.onload=()=>{if(window.MathJax){MathJax.startup.promise.then(()=>window.print());}else{window.print();}};<\/script>
 </body></html>`;
 
   const win = window.open('','_blank');
