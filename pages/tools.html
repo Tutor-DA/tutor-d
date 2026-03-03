@@ -2341,9 +2341,9 @@ function makeQuestion(g, topic, diff, idx) {
     const p=ri(1,10)*100, r=choice([5,8,10,12,15]), t=ri(1,5);
     const si=p*r*t/100;
     return choice([
-      {q:`Find SI: Principal = ₹${p}, Rate = ${r}% p.a., Time = ${t} years`,a:`SI = ₹${si}`,hint:'SI = P × R × T ÷ 100'},
-      {q:`Find the Amount: P = ₹${p}, R = ${r}%, T = ${t} years`,a:`Amount = ₹${p+si}`,hint:'Amount = Principal + SI'},
-      {q:`SI = ₹${si}, R = ${r}%, T = ${t} years. Find Principal.`,a:`₹${p}`,hint:'P = (SI × 100) ÷ (R × T)'},
+      {q:`Find SI: Principal = ₹${p}, Rate = ${r}% p.a., Time = ${t} years`,a:`SI = ₹${si}`,hint:'$\\text{SI} = \\dfrac{P \\times R \\times T}{100}$'},
+      {q:`Find the Amount: $P = ₹${p}$, $R = ${r}\\%$, $T = ${t}$ years`,a:`Amount = ₹${p+si}`,hint:'Amount = Principal + SI'},
+      {q:`$\\text{SI} = ₹${si}$, $R = ${r}\\%$, $T = ${t}$ years. Find Principal.`,a:`₹${p}`,hint:'$P = \\dfrac{\\text{SI}\\times100}{R\\times T}$'},
     ]);
   }
   if(topic==='Lines & Angles'){
@@ -2452,20 +2452,20 @@ function makeQuestion(g, topic, diff, idx) {
     const n=choice([4,9,16,25,36,49,64,81,100,121,144]);
     const m=ri(2,15);
     return choice([
-      {q:`Find √${n}`,a:`${Math.sqrt(n)}`},
-      {q:`Is ${m*m} a perfect square?`,a:`Yes — √${m*m} = ${m}`},
-      {q:`Find √${144}`,a:'12'},
-      {q:`What is the smallest number to be multiplied to ${ri(2,5)*ri(3,7)} to make it a perfect square?`,a:'Hint: Find prime factorisation and pair up factors'},
-      {q:`Evaluate: (${Math.sqrt(n)})²`,a:`${n}`},
+      {q:`Find $\\sqrt{${n}}$`,a:`$${Math.sqrt(n)}$`},
+      {q:`Is ${m*m} a perfect square?`,a:`Yes — $\\sqrt{${m*m}} = ${m}$`},
+      {q:'Find $\\sqrt{144}$',a:'$12$'},
+      {q:`What is the smallest number multiplied to ${ri(2,5)*ri(3,7)} to make it a perfect square?`,a:'Find prime factorisation and pair up factors'},
+      {q:`Evaluate: $\\left(\\sqrt{${n}}\\right)^2$`,a:`$${n}$`},
     ]);
   }
   if(topic==='Cubes & Cube Roots'){
     const n=choice([2,3,4,5,6]);
     return choice([
-      {q:`Find the cube of ${n}`,a:`${n*n*n}`},
-      {q:`Find the cube root of ${n*n*n}`,a:`${n}`},
-      {q:`Is 125 a perfect cube? Find its cube root.`,a:'Yes — ∛125 = 5'},
-      {q:`Is 216 a perfect cube? Find its cube root.`,a:'Yes — ∛216 = 6'},
+      {q:`Find $${n}^3$`,a:`$${n*n*n}$`},
+      {q:`Find $\\sqrt[3]{${n*n*n}}$`,a:`$${n}$`},
+      {q:'Is 125 a perfect cube? Find its cube root.',a:'Yes — $\\sqrt[3]{125} = 5$'},
+      {q:'Is 216 a perfect cube? Find its cube root.',a:'Yes — $\\sqrt[3]{216} = 6$'},
     ]);
   }
   if(topic==='Comparing Quantities (Percentage)'||topic==='Compound Interest'){
@@ -2473,27 +2473,27 @@ function makeQuestion(g, topic, diff, idx) {
     const ci=Math.round(p*Math.pow(1+r/100,t)-p);
     const si=p*r*t/100;
     return choice([
-      {q:`Find CI: P = ₹${p}, R = ${r}% p.a., T = ${t} years (compounded annually)`,a:`₹${ci}`,hint:`A = P(1+R/100)^T`},
-      {q:`Find the difference between CI and SI for P=₹${p}, R=${r}%, T=2 years`,a:`₹${Math.round(p*Math.pow(1+r/100,2)-p-p*r*2/100)}`},
-      {q:`A population of ${p} increases at ${r}% per year. Find population after ${t} years.`,a:`${Math.round(p*Math.pow(1+r/100,t))}`},
+      {q:`Find CI: $P = ₹${p}$, $R = ${r}\\%$ p.a., $T = ${t}$ years (compounded annually)`,a:`₹${ci}`,hint:`$A = P\\left(1+\\dfrac{R}{100}\\right)^T$`},
+      {q:`Find the difference between CI and SI: $P=₹${p}$, $R=${r}\\%$, $T=2$ years`,a:`₹${Math.round(p*Math.pow(1+r/100,2)-p-p*r*2/100)}`},
+      {q:`A population of ${p} grows at ${r}% per year. Find population after ${t} years.`,a:`${Math.round(p*Math.pow(1+r/100,t))}`},
     ]);
   }
   if(topic==='Algebraic Identities'){
     const a=ri(2,9), b=ri(1,6);
     return choice([
-      {q:`Expand: (${a} + ${b})²`,a:`${a*a} + ${2*a*b} + ${b*b}`,hint:'(a+b)² = a² + 2ab + b²'},
-      {q:`Expand: (${a} − ${b})²`,a:`${a*a} − ${2*a*b} + ${b*b}`,hint:'(a−b)² = a² − 2ab + b²'},
-      {q:`Evaluate: (${a} + ${b})(${a} − ${b})`,a:`${a*a-b*b}`,hint:'(a+b)(a−b) = a² − b²'},
-      {q:`Expand: (x + ${a})(x + ${b})`,a:`x² + ${a+b}x + ${a*b}`},
+      {q:`Expand: $(${a} + ${b})^2$`,a:`$${a*a} + ${2*a*b} + ${b*b}$`,hint:'$(a+b)^2 = a^2 + 2ab + b^2$'},
+      {q:`Expand: $(${a} - ${b})^2$`,a:`$${a*a} - ${2*a*b} + ${b*b}$`,hint:'$(a-b)^2 = a^2 - 2ab + b^2$'},
+      {q:`Evaluate: $(${a} + ${b})(${a} - ${b})$`,a:`$${a*a-b*b}$`,hint:'$(a+b)(a-b) = a^2 - b^2$'},
+      {q:`Expand: $(x + ${a})(x + ${b})$`,a:`$x^2 + ${a+b}x + ${a*b}$`},
     ]);
   }
   if(topic==='Factorisation'){
     const a=ri(2,6), b=ri(1,5);
     return choice([
-      {q:`Factorise: x² + ${a+b}x + ${a*b}`,a:`(x + ${a})(x + ${b})`},
-      {q:`Factorise: x² − ${a*a}`,a:`(x − ${a})(x + ${a})`,hint:'Difference of squares: a² − b² = (a−b)(a+b)'},
-      {q:`Factorise: ${a}x + ${a*b}`,a:`${a}(x + ${b})`},
-      {q:`Factorise: x² − ${a+b}x + ${a*b}`,a:`(x − ${a})(x − ${b})`},
+      {q:`Factorise: $x^2 + ${a+b}x + ${a*b}$`,a:`$(x + ${a})(x + ${b})$`},
+      {q:`Factorise: $x^2 - ${a*a}$`,a:`$(x - ${a})(x + ${a})$`,hint:'Difference of squares: $a^2 - b^2 = (a-b)(a+b)$'},
+      {q:`Factorise: $${a}x + ${a*b}$`,a:`$${a}(x + ${b})$`},
+      {q:`Factorise: $x^2 - ${a+b}x + ${a*b}$`,a:`$(x - ${a})(x - ${b})$`},
     ]);
   }
   if(topic==='Direct Proportion'||topic==='Inverse Proportion'){
@@ -2510,24 +2510,24 @@ function makeQuestion(g, topic, diff, idx) {
   if(topic==='Exponents (Negative & Zero)'){
     const base=ri(2,5), exp=ri(1,3);
     return choice([
-      {q:`Evaluate: ${base}^0`,a:'1 (Any non-zero number raised to power 0 = 1)'},
-      {q:`Evaluate: ${base}^(−${exp})`,a:`1/${Math.pow(base,exp)} = ${(1/Math.pow(base,exp)).toFixed(4)}`,hint:'a^(−n) = 1/a^n'},
-      {q:`Simplify: (2^3 × 2^(−5))`,a:'2^(−2) = 1/4'},
-      {q:`Express 0.001 as a power of 10`,a:'10^(−3)'},
+      {q:`Evaluate: $${base}^0$`,a:'$1$ (any non-zero number raised to power 0 = 1)'},
+      {q:`Evaluate: $${base}^{-${exp}}$`,a:`$\\dfrac{1}{${Math.pow(base,exp)}}$`,hint:'$a^{-n} = \\dfrac{1}{a^n}$'},
+      {q:'Simplify: $2^3 \\times 2^{-5}$',a:'$2^{-2} = \\dfrac{1}{4}$'},
+      {q:'Express $0.001$ as a power of 10',a:'$10^{-3}$'},
     ]);
   }
   if(topic.includes('Mensuration')||topic.includes('Trapezium')){
     const a=ri(4,12), b=ri(6,16), h=ri(3,10);
     return choice([
-      {q:`Find the area of a trapezium: parallel sides ${a} cm and ${b} cm, height ${h} cm`,a:`${(a+b)*h/2} cm²`,hint:'Area = ½ × (sum of parallel sides) × height'},
-      {q:`The area of a trapezium is 54 cm². Its parallel sides are 6 cm and 12 cm. Find its height.`,a:'6 cm',hint:'h = 2A ÷ (a+b)'},
+      {q:`Find the area of a trapezium: parallel sides ${a} cm and ${b} cm, height ${h} cm`,a:`$${(a+b)*h/2}$ cm²`,hint:'Area $= \\dfrac{1}{2}\\times(a+b)\\times h$'},
+      {q:'The area of a trapezium is 54 cm². Its parallel sides are 6 cm and 12 cm. Find its height.',a:'6 cm',hint:'$h = \\dfrac{2A}{a+b}$'},
     ]);
   }
   if(topic==='Surface Area of Cuboid & Cube'){
     const l=ri(3,10), w=ri(2,8), h=ri(2,8), s=ri(2,8);
     return choice([
-      {q:`Find the total surface area of a cuboid: l=${l} cm, b=${w} cm, h=${h} cm`,a:`${2*(l*w+w*h+h*l)} cm²`,hint:'TSA = 2(lb + bh + hl)'},
-      {q:`Find the total surface area of a cube with side ${s} cm`,a:`${6*s*s} cm²`,hint:'TSA = 6a²'},
+      {q:`Find the total surface area of a cuboid: $l=${l}$ cm, $b=${w}$ cm, $h=${h}$ cm`,a:`$${2*(l*w+w*h+h*l)}$ cm²`,hint:'TSA $= 2(lb + bh + hl)$'},
+      {q:`Find the total surface area of a cube with side $${s}$ cm`,a:`$${6*s*s}$ cm²`,hint:'TSA $= 6a^2$'},
     ]);
   }
   if(topic==='Volume of Cuboid & Cube'){
@@ -2543,9 +2543,9 @@ function makeQuestion(g, topic, diff, idx) {
     const t=choice(triples), sc=ri(1,3);
     const [a,b,c]=t.map(v=>v*sc);
     const hide=choice([0,1,2]);
-    if(hide===2) return {q:`In a right triangle, legs are ${a} cm and ${b} cm. Find the hypotenuse.`,a:`${c} cm`,hint:'c² = a² + b²'};
-    if(hide===0) return {q:`In a right triangle, hypotenuse = ${c} cm, one leg = ${b} cm. Find the other leg.`,a:`${a} cm`};
-    return {q:`In a right triangle, hypotenuse = ${c} cm, one leg = ${a} cm. Find the other leg.`,a:`${b} cm`};
+    if(hide===2) return {q:`In a right triangle, legs are $${a}$ cm and $${b}$ cm. Find the hypotenuse.`,a:`$${c}$ cm`,hint:'$c^2 = a^2 + b^2$'};
+    if(hide===0) return {q:`In a right triangle, hypotenuse $= ${c}$ cm, one leg $= ${b}$ cm. Find the other leg.`,a:`$${a}$ cm`};
+    return {q:`In a right triangle, hypotenuse $= ${c}$ cm, one leg $= ${a}$ cm. Find the other leg.`,a:`$${b}$ cm`};
   }
   if(topic==='Introduction to Graphs'||topic==='Playing with Numbers'){
     return choice([
@@ -2566,31 +2566,31 @@ function makeQuestion(g, topic, diff, idx) {
   // ── K9 Topics ──
   if(topic==='Number System (Rational & Irrational)'){
     return choice([
-      {q:'Is √2 rational or irrational? Why?',a:'Irrational — it cannot be expressed as p/q where p,q are integers and q≠0'},
-      {q:'Express 0.333... as a fraction',a:'1/3'},
-      {q:'Express 0.142857... as a fraction',a:'1/7'},
-      {q:'Is √9 rational or irrational?',a:'Rational — √9 = 3'},
-      {q:'Between which two consecutive integers does √50 lie?',a:'Between 7 and 8 (7²=49 < 50 < 64=8²)'},
-      {q:'Simplify: √12 + √27',a:'2√3 + 3√3 = 5√3'},
-      {q:'Rationalise the denominator: 1/√5',a:'√5/5',hint:'Multiply numerator and denominator by √5'},
+      {q:'Is $\\sqrt{2}$ rational or irrational? Why?',a:'Irrational — it cannot be expressed as $\\dfrac{p}{q}$ where $p,q$ are integers and $q\\neq0$'},
+      {q:'Express $0.\\overline{3}$ as a fraction',a:'$\\dfrac{1}{3}$'},
+      {q:'Express $0.\\overline{142857}$ as a fraction',a:'$\\dfrac{1}{7}$'},
+      {q:'Is $\\sqrt{9}$ rational or irrational?',a:'Rational — $\\sqrt{9} = 3$'},
+      {q:'Between which two consecutive integers does $\\sqrt{50}$ lie?',a:'Between 7 and 8  ($7^2=49 < 50 < 64=8^2$)'},
+      {q:'Simplify: $\\sqrt{12} + \\sqrt{27}$',a:'$2\\sqrt{3} + 3\\sqrt{3} = 5\\sqrt{3}$'},
+      {q:'Rationalise the denominator: $\\dfrac{1}{\\sqrt{5}}$',a:'$\\dfrac{\\sqrt{5}}{5}$',hint:'Multiply numerator and denominator by $\\sqrt{5}$'},
     ]);
   }
   if(topic==='Polynomials (Introduction)'||topic==='Remainder Theorem'||topic==='Factor Theorem'){
     const a=ri(1,5), b=ri(1,8);
     return choice([
-      {q:`If p(x) = x³ − ${a+b}x² + ${a*b}x, find p(0)`,a:'p(0) = 0'},
-      {q:`Find the remainder when x³ − 3x + 2 is divided by (x − 1)`,a:'0 (remainder theorem: p(1) = 1 − 3 + 2 = 0)'},
-      {q:`Is (x − 2) a factor of x³ − 8?`,a:'Yes — p(2) = 8 − 8 = 0 (factor theorem)'},
-      {q:`Expand: (x + ${a})³`,a:`x³ + ${3*a}x² + ${3*a*a}x + ${a*a*a}`,hint:'(a+b)³ = a³+3a²b+3ab²+b³'},
-      {q:'What is the degree of the polynomial 5x⁴ − 3x² + x − 7?',a:'4'},
+      {q:`If $p(x) = x^3 - ${a+b}x^2 + ${a*b}x$, find $p(0)$`,a:'$p(0) = 0$'},
+      {q:'Find the remainder when $x^3 - 3x + 2$ is divided by $(x-1)$',a:'$0$ (remainder theorem: $p(1) = 1-3+2 = 0$)'},
+      {q:'Is $(x-2)$ a factor of $x^3 - 8$?',a:'Yes — $p(2) = 8-8 = 0$ (factor theorem)'},
+      {q:`Expand: $(x + ${a})^3$`,a:`$x^3 + ${3*a}x^2 + ${3*a*a}x + ${a*a*a}$`,hint:'$(a+b)^3 = a^3+3a^2b+3ab^2+b^3$'},
+      {q:'What is the degree of $5x^4 - 3x^2 + x - 7$?',a:'4'},
     ]);
   }
   if(topic==='Algebraic Identities (Expansions)'){
     const a=ri(2,8), b=ri(1,5);
     return choice([
-      {q:`Expand: (${a} + ${b})³`,a:`${a**3} + ${3*a*a*b} + ${3*a*b*b} + ${b**3}`},
-      {q:`Factorise: x³ + 27`,a:'(x + 3)(x² − 3x + 9)',hint:'Sum of cubes: a³+b³=(a+b)(a²−ab+b²)'},
-      {q:`Factorise: 8x³ − 27`,a:'(2x − 3)(4x² + 6x + 9)',hint:'Difference of cubes: a³−b³=(a−b)(a²+ab+b²)'},
+      {q:`Expand: $(${a} + ${b})^3$`,a:`$${a**3} + ${3*a*a*b} + ${3*a*b*b} + ${b**3}$`},
+      {q:'Factorise: $x^3 + 27$',a:'$(x+3)(x^2-3x+9)$',hint:'Sum of cubes: $a^3+b^3=(a+b)(a^2-ab+b^2)$'},
+      {q:'Factorise: $8x^3 - 27$',a:'$(2x-3)(4x^2+6x+9)$',hint:'Difference of cubes: $a^3-b^3=(a-b)(a^2+ab+b^2)$'},
     ]);
   }
   if(topic==='Linear Equations in Two Variables'){
@@ -2632,25 +2632,25 @@ function makeQuestion(g, topic, diff, idx) {
     const s=(a+b+c)/2;
     const area=Math.sqrt(s*(s-a)*(s-b)*(s-c));
     return choice([
-      {q:`Find the area of a triangle with sides ${a} cm, ${b} cm, ${c} cm using Heron's formula`,a:`s = ${s}, Area = √(${s}×${s-a}×${s-b}×${s-c}) = ${area.toFixed(1)} cm²`},
-      {q:"State Heron's formula",a:'Area = √[s(s−a)(s−b)(s−c)] where s = (a+b+c)/2 (semi-perimeter)'},
+      {q:`Find the area of a triangle with sides ${a} cm, ${b} cm, ${c} cm using Heron's formula`,a:`$s = ${s}$, Area $= \\sqrt{${s}\\times${s-a}\\times${s-b}\\times${s-c}} = ${area.toFixed(1)}$ cm²`},
+      {q:"State Heron's formula",a:'Area $= \\sqrt{s(s-a)(s-b)(s-c)}$ where $s = \\dfrac{a+b+c}{2}$ (semi-perimeter)'},
     ]);
   }
   if(topic==='Surface Area of Cylinder'||topic==='Surface Area of Cone & Sphere'){
     const r=ri(3,8), h=ri(5,15), l=ri(8,15);
     return choice([
-      {q:`Find the curved surface area of a cylinder: r=${r} cm, h=${h} cm (use π=3.14)`,a:`${(2*3.14*r*h).toFixed(2)} cm²`,hint:'CSA = 2πrh'},
-      {q:`Find the total surface area of a cylinder: r=${r} cm, h=${h} cm`,a:`${(2*3.14*r*(h+r)).toFixed(2)} cm²`,hint:'TSA = 2πr(h + r)'},
-      {q:`Find the curved surface area of a cone: r=${r} cm, slant height l=${l} cm`,a:`${(3.14*r*l).toFixed(2)} cm²`,hint:'CSA = πrl'},
-      {q:`Find the surface area of a sphere: r=${r} cm`,a:`${(4*3.14*r*r).toFixed(2)} cm²`,hint:'SA = 4πr²'},
+      {q:`Find the CSA of a cylinder: $r=${r}$ cm, $h=${h}$ cm (use $\\pi=3.14$)`,a:`$${(2*3.14*r*h).toFixed(2)}$ cm²`,hint:'$\\text{CSA} = 2\\pi rh$'},
+      {q:`Find the TSA of a cylinder: $r=${r}$ cm, $h=${h}$ cm`,a:`$${(2*3.14*r*(h+r)).toFixed(2)}$ cm²`,hint:'$\\text{TSA} = 2\\pi r(h+r)$'},
+      {q:`Find the CSA of a cone: $r=${r}$ cm, slant height $l=${l}$ cm`,a:`$${(3.14*r*l).toFixed(2)}$ cm²`,hint:'$\\text{CSA} = \\pi rl$'},
+      {q:`Find the surface area of a sphere: $r=${r}$ cm`,a:`$${(4*3.14*r*r).toFixed(2)}$ cm²`,hint:'$\\text{SA} = 4\\pi r^2$'},
     ]);
   }
   if(topic==='Volume of Cylinder, Cone & Sphere'){
     const r=ri(3,7), h=ri(5,12);
     return choice([
-      {q:`Find the volume of a cylinder: r=${r} cm, h=${h} cm (π=3.14)`,a:`${(3.14*r*r*h).toFixed(2)} cm³`,hint:'V = πr²h'},
-      {q:`Find the volume of a cone: r=${r} cm, h=${h} cm`,a:`${(3.14*r*r*h/3).toFixed(2)} cm³`,hint:'V = ⅓πr²h'},
-      {q:`Find the volume of a sphere: r=${r} cm`,a:`${(4/3*3.14*r*r*r).toFixed(2)} cm³`,hint:'V = 4/3πr³'},
+      {q:`Find the volume of a cylinder: $r=${r}$ cm, $h=${h}$ cm ($\\pi=3.14$)`,a:`$${(3.14*r*r*h).toFixed(2)}$ cm³`,hint:'$V = \\pi r^2 h$'},
+      {q:`Find the volume of a cone: $r=${r}$ cm, $h=${h}$ cm`,a:`$${(3.14*r*r*h/3).toFixed(2)}$ cm³`,hint:'$V = \\dfrac{1}{3}\\pi r^2 h$'},
+      {q:`Find the volume of a sphere: $r=${r}$ cm`,a:`$${(4/3*3.14*r*r*r).toFixed(2)}$ cm³`,hint:'$V = \\dfrac{4}{3}\\pi r^3$'},
     ]);
   }
   if(topic==='Statistics (Mean, Median, Mode)'){
@@ -2667,10 +2667,10 @@ function makeQuestion(g, topic, diff, idx) {
   }
   if(topic==='Probability (Classical)'){
     return choice([
-      {q:'A card is drawn from a deck of 52 cards. P(getting a king) = ___',a:'4/52 = 1/13'},
-      {q:'Two coins are tossed. P(both heads) = ___',a:'1/4 (HH, HT, TH, TT — only 1 favourable)'},
-      {q:'A die is rolled. P(getting a prime number) = ___',a:'3/6 = 1/2 (primes: 2, 3, 5)'},
-      {q:'A bag has 5 red, 3 green, 2 blue balls. P(not red) = ___',a:'5/10 = 1/2'},
+      {q:'A card is drawn from a deck of 52 cards. $P(\\text{king}) = $ ___',a:'$\\dfrac{4}{52} = \\dfrac{1}{13}$'},
+      {q:'Two coins are tossed. $P(\\text{both heads}) = $ ___',a:'$\\dfrac{1}{4}$ (HH, HT, TH, TT — only 1 favourable)'},
+      {q:'A die is rolled. $P(\\text{prime number}) = $ ___',a:'$\\dfrac{3}{6} = \\dfrac{1}{2}$ (primes: 2, 3, 5)'},
+      {q:'A bag has 5 red, 3 green, 2 blue balls. $P(\\text{not red}) = $ ___',a:'$\\dfrac{5}{10} = \\dfrac{1}{2}$'},
     ]);
   }
   if(topic==='Areas of Parallelograms'||topic==='Circles (Introduction)'){
@@ -2765,17 +2765,17 @@ function makeQuestion(g, topic, diff, idx) {
     const x1=ri(-4,4), y1=ri(-4,4), x2=ri(-4,4), y2=ri(-4,4);
     const dist=Math.sqrt((x2-x1)**2+(y2-y1)**2);
     return choice([
-      {q:`Find the distance between (${x1},${y1}) and (${x2},${y2})`,a:`√(${(x2-x1)**2}+${(y2-y1)**2}) = ${dist.toFixed(2)} units`},
-      {q:'Find the midpoint of segment joining (2,−3) and (6,5)',a:'(4, 1)'},
-      {q:'A point divides segment joining (1,3) and (7,9) in ratio 1:2. Find the point.',a:'(3, 5)',hint:'Section formula: ((mx2+nx1)/(m+n), (my2+ny1)/(m+n))'},
+      {q:`Find the distance between $(${x1},${y1})$ and $(${x2},${y2})$`,a:`$\\sqrt{${(x2-x1)**2}+${(y2-y1)**2}} = ${dist.toFixed(2)}$ units`},
+      {q:'Find the midpoint of the segment joining $(2,-3)$ and $(6,5)$',a:'$(4,\\ 1)$'},
+      {q:'A point divides segment joining $(1,3)$ and $(7,9)$ in ratio $1:2$. Find the point.',a:'$(3,\\ 5)$',hint:'Section formula: $\\left(\\dfrac{mx_2+nx_1}{m+n},\\dfrac{my_2+ny_1}{m+n}\\right)$'},
     ]);
   }
   if(topic==='Areas Related to Circles'){
     const r=ri(4,12);
     return choice([
-      {q:`Find the area of a sector with r=${r} cm and angle 60°`,a:`${(3.14*r*r*60/360).toFixed(2)} cm²`,hint:'Area = (θ/360) × πr²'},
-      {q:`Find the length of arc with r=${r} cm and angle 90°`,a:`${(2*3.14*r*90/360).toFixed(2)} cm`,hint:'Arc length = (θ/360) × 2πr'},
-      {q:'Area of a semicircle with radius 7 cm (π=22/7)',a:'77 cm²'},
+      {q:`Find the area of a sector: $r=${r}$ cm, $\\theta=60^\\circ$`,a:`$${(3.14*r*r*60/360).toFixed(2)}$ cm²`,hint:'$A = \\dfrac{\\theta}{360}\\pi r^2$'},
+      {q:`Find the arc length: $r=${r}$ cm, $\\theta=90^\\circ$`,a:`$${(2*3.14*r*90/360).toFixed(2)}$ cm`,hint:'Arc length $= \\dfrac{\\theta}{360}\\times 2\\pi r$'},
+      {q:'Find the area of a semicircle with $r=7$ cm ($\\pi=\\dfrac{22}{7}$)',a:'$77$ cm²'},
     ]);
   }
   if(topic==='Surface Area & Volume (Mixed)'){
@@ -2797,7 +2797,7 @@ function makeQuestion(g, topic, diff, idx) {
     return choice([
       {q:'A tangent to a circle is perpendicular to ___',a:'the radius drawn to the point of tangency'},
       {q:'Two tangents from an external point to a circle are ___',a:'equal in length'},
-      {q:'From a point 13 cm from the centre, a tangent touches a circle of radius 5 cm. Find the tangent length.',a:'12 cm (using Pythagoras: √(13²−5²) = √144 = 12)'},
+      {q:'From a point 13 cm from the centre, a tangent touches a circle of radius 5 cm. Find the tangent length.',a:'$12$ cm  ($\\sqrt{13^2-5^2} = \\sqrt{144} = 12$)'},
     ]);
   }
 
@@ -2820,28 +2820,28 @@ function makeQuestion(g, topic, diff, idx) {
     ]);
   }
   if(topic==='Trigonometric Functions (Values)'||topic==='Trigonometric Equations'){
-    const tv={0:{sin:'0',cos:'1',tan:'0'},30:{sin:'1/2',cos:'√3/2',tan:'1/√3'},45:{sin:'1/√2',cos:'1/√2',tan:'1'},60:{sin:'√3/2',cos:'1/2',tan:'√3'},90:{sin:'1',cos:'0',tan:'undefined'}};
+    const tv={0:{sin:'0',cos:'1',tan:'0'},30:{sin:'\\dfrac{1}{2}',cos:'\\dfrac{\\sqrt{3}}{2}',tan:'\\dfrac{1}{\\sqrt{3}}'},45:{sin:'\\dfrac{1}{\\sqrt{2}}',cos:'\\dfrac{1}{\\sqrt{2}}',tan:'1'},60:{sin:'\\dfrac{\\sqrt{3}}{2}',cos:'\\dfrac{1}{2}',tan:'\\sqrt{3}'},90:{sin:'1',cos:'0',tan:'\\text{undefined}'}};
     const ang=choice([0,30,45,60,90]), fn=choice(['sin','cos','tan']);
     return choice([
-      {q:`Find exact value of ${fn}(${ang}°)`,a:tv[ang][fn]},
-      {q:'Solve: 2sin x = 1 for 0 ≤ x ≤ 360°',a:'x = 30° or 150°'},
-      {q:'Prove: sin(A+B) = sinA cosB + cosA sinB',a:'Standard compound angle identity'},
+      {q:`Find the exact value of $\\${fn}(${ang}^\\circ)$`,a:`$${tv[ang][fn]}$`},
+      {q:'Solve: $2\\sin x = 1$ for $0^\\circ \\leq x \\leq 360^\\circ$',a:'$x = 30^\\circ$ or $150^\\circ$'},
+      {q:'State: $\\sin(A+B) = $ ___',a:'$\\sin A\\cos B + \\cos A\\sin B$'},
     ]);
   }
   if(topic==='Principle of Mathematical Induction'){
     return choice([
-      {q:'Prove by induction: 1+2+3+...+n = n(n+1)/2. State the base case.',a:'Base case (n=1): LHS=1, RHS=1×2/2=1 ✓'},
-      {q:'What are the two steps in a proof by induction?',a:'Step 1: Base case (verify for n=1). Step 2: Inductive step (assume true for n=k, prove for n=k+1).'},
+      {q:'Prove by induction: $1+2+3+\\cdots+n = \\dfrac{n(n+1)}{2}$. State the base case.',a:'Base case ($n=1$): LHS $= 1$, RHS $= \\dfrac{1\\times2}{2}=1$ ✓'},
+      {q:'What are the two steps in a proof by induction?',a:'Step 1: Base case (verify for $n=1$). Step 2: Inductive step (assume true for $n=k$, prove for $n=k+1$).'},
     ]);
   }
   if(topic==='Complex Numbers (Basic)'||topic==='Complex Numbers (Operations)'){
     const a=ri(1,5), b=ri(1,5), c=ri(1,5), d=ri(1,5);
     return choice([
-      {q:`Add: (${a}+${b}i) + (${c}+${d}i)`,a:`${a+c}+${b+d}i`},
-      {q:`Multiply: (${a}+${b}i)(${c}+${d}i)`,a:`${a*c-b*d}+${a*d+b*c}i`,hint:'Use (a+bi)(c+di) = (ac−bd)+(ad+bc)i'},
-      {q:`Find the modulus of ${a}+${b}i`,a:`√(${a*a}+${b*b}) = ${Math.sqrt(a*a+b*b).toFixed(2)}`},
-      {q:'What is the value of i²?',a:'−1'},
-      {q:'What is the conjugate of 3 + 4i?',a:'3 − 4i'},
+      {q:`Add: $(${a}+${b}i) + (${c}+${d}i)$`,a:`$${a+c}+${b+d}i$`},
+      {q:`Multiply: $(${a}+${b}i)(${c}+${d}i)$`,a:`$${a*c-b*d}+${a*d+b*c}i$`,hint:'$(a+bi)(c+di) = (ac-bd)+(ad+bc)i$'},
+      {q:`Find the modulus of $${a}+${b}i$`,a:`$|z| = \\sqrt{${a*a}+${b*b}} = ${Math.sqrt(a*a+b*b).toFixed(2)}$`},
+      {q:'What is the value of $i^2$?',a:'$-1$'},
+      {q:'What is the conjugate of $3+4i$?',a:'$3-4i$'},
     ]);
   }
   if(topic==='Linear Inequalities'){
@@ -2874,9 +2874,9 @@ function makeQuestion(g, topic, diff, idx) {
   if(topic==='Binomial Theorem'){
     const n=ri(2,5), a=ri(1,3), b=ri(1,3);
     return choice([
-      {q:`Expand: (x + ${b})^3`,a:`x³ + ${3*b}x² + ${3*b*b}x + ${b**3}`},
-      {q:'State the Binomial Theorem.',a:'(a+b)ⁿ = Σ C(n,r)·aⁿ⁻ʳ·bʳ for r=0 to n'},
-      {q:'Find the middle term in the expansion of (x+1)^4',a:'6x² (the 3rd term, r=2: C(4,2)x² = 6x²)'},
+      {q:`Expand: $(x + ${b})^3$`,a:`$x^3 + ${3*b}x^2 + ${3*b*b}x + ${b**3}$`},
+      {q:'State the Binomial Theorem.',a:'$(a+b)^n = \\sum_{r=0}^{n} \\binom{n}{r} a^{n-r}b^r$'},
+      {q:'Find the middle term in the expansion of $(x+1)^4$',a:'$6x^2$ (the 3rd term, $r=2$: $\\binom{4}{2}x^2 = 6x^2$)'},
     ]);
   }
   if(topic==='Arithmetic Progression (nth term & Sum)'||topic==='Geometric Progression'){
@@ -2885,11 +2885,11 @@ function makeQuestion(g, topic, diff, idx) {
     const n=ri(4,8);
     return choice([
       isGP
-        ? {q:`Find the ${n}th term of GP with first term ${a} and common ratio ${r}`,a:`${a}×${r}^${n-1} = ${a*Math.pow(r,n-1)}`}
-        : {q:`Find the ${n}th term of AP: a=${a}, d=${d}`,a:`${a+(n-1)*d}`,hint:'an = a+(n−1)d'},
+        ? {q:`Find the ${n}th term of GP with first term $${a}$ and common ratio $${r}$`,a:`$${a}\\times${r}^{${n-1}} = ${a*Math.pow(r,n-1)}$`}
+        : {q:`Find the ${n}th term of AP: $a=${a}$, $d=${d}$`,a:`$${a+(n-1)*d}$`,hint:'$a_n = a+(n-1)d$'},
       isGP
-        ? {q:`Sum of first ${n} terms of GP: a=${a}, r=${r}`,a:`${a*(Math.pow(r,n)-1)/(r-1)}`,hint:'Sn = a(rⁿ−1)/(r−1)'}
-        : {q:`Sum of first ${n} terms of AP: a=${a}, d=${d}`,a:`${n*(2*a+(n-1)*d)/2}`},
+        ? {q:`Sum of first $${n}$ terms of GP: $a=${a}$, $r=${r}$`,a:`$${a*(Math.pow(r,n)-1)/(r-1)}$`,hint:'$S_n = \\dfrac{a(r^n-1)}{r-1}$'}
+        : {q:`Sum of first $${n}$ terms of AP: $a=${a}$, $d=${d}$`,a:`$${n*(2*a+(n-1)*d)/2}$`,hint:'$S_n = \\dfrac{n}{2}[2a+(n-1)d]$'},
     ]);
   }
   if(topic==='Limits (Algebraic)'){
@@ -2945,30 +2945,30 @@ function makeQuestion(g, topic, diff, idx) {
   // ── K12 Topics ──
   if(topic==='Inverse Trigonometric Functions'){
     return choice([
-      {q:'Find sin⁻¹(1/2)',a:'π/6 (30°)'},
-      {q:'Find cos⁻¹(0)',a:'π/2 (90°)'},
-      {q:'Find tan⁻¹(1)',a:'π/4 (45°)'},
-      {q:'What is the domain of sin⁻¹(x)?',a:'[−1, 1]'},
-      {q:'What is the principal value range of cos⁻¹(x)?',a:'[0, π]'},
-      {q:'Simplify: sin⁻¹(sin(2π/3))',a:'π/3 (adjust to principal value range [−π/2, π/2])'},
+      {q:'Find $\\sin^{-1}\\!\\left(\\dfrac{1}{2}\\right)$',a:'$\\dfrac{\\pi}{6}$ (30°)'},
+      {q:'Find $\\cos^{-1}(0)$',a:'$\\dfrac{\\pi}{2}$ (90°)'},
+      {q:'Find $\\tan^{-1}(1)$',a:'$\\dfrac{\\pi}{4}$ (45°)'},
+      {q:'What is the domain of $\\sin^{-1}(x)$?',a:'$[-1,\\, 1]$'},
+      {q:'What is the principal value range of $\\cos^{-1}(x)$?',a:'$[0,\\, \\pi]$'},
+      {q:'Simplify: $\\sin^{-1}\\!\\left(\\sin\\dfrac{2\\pi}{3}\\right)$',a:'$\\dfrac{\\pi}{3}$ (adjusted to principal value range $\\left[-\\dfrac{\\pi}{2},\\dfrac{\\pi}{2}\\right]$)'},
     ]);
   }
   if(topic==='Matrices (Operations)'||topic==='Matrices (Inverse)'){
     const a=ri(1,5), b=ri(1,5), c=ri(1,5), d=ri(1,5);
     const det=a*d-b*c;
     return choice([
-      {q:`Find the determinant of [[${a},${b}],[${c},${d}]]`,a:`${det}`},
+      {q:`Find the determinant of $\\begin{pmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{pmatrix}$`,a:`$${det}$`},
       det!==0
-        ? {q:`Find the inverse of [[${a},${b}],[${c},${d}]]`,a:`(1/${det})[[${d},${-b}],[${-c},${a}]]`}
-        : {q:`A = [[${a},${b}],[${c},${d}]]. Is A invertible?`,a:'No — determinant is 0 (singular matrix)'},
-      {q:`Multiply: [[1,0],[0,1]] × [[${a},${b}],[${c},${d}]]`,a:`[[${a},${b}],[${c},${d}]] (identity matrix multiplication)`},
+        ? {q:`Find the inverse of $A = \\begin{pmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{pmatrix}$`,a:`$\\dfrac{1}{${det}}\\begin{pmatrix}${d} & ${-b} \\\\ ${-c} & ${a}\\end{pmatrix}$`}
+        : {q:`Is $A = \\begin{pmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{pmatrix}$ invertible?`,a:'No — determinant is 0 (singular matrix)'},
+      {q:`Find $I \\cdot A$ where $I = \\begin{pmatrix}1 & 0 \\\\ 0 & 1\\end{pmatrix}$ and $A = \\begin{pmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{pmatrix}$`,a:`$\\begin{pmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{pmatrix}$ (identity matrix property)`},
     ]);
   }
   if(topic==='Determinants'){
     const a=ri(1,5), b=ri(1,4), c=ri(1,4), d=ri(1,5);
     return choice([
-      {q:`Evaluate: |${a}  ${b}; ${c}  ${d}|`,a:`${a*d-b*c}`},
-      {q:'State the property: What happens to a determinant when two rows are swapped?',a:'The sign of the determinant changes.'},
+      {q:`Evaluate: $\\begin{vmatrix}${a} & ${b} \\\\ ${c} & ${d}\\end{vmatrix}$`,a:`$${a*d-b*c}$`},
+      {q:'What happens to a determinant when two rows are swapped?',a:'The sign of the determinant changes.'},
       {q:'If two rows of a determinant are identical, its value is ___',a:'0'},
     ]);
   }

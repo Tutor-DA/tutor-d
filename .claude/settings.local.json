@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -c \"dfrac\\\\|pmatrix\\\\|vmatrix\\\\|sqrt\\\\|\\\\\\\\int\\\\b\\\\|\\\\\\\\lim\\\\|\\\\\\\\sin\\\\|\\\\\\\\cos\" \"c:/Users/gsuge/Downloads/tutor-d-site/tutor-d-site/pages/tools.html\")"
+    ]
+  }
+}
