@@ -9,6 +9,13 @@
   <link rel="stylesheet" href="../assets/css/footer.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
 
   <style>
     :root {
@@ -687,6 +694,72 @@
 
   </div><!-- /new games-grid -->
 
+  <!-- ═══ More Games ═══ -->
+  <div class="section-label" style="color:#d099ff;">✦ More Games</div>
+  <div class="games-grid">
+
+    <!-- 13. Powers & Exponents -->
+    <div class="game-card" style="border-color:#2a1a3a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(168,85,247,.15); color:#d099ff;">x²</div>
+        <div>
+          <h3>Powers &amp; Exponents <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Evaluate powers and exponent expressions. Master base, exponent, and negative powers!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+12 XP / correct</span>
+        <span class="badge-pill pill-level">Intermediate</span>
+        <span class="badge-pill pill-topic">Exponents</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('powers')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 14. Angle Quest -->
+    <div class="game-card" style="border-color:#1a3a1a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(34,197,94,.15); color:#4ade80;">∠</div>
+        <div>
+          <h3>Angle Quest <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Find missing angles — complementary, supplementary, and triangle angle rules!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+15 XP / correct</span>
+        <span class="badge-pill pill-level">Intermediate</span>
+        <span class="badge-pill pill-topic">Geometry</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('angles')">▶ Play Now</button>
+      </div>
+    </div>
+
+    <!-- 15. Sequence Solver -->
+    <div class="game-card" style="border-color:#3a2a1a;">
+      <div class="game-card-header">
+        <div class="game-icon" style="background:rgba(251,191,36,.12); color:var(--gold);">∑</div>
+        <div>
+          <h3>Sequence Solver <span class="badge-new-tag">NEW</span></h3>
+          <div class="desc">Find the next term in arithmetic and geometric sequences. Spot the pattern!</div>
+        </div>
+      </div>
+      <div class="game-meta">
+        <span class="badge-pill pill-xp">+15 XP / correct</span>
+        <span class="badge-pill pill-level">Advanced</span>
+        <span class="badge-pill pill-topic">Sequences</span>
+        <span class="badge-pill pill-new">NEW</span>
+      </div>
+      <div class="game-card-body">
+        <button class="play-btn" onclick="openGame('sequence')">▶ Play Now</button>
+      </div>
+    </div>
+
+  </div><!-- /more games-grid -->
+
   <!-- Leaderboard -->
   <div class="leaderboard-section">
     <h2>🏆 Leaderboard</h2>
@@ -1055,6 +1128,87 @@
   </div>
 </div>
 
+<!-- 13. Powers & Exponents -->
+<div class="modal-overlay" id="modal-powers">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('powers')">✕</button>
+    <h2 style="color:#d099ff;">x² Powers &amp; Exponents</h2>
+    <p class="subtitle">Evaluate powers — 10 questions per round!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="pow-score" style="color:#d099ff;">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="pow-round">0/10</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="pow-prog" style="width:0%; background:linear-gradient(90deg,#a855f7,#d099ff);"></div></div>
+    <div class="question-box" id="pow-q-box" style="display:none;">
+      <div class="question-text" id="pow-q">?</div>
+    </div>
+    <div class="answer-opts" id="pow-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="pow-fb"></div>
+    <div class="result-screen" id="pow-result">
+      <div class="result-emoji">x²</div>
+      <div class="result-title" id="pow-res-title">Round Done!</div>
+      <div class="result-sub" id="pow-res-sub"></div>
+      <div class="xp-earned-badge" id="pow-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startPowers()">Play Again</button>
+    </div>
+    <button class="action-btn" id="pow-start-btn" onclick="startPowers()">Start!</button>
+  </div>
+</div>
+
+<!-- 14. Angle Quest -->
+<div class="modal-overlay" id="modal-angles">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('angles')">✕</button>
+    <h2 style="color:#4ade80;">∠ Angle Quest</h2>
+    <p class="subtitle">Find missing angles — 10 questions per round!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="ang-score" style="color:#4ade80;">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="ang-round">0/10</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="ang-prog" style="width:0%; background:linear-gradient(90deg,#22c55e,#4ade80);"></div></div>
+    <div class="question-box" id="ang-q-box" style="display:none;">
+      <div class="question-text" id="ang-q">?</div>
+    </div>
+    <div class="answer-opts" id="ang-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="ang-fb"></div>
+    <div class="result-screen" id="ang-result">
+      <div class="result-emoji">∠</div>
+      <div class="result-title" id="ang-res-title">Quest Complete!</div>
+      <div class="result-sub" id="ang-res-sub"></div>
+      <div class="xp-earned-badge" id="ang-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startAngles()">Play Again</button>
+    </div>
+    <button class="action-btn" id="ang-start-btn" onclick="startAngles()">Start Quest!</button>
+  </div>
+</div>
+
+<!-- 15. Sequence Solver -->
+<div class="modal-overlay" id="modal-sequence">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('sequence')">✕</button>
+    <h2 style="color:var(--gold);">∑ Sequence Solver</h2>
+    <p class="subtitle">Find the next term — 10 questions per round!</p>
+    <div class="game-score-row">
+      <div class="score-item"><div class="s-label">Score</div><div class="s-val" id="seq-score" style="color:var(--gold);">0</div></div>
+      <div class="score-item"><div class="s-label">Round</div><div class="s-val" id="seq-round">0/10</div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="seq-prog" style="width:0%; background:linear-gradient(90deg,#d97706,#fbbf24);"></div></div>
+    <div class="question-box" id="seq-q-box" style="display:none;">
+      <div class="question-text" id="seq-q">?</div>
+    </div>
+    <div class="answer-opts" id="seq-opts" style="display:none;"></div>
+    <div class="feedback-msg" id="seq-fb"></div>
+    <div class="result-screen" id="seq-result">
+      <div class="result-emoji">∑</div>
+      <div class="result-title" id="seq-res-title">Sequence Done!</div>
+      <div class="result-sub" id="seq-res-sub"></div>
+      <div class="xp-earned-badge" id="seq-xp-badge">+0 XP</div>
+      <button class="action-btn" onclick="startSequence()">Play Again</button>
+    </div>
+    <button class="action-btn" id="seq-start-btn" onclick="startSequence()">Solve!</button>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div id="toast-container"></div>
 <div id="footer-container"></div>
@@ -1087,6 +1241,10 @@ const BADGES_DEF = [
   { id:'sq_finder',    name:'Square Finder',    emoji:'√',  cond: p => (p.best_sq||0) >= 8 },
   { id:'mem_genius',   name:'Memory Genius',    emoji:'🃏', cond: p => (p.mem_best_moves||999) <= 10 },
   { id:'div_ace',      name:'Division Ace',     emoji:'÷',  cond: p => (p.div_streak||0) >= 8 },
+  // More game badges
+  { id:'pow_expert',   name:'Exponent Expert',  emoji:'x²', cond: p => (p.pow_score||0) >= 96 },
+  { id:'ang_master',   name:'Angle Master',     emoji:'∠',  cond: p => (p.ang_score||0) >= 120 },
+  { id:'seq_master',   name:'Pattern Master',   emoji:'∑',  cond: p => (p.seq_score||0) >= 120 },
 ];
 
 function savePlayer() { localStorage.setItem('tutorda_player', JSON.stringify(player)); }
@@ -1176,6 +1334,7 @@ function setDiff(game, val, btn) {
 function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
 function isPrime(n){if(n<2)return false;for(let i=2;i<=Math.sqrt(n);i++)if(n%i===0)return false;return true;}
 function isPerfectSquare(n){ const s=Math.round(Math.sqrt(n)); return s*s===n; }
+function typesetEl(el){ if(window.MathJax&&MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(()=>{}); }
 
 /* ════════════════════════════════════════
    GAME 1: MATH SPRINT
@@ -1360,8 +1519,8 @@ function endFraction() {
 ════════════════════════════════════════ */
 let algState={ level:0, lives:3, xpTotal:0 };
 const algEquations=[
-  {q:'x + 3 = 7',a:4},{q:'2x = 10',a:5},{q:'x − 4 = 9',a:13},{q:'3x + 1 = 16',a:5},
-  {q:'x ÷ 2 = 6',a:12},{q:'5x − 3 = 22',a:5},{q:'2x + 7 = 19',a:6},{q:'4x − 8 = 20',a:7},
+  {q:'$x + 3 = 7$',a:4},{q:'$2x = 10$',a:5},{q:'$x - 4 = 9$',a:13},{q:'$3x + 1 = 16$',a:5},
+  {q:'$\\dfrac{x}{2} = 6$',a:12},{q:'$5x - 3 = 22$',a:5},{q:'$2x + 7 = 19$',a:6},{q:'$4x - 8 = 20$',a:7},
 ];
 
 function startAlgebra() {
@@ -1378,7 +1537,8 @@ function loadAlgLevel() {
   const eq=algEquations[algState.level]; algState.ans=eq.a;
   document.getElementById('alg-level').textContent=`${algState.level+1}/8`;
   document.getElementById('alg-prog').style.width=(algState.level/8*100)+'%';
-  document.getElementById('alg-q').textContent=eq.q;
+  document.getElementById('alg-q').innerHTML=eq.q;
+  typesetEl(document.getElementById('alg-q'));
   document.getElementById('alg-lives').textContent='❤️'.repeat(algState.lives);
   document.getElementById('alg-ans').value='';
   document.getElementById('alg-fb').textContent='';
@@ -1953,6 +2113,239 @@ function endDivision() {
   addXP(xp); checkBadges();
   document.getElementById('div-start-btn').style.display='block';
   document.getElementById('div-diff').style.display='flex';
+}
+
+/* ════════════════════════════════════════
+   GAME 13: POWERS & EXPONENTS
+════════════════════════════════════════ */
+let powState={ score:0, round:0, total:10, curAns:0 };
+
+function startPowers() {
+  powState={ score:0, round:0, total:10, curAns:0 };
+  document.getElementById('pow-start-btn').style.display='none';
+  document.getElementById('pow-result').classList.remove('show');
+  document.getElementById('pow-q-box').style.display='block';
+  document.getElementById('pow-opts').style.display='grid';
+  nextPowers();
+}
+
+function nextPowers() {
+  powState.round++;
+  document.getElementById('pow-round').textContent=`${powState.round}/${powState.total}`;
+  document.getElementById('pow-prog').style.width=((powState.round-1)/powState.total*100)+'%';
+  const type=randInt(1,4);
+  let qText, ans;
+  if(type===1){
+    // simple integer power
+    const base=randInt(2,6), exp=randInt(2,4);
+    ans=Math.pow(base,exp);
+    qText=`$${base}^{${exp}} = ?$`;
+  } else if(type===2){
+    // zero exponent
+    const base=randInt(2,15);
+    ans=1;
+    qText=`$${base}^{0} = ?$`;
+  } else if(type===3){
+    // negative exponent (1/base^n)
+    const base=randInt(2,4), exp=randInt(1,2);
+    const denom=Math.pow(base,exp);
+    ans=denom; // store denom, display as 1/denom
+    qText=`$${base}^{-${exp}} = \\dfrac{1}{?}$`;
+  } else {
+    // product rule: base^a × base^b = base^?
+    const base=randInt(2,5), a=randInt(1,4), b=randInt(1,4);
+    ans=a+b;
+    qText=`$${base}^{${a}} \\times ${base}^{${b}} = ${base}^{?}$`;
+  }
+  powState.curAns=ans;
+  const qEl=document.getElementById('pow-q');
+  qEl.innerHTML=qText;
+  typesetEl(qEl);
+  const opts=new Set([ans]);
+  while(opts.size<4){ const d=randInt(-3,3); if(d!==0) opts.add(Math.max(0,ans+d)); }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('pow-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkPowers(${v},this)">${v}</button>`).join('');
+  document.getElementById('pow-fb').textContent='';
+}
+
+function checkPowers(val,btn) {
+  document.getElementById('pow-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('pow-fb');
+  if(val===powState.curAns){
+    powState.score+=12; btn.className='opt-btn correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
+  } else {
+    btn.className='opt-btn wrong';
+    document.getElementById('pow-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===powState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${powState.curAns}`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('pow-score').textContent=powState.score;
+  setTimeout(()=>{ if(powState.round>=powState.total) endPowers(); else nextPowers(); }, 850);
+}
+
+function endPowers() {
+  document.getElementById('pow-q-box').style.display='none';
+  document.getElementById('pow-opts').style.display='none';
+  document.getElementById('pow-prog').style.width='100%';
+  document.getElementById('pow-result').classList.add('show');
+  const correct=powState.score/12, xp=powState.score;
+  document.getElementById('pow-res-title').textContent=correct>=8?'Exponent Expert!':correct>=5?'Well Done!':'Keep Practising!';
+  document.getElementById('pow-res-sub').textContent=`${correct}/${powState.total} correct — ${powState.score} pts`;
+  document.getElementById('pow-xp-badge').textContent=`+${xp} XP`;
+  if(powState.score>(player.pow_score||0)){ player.pow_score=powState.score; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('pow-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 14: ANGLE QUEST
+════════════════════════════════════════ */
+let angState={ score:0, round:0, total:10, curAns:0 };
+
+function startAngles() {
+  angState={ score:0, round:0, total:10, curAns:0 };
+  document.getElementById('ang-start-btn').style.display='none';
+  document.getElementById('ang-result').classList.remove('show');
+  document.getElementById('ang-q-box').style.display='block';
+  document.getElementById('ang-opts').style.display='grid';
+  nextAngles();
+}
+
+function nextAngles() {
+  angState.round++;
+  document.getElementById('ang-round').textContent=`${angState.round}/${angState.total}`;
+  document.getElementById('ang-prog').style.width=((angState.round-1)/angState.total*100)+'%';
+  const type=randInt(1,3);
+  let qText, ans;
+  if(type===1){
+    // complementary angles: a + x = 90
+    const a=randInt(10,80);
+    ans=90-a;
+    qText=`$${a}^\\circ + x = 90^\\circ$. Find $x$.`;
+  } else if(type===2){
+    // supplementary angles: a + x = 180
+    const a=randInt(10,170);
+    ans=180-a;
+    qText=`$${a}^\\circ + x = 180^\\circ$. Find $x$.`;
+  } else {
+    // triangle: a + b + x = 180
+    const a=randInt(30,80), b=randInt(20,80-(a-30));
+    ans=180-a-b;
+    qText=`In a triangle, two angles are $${a}^\\circ$ and $${b}^\\circ$. Find the third angle.`;
+  }
+  angState.curAns=ans;
+  const qEl=document.getElementById('ang-q');
+  qEl.innerHTML=qText;
+  typesetEl(qEl);
+  const opts=new Set([ans]);
+  while(opts.size<4){ const d=randInt(-20,20); if(d!==0){ const v=ans+d; if(v>0&&v<180) opts.add(v); } }
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  document.getElementById('ang-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkAngles(${v},this)">${v}°</button>`).join('');
+  document.getElementById('ang-fb').textContent='';
+}
+
+function checkAngles(val,btn) {
+  document.getElementById('ang-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('ang-fb');
+  if(val===angState.curAns){
+    angState.score+=15; btn.className='opt-btn correct'; fb.textContent=`✓ Correct! ${val}°`; fb.className='feedback-msg ok';
+  } else {
+    btn.className='opt-btn wrong';
+    document.getElementById('ang-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===angState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${angState.curAns}°`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('ang-score').textContent=angState.score;
+  setTimeout(()=>{ if(angState.round>=angState.total) endAngles(); else nextAngles(); }, 850);
+}
+
+function endAngles() {
+  document.getElementById('ang-q-box').style.display='none';
+  document.getElementById('ang-opts').style.display='none';
+  document.getElementById('ang-prog').style.width='100%';
+  document.getElementById('ang-result').classList.add('show');
+  const correct=angState.score/15, xp=angState.score;
+  document.getElementById('ang-res-title').textContent=correct>=8?'Angle Master!':correct>=5?'Sharp Eye!':'Keep Practising!';
+  document.getElementById('ang-res-sub').textContent=`${correct}/${angState.total} correct — ${angState.score} pts`;
+  document.getElementById('ang-xp-badge').textContent=`+${xp} XP`;
+  if(angState.score>(player.ang_score||0)){ player.ang_score=angState.score; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('ang-start-btn').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   GAME 15: SEQUENCE SOLVER
+════════════════════════════════════════ */
+let seqState={ score:0, round:0, total:10, curAns:0 };
+
+function startSequence() {
+  seqState={ score:0, round:0, total:10, curAns:0 };
+  document.getElementById('seq-start-btn').style.display='none';
+  document.getElementById('seq-result').classList.remove('show');
+  document.getElementById('seq-q-box').style.display='block';
+  document.getElementById('seq-opts').style.display='grid';
+  nextSequence();
+}
+
+function nextSequence() {
+  seqState.round++;
+  document.getElementById('seq-round').textContent=`${seqState.round}/${seqState.total}`;
+  document.getElementById('seq-prog').style.width=((seqState.round-1)/seqState.total*100)+'%';
+  const isAP=Math.random()<0.6;
+  let terms, ans, qText;
+  if(isAP){
+    const a=randInt(1,15), d=randInt(1,10);
+    terms=[a, a+d, a+2*d, a+3*d];
+    ans=a+4*d;
+    qText=`Find the next term: $${terms.join(',\\ ')},\\ ?$`;
+  } else {
+    const a=randInt(1,5), r=randInt(2,4);
+    terms=[a, a*r, a*r*r, a*r*r*r];
+    ans=a*r*r*r*r;
+    qText=`Find the next term: $${terms.join(',\\ ')},\\ ?$`;
+  }
+  seqState.curAns=ans;
+  const qEl=document.getElementById('seq-q');
+  qEl.innerHTML=qText;
+  typesetEl(qEl);
+  const opts=new Set([ans]);
+  while(opts.size<4){
+    const d=randInt(-3,3)*(isAP?randInt(1,5):ans);
+    if(d!==0){ const v=ans+(isAP?d:randInt(1,ans*2)); if(v>0&&v!==ans) opts.add(v); }
+  }
+  // ensure 4 distinct options
+  while(opts.size<4){ opts.add(ans+randInt(1,20)*(Math.random()<.5?1:-1)); }
+  const arr=[...opts].sort(()=>Math.random()-.5).slice(0,4);
+  if(!arr.includes(ans)){ arr[0]=ans; }
+  arr.sort(()=>Math.random()-.5);
+  document.getElementById('seq-opts').innerHTML=arr.map(v=>`<button class="opt-btn" onclick="checkSequence(${v},this)">${v}</button>`).join('');
+  document.getElementById('seq-fb').textContent='';
+}
+
+function checkSequence(val,btn) {
+  document.getElementById('seq-opts').querySelectorAll('.opt-btn').forEach(b=>b.onclick=null);
+  const fb=document.getElementById('seq-fb');
+  if(val===seqState.curAns){
+    seqState.score+=15; btn.className='opt-btn correct'; fb.textContent='✓ Correct!'; fb.className='feedback-msg ok';
+  } else {
+    btn.className='opt-btn wrong';
+    document.getElementById('seq-opts').querySelectorAll('.opt-btn').forEach(b=>{ if(parseInt(b.textContent)===seqState.curAns) b.className='opt-btn correct'; });
+    fb.textContent=`✗ Answer was ${seqState.curAns}`; fb.className='feedback-msg bad';
+  }
+  document.getElementById('seq-score').textContent=seqState.score;
+  setTimeout(()=>{ if(seqState.round>=seqState.total) endSequence(); else nextSequence(); }, 850);
+}
+
+function endSequence() {
+  document.getElementById('seq-q-box').style.display='none';
+  document.getElementById('seq-opts').style.display='none';
+  document.getElementById('seq-prog').style.width='100%';
+  document.getElementById('seq-result').classList.add('show');
+  const correct=seqState.score/15, xp=seqState.score;
+  document.getElementById('seq-res-title').textContent=correct>=8?'Pattern Master!':correct>=5?'Good Spotter!':'Keep Practising!';
+  document.getElementById('seq-res-sub').textContent=`${correct}/${seqState.total} correct — ${seqState.score} pts`;
+  document.getElementById('seq-xp-badge').textContent=`+${xp} XP`;
+  if(seqState.score>(player.seq_score||0)){ player.seq_score=seqState.score; savePlayer(); }
+  addXP(xp); checkBadges();
+  document.getElementById('seq-start-btn').style.display='block';
 }
 
 /* ─── Back to Top ─── */
