@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhD Statistics | D'Math University</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--accent:#22c55e;--accent2:#86efac;--dark:#0d0d1a;--card:#141428;--card2:#1a1a35;--text:#e8e8ff;--muted:#7878a0;--border:rgba(34,197,94,.15)}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+    .page-main{max-width:1100px;margin:0 auto;padding:64px 28px 80px}
+    .page-hero{text-align:center;margin-bottom:64px}
+    .page-hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:12px}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px}
+    .page-hero p{color:var(--muted);max-width:660px;margin:0 auto;font-size:1rem;line-height:1.7}
+    .hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}
+    .hero-pill{padding:5px 16px;border-radius:999px;font-size:.78rem;font-weight:600;background:rgba(34,197,94,.1);color:var(--accent);border:1px solid rgba(34,197,94,.25)}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center}
+    .stat-box .num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent)}
+    .stat-box .lbl{color:var(--muted);font-size:.78rem;margin-top:6px}
+    .section-label{font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:28px}
+    .overview{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:64px}
+    .overview-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px}
+    .overview-card h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--accent2);margin-bottom:14px;letter-spacing:.04em}
+    .overview-card p{color:var(--muted);font-size:.9rem;line-height:1.75}
+    .feat-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:14px}
+    .feat-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--muted);line-height:1.6}
+    .feat-list li::before{content:'◆';color:var(--accent);font-size:.6rem;flex-shrink:0;margin-top:5px}
+    .feat-list li strong{color:var(--text)}
+    .modules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:64px}
+    .mod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 18px;transition:transform .2s,border-color .2s}
+    .mod-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .mod-icon{font-size:1.8rem;margin-bottom:10px;display:block}
+    .mod-card h4{font-family:'Orbitron',sans-serif;font-size:.72rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+    .mod-card p{color:var(--muted);font-size:.8rem;line-height:1.6}
+    .careers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:64px}
+    .career-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;transition:transform .2s,border-color .2s}
+    .career-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .career-icon{font-size:2rem;margin-bottom:12px;display:block}
+    .career-card h3{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+    .career-card p{color:var(--muted);font-size:.84rem;line-height:1.65}
+    .uni-section{margin-bottom:64px}
+    .uni-pills{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+    .uni-pill{padding:8px 20px;border-radius:999px;font-size:.84rem;font-weight:600;background:var(--card);color:var(--text);border:1px solid var(--border);transition:border-color .2s}
+    .uni-pill:hover{border-color:var(--accent);color:var(--accent)}
+    .approach{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px;margin-bottom:64px}
+    .approach h2{font-family:'Orbitron',sans-serif;font-size:1.05rem;color:var(--accent2);margin-bottom:28px;letter-spacing:.04em}
+    .steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+    .step{display:flex;flex-direction:column;gap:8px}
+    .step-num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);opacity:.4;line-height:1}
+    .step h4{font-size:.88rem;font-weight:600;color:var(--text)}
+    .step p{font-size:.8rem;color:var(--muted);line-height:1.6}
+    .cta-row{text-align:center}
+    .cta-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;border-radius:999px;text-decoration:none;letter-spacing:.04em;transition:opacity .2s,transform .15s,box-shadow .2s;box-shadow:0 0 24px rgba(34,197,94,.3)}
+    .cta-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 36px rgba(34,197,94,.5)}
+    .cta-sub{color:var(--muted);font-size:.85rem;margin-top:14px}
+    #btt{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;cursor:pointer;font-size:1.1rem;display:none;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(34,197,94,.4);z-index:999}
+    @media(max-width:768px){.stats-row,.overview,.modules-grid,.careers-grid{grid-template-columns:1fr!important}}
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+  <main class="page-main">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="eyebrow">D'Math University | Statistics &amp; Data Science &nbsp;·&nbsp; Programme #13</div>
+      <h1>PhD Statistics</h1>
+      <p>A world-class doctoral programme spanning 3 to 5 years, offering candidates the environment and supervision to produce original, internationally recognised contributions to statistical science. Four research clusters span from theory to applied genomics and econometrics.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">Doctoral</span>
+        <span class="hero-pill">3–5 Years</span>
+        <span class="hero-pill">Research</span>
+        <span class="hero-pill">International</span>
+      </div>
+    </section>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="num">100+</div><div class="lbl">Active Research Areas</div></div>
+      <div class="stat-box"><div class="num">£75k+</div><div class="lbl">Avg Post-PhD Salary</div></div>
+      <div class="stat-box"><div class="num">35+</div><div class="lbl">PhD Supervisors</div></div>
+      <div class="stat-box"><div class="num">4</div><div class="lbl">Research Clusters</div></div>
+    </div>
+
+    <!-- Overview -->
+    <div class="overview">
+      <div class="overview-card">
+        <h2>Programme Overview</h2>
+        <p>Our PhD in Statistics is structured around four internationally recognised research clusters: (1) Statistical Theory and Inference, (2) Applied and Computational Statistics, (3) Biostatistics and Genomic Science, and (4) Financial and Econometric Statistics. Doctoral candidates complete an independent thesis under close supervision, contribute to cluster seminars, and are encouraged to publish and present at international conferences from Year 1.</p>
+        <p style="margin-top:14px;color:var(--muted);font-size:.9rem;line-height:1.75">All PhD candidates receive full research stipends, travel grants for conferences, and access to D'Math's high-performance computing cluster for simulation-intensive research.</p>
+      </div>
+      <div class="overview-card">
+        <h2>What You'll Learn</h2>
+        <ul class="feat-list">
+          <li><strong>Research Methodology:</strong> Literature review, problem formulation, and thesis writing</li>
+          <li><strong>Advanced Probability:</strong> Measure theory, stochastic calculus, martingale theory</li>
+          <li><strong>High-Dimensional Inference:</strong> Minimax theory, sparsity, penalised estimation</li>
+          <li><strong>Bayesian Nonparametrics:</strong> Dirichlet processes, Gaussian processes, posterior consistency</li>
+          <li><strong>Clinical &amp; Genomic Statistics:</strong> Survival models, GWAS, single-cell data</li>
+          <li><strong>Causal Inference:</strong> Potential outcomes, instrumental variables, DAGs</li>
+          <li><strong>Computational Methods:</strong> MCMC, variational inference, HPC workflows</li>
+          <li><strong>Academic Communication:</strong> Journal publication, grant writing, conference presentation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Research Areas -->
+    <div class="section-label">Research Areas</div>
+    <div class="modules-grid">
+      <div class="mod-card"><span class="mod-icon">🧮</span><h4>Statistical Theory</h4><p>Foundational work on optimal estimation, testing, and decision theory — from finite to infinite-dimensional parameter spaces.</p></div>
+      <div class="mod-card"><span class="mod-icon">🌍</span><h4>Spatial Statistics</h4><p>Kriging, geostatistics, spatial point processes, and models for environmental and ecological data.</p></div>
+      <div class="mod-card"><span class="mod-icon">📊</span><h4>High-Dimensional Data</h4><p>Lasso, ridge, elastic net, compressed sensing, and random projection methods for p &gt;&gt; n problems.</p></div>
+      <div class="mod-card"><span class="mod-icon">🤖</span><h4>Statistical Machine Learning</h4><p>Statistical guarantees for neural networks, PAC learning, VC dimension, and generalisation bounds.</p></div>
+      <div class="mod-card"><span class="mod-icon">🧬</span><h4>Genetic Statistics</h4><p>Genome-wide association studies, polygenic risk scores, population stratification, and linkage disequilibrium modelling.</p></div>
+      <div class="mod-card"><span class="mod-icon">🏥</span><h4>Clinical Biostatistics</h4><p>Adaptive trial design, interim analysis, missing data, and regulatory statistics for pharmaceutical research.</p></div>
+      <div class="mod-card"><span class="mod-icon">📉</span><h4>Financial Econometrics</h4><p>High-frequency data analysis, volatility modelling, co-integration, and risk measure estimation.</p></div>
+      <div class="mod-card"><span class="mod-icon">🔬</span><h4>Causal Inference</h4><p>Potential outcomes framework, propensity scores, difference-in-differences, and structural causal models.</p></div>
+    </div>
+
+    <!-- Career Outcomes -->
+    <div class="section-label">Career Pathways</div>
+    <div class="careers-grid">
+      <div class="career-card"><span class="career-icon">🎓</span><h3>Professor of Statistics</h3><p>Lead a university statistics department, teaching advanced courses and directing a productive research group.</p></div>
+      <div class="career-card"><span class="career-icon">🤖</span><h3>Principal Data Scientist</h3><p>Head data science research functions at major technology companies including Google, Meta, and Amazon.</p></div>
+      <div class="career-card"><span class="career-icon">🏥</span><h3>Clinical Statistician</h3><p>Lead statistical methodology for pivotal clinical trials at top pharmaceutical or biotech companies.</p></div>
+      <div class="career-card"><span class="career-icon">🏛️</span><h3>Government Chief Statistician</h3><p>Direct national statistics offices such as ONS, Statistics Canada, or the Australian Bureau of Statistics.</p></div>
+      <div class="career-card"><span class="career-icon">🔬</span><h3>Research Director</h3><p>Lead statistical research at major think tanks, central banks, or international organisations like the WHO.</p></div>
+      <div class="career-card"><span class="career-icon">💹</span><h3>Quant Researcher</h3><p>Apply statistical theory to develop systematic trading strategies and risk models at hedge funds.</p></div>
+    </div>
+
+    <!-- Top Universities -->
+    <div class="uni-section">
+      <div class="section-label">Top Universities Offering This Programme</div>
+      <div class="uni-pills">
+        <span class="uni-pill">Stanford University</span>
+        <span class="uni-pill">Harvard University</span>
+        <span class="uni-pill">Columbia University</span>
+        <span class="uni-pill">University of Chicago</span>
+        <span class="uni-pill">University College London</span>
+        <span class="uni-pill">University of Cambridge</span>
+        <span class="uni-pill">University of Toronto</span>
+        <span class="uni-pill">NUS Singapore</span>
+        <span class="uni-pill">University of Auckland</span>
+        <span class="uni-pill">University of Göttingen</span>
+      </div>
+    </div>
+
+    <!-- Why D'Math -->
+    <div class="approach">
+      <h2>Why D'Math University</h2>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><h4>World-Class Supervisors</h4><p>35+ supervisors including IMS Fellows, RSS award recipients, and researchers with grants from NSF, EPSRC, and ERC.</p></div>
+        <div class="step"><div class="step-num">02</div><h4>Fully Funded Positions</h4><p>Competitive stipends, conference travel funding, and tuition waivers for all successful PhD candidates.</p></div>
+        <div class="step"><div class="step-num">03</div><h4>Collaborative Clusters</h4><p>Four research clusters create a vibrant intellectual community through seminars, reading groups, and joint publications.</p></div>
+        <div class="step"><div class="step-num">04</div><h4>Global Placement Record</h4><p>PhD graduates placed at Stanford, Oxford, Google DeepMind, Bank of England, WHO, and leading global universities.</p></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a href="../pages/elearn.html" class="cta-btn">Enquire About PhD Places &#8594;</a>
+      <p class="cta-sub">Supervisor matching available &mdash; contact our graduate admissions team today</p>
+    </div>
+
+  </main>
+  <div id="footer-container"></div>
+  <button id="btt" aria-label="Back to top">↑</button>
+  <script>
+    fetch('../components/header.html').then(r=>r.text()).then(h=>{document.getElementById('header-container').innerHTML=h});
+    fetch('../components/footer.html').then(r=>r.text()).then(f=>{document.getElementById('footer-container').innerHTML=f});
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{btt.style.display=scrollY>300?'flex':'none'});
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+</body>
+</html>

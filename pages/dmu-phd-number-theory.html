@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhD Number Theory | D'Math University</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--accent:#a855f7;--accent2:#d8b4fe;--dark:#0d0d1a;--card:#141428;--card2:#1a1a35;--text:#e8e8ff;--muted:#7878a0;--border:rgba(168,85,247,.15)}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+    .page-main{max-width:1100px;margin:0 auto;padding:64px 28px 80px}
+    .page-hero{text-align:center;margin-bottom:64px}
+    .page-hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:12px}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:16px}
+    .page-hero p{color:var(--muted);max-width:660px;margin:0 auto;font-size:1rem;line-height:1.7}
+    .hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}
+    .hero-pill{padding:5px 16px;border-radius:999px;font-size:.78rem;font-weight:600;background:rgba(168,85,247,.1);color:var(--accent);border:1px solid rgba(168,85,247,.25)}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:64px}
+    .stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center}
+    .stat-box .num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent)}
+    .stat-box .lbl{color:var(--muted);font-size:.78rem;margin-top:6px}
+    .section-label{font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:28px}
+    .overview{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:64px}
+    .overview-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px}
+    .overview-card h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--accent2);margin-bottom:14px;letter-spacing:.04em}
+    .overview-card p{color:var(--muted);font-size:.9rem;line-height:1.75}
+    .feat-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:14px}
+    .feat-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--muted);line-height:1.6}
+    .feat-list li::before{content:'◆';color:var(--accent);font-size:.6rem;flex-shrink:0;margin-top:5px}
+    .feat-list li strong{color:var(--text)}
+    .modules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:64px}
+    .mod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 18px;transition:transform .2s,border-color .2s}
+    .mod-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .mod-icon{font-size:1.8rem;margin-bottom:10px;display:block}
+    .mod-card h4{font-family:'Orbitron',sans-serif;font-size:.72rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase}
+    .mod-card p{color:var(--muted);font-size:.8rem;line-height:1.6}
+    .careers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:64px}
+    .career-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;transition:transform .2s,border-color .2s}
+    .career-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+    .career-icon{font-size:2rem;margin-bottom:12px;display:block}
+    .career-card h3{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+    .career-card p{color:var(--muted);font-size:.84rem;line-height:1.65}
+    .uni-section{margin-bottom:64px}
+    .uni-pills{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+    .uni-pill{padding:8px 20px;border-radius:999px;font-size:.84rem;font-weight:600;background:var(--card);color:var(--text);border:1px solid var(--border);transition:border-color .2s}
+    .uni-pill:hover{border-color:var(--accent);color:var(--accent)}
+    .approach{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:40px;margin-bottom:64px}
+    .approach h2{font-family:'Orbitron',sans-serif;font-size:1.05rem;color:var(--accent2);margin-bottom:28px;letter-spacing:.04em}
+    .steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+    .step{display:flex;flex-direction:column;gap:8px}
+    .step-num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--accent);opacity:.4;line-height:1}
+    .step h4{font-size:.88rem;font-weight:600;color:var(--text)}
+    .step p{font-size:.8rem;color:var(--muted);line-height:1.6}
+    .cta-row{text-align:center}
+    .cta-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;border-radius:999px;text-decoration:none;letter-spacing:.04em;transition:opacity .2s,transform .15s,box-shadow .2s;box-shadow:0 0 24px rgba(168,85,247,.3)}
+    .cta-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 36px rgba(168,85,247,.5)}
+    .cta-sub{color:var(--muted);font-size:.85rem;margin-top:14px}
+    #btt{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;cursor:pointer;font-size:1.1rem;display:none;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(168,85,247,.4);z-index:999}
+    @media(max-width:768px){.stats-row,.overview,.modules-grid,.careers-grid{grid-template-columns:1fr!important}}
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+  <main class="page-main">
+
+    <!-- HERO -->
+    <section class="page-hero">
+      <p class="eyebrow">D'Math University | Education &amp; Specialist Mathematics</p>
+      <h1>PhD Number Theory</h1>
+      <p>The oldest, deepest, and most celebrated branch of pure mathematics — studying the properties of the integers and their generalisations. From the distribution of prime numbers and the Riemann Hypothesis to Wiles's proof of Fermat's Last Theorem and the Langlands Programme, number theory sits at the absolute summit of mathematical achievement. This doctoral programme places candidates within reach of its most profound open problems.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">Doctoral</span>
+        <span class="hero-pill">3–5 Years</span>
+        <span class="hero-pill">Pure Research</span>
+        <span class="hero-pill">Elite</span>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-row">
+      <div class="stat-box"><div class="num">80+</div><div class="lbl">Active Research Topics</div></div>
+      <div class="stat-box"><div class="num">£70k+</div><div class="lbl">Post-PhD Average Salary</div></div>
+      <div class="stat-box"><div class="num">30+</div><div class="lbl">Expert Supervisors</div></div>
+      <div class="stat-box"><div class="num">Millennium</div><div class="lbl">Prize Adjacency</div></div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section>
+      <p class="section-label">Programme Overview</p>
+      <div class="overview">
+        <div class="overview-card">
+          <h2>The Queen of Mathematics</h2>
+          <p>Gauss called mathematics the queen of the sciences and number theory the queen of mathematics. After two millennia, the title holds. Number theory asks simple questions — How are the primes distributed? Which equations have integer solutions? What is the arithmetic of elliptic curves? — and the answers require the most powerful tools mathematics has ever developed. Wiles's proof of Fermat's Last Theorem mobilised a century of algebraic geometry, analytic number theory, and representation theory, and the Langlands Programme remains one of the grandest unifying visions in all of science.</p>
+          <ul class="feat-list">
+            <li><strong>Riemann Hypothesis:</strong> The most famous unsolved problem in mathematics — studied directly in our analytic number theory track</li>
+            <li><strong>Langlands Programme:</strong> The deepest unifying vision in number theory — our doctoral curriculum provides genuine access</li>
+            <li><strong>Elliptic curves:</strong> The objects at the heart of Fermat's Last Theorem, BSD conjecture, and modern cryptography</li>
+            <li><strong>Computational tools:</strong> SageMath, Magma, and PARI/GP for experimental number theory research</li>
+          </ul>
+        </div>
+        <div class="overview-card">
+          <h2>Research Tracks</h2>
+          <p>Number theory at the doctoral level organises into three broad but deeply interconnected research tracks, each with its own methods, open problems, and specialist literature. Our programme supports candidates in all three, with supervisory expertise spanning the full range of the field.</p>
+          <ul class="feat-list">
+            <li><strong>Analytic number theory:</strong> L-functions, exponential sums, sieve methods, and the deep study of primes in arithmetic progressions</li>
+            <li><strong>Algebraic number theory:</strong> Class field theory, algebraic K-theory, Galois representations, and the arithmetic of number fields and function fields</li>
+            <li><strong>Arithmetic geometry:</strong> Elliptic curves, abelian varieties, p-adic methods, and the Birch and Swinnerton-Dyer conjecture</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH AREAS -->
+    <section>
+      <p class="section-label">Research Areas</p>
+      <div class="modules-grid">
+        <div class="mod-card">
+          <span class="mod-icon">🔢</span>
+          <h4>Analytic Number Theory</h4>
+          <p>The Riemann zeta function, prime number theorem, the Riemann Hypothesis, zero-free regions, and the distribution of primes in arithmetic progressions via Dirichlet L-functions.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">📐</span>
+          <h4>Algebraic Number Theory</h4>
+          <p>Number fields and their rings of integers, ideal class groups, unit groups, ramification theory, class field theory, and Artin reciprocity — the algebraic heart of the Langlands Programme.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">🧮</span>
+          <h4>Elliptic Curves &amp; Modular Forms</h4>
+          <p>The arithmetic of elliptic curves over Q and number fields, modular forms and their L-functions, the modularity theorem (Taniyama-Shimura-Weil), and the BSD conjecture.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">🌐</span>
+          <h4>L-functions &amp; Automorphic Forms</h4>
+          <p>The Langlands Programme — automorphic representations, functoriality conjectures, and the grand unification of number theory through the spectral theory of arithmetic groups.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">🔬</span>
+          <h4>Diophantine Equations</h4>
+          <p>Rational and integral points on varieties, Faltings' theorem (Mordell conjecture), Baker's theory of linear forms in logarithms, and the geometry of numbers approach to Diophantine problems.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">💭</span>
+          <h4>Arithmetic Geometry</h4>
+          <p>p-adic numbers and p-adic analysis, etale cohomology, the Weil conjectures, Galois representations attached to geometric objects, and the Fontaine-Mazur conjectures.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">📊</span>
+          <h4>Cryptographic Number Theory</h4>
+          <p>Elliptic curve discrete logarithm problem, pairing-based cryptography, isogeny-based post-quantum cryptography, and the number-theoretic foundations of secure communications.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">🌍</span>
+          <h4>Sieve Theory</h4>
+          <p>Selberg sieve, large sieve inequality, applications to twin primes (Zhang, Maynard, Polymath8), Goldbach-type problems, and almost-prime results in arithmetic progressions.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">💫</span>
+          <h4>Iwasawa Theory</h4>
+          <p>The Iwasawa main conjecture, p-adic L-functions, the structure of class groups in Zp-extensions, and the connection to the Birch and Swinnerton-Dyer conjecture via Kolyvagin's Euler systems.</p>
+        </div>
+        <div class="mod-card">
+          <span class="mod-icon">📚</span>
+          <h4>Computational Number Theory</h4>
+          <p>Algorithms for factoring, primality testing, elliptic curve point counting, L-function computation, and the use of databases (LMFDB) in modern number-theoretic research.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAREERS -->
+    <section>
+      <p class="section-label">Career Outcomes</p>
+      <div class="careers-grid">
+        <div class="career-card">
+          <span class="career-icon">🎓</span>
+          <h3>University Professor (Pure Mathematics)</h3>
+          <p>The premier academic destination for number theory PhDs. Professorships at research-intensive universities worldwide — particularly in number theory, algebra, and arithmetic geometry groups. A career of research, doctoral supervision, and teaching at the highest level.</p>
+        </div>
+        <div class="career-card">
+          <span class="career-icon">🔐</span>
+          <h3>Government Cryptographer</h3>
+          <p>National security agencies in the UK, USA, Australia, Canada, and allied nations (the Five Eyes community) actively recruit number theorists for cryptographic research, protocol design, and the analysis of cryptographic threats including quantum attacks on current systems.</p>
+        </div>
+        <div class="career-card">
+          <span class="career-icon">🏛️</span>
+          <h3>GCHQ / NSA Mathematical Advisor</h3>
+          <p>Senior mathematical advisory roles at signals intelligence agencies — working on the deepest cryptographic and mathematical problems with national security implications. Number theory training is the highest-value credential for these positions.</p>
+        </div>
+        <div class="career-card">
+          <span class="career-icon">🔬</span>
+          <h3>Research Institute Fellow</h3>
+          <p>Post-doctoral and permanent positions at elite mathematical research institutes — the Institute for Advanced Study (Princeton), IHES (Paris), the Fields Institute (Toronto), MSRI (Berkeley), and the Isaac Newton Institute (Cambridge).</p>
+        </div>
+        <div class="career-card">
+          <span class="career-icon">🏅</span>
+          <h3>Fields Medal Researcher</h3>
+          <p>Number theory and arithmetic geometry have produced a disproportionate share of Fields Medallists. Tate, Deligne, Faltings, Wiles, Bhargava, Scholze — a PhD in number theory from a top institution places candidates in this lineage.</p>
+        </div>
+        <div class="career-card">
+          <span class="career-icon">💹</span>
+          <h3>Mathematical Finance (Elliptic Curves)</h3>
+          <p>Quantitative roles in financial mathematics and cryptographic infrastructure — blockchain mathematical design, post-quantum financial security systems, and risk modelling using number-theoretic random processes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIVERSITIES -->
+    <section class="uni-section">
+      <p class="section-label">Top Universities for PhD Number Theory</p>
+      <div class="uni-pills">
+        <span class="uni-pill">Princeton</span>
+        <span class="uni-pill">Cambridge</span>
+        <span class="uni-pill">Oxford</span>
+        <span class="uni-pill">Harvard</span>
+        <span class="uni-pill">Chicago</span>
+        <span class="uni-pill">MIT</span>
+        <span class="uni-pill">ETH Zurich</span>
+        <span class="uni-pill">Bonn</span>
+        <span class="uni-pill">Berkeley</span>
+        <span class="uni-pill">Paris-Saclay</span>
+      </div>
+    </section>
+
+    <!-- WHY DMATH -->
+    <section class="approach">
+      <h2>Why D'Math University for Doctoral Number Theory?</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h4>Supervisors at the Frontier</h4>
+          <p>Our 30+ number theory supervisors are active contributors to the most important problems in the field — publishing in Annals of Mathematics, Inventiones Mathematicae, and JAMS. Students engage directly with live research from day one.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h4>The Full Breadth of the Field</h4>
+          <p>Most programmes have depth in one or two sub-areas. Ours spans analytic, algebraic, and arithmetic geometry tracks simultaneously — enabling doctoral students to build the breadth that characterises the most successful number theorists.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h4>International Collaborations</h4>
+          <p>Joint seminars with partner institutions in Paris, Princeton, Cambridge, and Bonn. Doctoral students are expected to attend summer schools and present at international workshops from their second year.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h4>Computational Infrastructure</h4>
+          <p>Access to LMFDB, Magma, PARI/GP, and SageMath running on high-performance computing clusters. Computational experimentation is increasingly central to modern number theory research and our infrastructure supports it fully.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-row">
+      <a href="#" class="cta-btn">Enrol &#8594;</a>
+      <p class="cta-sub">PhD Number Theory — the pursuit of the deepest truths about integers, primes, and structure. Applications reviewed year-round.</p>
+    </section>
+
+  </main>
+  <div id="footer-container"></div>
+  <button id="btt" aria-label="Back to top">&#8593;</button>
+  <script>
+    fetch('../components/header.html').then(r=>r.text()).then(h=>{document.getElementById('header-container').innerHTML=h});
+    fetch('../components/footer.html').then(r=>r.text()).then(f=>{document.getElementById('footer-container').innerHTML=f});
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{btt.style.display=scrollY>300?'flex':'none'});
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+</body>
+</html>
