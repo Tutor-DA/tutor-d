@@ -362,3 +362,10 @@
   </div>
 
 </footer>
+
+<div id="tda-chatbot-container"></div>
+<script>
+  fetch('/components/chatbot.html').then(function(r){return r.text();}).then(function(h){
+    document.getElementById('tda-chatbot-container').innerHTML=h;
+  });
+</script>

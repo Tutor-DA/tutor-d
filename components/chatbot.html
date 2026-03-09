@@ -1,0 +1,539 @@
+<!-- TutorDA Chatbot Widget -->
+<style>
+/* ── Chatbot Variables ── */
+.tda-chat-widget * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Floating Button ── */
+#tda-chat-fab {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8c00, #ffd700);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  z-index: 9000;
+  box-shadow: 0 4px 24px rgba(255,140,0,.55);
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
+  animation: tda-pulse 3s ease-in-out infinite;
+}
+#tda-chat-fab:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 32px rgba(255,140,0,.75);
+  animation: none;
+}
+@keyframes tda-pulse {
+  0%,100% { box-shadow: 0 4px 24px rgba(255,140,0,.55); }
+  50%      { box-shadow: 0 4px 36px rgba(255,140,0,.9); }
+}
+
+/* ── Notification dot ── */
+#tda-chat-dot {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 12px; height: 12px;
+  background: #22c55e;
+  border: 2px solid #0d0d1a;
+  border-radius: 50%;
+  animation: tda-blink 2s ease-in-out infinite;
+}
+@keyframes tda-blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+/* ── Chat Panel ── */
+#tda-chat-panel {
+  position: fixed;
+  bottom: 100px;
+  left: 28px;
+  width: 360px;
+  max-height: 520px;
+  background: #0d0d1a;
+  border: 1px solid rgba(255,140,0,.25);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(255,140,0,.08);
+  display: flex;
+  flex-direction: column;
+  z-index: 8999;
+  overflow: hidden;
+  transform-origin: bottom left;
+  transform: scale(0) translateY(20px);
+  opacity: 0;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
+  font-family: 'Poppins', sans-serif;
+}
+#tda-chat-panel.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* ── Chat Header ── */
+.tda-chat-header {
+  background: linear-gradient(135deg, rgba(255,140,0,.15), rgba(255,215,0,.08));
+  border-bottom: 1px solid rgba(255,140,0,.18);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.tda-chat-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff8c00, #ffd700);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px rgba(255,140,0,.4);
+}
+.tda-chat-header-info { flex: 1; }
+.tda-chat-header-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #ff8c00;
+  letter-spacing: .04em;
+}
+.tda-chat-header-status {
+  font-size: .7rem;
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+.tda-chat-header-status::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+}
+.tda-chat-close {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: #7878a0;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.tda-chat-close:hover { border-color: #ff8c00; color: #ff8c00; }
+
+/* ── Messages ── */
+.tda-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+.tda-chat-messages::-webkit-scrollbar { width: 4px; }
+.tda-chat-messages::-webkit-scrollbar-track { background: transparent; }
+.tda-chat-messages::-webkit-scrollbar-thumb { background: rgba(255,140,0,.25); border-radius: 2px; }
+
+/* ── Message bubbles ── */
+.tda-msg {
+  max-width: 85%;
+  font-size: .83rem;
+  line-height: 1.55;
+  animation: tda-msg-in .25s ease;
+}
+@keyframes tda-msg-in { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:none;} }
+
+.tda-msg.bot { align-self: flex-start; }
+.tda-msg.user { align-self: flex-end; }
+
+.tda-msg-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  line-height: 1.6;
+}
+.tda-msg.bot .tda-msg-bubble {
+  background: #141428;
+  border: 1px solid rgba(255,140,0,.15);
+  color: #e8e8ff;
+  border-radius: 4px 14px 14px 14px;
+}
+.tda-msg.user .tda-msg-bubble {
+  background: linear-gradient(135deg, rgba(255,140,0,.25), rgba(255,215,0,.15));
+  border: 1px solid rgba(255,140,0,.3);
+  color: #fff;
+  border-radius: 14px 4px 14px 14px;
+}
+.tda-msg-bubble strong { color: #ffd700; }
+.tda-msg-bubble br { display: block; margin: 3px 0; }
+
+/* ── Typing indicator ── */
+.tda-typing .tda-msg-bubble {
+  display: flex; align-items: center; gap: 5px;
+  padding: 12px 16px;
+}
+.tda-typing-dot {
+  width: 7px; height: 7px;
+  background: #ff8c00;
+  border-radius: 50%;
+  animation: tda-bounce .9s ease-in-out infinite;
+}
+.tda-typing-dot:nth-child(2) { animation-delay: .15s; }
+.tda-typing-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes tda-bounce { 0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-7px);} }
+
+/* ── Quick Replies ── */
+.tda-quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 12px;
+  flex-shrink: 0;
+}
+.tda-qr-btn {
+  padding: 5px 12px;
+  background: rgba(255,140,0,.08);
+  border: 1px solid rgba(255,140,0,.22);
+  border-radius: 999px;
+  color: #ff8c00;
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+.tda-qr-btn:hover { background: #ff8c00; color: #000; }
+
+/* ── Input area ── */
+.tda-chat-input-row {
+  border-top: 1px solid rgba(255,140,0,.12);
+  padding: 12px 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.02);
+}
+#tda-chat-input {
+  flex: 1;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,140,0,.18);
+  border-radius: 10px;
+  padding: 9px 14px;
+  color: #e8e8ff;
+  font-family: 'Poppins', sans-serif;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .2s;
+}
+#tda-chat-input:focus { border-color: #ff8c00; }
+#tda-chat-input::placeholder { color: #7878a0; }
+#tda-chat-send {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #ff8c00, #ffd700);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  color: #0d0d1a;
+  transition: opacity .2s, transform .2s;
+  flex-shrink: 0;
+}
+#tda-chat-send:hover { opacity: .85; transform: scale(1.08); }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  #tda-chat-panel { width: calc(100vw - 24px); left: 12px; }
+  #tda-chat-fab  { bottom: 20px; left: 20px; }
+}
+</style>
+
+<!-- FAB Button -->
+<button id="tda-chat-fab" aria-label="Open chat assistant" onclick="tdaChatToggle()">
+  💬
+  <div id="tda-chat-dot"></div>
+</button>
+
+<!-- Chat Panel -->
+<div id="tda-chat-panel" role="dialog" aria-label="TutorDA Assistant">
+
+  <!-- Header -->
+  <div class="tda-chat-header">
+    <div class="tda-chat-avatar">🤖</div>
+    <div class="tda-chat-header-info">
+      <div class="tda-chat-header-name">TutorDA Assistant</div>
+      <div class="tda-chat-header-status">Online — here to help</div>
+    </div>
+    <button class="tda-chat-close" onclick="tdaChatToggle()" aria-label="Close chat">✕</button>
+  </div>
+
+  <!-- Messages -->
+  <div class="tda-chat-messages" id="tda-chat-msgs"></div>
+
+  <!-- Quick Replies -->
+  <div class="tda-quick-replies" id="tda-qr-row"></div>
+
+  <!-- Input -->
+  <div class="tda-chat-input-row">
+    <input id="tda-chat-input" type="text" placeholder="Ask me anything…" autocomplete="off"
+      onkeydown="if(event.key==='Enter') tdaChatSend()" maxlength="200" />
+    <button id="tda-chat-send" onclick="tdaChatSend()" aria-label="Send">➤</button>
+  </div>
+
+</div>
+
+<script>
+(function() {
+
+/* ══════════════════════════════════════════════
+   KNOWLEDGE BASE
+══════════════════════════════════════════════ */
+var KB = [
+
+  /* ── Greeting ── */
+  { keys: ['hi','hello','hey','helo','hii','good morning','good afternoon','good evening','start','help'],
+    reply: '👋 Hello! I\'m the <strong>TutorDA Assistant</strong>.<br><br>I can explain our <strong>8 Teaching Methods</strong>, our programmes, courses, D\'Math Univ, and more.<br><br>What would you like to know?',
+    qr: ['8 Teaching Methods','D\'Math Univ','Courses','Contact Us']
+  },
+
+  /* ── ALL 8 methods overview ── */
+  { keys: ['8 method','8method','8 teaching','eight method','teaching method','pedagog','methodology','h8','how you teach','how do you teach','how tutorda teach'],
+    reply: '🎓 <strong>D\'Math Univ uses 8 Advanced Teaching Methods:</strong><br><br>① <strong>Socratic Inquiry</strong> — guided questioning<br>② <strong>Flipped Classroom</strong> — watch before class<br>③ <strong>Scaffolded Problem Ladders</strong> — step-by-step difficulty<br>④ <strong>AI-Adaptive Learning</strong> — personalised to you<br>⑤ <strong>Proof-Based Epistemology</strong> — learn WHY not just HOW<br>⑥ <strong>Gamification</strong> — badges, points & competitions<br>⑦ <strong>Collaborative Problem Solving</strong> — peer learning<br>⑧ <strong>Research-Integrated Curriculum</strong> — real maths research<br><br>Tap any method below to learn more!',
+    qr: ['① Socratic','② Flipped','③ Scaffolded','④ AI Learning','⑤ Proof-Based','⑥ Gamification','⑦ Collaborative','⑧ Research']
+  },
+
+  /* ── Method 1: Socratic ── */
+  { keys: ['socratic','method 1','method one','① socratic','guided question','discover','questioning'],
+    reply: '🧠 <strong>Method 1 — Socratic Inquiry</strong><br><br>Instead of telling you the answer, we <strong>ask the right questions</strong> so you discover results yourself.<br><br>📌 <strong>Why it works:</strong> When you figure something out on your own, it becomes part of your long-term understanding — not just short-term memory.<br><br>💡 <strong>Example:</strong> Instead of saying "the derivative of x² is 2x", we ask: "If x increases a tiny bit, how much does x² change?" — and you derive it yourself.<br><br>Result: Deep comprehension that cannot be forgotten.',
+    qr: ['② Flipped','③ Scaffolded','All 8 Methods']
+  },
+
+  /* ── Method 2: Flipped Classroom ── */
+  { keys: ['flipped','method 2','method two','② flipped','pre-recorded','pre recorded','video before','watch before','flip'],
+    reply: '🔄 <strong>Method 2 — Flipped Classroom Model</strong><br><br>You <strong>watch concept videos and read notes BEFORE</strong> the live session. Class time is 100% reserved for problem-solving and discussion — not passive listening.<br><br>📌 <strong>Why it works:</strong> Traditional classrooms waste live time on lectures. Flipped classrooms use live time for what matters most — doing maths together.<br><br>🕐 <strong>Your schedule:</strong><br>▸ Before class → Watch video, read LaTeX notes<br>▸ During class → Solve hard problems with your mentor<br>▸ After class → Practice independently<br><br>More problems solved = faster progress.',
+    qr: ['③ Scaffolded','④ AI Learning','All 8 Methods']
+  },
+
+  /* ── Method 3: Scaffolded ── */
+  { keys: ['scaffold','method 3','method three','③ scaffold','ladder','graded problem','step by step problem','difficulty'],
+    reply: '🏗️ <strong>Method 3 — Scaffolded Problem Ladders</strong><br><br>Every topic has <strong>carefully graded problem sets</strong> — starting from simple numerical examples and climbing to abstract proofs.<br><br>📌 <strong>Why it works:</strong> You never face a problem you\'re not ready for. Each step builds the mental scaffold for the next — no panic, no blank-page anxiety.<br><br>🪜 <strong>The Ladder looks like:</strong><br>▸ Level 1 → Plug numbers in<br>▸ Level 2 → Apply formula to a new situation<br>▸ Level 3 → Derive the formula<br>▸ Level 4 → Prove it rigorously<br>▸ Level 5 → Generalise it<br><br>Every student climbs at their own pace.',
+    qr: ['④ AI Learning','⑤ Proof-Based','All 8 Methods']
+  },
+
+  /* ── Method 4: AI Adaptive ── */
+  { keys: ['ai','adaptive','method 4','method four','④ ai','personali','personalised','track performance','performance','gap','weakness','identify'],
+    reply: '🤖 <strong>Method 4 — AI-Assisted Adaptive Learning</strong><br><br>Our AI system <strong>tracks your performance in real time</strong> — identifying concept gaps, predicting likely errors, and surfacing targeted practice before difficulties compound.<br><br>📌 <strong>Why it works:</strong> No two learners are identical. Generic practice wastes your time. AI-driven learning means every minute of study targets your actual weak points.<br><br>🔍 <strong>What the AI monitors:</strong><br>▸ Topics you consistently get wrong<br>▸ How long you take on each problem<br>▸ Error patterns across related topics<br>▸ Spaced repetition timing for revision<br><br>The result: faster mastery, no hidden gaps.',
+    qr: ['⑤ Proof-Based','⑥ Gamification','All 8 Methods']
+  },
+
+  /* ── Method 5: Proof-Based ── */
+  { keys: ['proof','method 5','method five','⑤ proof','epistemol','why not how','memoris','memoriz','understand why','rigor','rigour'],
+    reply: '📝 <strong>Method 5 — Proof-Based Epistemology</strong><br><br>Mathematics is a discipline built on <strong>proof, not memorisation</strong>. We teach you to construct, verify, and communicate mathematical arguments — not just apply formulas.<br><br>📌 <strong>Why it works:</strong> Formulas can be forgotten. Understanding WHY a result is true means you can re-derive it anytime — even under exam pressure.<br><br>✍️ <strong>What this looks like:</strong><br>▸ You prove theorems, not just use them<br>▸ You learn to write rigorous mathematical arguments<br>▸ You understand the conditions under which a result holds<br>▸ You develop mathematical maturity that lasts a lifetime<br><br>This is how the best mathematicians think.',
+    qr: ['⑥ Gamification','⑦ Collaborative','All 8 Methods']
+  },
+
+  /* ── Method 6: Gamification ── */
+  { keys: ['gamif','method 6','method six','⑥ gamif','badge','point','leaderboard','competition','game','fun','motivat'],
+    reply: '🎮 <strong>Method 6 — Gamification &amp; Competitions</strong><br><br>Points, leaderboards, badges, and regular inter-cohort <strong>mathematical competitions</strong> create a culture of motivated practice. Problem-solving becomes a habit, not a chore.<br><br>📌 <strong>Why it works:</strong> The brain releases dopamine when it earns rewards. Linking that reward to solving maths problems creates a powerful learning habit loop.<br><br>🏆 <strong>How we gamify:</strong><br>▸ XP points for every problem solved<br>▸ Badges for topic mastery<br>▸ Weekly challenge leaderboards<br>▸ Monthly inter-cohort competitions<br>▸ Streak rewards for daily practice<br><br>Students who compete improve 3× faster than those who only study.',
+    qr: ['⑦ Collaborative','⑧ Research','All 8 Methods']
+  },
+
+  /* ── Method 7: Collaborative ── */
+  { keys: ['collaborat','method 7','method seven','⑦ collaborat','peer','group','study group','team','pair','together','peer learning'],
+    reply: '🤝 <strong>Method 7 — Collaborative Problem Solving</strong><br><br>Structured <strong>peer learning sessions, study groups, and pair-proof workshops</strong> build the collaborative mathematical culture found in the world\'s best university departments.<br><br>📌 <strong>Why it works:</strong> When you explain maths to someone else, you are forced to identify every gap in your own understanding. Teaching is the highest form of learning.<br><br>👥 <strong>Collaboration formats:</strong><br>▸ Pair proofing — two students prove a result together<br>▸ Study groups — 3-5 students tackle a problem set<br>▸ Peer review — students mark each other\'s solutions<br>▸ Group problem competitions — teams vs teams<br><br>Community transforms isolated study into shared achievement.',
+    qr: ['⑧ Research','① Socratic','All 8 Methods']
+  },
+
+  /* ── Method 8: Research ── */
+  { keys: ['research','method 8','method eight','⑧ research','research integrat','paper','journal','open problem','literature'],
+    reply: '🔬 <strong>Method 8 — Research-Integrated Curriculum</strong><br><br>From Advanced Diploma level upward, students engage with <strong>actual mathematical literature</strong> — reading research papers, exploring unsolved problems, and producing original analytical work.<br><br>📌 <strong>Why it works:</strong> Knowing mathematics as a living, growing subject transforms your relationship with it. You stop being a consumer of results and become a contributor.<br><br>📚 <strong>Research integration includes:</strong><br>▸ Reading and presenting research papers<br>▸ Seminars on open mathematical problems<br>▸ Research projects supervised by PhD faculty<br>▸ Participation in mathematical olympiads<br>▸ Original dissertation work at MSc/PhD level<br><br>This is D\'Math Univ\'s highest-level commitment to mathematical excellence.',
+    qr: ['① Socratic','All 8 Methods','D\'Math Univ']
+  },
+
+  /* ── D'Math Univ ── */
+  { keys: ['dmath','d\'math','d math','virtual universit','math universit','univ','50 programme','50 program','programme'],
+    reply: '🎓 <strong>D\'Math Univ — TutorDA\'s Virtual Mathematics University</strong><br><br>A comprehensive digital university dedicated <strong>entirely to mathematics</strong> — with 50 world-class degree programmes from Undergraduate to Doctoral level.<br><br>📋 <strong>5 Specialisation Tracks:</strong><br>▸ Pure &amp; General Mathematics<br>▸ Statistics &amp; Data Science<br>▸ Finance &amp; Actuarial<br>▸ Computing &amp; Interdisciplinary<br>▸ Education &amp; Specialist<br><br>🌐 100% Virtual | Research-Integrated | AI-Enhanced<br><br>Benchmarked against MIT, Cambridge, IIT, ETH Zürich, and other world-leading departments.',
+    qr: ['BSc Programmes','MSc Programmes','PhD Programmes','8 Teaching Methods']
+  },
+
+  /* ── BSc programmes ── */
+  { keys: ['bsc','bachelor','undergraduate','ug programme'],
+    reply: '🎓 <strong>BSc Programmes at D\'Math Univ:</strong><br><br>▸ BSc Mathematics<br>▸ BSc Applied Mathematics<br>▸ BSc Mathematical Sciences<br>▸ BSc Mathematics Honours<br>▸ BSc Statistics<br>▸ BSc Data Science<br>▸ BSc Data Analytics<br>▸ BSc Probability &amp; Statistics<br>▸ BSc Actuarial Science<br>▸ BSc Financial Mathematics<br>▸ BSc Mathematics &amp; Economics<br>▸ BSc Mathematics &amp; Computer Science<br>▸ BSc Mathematics &amp; Physics<br>▸ BSc Mathematical Physics<br>▸ BSc Discrete Mathematics<br>▸ BA Mathematics<br>▸ BEd Mathematics Education<br><br>Each programme has a dedicated page with full curriculum and career pathways.',
+    qr: ['MSc Programmes','PhD Programmes','D\'Math Univ']
+  },
+
+  /* ── MSc programmes ── */
+  { keys: ['msc','master','postgraduate','pg programme'],
+    reply: '🎓 <strong>MSc Programmes at D\'Math Univ:</strong><br><br>▸ MSc Mathematics<br>▸ MSc Applied Mathematics<br>▸ MSc Statistics<br>▸ MSc Data Science<br>▸ MSc Machine Learning &amp; Mathematics<br>▸ MSc Biostatistics<br>▸ MSc Actuarial Science<br>▸ MSc Financial Mathematics<br>▸ MSc Quantitative Finance<br>▸ MSc Mathematical Finance<br>▸ MSc Operations Research<br>▸ MSc Risk Management &amp; Mathematics<br>▸ MSc Mathematics &amp; Computing<br>▸ MSc Computational Mathematics<br>▸ MSc Numerical Analysis<br>▸ MSc Cryptography &amp; Mathematics<br>▸ MSc Optimisation &amp; Operations<br>▸ MSc History &amp; Philosophy<br>▸ MSc Mathematical Logic<br>▸ MSc Topology<br>▸ MSc Algebraic Geometry<br>▸ MSc Stochastic Processes<br>▸ MEd Mathematics Education<br>▸ MMath Integrated',
+    qr: ['BSc Programmes','PhD Programmes','D\'Math Univ']
+  },
+
+  /* ── PhD programmes ── */
+  { keys: ['phd','doctoral','doctorate','research degree'],
+    reply: '🎓 <strong>PhD Programmes at D\'Math Univ:</strong><br><br>▸ PhD Mathematics<br>▸ PhD Applied Mathematics<br>▸ PhD Statistics<br>▸ PhD Statistics — Advanced Track<br>▸ PhD Actuarial Science<br>▸ PhD Pure Mathematics<br>▸ PhD Number Theory<br>▸ PhD Differential Equations<br>▸ PhD Mathematics Education<br><br>All doctoral programmes are <strong>research-intensive</strong> (3–5 years), supervised by PhD-qualified faculty with active publication records.<br><br>Average graduate salary: £65k–£80k+',
+    qr: ['BSc Programmes','MSc Programmes','8 Teaching Methods']
+  },
+
+  /* ── Courses ── */
+  { keys: ['course','class','cbse','tn board','igcse','jee','neet','sat','curriculum','school'],
+    reply: '📚 <strong>TutorDA Course Offerings:</strong><br><br><strong>School Curricula:</strong><br>▸ CBSE (Classes 6–12)<br>▸ Tamil Nadu State Board<br>▸ IGCSE / Cambridge<br><br><strong>Entrance Exams:</strong><br>▸ JEE Mains &amp; Advanced<br>▸ NEET (Mathematics)<br>▸ SAT / ACT<br>▸ Competitive Exams &amp; Olympiads<br><br><strong>University-Level:</strong><br>▸ D\'Math Univ — 50 Mathematics Degrees<br><br>All courses use our 8 advanced teaching methods for maximum learning impact.',
+    qr: ['8 Teaching Methods','D\'Math Univ','Contact Us']
+  },
+
+  /* ── Enrol / How to join ── */
+  { keys: ['enrol','enroll','join','register','sign up','how to start','apply','admission'],
+    reply: '📋 <strong>How to Enrol at TutorDA:</strong><br><br>1️⃣ Visit the relevant course or programme page<br>2️⃣ Click the <strong>"Enrol"</strong> or <strong>"Apply"</strong> button<br>3️⃣ Or contact us directly:<br><br>📧 <strong>Email:</strong> support@tutorda.org<br>💬 <strong>WhatsApp:</strong> +968 9258 7650<br>🌐 <strong>Moodle Portal:</strong> moodle.tutorda.org<br><br>Our team will guide you through programme selection, scheduling, and onboarding.',
+    qr: ['Contact Us','Courses','D\'Math Univ']
+  },
+
+  /* ── Contact ── */
+  { keys: ['contact','email','whatsapp','reach','support','help','phone','number','get in touch'],
+    reply: '📬 <strong>Contact TutorDA:</strong><br><br>📧 <strong>Email:</strong> support@tutorda.org<br>💬 <strong>WhatsApp (Oman):</strong> +968 9258 7650<br>💬 <strong>WhatsApp (India):</strong> +91 97440 48698<br>🌐 <strong>Moodle Portal:</strong> moodle.tutorda.org<br>📘 <strong>Facebook:</strong> facebook.com/tutorda<br>📸 <strong>Instagram:</strong> instagram.com/tutorda<br>▶️ <strong>YouTube:</strong> @TutorDA_org<br><br>We typically respond within <strong>24 hours</strong>.',
+    qr: ['How to Enrol','Courses','8 Teaching Methods']
+  },
+
+  /* ── Tools & Games ── */
+  { keys: ['tool','game','calculat','desmos','geogebra','play','fun','interactiv'],
+    reply: '🛠️ <strong>TutorDA Free Math Tools &amp; Games:</strong><br><br>▸ 🎮 <strong>Math Games</strong> — interactive maths challenges<br>▸ 🧮 Calculators &amp; solvers<br>▸ 📐 GeoGebra-powered geometry tools<br>▸ 📊 Graph plotters<br>▸ 🔢 LaTeX equation renderer<br><br>All tools are <strong>free to use</strong> and available at:<br><strong>tutorda.org/pages/tools.html</strong><br><br>Math Games: <strong>tutorda.org/pages/games.html</strong>',
+    qr: ['Courses','Contact Us','8 Teaching Methods']
+  },
+
+  /* ── About TutorDA ── */
+  { keys: ['what is tutorda','about tutorda','about tutor','who are you','what do you do','tutorda'],
+    reply: '🌟 <strong>What is TutorDA?</strong><br><br>TutorDA is a <strong>digital mathematics learning ecosystem</strong> — a platform built around the belief that <em>curiosity, not instruction</em>, is the true engine of learning.<br><br>📌 <strong>We offer:</strong><br>▸ School mathematics tutoring (CBSE, IGCSE, TN Board)<br>▸ Competitive exam coaching (JEE, NEET, SAT)<br>▸ University-level programmes via <strong>D\'Math Univ</strong><br>▸ LaTeX question paper preparation<br>▸ eLearning via Moodle LMS<br>▸ Academic mentorship<br>▸ Free tools &amp; games<br><br>Founded by a mathematician dedicated to making mathematics accessible to every learner everywhere.',
+    qr: ['8 Teaching Methods','D\'Math Univ','Courses']
+  },
+
+  /* ── LaTeX / Question Papers ── */
+  { keys: ['latex','question paper','paper preparat','typeset','exam paper'],
+    reply: '📄 <strong>Question Paper Preparation Service:</strong><br><br>TutorDA prepares <strong>professional, LaTeX-typeset</strong> question papers for:<br><br>▸ School and university examinations<br>▸ Competitive exam mock tests<br>▸ MCQ, short-answer, and descriptive formats<br>▸ Answer keys and mark schemes<br><br>⚡ <strong>Turnaround: 48 hours</strong><br>📧 Request via: <strong>support@tutorda.org</strong><br><br>All papers are mathematically verified and publication-ready.',
+    qr: ['Contact Us','Courses','8 Teaching Methods']
+  },
+
+  /* ── Fallback ── */
+  { keys: ['__fallback__'],
+    reply: '🤔 I\'m not sure about that one. I\'m best at explaining our <strong>8 Teaching Methods</strong>, D\'Math Univ programmes, courses, and how to enrol.<br><br>Try one of the quick options below, or email us at <strong>support@tutorda.org</strong> for anything specific!',
+    qr: ['8 Teaching Methods','D\'Math Univ','Courses','Contact Us']
+  }
+];
+
+/* ══════════════════════════════════════════════
+   CHATBOT LOGIC
+══════════════════════════════════════════════ */
+var isOpen = false;
+var greeted = false;
+
+function tdaChatToggle() {
+  var panel = document.getElementById('tda-chat-panel');
+  isOpen = !isOpen;
+  panel.classList.toggle('open', isOpen);
+  if (isOpen) {
+    if (!greeted) {
+      greeted = true;
+      setTimeout(function() {
+        tdaBotReply(KB[0]);
+      }, 400);
+    }
+    setTimeout(function() {
+      document.getElementById('tda-chat-input').focus();
+    }, 350);
+    document.getElementById('tda-chat-dot').style.display = 'none';
+  }
+}
+
+function tdaChatSend() {
+  var input = document.getElementById('tda-chat-input');
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  tdaAddMsg('user', text);
+  document.getElementById('tda-qr-row').innerHTML = '';
+  tdaShowTyping();
+  setTimeout(function() {
+    tdaRemoveTyping();
+    var response = tdaMatch(text.toLowerCase());
+    tdaBotReply(response);
+  }, 700);
+}
+
+function tdaAddMsg(role, html) {
+  var msgs = document.getElementById('tda-chat-msgs');
+  var div = document.createElement('div');
+  div.className = 'tda-msg ' + role;
+  var bubble = document.createElement('div');
+  bubble.className = 'tda-msg-bubble';
+  bubble.innerHTML = html;
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function tdaShowTyping() {
+  var msgs = document.getElementById('tda-chat-msgs');
+  var div = document.createElement('div');
+  div.className = 'tda-msg bot tda-typing';
+  div.id = 'tda-typing-indicator';
+  div.innerHTML = '<div class="tda-msg-bubble"><div class="tda-typing-dot"></div><div class="tda-typing-dot"></div><div class="tda-typing-dot"></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function tdaRemoveTyping() {
+  var t = document.getElementById('tda-typing-indicator');
+  if (t) t.remove();
+}
+
+function tdaBotReply(entry) {
+  tdaAddMsg('bot', entry.reply);
+  var qr = document.getElementById('tda-qr-row');
+  qr.innerHTML = '';
+  if (entry.qr) {
+    entry.qr.forEach(function(label) {
+      var btn = document.createElement('button');
+      btn.className = 'tda-qr-btn';
+      btn.textContent = label;
+      btn.onclick = function() {
+        tdaAddMsg('user', label);
+        qr.innerHTML = '';
+        tdaShowTyping();
+        setTimeout(function() {
+          tdaRemoveTyping();
+          tdaBotReply(tdaMatch(label.toLowerCase()));
+        }, 600);
+      };
+      qr.appendChild(btn);
+    });
+  }
+}
+
+function tdaMatch(text) {
+  for (var i = 0; i < KB.length - 1; i++) {
+    for (var j = 0; j < KB[i].keys.length; j++) {
+      if (text.indexOf(KB[i].keys[j]) !== -1) return KB[i];
+    }
+  }
+  return KB[KB.length - 1]; // fallback
+}
+
+/* Show notification dot after 3 seconds if not opened */
+setTimeout(function() {
+  if (!isOpen) {
+    var dot = document.getElementById('tda-chat-dot');
+    if (dot) dot.style.display = 'block';
+  }
+}, 3000);
+
+/* Make toggle global */
+window.tdaChatToggle = tdaChatToggle;
+window.tdaChatSend   = tdaChatSend;
+
+})();
+</script>
