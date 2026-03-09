@@ -159,6 +159,134 @@
   box-shadow: 0 0 20px rgba(255,140,0,.5);
 }
 
+/* ── Dropdown ── */
+.tda-nav li.has-dropdown { position: relative; }
+
+.tda-nav li.has-dropdown > a {
+  padding-right: 22px;
+}
+
+.tda-nav li.has-dropdown > a::before {
+  content: '▾';
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: .65rem;
+  color: var(--h-muted);
+  transition: transform .25s, color .2s;
+  line-height: 1;
+}
+
+.tda-nav li.has-dropdown:hover > a::before,
+.tda-nav li.has-dropdown.open > a::before {
+  transform: translateY(-50%) rotate(-180deg);
+  color: var(--h-orange);
+}
+
+.tda-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 230px;
+  background: rgba(10,10,24,0.97);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,140,0,.18);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,140,0,.06);
+  padding: 6px;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+  z-index: 999;
+}
+
+.tda-nav li.has-dropdown:hover .tda-dropdown,
+.tda-nav li.has-dropdown.open .tda-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tda-dropdown li { list-style: none; }
+
+.tda-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  font-size: .8rem;
+  font-weight: 500;
+  color: var(--h-muted);
+  text-decoration: none;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: background .18s, color .18s;
+}
+
+.tda-dropdown a::after { display: none; }
+
+.tda-dropdown a span strong { display: block; color: var(--h-text); font-weight: 600; font-size: .8rem; }
+.tda-dropdown a span small  { display: block; color: var(--h-muted); font-size: .7rem; font-weight: 400; margin-top: 1px; }
+.tda-dropdown a:hover span strong { color: #fff; }
+.tda-dropdown a:hover span small  { color: rgba(255,255,255,.6); }
+
+.tda-dropdown a:hover {
+  background: rgba(255,140,0,.1);
+  color: #fff;
+}
+
+.tda-dropdown a .dd-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,140,0,.1);
+  border-radius: 7px;
+  font-size: .9rem;
+  flex-shrink: 0;
+  transition: background .18s;
+}
+
+.tda-dropdown a:hover .dd-icon { background: rgba(255,140,0,.22); }
+
+.tda-dropdown-divider {
+  height: 1px;
+  background: rgba(255,255,255,.07);
+  margin: 4px 6px;
+}
+
+/* ── Mobile dropdown ── */
+@media (max-width: 960px) {
+  .tda-dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    border: none;
+    background: rgba(255,255,255,.04);
+    border-radius: 10px;
+    margin-top: 4px;
+    padding: 4px;
+    display: none;
+  }
+
+  .tda-nav li.has-dropdown.open .tda-dropdown { display: block; }
+
+  .tda-nav li.has-dropdown > a::before {
+    right: 10px;
+  }
+
+  .tda-dropdown a {
+    padding: 10px 14px;
+    font-size: .85rem;
+  }
+}
+
 /* ── Hamburger ── */
 .tda-burger {
   display: none;
@@ -295,8 +423,103 @@
     <ul class="tda-nav" id="tda-nav">
       <button class="tda-close-btn" onclick="tdaClose()">✕</button>
       <li><a href="../index.html">Home</a></li>
-      <li><a href="../pages/about.html">Services</a></li>
-      <li><a href="../pages/courses.html">Courses</a></li>
+      <li class="has-dropdown" id="svc-dropdown">
+        <a href="../pages/about.html">Services</a>
+        <ul class="tda-dropdown">
+          <li>
+            <a href="../pages/mathematics-tutoring.html">
+              <span class="dd-icon">📐</span>
+              <span><strong>Mathematics Tutoring</strong><br><small>All levels &amp; curricula</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/elearn.html">
+              <span class="dd-icon">💻</span>
+              <span><strong>eLearning Portal</strong><br><small>Live &amp; self-paced learning</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/question-paper.html">
+              <span class="dd-icon">📄</span>
+              <span><strong>Question Paper Preparation</strong><br><small>LaTeX typeset, 48h delivery</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/mentorship.html">
+              <span class="dd-icon">🎓</span>
+              <span><strong>Mentorship Programme</strong><br><small>Dedicated academic mentor</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/competitive-coaching.html">
+              <span class="dd-icon">🏆</span>
+              <span><strong>Competitive Exam Coaching</strong><br><small>JEE, NEET, SAT, GRE, GATE</small></span>
+            </a>
+          </li>
+          <li class="tda-dropdown-divider"></li>
+          <li>
+            <a href="../pages/tools.html">
+              <span class="dd-icon">🛠️</span>
+              <span><strong>Math Tools &amp; Games</strong><br><small>Free calculators &amp; games</small></span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="has-dropdown" id="course-dropdown">
+        <a href="../pages/courses.html">Courses</a>
+        <ul class="tda-dropdown">
+          <li>
+            <a href="../pages/cbse.html">
+              <span class="dd-icon">📘</span>
+              <span><strong>CBSE</strong><br><small>Classes 6 to 12</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/tn-board.html">
+              <span class="dd-icon">📗</span>
+              <span><strong>Tamil Nadu State Board</strong><br><small>Full coverage</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/igcse.html">
+              <span class="dd-icon">🌐</span>
+              <span><strong>IGCSE / Cambridge</strong><br><small>International curriculum</small></span>
+            </a>
+          </li>
+          <li class="tda-dropdown-divider"></li>
+          <li>
+            <a href="../pages/jee.html">
+              <span class="dd-icon">⚙️</span>
+              <span><strong>JEE Mains &amp; Advanced</strong><br><small>Engineering entrance</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/neet.html">
+              <span class="dd-icon">🧬</span>
+              <span><strong>NEET</strong><br><small>Medical entrance mathematics</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/sat-act.html">
+              <span class="dd-icon">🌍</span>
+              <span><strong>SAT / ACT</strong><br><small>Global university admissions</small></span>
+            </a>
+          </li>
+          <li class="tda-dropdown-divider"></li>
+          <li>
+            <a href="../pages/competitive-exams.html">
+              <span class="dd-icon">🏆</span>
+              <span><strong>Competitive Exams</strong><br><small>Olympiads &amp; math contests</small></span>
+            </a>
+          </li>
+          <li>
+            <a href="../pages/entrance-exams.html">
+              <span class="dd-icon">🎓</span>
+              <span><strong>Entrance Exams</strong><br><small>Worldwide university admissions</small></span>
+            </a>
+          </li>
+        </ul>
+      </li>
       <li><a href="../pages/elearn.html">E-Learn</a></li>
       <li><a href="../pages/team.html">Our Team</a></li>
       <li><a href="../pages/careers.html">Careers</a></li>
@@ -354,4 +577,31 @@
   window.addEventListener('resize', function() {
     if (window.innerWidth > 960) tdaClose();
   });
+
+  /* ── Dropdown toggle (mobile tap / desktop outside-click) ── */
+  (function() {
+    ['svc-dropdown', 'course-dropdown'].forEach(function(id) {
+      var li = document.getElementById(id);
+      if (!li) return;
+      var trigger = li.querySelector(':scope > a');
+      trigger.addEventListener('click', function(e) {
+        if (window.innerWidth <= 960) {
+          e.preventDefault();
+          /* Close all other open dropdowns */
+          document.querySelectorAll('.tda-nav li.has-dropdown.open').forEach(function(el) {
+            if (el !== li) el.classList.remove('open');
+          });
+          li.classList.toggle('open');
+        }
+      });
+    });
+    /* Desktop: close any open dropdown when clicking outside nav */
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth > 960 && !e.target.closest('.has-dropdown')) {
+        document.querySelectorAll('.tda-nav li.has-dropdown.open').forEach(function(el) {
+          el.classList.remove('open');
+        });
+      }
+    });
+  })();
 </script>

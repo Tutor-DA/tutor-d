@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Competitive Exams &amp; Olympiads | TutorDA</title>
+  <meta name="description" content="Expert mathematics coaching for international and national olympiads, math competitions, and talent search examinations worldwide." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:#ff8c00; --accent2:#ffd700;
+      --dark:#0d0d1a; --card:#141428;
+      --text:#e8e8ff; --muted:#7878a0; --border:rgba(255,140,0,.15);
+    }
+    body { background:var(--dark); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; }
+    .page-main { max-width:1200px; margin:0 auto; padding:64px 28px 80px; }
+
+    /* Hero */
+    .page-hero { text-align:center; margin-bottom:64px; }
+    .page-hero .eyebrow { font-family:'Orbitron',sans-serif; font-size:.72rem; letter-spacing:.18em; color:var(--accent); text-transform:uppercase; margin-bottom:12px; }
+    .page-hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:16px; }
+    .page-hero p { color:var(--muted); max-width:700px; margin:0 auto; font-size:1rem; line-height:1.7; }
+    .hero-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:24px; }
+    .hero-pill { padding:5px 16px; border-radius:999px; font-size:.78rem; font-weight:600; background:rgba(255,140,0,.1); color:var(--accent); border:1px solid rgba(255,140,0,.25); }
+
+    /* Stats */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:64px; }
+    .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; }
+    .stat-box .num { font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:900; color:var(--accent); }
+    .stat-box .lbl { color:var(--muted); font-size:.78rem; margin-top:6px; }
+
+    /* Sections */
+    .exams-section { margin-bottom:60px; }
+    .section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--accent2); margin-bottom:6px; letter-spacing:.04em; }
+    .section-divider { height:1px; background:linear-gradient(90deg,var(--accent),transparent); opacity:.3; margin-bottom:28px; }
+    .section-flag { font-size:1.4rem; margin-right:8px; }
+
+    /* Cards */
+    .exams-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .exam-entry { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; transition:border-color .2s, transform .2s; }
+    .exam-entry:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .exam-entry-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .exam-entry h3 { font-family:'Orbitron',sans-serif; font-size:.8rem; color:var(--accent); letter-spacing:.02em; }
+    .exam-entry .exam-full { display:block; color:var(--muted); font-size:.72rem; margin-top:2px; line-height:1.4; }
+    .exam-tag { display:inline-block; font-size:.65rem; padding:2px 8px; border-radius:999px; background:rgba(255,140,0,.1); color:var(--accent); border:1px solid rgba(255,140,0,.2); font-weight:600; white-space:nowrap; flex-shrink:0; }
+    .exam-entry p { color:var(--muted); font-size:.8rem; line-height:1.65; margin-top:6px; }
+
+    /* CTA */
+    .cta-row { text-align:center; margin-top:32px; }
+    .cta-btn { display:inline-flex; align-items:center; gap:10px; padding:14px 36px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; font-family:'Poppins',sans-serif; font-weight:700; font-size:1rem; border-radius:999px; text-decoration:none; box-shadow:0 0 24px rgba(255,140,0,.3); transition:opacity .2s,transform .15s; }
+    .cta-btn:hover { opacity:.9; transform:translateY(-2px); }
+    .cta-sub { color:var(--muted); font-size:.85rem; margin-top:14px; }
+
+    /* Back to top */
+    #backToTop { position:fixed; bottom:24px; right:24px; background:var(--card); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; z-index:500; }
+    #backToTop:hover { border-color:var(--accent); }
+
+    @media (max-width:768px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .exams-grid { grid-template-columns:1fr; }
+      .page-main { padding:44px 18px 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="page-main">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <p class="eyebrow">Competition Mathematics</p>
+      <h1>Competitive Exams &amp; Olympiads</h1>
+      <p>Olympiad mathematics requires a different kind of thinking — creative problem-solving, proof writing, and mathematical intuition beyond the standard curriculum. TutorDA prepares students for the full spectrum of national and international competitions.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">International Olympiads</span>
+        <span class="hero-pill">National Olympiads</span>
+        <span class="hero-pill">Math Competitions</span>
+        <span class="hero-pill">Talent Search</span>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="num">15+</div><div class="lbl">International Olympiads</div></div>
+      <div class="stat-box"><div class="num">7+</div><div class="lbl">India National</div></div>
+      <div class="stat-box"><div class="num">10+</div><div class="lbl">Country Competitions</div></div>
+      <div class="stat-box"><div class="num">Proof-Based</div><div class="lbl">Training</div></div>
+    </div>
+
+    <!-- Section 1: International Mathematical Olympiads -->
+    <section class="exams-section">
+      <h2 class="section-title">International Mathematical Olympiads</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IMO</h3>
+              <span class="exam-full">International Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>The world's most prestigious pre-university mathematics competition, held annually since 1959 with participants from over 100 countries. Six problems over two days test the deepest levels of mathematical creativity, proof-writing, and ingenuity.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IPhO</h3>
+              <span class="exam-full">International Physics Olympiad</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>The premier international competition in physics for secondary school students, combining theoretical and experimental components. Strong mathematical problem-solving is essential for the mechanics, electricity, and optics questions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IChO</h3>
+              <span class="exam-full">International Chemistry Olympiad</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>An annual competition testing advanced chemistry knowledge and problem-solving for pre-university students globally. Quantitative chemistry questions demand strong algebra, logarithm, and equilibrium calculation skills.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IJSO</h3>
+              <span class="exam-full">International Junior Science Olympiad</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>A science olympiad for students under 16 covering physics, chemistry, and biology with significant quantitative components. The mathematics embedded in its problems makes strong arithmetic and algebraic reasoning essential.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IMSO</h3>
+              <span class="exam-full">International Mathematics &amp; Science Olympiad</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>A competition for primary and junior secondary students from across Asia and beyond, testing mathematics and natural science. Problems are designed to be accessible yet challenging, building early competition instincts.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Kangaroo Mathematics Competition</h3>
+              <span class="exam-full">Math Kangaroo</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>One of the world's largest mathematics competitions, run in over 70 countries with over 6 million annual participants. Multiple-choice format tests mathematical reasoning and problem-solving at levels from Grade 3 through Grade 12.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Putnam Competition</h3>
+              <span class="exam-full">William Lowell Putnam Mathematical Competition</span>
+            </div>
+            <span class="exam-tag">USA University</span>
+          </div>
+          <p>North America's most prestigious undergraduate mathematics competition, sat annually on the first Saturday of December. Problems are famously difficult — a median score of 0 or 1 out of 120 is common even among top university students.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>USAMO</h3>
+              <span class="exam-full">US Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">USA National</span>
+          </div>
+          <p>The national olympiad for the United States, qualifying the top AMC/AIME scorers to compete for spots on the US IMO team. Six proof-based problems over two days test algebra, combinatorics, geometry, and number theory at the highest level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AIME</h3>
+              <span class="exam-full">American Invitational Mathematics Examination</span>
+            </div>
+            <span class="exam-tag">USA National</span>
+          </div>
+          <p>A 15-question, 3-hour competition that serves as the bridge between the AMC and the USAMO. Integer-answer problems (0–999) test creative problem-solving across algebra, geometry, number theory, and combinatorics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AMC 8</h3>
+              <span class="exam-full">American Mathematics Competition 8</span>
+            </div>
+            <span class="exam-tag">USA</span>
+          </div>
+          <p>A 25-question, 40-minute competition for students in Grade 8 and below — the ideal entry point for competition mathematics in the United States. Problems test arithmetic, pre-algebra, geometry, and logical reasoning.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AMC 10 / AMC 12</h3>
+              <span class="exam-full">American Mathematics Competition</span>
+            </div>
+            <span class="exam-tag">USA</span>
+          </div>
+          <p>The AMC 10 (Grades 10 and below) and AMC 12 (all students) are the primary qualifiers for the AIME and ultimately the USAMO. 30 multiple-choice questions in 75 minutes covering algebra, geometry, number theory, and counting.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>EGMO</h3>
+              <span class="exam-full">European Girls' Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Europe</span>
+          </div>
+          <p>An international olympiad exclusively for female pre-university students, modelled on the IMO format with six proof-based problems. Founded in 2012 to broaden participation in competitive mathematics and identify future mathematical talent.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Balkan Mathematical Olympiad</h3>
+              <span class="exam-full">Balkan MO</span>
+            </div>
+            <span class="exam-tag">Southeast Europe</span>
+          </div>
+          <p>An annual regional olympiad for students from Balkan countries, bridging national olympiads and the IMO. Four proof problems over four and a half hours test algebra, combinatorics, geometry, and number theory.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>APMO</h3>
+              <span class="exam-full">Asian Pacific Mathematics Olympiad</span>
+            </div>
+            <span class="exam-tag">Asia Pacific</span>
+          </div>
+          <p>A five-problem, four-hour proof competition for students from Asian and Pacific nations, serving as preparation for the IMO. Problems span algebra, combinatorics, geometry, and number theory at near-IMO difficulty.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Nordic Mathematical Contest</h3>
+              <span class="exam-full">NMC</span>
+            </div>
+            <span class="exam-tag">Scandinavia</span>
+          </div>
+          <p>A regional competition for students from Denmark, Finland, Iceland, Norway, and Sweden with four problems in four hours. Emphasises elegant mathematical reasoning over computation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Iberoamerican Mathematical Olympiad</h3>
+              <span class="exam-full">IbMO</span>
+            </div>
+            <span class="exam-tag">Latin America</span>
+          </div>
+          <p>An olympiad for students from Ibero-American countries (Spain, Portugal, and Latin America), held annually since 1985. Six proof problems test the full breadth of olympiad mathematics at a level between national olympiads and the IMO.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: India National Olympiad Pathway -->
+    <section class="exams-section">
+      <h2 class="section-title">India — National Olympiad Pathway</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PRMO</h3>
+              <span class="exam-full">Pre-Regional Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">India</span>
+          </div>
+          <p>The entry point of India's olympiad pathway, a 30-question examination testing fundamentals of algebra, geometry, number theory, and combinatorics. Top scorers advance to the Regional Mathematical Olympiad (RMO).</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>RMO</h3>
+              <span class="exam-full">Regional Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">India</span>
+          </div>
+          <p>Conducted region-wise by the Homi Bhabha Centre for Science Education, RMO selects the top students to advance to INMO. Six proof problems over three hours demand genuine mathematical maturity and creative reasoning.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>INMO</h3>
+              <span class="exam-full">Indian National Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">India National</span>
+          </div>
+          <p>The national round of India's olympiad ladder, leading to selection for the International Mathematical Olympiad team. Six challenging proof problems over four hours — clearing INMO is a mark of elite mathematical talent.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IOQM</h3>
+              <span class="exam-full">Indian Olympiad Qualifier in Mathematics</span>
+            </div>
+            <span class="exam-tag">India</span>
+          </div>
+          <p>The single national qualifier replacing PRMO and RMO, conducted by the Mathematics Teachers' Association (India). A 30-question exam with integer-answer problems testing the full olympiad mathematics curriculum.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NMTC</h3>
+              <span class="exam-full">National Mathematics Talent Contest</span>
+            </div>
+            <span class="exam-tag">India</span>
+          </div>
+          <p>Conducted by the Association of Mathematics Teachers of India (AMTI), NMTC is open to students from Class 3 through undergraduate level. It aims to identify and nurture mathematical talent at all stages of schooling.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NTSE</h3>
+              <span class="exam-full">National Talent Search Examination</span>
+            </div>
+            <span class="exam-tag">India Scholarship</span>
+          </div>
+          <p>A national scholarship programme by NCERT that tests both scholastic aptitude (including mathematics) and mental ability. The mathematics section covers the full school curriculum and is highly competitive for State and National level scholarships.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>KVPY</h3>
+              <span class="exam-full">Kishore Vaigyanik Protsahan Yojana</span>
+            </div>
+            <span class="exam-tag">India Fellowship</span>
+          </div>
+          <p>A fellowship programme by the Government of India to encourage students to pursue basic science research careers. The aptitude test includes a significant mathematics component covering Class 11–12 topics.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 3: United Kingdom -->
+    <section class="exams-section">
+      <h2 class="section-title">United Kingdom — Mathematical Challenges</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UKMT Junior</h3>
+              <span class="exam-full">UKMT Junior Mathematical Challenge</span>
+            </div>
+            <span class="exam-tag">UK</span>
+          </div>
+          <p>A 60-question multiple-choice challenge for students in Year 8 and below, designed to develop mathematical problem-solving instincts. Run annually by the UK Mathematics Trust with over 300,000 participants.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UKMT Intermediate</h3>
+              <span class="exam-full">UKMT Intermediate Mathematical Challenge</span>
+            </div>
+            <span class="exam-tag">UK</span>
+          </div>
+          <p>For students in Year 11 and below, the Intermediate Challenge bridges junior competitions and the Senior level. Top scorers advance to follow-on rounds including the Kangaroo and the Intermediate Mathematical Olympiad.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UKMT Senior</h3>
+              <span class="exam-full">UKMT Senior Mathematical Challenge</span>
+            </div>
+            <span class="exam-tag">UK</span>
+          </div>
+          <p>The senior competition for students in Year 13 and below — 25 problems in 90 minutes testing advanced mathematical reasoning. High scorers advance to the British Mathematical Olympiad.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>BMO1</h3>
+              <span class="exam-full">British Mathematical Olympiad Round 1</span>
+            </div>
+            <span class="exam-tag">UK</span>
+          </div>
+          <p>A three-and-a-half-hour proof competition with five problems for students qualifying from the Senior Mathematical Challenge. It serves as the primary filter for the UK's IMO squad selection process.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>BMO2</h3>
+              <span class="exam-full">British Mathematical Olympiad Round 2</span>
+            </div>
+            <span class="exam-tag">UK Elite</span>
+          </div>
+          <p>The second round of the British Mathematical Olympiad, with four harder proof problems for the top BMO1 performers. Success at BMO2 leads to potential selection for the UK IMO training programme.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Canada -->
+    <section class="exams-section">
+      <h2 class="section-title">Canada — CEMC Competitions</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Gauss Contest</h3>
+              <span class="exam-full">Gauss Mathematics Contest</span>
+            </div>
+            <span class="exam-tag">Canada</span>
+          </div>
+          <p>Organised by the Centre for Education in Mathematics and Computing (CEMC), the Gauss is for students in Grades 7 and 8. A 60-minute multiple-choice test designed as a fun, accessible introduction to mathematical problem-solving.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Cayley / Fermat Contests</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada</span>
+          </div>
+          <p>The Cayley (Grade 10 and below) and Fermat (Grade 11 and below) contests from CEMC test progressively deeper mathematical reasoning. Both are multiple-choice format and serve as preparation for the Euclid contest.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Euclid Mathematics Contest</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada Senior</span>
+          </div>
+          <p>The flagship CEMC competition for Grade 12 students, with 10 full-solution problems over two and a half hours. A strong Euclid score is recognised by universities and demonstrates serious mathematical ability.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CEMC — Hypatia / Galois</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada</span>
+          </div>
+          <p>Open-ended problem-solving contests for Grades 9 and 10 where students must show full working. These contests develop the proof-writing skills needed for higher olympiad competitions.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 5: Australia -->
+    <section class="exams-section">
+      <h2 class="section-title">Australia — AMT Competitions</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AMC</h3>
+              <span class="exam-full">Australian Mathematics Competition</span>
+            </div>
+            <span class="exam-tag">Australia</span>
+          </div>
+          <p>The largest mathematics competition in Australia with over 400,000 participants annually across all year levels. Multiple-choice and short-answer format tests mathematical reasoning and problem-solving from primary through senior secondary.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AMT Olympiad</h3>
+              <span class="exam-full">Australian Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Australia</span>
+          </div>
+          <p>A proof-based competition for Australia's top mathematics students, leading to IMO team selection. Problems test algebra, combinatorics, geometry, and number theory at the highest level for Australian students.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 6: Asia & Rest of World -->
+    <section class="exams-section">
+      <h2 class="section-title">Asia &amp; Rest of World Competitions</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CMO</h3>
+              <span class="exam-full">Chinese Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">China</span>
+          </div>
+          <p>One of the world's most competitive national olympiads, with China consistently dominating the IMO medal tally. CMO problems are known for their exceptional difficulty and elegance, particularly in algebra and combinatorics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>HKMO</h3>
+              <span class="exam-full">Hong Kong Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Hong Kong</span>
+          </div>
+          <p>The national olympiad for Hong Kong, selecting the team for the IMO and other international competitions. Problems test all classical olympiad topics with an emphasis on elegant proof and creative reasoning.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PMO</h3>
+              <span class="exam-full">Philippine Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Philippines</span>
+          </div>
+          <p>The premier mathematics competition in the Philippines, selecting the national team for international competitions. Strong emphasis on algebraic and geometric proof problems at near-IMO level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OSN Mathematics</h3>
+              <span class="exam-full">Indonesia Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Indonesia</span>
+          </div>
+          <p>The national science olympiad (Olimpiade Sains Nasional) mathematics track is Indonesia's primary pathway to the IMO. Competition spans provincial and national rounds with progressively harder olympiad problems.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TMO</h3>
+              <span class="exam-full">Thailand Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Thailand</span>
+          </div>
+          <p>Thailand's national mathematics olympiad, conducted by the Institute for the Promotion of Teaching Science and Technology (IPST). A rigorous proof-based competition that serves as the filter for IMO team selection.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OMM</h3>
+              <span class="exam-full">Malaysian Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Malaysia</span>
+          </div>
+          <p>The national mathematics olympiad in Malaysia coordinated by the Malaysian Mathematical Sciences Society. Winners represent Malaysia at the IMO and APMO, with problems focusing on all core olympiad topics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>VMO</h3>
+              <span class="exam-full">Vietnam Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Vietnam</span>
+          </div>
+          <p>One of Asia's strongest national olympiads, with Vietnam consistently performing well at the IMO. VMO problems are known for their depth, particularly in algebra, inequalities, and combinatorics.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a href="../pages/contact.html" class="cta-btn">📩 Enquire About Olympiad Coaching →</a>
+      <p class="cta-sub">From AMC 8 to IMO — we coach at every level of competitive mathematics.</p>
+    </div>
+
+  </main>
+
+  <div id="footer-container"></div>
+  <button id="backToTop" aria-label="Back to top">↑</button>
+
+  <script>
+    fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+    fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+    const btt=document.getElementById('backToTop');
+    window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'flex':'none');
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+</body>
+</html>

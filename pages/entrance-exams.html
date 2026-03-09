@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrance Exams Worldwide | TutorDA</title>
+  <meta name="description" content="Mathematics coaching for university and professional entrance examinations worldwide — India, UK, USA, Gulf, Australia, and international curriculum." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:#ff8c00; --accent2:#ffd700;
+      --dark:#0d0d1a; --card:#141428;
+      --text:#e8e8ff; --muted:#7878a0; --border:rgba(255,140,0,.15);
+    }
+    body { background:var(--dark); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; }
+    .page-main { max-width:1200px; margin:0 auto; padding:64px 28px 80px; }
+
+    /* Hero */
+    .page-hero { text-align:center; margin-bottom:64px; }
+    .page-hero .eyebrow { font-family:'Orbitron',sans-serif; font-size:.72rem; letter-spacing:.18em; color:var(--accent); text-transform:uppercase; margin-bottom:12px; }
+    .page-hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); font-weight:900; background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:16px; }
+    .page-hero p { color:var(--muted); max-width:700px; margin:0 auto; font-size:1rem; line-height:1.7; }
+    .hero-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:24px; }
+    .hero-pill { padding:5px 16px; border-radius:999px; font-size:.78rem; font-weight:600; background:rgba(255,140,0,.1); color:var(--accent); border:1px solid rgba(255,140,0,.25); }
+
+    /* Stats */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:64px; }
+    .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; }
+    .stat-box .num { font-family:'Orbitron',sans-serif; font-size:1.5rem; font-weight:900; color:var(--accent); }
+    .stat-box .lbl { color:var(--muted); font-size:.78rem; margin-top:6px; }
+
+    /* Sections */
+    .exams-section { margin-bottom:60px; }
+    .section-title { font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--accent2); margin-bottom:6px; letter-spacing:.04em; }
+    .section-divider { height:1px; background:linear-gradient(90deg,var(--accent),transparent); opacity:.3; margin-bottom:28px; }
+    .section-flag { font-size:1.4rem; margin-right:8px; }
+
+    /* Cards */
+    .exams-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .exam-entry { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; transition:border-color .2s, transform .2s; }
+    .exam-entry:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .exam-entry-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:8px; }
+    .exam-entry h3 { font-family:'Orbitron',sans-serif; font-size:.8rem; color:var(--accent); letter-spacing:.02em; }
+    .exam-entry .exam-full { display:block; color:var(--muted); font-size:.72rem; margin-top:2px; line-height:1.4; }
+    .exam-tag { display:inline-block; font-size:.65rem; padding:2px 8px; border-radius:999px; background:rgba(255,140,0,.1); color:var(--accent); border:1px solid rgba(255,140,0,.2); font-weight:600; white-space:nowrap; flex-shrink:0; }
+    .exam-entry p { color:var(--muted); font-size:.8rem; line-height:1.65; margin-top:6px; }
+
+    /* CTA */
+    .cta-row { text-align:center; margin-top:32px; }
+    .cta-btn { display:inline-flex; align-items:center; gap:10px; padding:14px 36px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; font-family:'Poppins',sans-serif; font-weight:700; font-size:1rem; border-radius:999px; text-decoration:none; box-shadow:0 0 24px rgba(255,140,0,.3); transition:opacity .2s,transform .15s; }
+    .cta-btn:hover { opacity:.9; transform:translateY(-2px); }
+    .cta-sub { color:var(--muted); font-size:.85rem; margin-top:14px; }
+
+    /* Back to top */
+    #backToTop { position:fixed; bottom:24px; right:24px; background:var(--card); border:1px solid var(--border); border-radius:50%; width:44px; height:44px; display:none; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; z-index:500; }
+    #backToTop:hover { border-color:var(--accent); }
+
+    @media (max-width:768px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .exams-grid { grid-template-columns:1fr; }
+      .page-main { padding:44px 18px 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="page-main">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <p class="eyebrow">Entrance Preparation</p>
+      <h1>Entrance Exams Worldwide</h1>
+      <p>From India's JEE to the Gulf's EmSAT — TutorDA prepares students for mathematics in the world's most important university and professional entrance examinations. Expert coaching aligned with each exam's specific format, syllabus, and scoring system.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">India</span>
+        <span class="hero-pill">UK</span>
+        <span class="hero-pill">USA</span>
+        <span class="hero-pill">Gulf / GCC</span>
+        <span class="hero-pill">International</span>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="num">50+</div><div class="lbl">Exams Covered</div></div>
+      <div class="stat-box"><div class="num">15+</div><div class="lbl">Countries</div></div>
+      <div class="stat-box"><div class="num">All</div><div class="lbl">Formats</div></div>
+      <div class="stat-box"><div class="num">Personal</div><div class="lbl">Personalised Prep</div></div>
+    </div>
+
+    <!-- Section: India Engineering -->
+    <section class="exams-section">
+      <h2 class="section-title">India — Engineering Entrance</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>JEE Main</h3>
+              <span class="exam-full">Joint Entrance Examination Main (NTA)</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>Conducted by the National Testing Agency, JEE Main is the gateway to NITs, IIITs, and CFTIs across India. The mathematics section (30 questions) covers the full Class 11–12 NCERT syllabus with emphasis on speed and accuracy.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>JEE Advanced</h3>
+              <span class="exam-full">Joint Entrance Examination Advanced (IIT)</span>
+            </div>
+            <span class="exam-tag">India — IIT</span>
+          </div>
+          <p>The second stage of India's premier engineering entrance, JEE Advanced is among the world's most difficult undergraduate admission tests. Two papers of three hours each test deep conceptual understanding across calculus, algebra, coordinate geometry, and trigonometry.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>BITSAT</h3>
+              <span class="exam-full">BITS Pilani Admission Test</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>The online entrance examination for BITS Pilani campuses (Pilani, Goa, Hyderabad), with 150 questions in 180 minutes. Mathematics carries 45 questions and tests the JEE Main syllabus; speed and accuracy are critical.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>VITEEE</h3>
+              <span class="exam-full">VIT Engineering Entrance Examination</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>The entrance examination for VIT University (Vellore, Chennai, Bhopal, AP), one of India's largest private technical universities. Mathematics covers 40 questions from the Class 11–12 syllabus with a focus on accuracy over time pressure.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SRMJEEE</h3>
+              <span class="exam-full">SRM Joint Engineering Entrance Examination</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>Conducted by SRM Institute of Science and Technology for admissions to their BTech programmes. The mathematics section tests Class 12 topics including calculus, algebra, and coordinate geometry in a computer-based format.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MET</h3>
+              <span class="exam-full">Manipal Entrance Test</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>The entrance examination for Manipal Academy of Higher Education, one of India's leading deemed universities. Mathematics (50 questions) covers the standard Class 11–12 engineering mathematics syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>COMEDK</h3>
+              <span class="exam-full">Consortium of Medical, Engineering and Dental Colleges (Karnataka)</span>
+            </div>
+            <span class="exam-tag">Karnataka</span>
+          </div>
+          <p>A state-level engineering entrance for private colleges in Karnataka, with mathematics questions drawn from the Class 11–12 Physics, Chemistry, and Maths syllabus. Conducted annually in May.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>KIITEE</h3>
+              <span class="exam-full">KIIT Entrance Examination</span>
+            </div>
+            <span class="exam-tag">India Engineering</span>
+          </div>
+          <p>The entrance examination for the Kalinga Institute of Industrial Technology (KIIT), Bhubaneswar — one of India's most prestigious deemed universities. Mathematics (120 questions) tests the full Class 11–12 syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>WBJEE</h3>
+              <span class="exam-full">West Bengal Joint Entrance Examination</span>
+            </div>
+            <span class="exam-tag">West Bengal</span>
+          </div>
+          <p>The state-level engineering entrance for government and private colleges in West Bengal. A two-paper examination where Mathematics (Paper 2) carries 100 marks and tests the Class 11–12 West Bengal Board syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MHT-CET</h3>
+              <span class="exam-full">Maharashtra Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Maharashtra</span>
+          </div>
+          <p>The state engineering entrance for Maharashtra, testing Mathematics, Physics, and Chemistry from Class 11 and 12 Maharashtra State Board syllabus. Widely attempted by over 4 lakh students annually.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>KCET</h3>
+              <span class="exam-full">Karnataka Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Karnataka</span>
+          </div>
+          <p>The common entrance test for engineering and other professional courses in Karnataka government colleges. Mathematics (60 questions) is based on the PUC (Class 11–12) Karnataka Board syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AP EAMCET</h3>
+              <span class="exam-full">Andhra Pradesh Engineering Agriculture Medical Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Andhra Pradesh</span>
+          </div>
+          <p>The combined state entrance for engineering and medical courses in Andhra Pradesh, conducted by JNTU Kakinada. Mathematics (80 questions, 80 marks) tests the AP Board Class 11–12 syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TS EAMCET</h3>
+              <span class="exam-full">Telangana State Engineering Agriculture Medical Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Telangana</span>
+          </div>
+          <p>Telangana's primary state engineering entrance conducted by JNTU Hyderabad. The mathematics section covers the Telangana State Board Class 11–12 curriculum with 80 questions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>KEAM</h3>
+              <span class="exam-full">Kerala Engineering Architecture Medical</span>
+            </div>
+            <span class="exam-tag">Kerala</span>
+          </div>
+          <p>Kerala's state entrance for engineering, pharmacy, and architecture admissions in government and aided colleges. Mathematics carries 120 marks and covers Class 11–12 Kerala State Board topics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GUJCET</h3>
+              <span class="exam-full">Gujarat Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Gujarat</span>
+          </div>
+          <p>The state-level entrance examination for engineering courses in Gujarat, conducted by the Gujarat Secondary and Higher Secondary Education Board. Mathematics tests the Class 12 Gujarat Board syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UPSEE</h3>
+              <span class="exam-full">Uttar Pradesh State Entrance Examination</span>
+            </div>
+            <span class="exam-tag">Uttar Pradesh</span>
+          </div>
+          <p>Conducted by Dr. A.P.J. Abdul Kalam Technical University (AKTU), UPSEE is the gateway to engineering colleges in UP. The mathematics section tests Class 12 topics with emphasis on calculus, algebra, and vectors.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OJEE</h3>
+              <span class="exam-full">Odisha Joint Entrance Examination</span>
+            </div>
+            <span class="exam-tag">Odisha</span>
+          </div>
+          <p>The state entrance for engineering and lateral entry programmes in Odisha, conducted by the Odisha Joint Entrance Examination Board. Mathematics covers the standard Class 11–12 engineering mathematics syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>BCECE</h3>
+              <span class="exam-full">Bihar Combined Entrance Competitive Examination</span>
+            </div>
+            <span class="exam-tag">Bihar</span>
+          </div>
+          <p>Bihar's state entrance for engineering, pharmacy, and agriculture courses, conducted by the BCECE Board. Mathematics questions are drawn from the Class 11–12 Bihar State Board syllabus.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>JCECE</h3>
+              <span class="exam-full">Jharkhand Combined Entrance Competitive Examination</span>
+            </div>
+            <span class="exam-tag">Jharkhand</span>
+          </div>
+          <p>The combined state entrance for professional courses in Jharkhand covering engineering and medical streams. The mathematics paper tests standard Class 11–12 topics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>HPCET</h3>
+              <span class="exam-full">Himachal Pradesh Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Himachal Pradesh</span>
+          </div>
+          <p>The state-level engineering entrance for Himachal Pradesh, administered by Himachal Pradesh Technical University. Tests the standard PCM curriculum from Class 11–12.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CUSAT CAT</h3>
+              <span class="exam-full">Cochin University of Science and Technology Common Admission Test</span>
+            </div>
+            <span class="exam-tag">Kerala</span>
+          </div>
+          <p>The entrance test for BTech and other programmes at CUSAT, one of Kerala's premier technical universities. Mathematics (100 marks) tests calculus, algebra, and geometry at the Class 12 level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IPU CET</h3>
+              <span class="exam-full">Indraprastha University Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Delhi</span>
+          </div>
+          <p>The entrance for engineering and other programmes at Guru Gobind Singh Indraprastha University, Delhi. Mathematics covers the CBSE Class 11–12 syllabus with questions on calculus, vectors, and coordinate geometry.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TANCET</h3>
+              <span class="exam-full">Tamil Nadu Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">Tamil Nadu</span>
+          </div>
+          <p>Conducted by Anna University, TANCET is the entrance for ME, MTech, MBA, and MCA admissions in Tamil Nadu government and aided institutions. The mathematics section is particularly rigorous for engineering PG admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>JKCET</h3>
+              <span class="exam-full">Jammu &amp; Kashmir Common Entrance Test</span>
+            </div>
+            <span class="exam-tag">J&amp;K</span>
+          </div>
+          <p>The state-level entrance for professional courses in Jammu &amp; Kashmir, testing the Class 11–12 J&amp;K State Board mathematics curriculum.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: India Medical -->
+    <section class="exams-section">
+      <h2 class="section-title">India — Medical Entrance</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NEET UG</h3>
+              <span class="exam-full">National Eligibility cum Entrance Test (Undergraduate)</span>
+            </div>
+            <span class="exam-tag">India Medical</span>
+          </div>
+          <p>The sole gateway to MBBS, BDS, AYUSH, and veterinary programmes in India, conducted by NTA. Physics carries 45 questions requiring strong mathematical calculation skills — making NEET Physics numericals a critical area of preparation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AIIMS MBBS</h3>
+              <span class="exam-full">All India Institute of Medical Sciences</span>
+            </div>
+            <span class="exam-tag">India Medical</span>
+          </div>
+          <p>Now merged with NEET UG, AIIMS was historically India's most prestigious standalone medical entrance. Physics problems in the NEET paper require the same quantitative rigour that characterised AIIMS preparation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>JIPMER</h3>
+              <span class="exam-full">Jawaharlal Institute of Postgraduate Medical Education &amp; Research</span>
+            </div>
+            <span class="exam-tag">India Medical</span>
+          </div>
+          <p>Also merged with NEET UG, JIPMER was known for its analytical and application-based physics questions. Strong mathematical foundations remain essential for the quantitative aspects of NEET preparation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NEET PG</h3>
+              <span class="exam-full">National Eligibility cum Entrance Test (Postgraduate)</span>
+            </div>
+            <span class="exam-tag">India Medical PG</span>
+          </div>
+          <p>The entrance examination for MD, MS, and PG Diploma admissions in Indian medical colleges. While primarily clinical, biostatistics and pharmacokinetics questions reward strong quantitative reasoning.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: India Management -->
+    <section class="exams-section">
+      <h2 class="section-title">India — Management Entrance</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CAT</h3>
+              <span class="exam-full">Common Admission Test</span>
+            </div>
+            <span class="exam-tag">India Management</span>
+          </div>
+          <p>Conducted by the IIMs, CAT is India's most competitive management entrance, with Quantitative Aptitude (QA) carrying one-third of the total score. Topics include Number Theory, Arithmetic, Algebra, Geometry, and Data Interpretation — demanding both conceptual depth and speed.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>XAT</h3>
+              <span class="exam-full">Xavier Aptitude Test</span>
+            </div>
+            <span class="exam-tag">India Management</span>
+          </div>
+          <p>The entrance for XLRI and 150+ other management institutions, XAT's Quantitative Aptitude and Data Interpretation section tests advanced mathematical reasoning. Known for its difficulty and unpredictable question pattern.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GMAT</h3>
+              <span class="exam-full">Graduate Management Admission Test</span>
+            </div>
+            <span class="exam-tag">International Management</span>
+          </div>
+          <p>A globally accepted management entrance used by business schools worldwide, including IIMs, ISB, and top schools in the US, UK, and Europe. The Quantitative section (31 questions, 62 minutes) tests Data Sufficiency and Problem Solving.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MAT</h3>
+              <span class="exam-full">Management Aptitude Test</span>
+            </div>
+            <span class="exam-tag">India Management</span>
+          </div>
+          <p>Conducted by AIMA, MAT is accepted by over 600 management institutions across India. The Mathematical Skills section (40 questions) tests arithmetic, algebra, geometry, and data analysis.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SNAP</h3>
+              <span class="exam-full">Symbiosis National Aptitude Test</span>
+            </div>
+            <span class="exam-tag">India Management</span>
+          </div>
+          <p>The entrance for Symbiosis International University programmes including MBA and MSc. Quantitative Aptitude (20 questions) covers Number Systems, Arithmetic, Algebra, and Geometry in a computer-based format.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NMAT</h3>
+              <span class="exam-full">NMIMS Management Aptitude Test</span>
+            </div>
+            <span class="exam-tag">India Management</span>
+          </div>
+          <p>The entrance for NMIMS and 50+ other management schools. The Quantitative Skills section (36 questions, 52 minutes) tests Data Interpretation and Arithmetic at a moderate but timed difficulty level.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: India Government & Defence -->
+    <section class="exams-section">
+      <h2 class="section-title">India — Government &amp; Defence</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NDA</h3>
+              <span class="exam-full">National Defence Academy</span>
+            </div>
+            <span class="exam-tag">India Defence</span>
+          </div>
+          <p>Conducted by UPSC, NDA is the gateway to the Indian Army, Navy, and Air Force for Class 12 students. Mathematics (Paper 1, 120 marks) covers Algebra, Matrices, Trigonometry, Calculus, Vectors, and Statistics at Class 11–12 level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CDS</h3>
+              <span class="exam-full">Combined Defence Services</span>
+            </div>
+            <span class="exam-tag">India Defence</span>
+          </div>
+          <p>UPSC's CDS exam is the route to the Indian Military Academy, Naval Academy, and Air Force Academy for graduates. The Elementary Mathematics paper (100 marks) tests arithmetic, algebra, trigonometry, geometry, and statistics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UPSC CSE</h3>
+              <span class="exam-full">Civil Services Examination</span>
+            </div>
+            <span class="exam-tag">India Civil Services</span>
+          </div>
+          <p>India's most prestigious competitive examination for IAS, IPS, and other central services. Mathematics as an optional subject in Mains is highly regarded — covering Linear Algebra, Calculus, Real Analysis, Algebra, and Mechanics across two papers of 250 marks each.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SSC CGL</h3>
+              <span class="exam-full">Staff Selection Commission Combined Graduate Level</span>
+            </div>
+            <span class="exam-tag">India Government</span>
+          </div>
+          <p>One of India's largest government recruitment examinations, SSC CGL's Quantitative Aptitude section carries 50 questions. Topics include Number Theory, Percentage, Ratio, Algebra, Geometry, Trigonometry, and Statistics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SSC CHSL</h3>
+              <span class="exam-full">Staff Selection Commission Combined Higher Secondary Level</span>
+            </div>
+            <span class="exam-tag">India Government</span>
+          </div>
+          <p>The SSC recruitment for Class 12 pass candidates, with a 25-question Quantitative Aptitude section. Tests arithmetic, algebra, and geometry at 10+2 level under strict time pressure.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>RRB JE</h3>
+              <span class="exam-full">Railway Recruitment Board Junior Engineer</span>
+            </div>
+            <span class="exam-tag">India Railway</span>
+          </div>
+          <p>The engineering recruitment examination for Indian Railways, with Mathematics (30 marks) covering Number Systems, BODMAS, Decimals, Fractions, Algebra, Geometry, and Trigonometry.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GATE</h3>
+              <span class="exam-full">Graduate Aptitude Test in Engineering</span>
+            </div>
+            <span class="exam-tag">India PG Engineering</span>
+          </div>
+          <p>The nationally recognised examination for admissions to IITs, NITs, and PSU recruitment. Engineering Mathematics carries approximately 15% of the total marks and covers Linear Algebra, Calculus, Differential Equations, Probability, and Numerical Methods.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: United Kingdom -->
+    <section class="exams-section">
+      <h2 class="section-title">United Kingdom</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level Mathematics (Edexcel)</h3>
+              <span class="exam-full">Pearson Edexcel A Level</span>
+            </div>
+            <span class="exam-tag">UK A-Level</span>
+          </div>
+          <p>The most widely taken A-Level Mathematics specification in England and Wales, covering Pure Mathematics, Statistics, and Mechanics. A strong A-Level Mathematics grade is required for engineering, sciences, economics, and computing at UK universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level Mathematics (OCR)</h3>
+              <span class="exam-full">Oxford Cambridge and RSA A Level</span>
+            </div>
+            <span class="exam-tag">UK A-Level</span>
+          </div>
+          <p>OCR offers A-Level Mathematics with both standard and MEI (Mathematics in Education and Industry) specifications. Covers Pure, Statistics, and Mechanics with a strong emphasis on understanding and application.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level Mathematics (AQA)</h3>
+              <span class="exam-full">Assessment and Qualifications Alliance A Level</span>
+            </div>
+            <span class="exam-tag">UK A-Level</span>
+          </div>
+          <p>AQA A-Level Mathematics covers Pure Mathematics 1 and 2, Statistics, and Mechanics in a two-year linear qualification. A key requirement for STEM and many social science degree programmes.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level Further Mathematics</h3>
+              <span class="exam-full">Further Mathematics</span>
+            </div>
+            <span class="exam-tag">UK A-Level</span>
+          </div>
+          <p>Taken alongside A-Level Mathematics, Further Maths covers additional Pure topics (complex numbers, matrices, proof by induction) and either further Statistics, Mechanics, or Decision Mathematics. Strongly preferred by top universities for mathematics, physics, and engineering.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>STEP</h3>
+              <span class="exam-full">Sixth Term Examination Paper</span>
+            </div>
+            <span class="exam-tag">UK University Admission</span>
+          </div>
+          <p>Cambridge's additional mathematics examination, required or recommended for Mathematics admissions at Cambridge, Warwick, and several other UK universities. Papers I, II, and III contain 13 extremely challenging questions from which students attempt 6 — demanding creative mathematical thinking far beyond A-Level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MAT</h3>
+              <span class="exam-full">Mathematics Admissions Test (Oxford)</span>
+            </div>
+            <span class="exam-tag">UK University Admission</span>
+          </div>
+          <p>Oxford's pre-interview admissions test for Mathematics, Computer Science, and related courses. A 2.5-hour paper with five questions testing problem-solving, proof, and advanced A-Level mathematics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TMUA</h3>
+              <span class="exam-full">Test of Mathematics for University Admission</span>
+            </div>
+            <span class="exam-tag">UK University Admission</span>
+          </div>
+          <p>Used by Cambridge and several other UK universities as an admissions tool, TMUA tests mathematical reasoning and application in two 75-minute papers. Covers A-Level content but requires deep understanding and logical rigour.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>BMAT</h3>
+              <span class="exam-full">Biomedical Admissions Test</span>
+            </div>
+            <span class="exam-tag">UK Medical Admission</span>
+          </div>
+          <p>Required for Medicine at Oxford, Cambridge, and Imperial College London, BMAT includes a Scientific Knowledge and Applications section with significant mathematics content. Tests A-Level Physics, Chemistry, and Biology with mathematical calculations.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>LNAT</h3>
+              <span class="exam-full">Law National Aptitude Test</span>
+            </div>
+            <span class="exam-tag">UK Law Admission</span>
+          </div>
+          <p>The aptitude test for Law admissions at top UK universities including Oxford, UCL, and Nottingham. While primarily verbal, the logical reasoning component rewards mathematical thinking and structured argument.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level Mathematics (Cambridge International — CIE)</h3>
+              <span class="exam-full">Cambridge A Level 9709</span>
+            </div>
+            <span class="exam-tag">Cambridge International</span>
+          </div>
+          <p>The internationally recognised Cambridge A Level Mathematics (9709) covering Pure Mathematics 1, 2 &amp; 3, Mechanics, and Probability &amp; Statistics. Accepted by universities in the UK, USA, Canada, and worldwide as a gold-standard qualification.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: United States -->
+    <section class="exams-section">
+      <h2 class="section-title">United States</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SAT Mathematics</h3>
+              <span class="exam-full">Scholastic Aptitude Test</span>
+            </div>
+            <span class="exam-tag">USA University</span>
+          </div>
+          <p>The College Board's primary university admissions test, with Mathematics scored out of 800 in an adaptive two-module format. Tests Heart of Algebra, Problem Solving &amp; Data Analysis, and Passport to Advanced Math — now fully digital.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>ACT Mathematics</h3>
+              <span class="exam-full">American College Testing</span>
+            </div>
+            <span class="exam-tag">USA University</span>
+          </div>
+          <p>A 60-question, 60-minute mathematics test covering pre-algebra through trigonometry, accepted by all US universities. Full calculator permitted; speed and broad mathematical fluency are the key differentiators.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AP Calculus AB</h3>
+              <span class="exam-full">Advanced Placement Calculus AB</span>
+            </div>
+            <span class="exam-tag">USA AP</span>
+          </div>
+          <p>The College Board's AP course and examination in introductory single-variable calculus — limits, derivatives, integrals, and differential equations. A score of 3–5 earns college credit at most US universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AP Calculus BC</h3>
+              <span class="exam-full">Advanced Placement Calculus BC</span>
+            </div>
+            <span class="exam-tag">USA AP</span>
+          </div>
+          <p>The more advanced AP calculus course, covering all of AB content plus sequences, series, polar coordinates, and parametric equations. A score of 5 demonstrates university-level mathematical proficiency.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AP Statistics</h3>
+              <span class="exam-full">Advanced Placement Statistics</span>
+            </div>
+            <span class="exam-tag">USA AP</span>
+          </div>
+          <p>The AP course and examination covering exploratory data analysis, probability, statistical inference, and experimental design. Develops quantitative reasoning skills critical for social sciences, biology, and business.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GRE Quantitative</h3>
+              <span class="exam-full">Graduate Record Examination</span>
+            </div>
+            <span class="exam-tag">USA / International PG</span>
+          </div>
+          <p>The standard admissions test for US graduate school programmes, with Quantitative Reasoning (170-point scale) testing arithmetic, algebra, geometry, and data analysis. Required or recommended by thousands of master's and PhD programmes worldwide.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GMAT Quantitative</h3>
+              <span class="exam-full">Graduate Management Admission Test</span>
+            </div>
+            <span class="exam-tag">International MBA</span>
+          </div>
+          <p>The quantitative section of the GMAT tests Data Sufficiency and Problem Solving in 45 questions over 62 minutes. Critical for MBA admissions at top business schools including Harvard, Stanford, Wharton, and IIM.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MCAT</h3>
+              <span class="exam-full">Medical College Admission Test</span>
+            </div>
+            <span class="exam-tag">USA Medical</span>
+          </div>
+          <p>The US medical school admissions test includes Chemical and Physical Foundations of Biological Systems, which requires strong physics and mathematics including algebra, exponentials, and basic calculus concepts.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PSAT / NMSQT</h3>
+              <span class="exam-full">Preliminary SAT / National Merit Scholarship Qualifying Test</span>
+            </div>
+            <span class="exam-tag">USA</span>
+          </div>
+          <p>Taken in Grade 10 or 11, the PSAT is both SAT preparation and the qualifier for National Merit Scholarship consideration. The Mathematics section mirrors SAT content, making it an important milestone in US university preparation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SAT Subject Test Math Level 2</h3>
+              <span class="exam-full">SAT Math Level 2 (Discontinued)</span>
+            </div>
+            <span class="exam-tag">USA Historical</span>
+          </div>
+          <p>Though discontinued in 2021, SAT Math Level 2 covered precalculus, trigonometry, and elementary statistics at a level above SAT Math. Many competitive universities still review legacy applications citing strong Math Level 2 performance.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Gulf / GCC / Middle East -->
+    <section class="exams-section">
+      <h2 class="section-title">Gulf / GCC / Middle East</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <!-- Oman -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OAAT</h3>
+              <span class="exam-full">Oman Academic Aptitude Test</span>
+            </div>
+            <span class="exam-tag">Oman</span>
+          </div>
+          <p>Conducted by the Ministry of Higher Education in Oman as a qualification test for government-funded higher education sponsorships. The mathematics component tests algebra, geometry, and analytical reasoning.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SQU Entrance Exam</h3>
+              <span class="exam-full">Sultan Qaboos University</span>
+            </div>
+            <span class="exam-tag">Oman University</span>
+          </div>
+          <p>The entrance examination for Sultan Qaboos University, Oman's flagship public university. Competitive placement in engineering and science programmes requires strong performance in the mathematics component.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OMSB Exam</h3>
+              <span class="exam-full">Oman Medical Specialty Board</span>
+            </div>
+            <span class="exam-tag">Oman Medical</span>
+          </div>
+          <p>The licensing and specialty examination for medical professionals practising in Oman. Quantitative and biostatistics components require solid mathematical foundations.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>MoHE Scholarship Exam</h3>
+              <span class="exam-full">Ministry of Higher Education Scholarship</span>
+            </div>
+            <span class="exam-tag">Oman</span>
+          </div>
+          <p>Oman's scholarship qualification examination for students seeking government-funded study abroad placements. Mathematics is assessed as part of the overall aptitude evaluation.</p>
+        </div>
+
+        <!-- UAE -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>EmSAT Mathematics</h3>
+              <span class="exam-full">Emirates Standardised Test</span>
+            </div>
+            <span class="exam-tag">UAE</span>
+          </div>
+          <p>The UAE's national standardised test for university admissions, with EmSAT Mathematics assessing students at the end of their secondary education. Score benchmarks are set by UAE universities for admission into science and engineering programmes.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>EmSAT Achieve</h3>
+              <span class="exam-full">Emirates Standardised Test Achieve</span>
+            </div>
+            <span class="exam-tag">UAE</span>
+          </div>
+          <p>The achievement-level version of EmSAT used for course placement and scholarship eligibility within UAE higher education institutions. Mathematics achieve scores are required by universities including UAE University, Khalifa University, and American University of Sharjah.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>ADNOC Aptitude Test</h3>
+              <span class="exam-full">Abu Dhabi National Oil Company</span>
+            </div>
+            <span class="exam-tag">UAE Corporate</span>
+          </div>
+          <p>The aptitude assessment used by ADNOC for graduate recruitment and scholarship programmes. Numerical reasoning and quantitative aptitude are significant components of this competitive test.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UAE University Entrance Exam</h3>
+              <span class="exam-full">UAEU</span>
+            </div>
+            <span class="exam-tag">UAE</span>
+          </div>
+          <p>The entrance qualification for UAE University — one of the UAE's oldest and most prestigious institutions. Mathematics placement testing determines eligibility for engineering and science programmes.</p>
+        </div>
+
+        <!-- Saudi Arabia -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Qiyas — General Aptitude Test (القدرات)</h3>
+              <span class="exam-full">Saudi National Centre for Assessment</span>
+            </div>
+            <span class="exam-tag">Saudi Arabia</span>
+          </div>
+          <p>The Saudi National Centre for Assessment's General Aptitude Test used for university admissions across the Kingdom. Quantitative reasoning accounts for half of the test, covering Number Theory, Algebra, Geometry, and Data Interpretation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Tahsili Achievement Test (التحصيلي)</h3>
+              <span class="exam-full">Saudi Achievement Test</span>
+            </div>
+            <span class="exam-tag">Saudi Arabia</span>
+          </div>
+          <p>The Saudi achievement test measuring mastery of secondary school curriculum — Mathematics is one of the two core components (alongside Sciences or Humanities). Critical for competitive programme admissions at Saudi universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Saudi Medical Licensing Exam (SLE)</h3>
+              <span class="exam-full">Medical Licensing — Saudi Arabia</span>
+            </div>
+            <span class="exam-tag">Saudi Arabia Medical</span>
+          </div>
+          <p>The licensing examination for medical practitioners in Saudi Arabia. Biostatistics, epidemiology, and pharmacokinetic calculations require strong quantitative foundations.</p>
+        </div>
+
+        <!-- Qatar -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Qatar University Placement Test</h3>
+              <span class="exam-full">Qatar University Mathematics Placement</span>
+            </div>
+            <span class="exam-tag">Qatar</span>
+          </div>
+          <p>The mathematics placement assessment for Qatar University — a key requirement for engineering and science programme admissions. Scores determine placement in developmental or credit-bearing mathematics courses.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Qatar Academic Assessment</h3>
+              <span class="exam-full">National Academic Evaluation — Qatar</span>
+            </div>
+            <span class="exam-tag">Qatar</span>
+          </div>
+          <p>A national academic evaluation used for higher education eligibility and scholarship in Qatar. Mathematics is assessed as part of a broader STEM-readiness framework.</p>
+        </div>
+
+        <!-- Kuwait -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Kuwait University Entrance Exam</h3>
+              <span class="exam-full">Kuwait University Admissions</span>
+            </div>
+            <span class="exam-tag">Kuwait</span>
+          </div>
+          <p>The competitive entrance assessment for Kuwait University, the primary public university in Kuwait. Mathematics performance is a key differentiator for engineering and science faculty placements.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PAAET Entrance Exam</h3>
+              <span class="exam-full">Public Authority for Applied Education &amp; Training</span>
+            </div>
+            <span class="exam-tag">Kuwait</span>
+          </div>
+          <p>The entrance examination for Kuwait's vocational and applied education authority, covering applied mathematics relevant to technical and engineering programmes.</p>
+        </div>
+
+        <!-- Bahrain -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>University of Bahrain Entrance Exam</h3>
+              <span class="exam-full">University of Bahrain Admissions</span>
+            </div>
+            <span class="exam-tag">Bahrain</span>
+          </div>
+          <p>The admissions assessment for the University of Bahrain's various colleges, with mathematics tested for engineering and computing applicants.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Bahrain Polytechnic Entrance</h3>
+              <span class="exam-full">Bahrain Polytechnic Admissions</span>
+            </div>
+            <span class="exam-tag">Bahrain</span>
+          </div>
+          <p>The entrance assessment for Bahrain Polytechnic's technical and vocational programmes, requiring competency in applied mathematics and analytical reasoning.</p>
+        </div>
+
+        <!-- Jordan -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Tawjihi</h3>
+              <span class="exam-full">General Secondary Certificate</span>
+            </div>
+            <span class="exam-tag">Jordan</span>
+          </div>
+          <p>Jordan's national secondary school leaving examination, with Mathematics a core component determining university placement. High Tawjihi scores are required for engineering, medicine, and science faculties at Jordanian universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Jordan University Entrance Exam</h3>
+              <span class="exam-full">University Placement — Jordan</span>
+            </div>
+            <span class="exam-tag">Jordan</span>
+          </div>
+          <p>University-level placement and admissions assessments used by Jordanian universities for competitive faculty admissions, testing Class 11–12 mathematics.</p>
+        </div>
+
+        <!-- Egypt -->
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Thanaweya Amma</h3>
+              <span class="exam-full">Egyptian General Secondary Certificate</span>
+            </div>
+            <span class="exam-tag">Egypt</span>
+          </div>
+          <p>Egypt's national secondary examination, with Mathematics as a required subject. University faculty placement — especially for engineering — depends heavily on Thanaweya Amma mathematics scores.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Egyptian University Entrance Exam</h3>
+              <span class="exam-full">University Placement — Egypt</span>
+            </div>
+            <span class="exam-tag">Egypt</span>
+          </div>
+          <p>Supplementary admissions assessments used by Egyptian universities for competitive engineering and science programme placement.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Australia -->
+    <section class="exams-section">
+      <h2 class="section-title">Australia</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>HSC Mathematics (NSW)</h3>
+              <span class="exam-full">Higher School Certificate</span>
+            </div>
+            <span class="exam-tag">Australia NSW</span>
+          </div>
+          <p>New South Wales' senior secondary qualification, with mathematics offered at Standard and Extension levels. Mathematics Extension 1 and 2 involve calculus, complex numbers, and proof — directly relevant to university engineering and science courses.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>VCE Mathematical Methods</h3>
+              <span class="exam-full">Victorian Certificate of Education</span>
+            </div>
+            <span class="exam-tag">Australia Victoria</span>
+          </div>
+          <p>Victoria's senior secondary mathematics course covering functions, calculus, probability, and statistics. The ATAR contribution from Mathematical Methods is significant for STEM degree entry cutoffs.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>WACE Mathematics</h3>
+              <span class="exam-full">Western Australian Certificate of Education</span>
+            </div>
+            <span class="exam-tag">Australia WA</span>
+          </div>
+          <p>Western Australia's senior secondary mathematics qualification available at Specialist, Methods, and Applications levels. Specialist Mathematics covers calculus, vectors, and complex numbers at A-Level equivalent depth.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SACE Mathematics</h3>
+              <span class="exam-full">South Australian Certificate of Education</span>
+            </div>
+            <span class="exam-tag">Australia SA</span>
+          </div>
+          <p>South Australia's year 12 mathematics qualification, offered at Essential, General, and Specialist levels. Performance in SACE Mathematics directly influences ATAR scores for university admission.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>QCE Mathematics</h3>
+              <span class="exam-full">Queensland Certificate of Education</span>
+            </div>
+            <span class="exam-tag">Australia QLD</span>
+          </div>
+          <p>Queensland's senior mathematics qualification covering Mathematical Methods and Specialist Mathematics. Both internal and external assessments contribute to the ATAR, making consistent performance essential.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>AMC</h3>
+              <span class="exam-full">Australian Mathematics Competition</span>
+            </div>
+            <span class="exam-tag">Australia Competition</span>
+          </div>
+          <p>The most widely participated mathematics competition in Australia, with problems ranging from accessible to highly challenging across all year levels. Strong AMC performance is recognised by universities and selective schools.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>ATAR</h3>
+              <span class="exam-full">Australian Tertiary Admission Rank</span>
+            </div>
+            <span class="exam-tag">Australia University</span>
+          </div>
+          <p>ATAR is not an exam itself but the aggregate university entry score calculated from senior secondary results. Mathematics courses contribute heavily to ATAR calculations, making them among the highest-stakes subjects in Australian secondary education.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UMAT / UCAT</h3>
+              <span class="exam-full">Undergraduate Medicine Admissions Test</span>
+            </div>
+            <span class="exam-tag">Australia Medical</span>
+          </div>
+          <p>UCAT (formerly UMAT) is used by Australian and New Zealand medical schools alongside GPA for medical admissions. Quantitative Reasoning tests numerical interpretation and mental arithmetic under severe time pressure.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Canada -->
+    <section class="exams-section">
+      <h2 class="section-title">Canada</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Euclid Mathematics Contest</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada Senior</span>
+          </div>
+          <p>Regarded as the most important pre-university mathematics competition in Canada, Euclid is a two-and-a-half-hour full-solution contest for Grade 12 students. Strong Euclid performance supports university mathematics programme applications.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Fermat / Cayley Contests</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada</span>
+          </div>
+          <p>CEMC competitions for Grades 11 and 10 respectively, acting as stepping stones between junior contests and the senior Euclid. Multiple-choice format with 25 questions testing progressively advanced topics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Gauss Contest</h3>
+              <span class="exam-full">CEMC</span>
+            </div>
+            <span class="exam-tag">Canada Junior</span>
+          </div>
+          <p>The entry-level CEMC competition for Grades 7 and 8, with 30 multiple-choice questions in 60 minutes. An ideal first competition for developing mathematical problem-solving confidence.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Hypatia / Galois / Fryer</h3>
+              <span class="exam-full">CEMC Open</span>
+            </div>
+            <span class="exam-tag">Canada</span>
+          </div>
+          <p>Open-ended problem-solving contests for Grades 11, 10, and 9 requiring full written solutions. Develop proof-writing skills transferable to olympiad competitions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PCML</h3>
+              <span class="exam-full">Provincial / Territorial Mathematics Competitions</span>
+            </div>
+            <span class="exam-tag">Canada Provincial</span>
+          </div>
+          <p>Various Canadian provinces run their own mathematics competitions (e.g. BCSSMC, AMQ in Quebec) at the senior secondary level. These serve as preparation for national CEMC contests and university applications.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UMAT / MCAT</h3>
+              <span class="exam-full">Medical Admissions</span>
+            </div>
+            <span class="exam-tag">Canada Medical</span>
+          </div>
+          <p>Canadian medical schools use MCAT as the primary admissions test, with Biological and Physical Foundations of Biological Systems requiring strong quantitative and physics-based mathematics.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Singapore & Southeast Asia -->
+    <section class="exams-section">
+      <h2 class="section-title">Singapore &amp; Southeast Asia</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>A-Level H1/H2 Mathematics (Singapore)</h3>
+              <span class="exam-full">Singapore-Cambridge GCE</span>
+            </div>
+            <span class="exam-tag">Singapore</span>
+          </div>
+          <p>Singapore's gold-standard pre-university qualification, with H2 Mathematics covering calculus, algebra, vectors, statistics, and mechanics. Strong H2 Mathematics performance is required for engineering and science programmes at NUS, NTU, and SMU.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>O-Level Additional Mathematics</h3>
+              <span class="exam-full">Singapore-Cambridge GCE</span>
+            </div>
+            <span class="exam-tag">Singapore</span>
+          </div>
+          <p>The enriched O-Level mathematics course that bridges to H2 Mathematics at A-Level. Additional Mathematics covers trigonometry, differentiation, integration, and proof — critical preparation for the Singapore A-Level track.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>NUS / NTU Entrance Assessment</h3>
+              <span class="exam-full">National University of Singapore / NTU</span>
+            </div>
+            <span class="exam-tag">Singapore University</span>
+          </div>
+          <p>Competitive admissions to NUS and NTU in engineering, computing, and science programmes rely heavily on A-Level and Polytechnic Diploma mathematics performance. DSA (Direct School Admission) pathways consider competition mathematics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PSLE Mathematics</h3>
+              <span class="exam-full">Primary School Leaving Examination</span>
+            </div>
+            <span class="exam-tag">Singapore Primary</span>
+          </div>
+          <p>Singapore's high-stakes primary school exit examination, with Mathematics carrying 200 marks. PSLE Mathematics is the entry filter for secondary school placement — strong performance opens pathways to Integrated Programme schools.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Bebras Computational Thinking</h3>
+              <span class="exam-full">Bebras International</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>An international informatics and computational thinking contest for school students, with significant mathematical logic and algorithmic reasoning components. Widely participated in across Singapore and Southeast Asia.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>VMO</h3>
+              <span class="exam-full">Vietnam Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Vietnam</span>
+          </div>
+          <p>Vietnam's national mathematics olympiad with a strong international reputation, having produced multiple IMO gold medallists. The competition tests algebra, combinatorics, number theory, and geometry at a very high level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>PMO</h3>
+              <span class="exam-full">Philippine Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Philippines</span>
+          </div>
+          <p>The premier mathematics competition in the Philippines, with eliminations, area, and national stages. Top performers represent the Philippines at the IMO and APMO.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OSN Mathematics</h3>
+              <span class="exam-full">Indonesian Science Olympiad</span>
+            </div>
+            <span class="exam-tag">Indonesia</span>
+          </div>
+          <p>Indonesia's national science olympiad (Olimpiade Sains Nasional) covering mathematics, physics, chemistry, and computing. The mathematics track is Indonesia's pathway to IMO team selection.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TMO</h3>
+              <span class="exam-full">Thailand Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Thailand</span>
+          </div>
+          <p>Conducted by IPST Thailand, TMO is the national olympiad leading to IMO team selection. Problems are proof-based and cover classical olympiad mathematics topics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>OMM</h3>
+              <span class="exam-full">Malaysian Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Malaysia</span>
+          </div>
+          <p>The national mathematics competition in Malaysia coordinated by PERSAMA. Top performers advance to regional competitions including APMO and ultimately the IMO.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: China & East Asia -->
+    <section class="exams-section">
+      <h2 class="section-title">China &amp; East Asia</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Gaokao</h3>
+              <span class="exam-full">National College Entrance Exam</span>
+            </div>
+            <span class="exam-tag">China</span>
+          </div>
+          <p>China's national university entrance examination — the most consequential examination in the world by number of participants (over 12 million annually). The Mathematics paper (150 marks, 120 minutes) is exceptionally rigorous, covering algebra, geometry, calculus, probability, and statistics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CMO</h3>
+              <span class="exam-full">Chinese Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">China</span>
+          </div>
+          <p>China's national olympiad, serving as the primary filter for China's IMO team — the world's most dominant at the international level. CMO problems are among the hardest national olympiad problems globally.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CSAT / Suneung</h3>
+              <span class="exam-full">Korean College Scholastic Ability Test</span>
+            </div>
+            <span class="exam-tag">South Korea</span>
+          </div>
+          <p>South Korea's national university entrance examination, with Mathematics (Gasu) carrying 100 points and covering calculus, probability, statistics, and geometry. Among the most competitive university entrance systems in the world.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>HKDSE Mathematics</h3>
+              <span class="exam-full">Hong Kong Diploma of Secondary Education</span>
+            </div>
+            <span class="exam-tag">Hong Kong</span>
+          </div>
+          <p>Hong Kong's secondary school exit qualification, with Mathematics (compulsory) and Extended Module (calculus and statistics or algebra and calculus). HKDSE results determine university placement at HKU, HKUST, and CUHK.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>HKMO</h3>
+              <span class="exam-full">Hong Kong Mathematical Olympiad</span>
+            </div>
+            <span class="exam-tag">Hong Kong</span>
+          </div>
+          <p>The national mathematical olympiad for Hong Kong, involving heat, individual, and group events. Covers algebra, combinatorics, number theory, and geometry with unique team-based rounds not seen in other olympiads.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Japan University Entrance Exams</h3>
+              <span class="exam-full">Common Test / Individual University</span>
+            </div>
+            <span class="exam-tag">Japan</span>
+          </div>
+          <p>Japan's university entrance system uses the Common Test for University Admissions (共通テスト, formerly センター試験) as a national filter, followed by individual university examinations. Top universities like UTokyo, Kyoto, and Osaka set notoriously demanding mathematics papers.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UTokyo Entrance Exam</h3>
+              <span class="exam-full">University of Tokyo</span>
+            </div>
+            <span class="exam-tag">Japan Elite</span>
+          </div>
+          <p>The University of Tokyo's own entrance examination is considered among the hardest university entrance tests globally. The Mathematics paper requires deep knowledge of calculus, linear algebra, and complex numbers with elegant proof-based solutions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Taiwan GSAT / AST</h3>
+              <span class="exam-full">General Scholastic Ability Test</span>
+            </div>
+            <span class="exam-tag">Taiwan</span>
+          </div>
+          <p>Taiwan's national university entrance system, with the GSAT as the primary filter and AST as the subject-specific deepening test. Mathematics is tested at both levels, with AST Mathematics reaching university introductory level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CMI Entrance</h3>
+              <span class="exam-full">Chennai Mathematical Institute</span>
+            </div>
+            <span class="exam-tag">India Elite</span>
+          </div>
+          <p>CMI's entrance examination is one of India's most challenging — covering olympiad mathematics in the first part and advanced calculus, linear algebra, and combinatorics in the second. Widely considered a test of genuine mathematical talent.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>ISI Entrance</h3>
+              <span class="exam-full">Indian Statistical Institute</span>
+            </div>
+            <span class="exam-tag">India Elite</span>
+          </div>
+          <p>The ISI BStat and BMath entrance examinations are among India's most mathematically demanding — testing real analysis, combinatorics, algebra, and proof writing at a level beyond the standard school curriculum.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Europe -->
+    <section class="exams-section">
+      <h2 class="section-title">Europe</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>French Baccalauréat (Maths)</h3>
+              <span class="exam-full">Baccalauréat Général</span>
+            </div>
+            <span class="exam-tag">France</span>
+          </div>
+          <p>France's national secondary examination, with Mathematics available at standard and Spécialité (advanced) levels. Spécialité Mathematics covers calculus, probability, linear algebra, and functions — a prerequisite for grandes écoles and engineering programmes.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>German Abitur (Mathematik)</h3>
+              <span class="exam-full">Abitur</span>
+            </div>
+            <span class="exam-tag">Germany</span>
+          </div>
+          <p>The German university entrance qualification, with Mathematics as a core subject examined across all Länder. Abitur Mathematics tests calculus, stochastics, and analytical geometry — directly relevant to TU and engineering university admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IB Mathematics AA HL/SL</h3>
+              <span class="exam-full">International Baccalaureate</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>IB Mathematics Analysis &amp; Approaches at Higher Level is the most rigorous IB mathematics option, covering calculus, complex numbers, vectors, statistics, and proof. HL is required or strongly preferred for mathematics and engineering at top universities worldwide.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IB Mathematics AI HL/SL</h3>
+              <span class="exam-full">International Baccalaureate Applications</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>IB Mathematics Applications &amp; Interpretation focuses on mathematical modelling, statistics, and real-world problem-solving. Widely taken by students heading towards social sciences, economics, and business.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Dutch VWO Mathematics</h3>
+              <span class="exam-full">Voorbereidend Wetenschappelijk Onderwijs</span>
+            </div>
+            <span class="exam-tag">Netherlands</span>
+          </div>
+          <p>The Dutch pre-university track with Mathematics A (applied) and Mathematics B (theoretical). Mathematics B covers calculus, vectors, and analytical geometry — required for science and engineering at Dutch universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Italian Maturità (Matematica)</h3>
+              <span class="exam-full">Esame di Stato</span>
+            </div>
+            <span class="exam-tag">Italy</span>
+          </div>
+          <p>Italy's secondary school leaving examination, with Mathematics as a written component for scientific lyceum students. Performance determines university admission for STEM faculties at Italian public universities.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Spanish EBAU / Selectividad</h3>
+              <span class="exam-full">Evaluación del Bachillerato para el Acceso a la Universidad</span>
+            </div>
+            <span class="exam-tag">Spain</span>
+          </div>
+          <p>Spain's university admissions assessment, with Mathematics II for science and technology students covering calculus, algebra, and statistics. Scores combined with Bachillerato grades determine university placement.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Swiss Matura</h3>
+              <span class="exam-full">Schweizerische Maturität</span>
+            </div>
+            <span class="exam-tag">Switzerland</span>
+          </div>
+          <p>Switzerland's federal university entrance certificate, with Mathematics as a compulsory subject. The rigorous curriculum prepares students for Swiss universities including ETH Zürich, ranked among the world's best for mathematics and engineering.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Polish Matura (Matematyka)</h3>
+              <span class="exam-full">Egzamin Maturalny</span>
+            </div>
+            <span class="exam-tag">Poland</span>
+          </div>
+          <p>Poland's national secondary leaving examination, with Mathematics as the only universally compulsory written subject. The extended-level Mathematics Matura is required for university engineering and mathematics programme admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Russian EGE (Математика)</h3>
+              <span class="exam-full">Unified State Exam</span>
+            </div>
+            <span class="exam-tag">Russia</span>
+          </div>
+          <p>Russia's national university entrance examination with Mathematics tested at both Basic and Profile levels. The Profile-level mathematics test (100-point scale) covers algebra, calculus, geometry, and probability — and is among the most demanding in Europe.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: International Curriculum -->
+    <section class="exams-section">
+      <h2 class="section-title">International Curriculum</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IB Mathematics AA HL</h3>
+              <span class="exam-full">Analysis &amp; Approaches Higher Level</span>
+            </div>
+            <span class="exam-tag">IB</span>
+          </div>
+          <p>The most demanding IB mathematics option, covering pure calculus, proof, complex numbers, and vectors at near A-Level Further Mathematics depth. Required for mathematics, physics, and engineering at competitive universities worldwide.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IB Mathematics AA SL</h3>
+              <span class="exam-full">Analysis &amp; Approaches Standard Level</span>
+            </div>
+            <span class="exam-tag">IB</span>
+          </div>
+          <p>Standard Level IB Mathematics covering calculus, algebra, trigonometry, and statistics. A prerequisite for quantitative university programmes; HL is strongly preferred for competitive admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>IB Mathematics AI</h3>
+              <span class="exam-full">Applications &amp; Interpretation</span>
+            </div>
+            <span class="exam-tag">IB</span>
+          </div>
+          <p>Focused on mathematical modelling, statistics, and technology use — ideal for students targeting social science, economics, and business degrees. Less pure calculus than AA but still rigorous in statistical and discrete mathematics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Cambridge IGCSE Additional Mathematics (0606)</h3>
+              <span class="exam-full">Cambridge IGCSE Additional Mathematics</span>
+            </div>
+            <span class="exam-tag">Cambridge</span>
+          </div>
+          <p>An enriched IGCSE qualification covering functions, binomial theorem, trigonometry, calculus, and coordinate geometry. Strongly recommended preparation for Cambridge AS &amp; A Level Mathematics.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Cambridge AS &amp; A Level (9709)</h3>
+              <span class="exam-full">Cambridge International</span>
+            </div>
+            <span class="exam-tag">Cambridge</span>
+          </div>
+          <p>The globally recognised Cambridge A Level Mathematics qualification — Pure 1, 2, 3, Mechanics, and Statistics. Accepted by universities in the UK, US, Singapore, Canada, and across the Middle East as evidence of advanced mathematical preparation.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>Edexcel International A Level</h3>
+              <span class="exam-full">Pearson Edexcel IAL</span>
+            </div>
+            <span class="exam-tag">International</span>
+          </div>
+          <p>The Pearson Edexcel International A Level Mathematics offers a modular pathway for international students — widely used in Gulf countries, South Asia, and Southeast Asia as a route to UK and international university admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>American Curriculum (Common Core Math)</h3>
+              <span class="exam-full">Common Core State Standards</span>
+            </div>
+            <span class="exam-tag">USA Curriculum</span>
+          </div>
+          <p>The US national K–12 mathematics curriculum framework emphasising conceptual understanding, procedural skills, and mathematical practice. Strong Common Core performance underpins success in AP, SAT, and US university admissions.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section: Postgraduate & Research -->
+    <section class="exams-section">
+      <h2 class="section-title">Postgraduate &amp; Research</h2>
+      <div class="section-divider"></div>
+      <div class="exams-grid">
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GRE Mathematics Subject Test</h3>
+              <span class="exam-full">GRE Mathematics Subject Test</span>
+            </div>
+            <span class="exam-tag">USA Research</span>
+          </div>
+          <p>A specialised GRE test for students applying to PhD programmes in mathematics, testing undergraduate calculus, algebra, and real analysis. A high score is required for admission to leading US mathematics PhD programmes.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GATE Mathematics (MA)</h3>
+              <span class="exam-full">Graduate Aptitude Test Engineering</span>
+            </div>
+            <span class="exam-tag">India</span>
+          </div>
+          <p>The GATE Mathematics paper tests a comprehensive postgraduate curriculum including Real Analysis, Abstract Algebra, Linear Algebra, Complex Analysis, Differential Equations, Topology, and Probability. Essential for IIT and NIT mathematics faculty admissions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>GATE Engineering Mathematics</h3>
+              <span class="exam-full">Engineering Mathematics — GATE</span>
+            </div>
+            <span class="exam-tag">India Engineering PG</span>
+          </div>
+          <p>Engineering Mathematics is a high-weightage GATE section common to all engineering disciplines. Covers Linear Algebra, Calculus, ODE, Probability, Statistics, and Numerical Methods — consistently carrying 13–15% of the total marks.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CSIR NET Mathematics</h3>
+              <span class="exam-full">Council of Scientific &amp; Industrial Research</span>
+            </div>
+            <span class="exam-tag">India Research</span>
+          </div>
+          <p>The national eligibility test for lectureship and JRF in Mathematical Sciences, covering Analysis, Algebra, Geometry, Topology, and Applied Mathematics at a high research-readiness level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>UGC NET Mathematics</h3>
+              <span class="exam-full">University Grants Commission</span>
+            </div>
+            <span class="exam-tag">India Academic</span>
+          </div>
+          <p>The UGC NET in Mathematical Sciences qualifies candidates for assistant professor positions at Indian universities and colleges. Tests pure and applied mathematics at a level aligned with MSc syllabi.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>SET / SLET Mathematics</h3>
+              <span class="exam-full">State Eligibility Test</span>
+            </div>
+            <span class="exam-tag">India State Academic</span>
+          </div>
+          <p>State-level equivalents of UGC NET, conducted by individual states for lectureship eligibility in state universities. Syllabi closely mirror UGC NET but are administered at the state level.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>ISI Entrance (MStat / MMath)</h3>
+              <span class="exam-full">Indian Statistical Institute</span>
+            </div>
+            <span class="exam-tag">India Elite</span>
+          </div>
+          <p>ISI's postgraduate entrance examinations in Statistics and Mathematics are among India's most demanding. The MStat entrance tests probability, analysis, and linear algebra; MMath covers real analysis, abstract algebra, and topology.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>CMI Entrance (MSc)</h3>
+              <span class="exam-full">Chennai Mathematical Institute</span>
+            </div>
+            <span class="exam-tag">India Elite</span>
+          </div>
+          <p>CMI's MSc entrance in Mathematics and Computer Science tests advanced undergraduate topics including real and complex analysis, abstract algebra, and combinatorics. A strong showing opens access to one of India's premier pure mathematics research institutions.</p>
+        </div>
+
+        <div class="exam-entry">
+          <div class="exam-entry-header">
+            <div>
+              <h3>TIFR Graduate School Exam</h3>
+              <span class="exam-full">Tata Institute of Fundamental Research</span>
+            </div>
+            <span class="exam-tag">India Research</span>
+          </div>
+          <p>TIFR's entrance examination for its mathematics PhD programme is designed to identify genuinely research-ready mathematical talent. Topics include analysis, algebra, topology, and combinatorics at final-year undergraduate level.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a href="../pages/contact.html" class="cta-btn">📩 Enquire About Entrance Exam Coaching →</a>
+      <p class="cta-sub">Tailored preparation for any exam, at any level.</p>
+    </div>
+
+  </main>
+
+  <div id="footer-container"></div>
+  <button id="backToTop" aria-label="Back to top">↑</button>
+
+  <script>
+    fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+    fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+    const btt=document.getElementById('backToTop');
+    window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'flex':'none');
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+</body>
+</html>
