@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhD Applied Mathematics | D'Math University</title>
+  <meta name="description" content="Study PhD Applied Mathematics at D'Math University — a research-intensive doctoral programme in fluid dynamics, mathematical modelling, numerical analysis, and the mathematics of science and engineering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:#ff8c00; --accent2:#ffd700;
+      --dark:#0d0d1a; --card:#141428; --card2:#1a1a35;
+      --text:#e8e8ff; --muted:#7878a0; --border:rgba(255,140,0,.15);
+    }
+    body { background:var(--dark); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; }
+    .page-main { max-width:1100px; margin:0 auto; padding:64px 28px 80px; }
+
+    .hero { text-align:center; padding:60px 0 48px; }
+    .hero-eyebrow { font-family:'Orbitron',sans-serif; font-size:.75rem; letter-spacing:.15em; color:var(--accent); text-transform:uppercase; margin-bottom:16px; }
+    .hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.15; margin-bottom:20px; }
+    .hero-desc { font-size:1.05rem; color:var(--muted); max-width:700px; margin:0 auto 32px; line-height:1.8; }
+    .hero-pills { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .pill { background:var(--card2); border:1px solid var(--border); border-radius:100px; padding:8px 20px; font-size:.82rem; font-weight:500; color:var(--accent2); }
+
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin:48px 0; }
+    .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px 20px; text-align:center; }
+    .stat-num { font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:var(--accent); line-height:1; }
+    .stat-label { font-size:.8rem; color:var(--muted); margin-top:8px; }
+
+    .section { margin:56px 0; }
+    .section-heading { font-family:'Orbitron',sans-serif; font-size:1.4rem; font-weight:700; color:var(--accent2); margin-bottom:32px; text-align:center; letter-spacing:.04em; }
+
+    .overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .overview-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; }
+    .overview-card h3 { font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--accent); margin-bottom:18px; }
+    .overview-card ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .overview-card li { font-size:.9rem; color:var(--text); line-height:1.6; padding-left:20px; position:relative; }
+    .overview-card li::before { content:'◆'; position:absolute; left:0; color:var(--accent); font-size:.65rem; top:4px; }
+
+    .modules-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+    .module-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px 18px; transition:border-color .2s,transform .2s; }
+    .module-card:hover { border-color:var(--accent); transform:translateY(-3px); }
+    .module-icon { font-size:1.8rem; margin-bottom:12px; }
+    .module-name { font-family:'Orbitron',sans-serif; font-size:.78rem; color:var(--accent2); margin-bottom:8px; font-weight:700; }
+    .module-desc { font-size:.8rem; color:var(--muted); line-height:1.55; }
+
+    .careers-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .career-card { background:var(--card2); border:1px solid var(--border); border-radius:14px; padding:26px 20px; transition:border-color .2s; }
+    .career-card:hover { border-color:var(--accent2); }
+    .career-icon { font-size:2rem; margin-bottom:10px; }
+    .career-title { font-family:'Orbitron',sans-serif; font-size:.82rem; color:var(--accent); margin-bottom:8px; font-weight:700; }
+    .career-desc { font-size:.82rem; color:var(--muted); line-height:1.55; }
+
+    .uni-pills { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+    .uni-pill { background:var(--card2); border:1px solid var(--border); border-radius:10px; padding:10px 22px; font-size:.85rem; font-weight:500; color:var(--text); transition:border-color .2s,color .2s; }
+    .uni-pill:hover { border-color:var(--accent); color:var(--accent); }
+
+    .why-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+    .why-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px 20px; text-align:center; }
+    .why-step { font-family:'Orbitron',sans-serif; font-size:.65rem; color:var(--accent); letter-spacing:.1em; margin-bottom:10px; }
+    .why-title { font-family:'Orbitron',sans-serif; font-size:.82rem; color:var(--accent2); margin-bottom:10px; font-weight:700; }
+    .why-desc { font-size:.8rem; color:var(--muted); line-height:1.55; }
+
+    .cta-section { text-align:center; margin:64px 0 0; }
+    .cta-btn { display:inline-block; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#0d0d1a; font-family:'Orbitron',sans-serif; font-size:.95rem; font-weight:700; padding:16px 40px; border-radius:100px; text-decoration:none; letter-spacing:.05em; transition:opacity .2s,transform .2s; }
+    .cta-btn:hover { opacity:.88; transform:translateY(-2px); }
+    .cta-sub { margin-top:14px; font-size:.85rem; color:var(--muted); }
+
+    #btt { display:none; position:fixed; bottom:28px; right:28px; width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#0d0d1a; font-size:1.2rem; font-weight:700; border:none; cursor:pointer; align-items:center; justify-content:center; z-index:999; box-shadow:0 4px 18px rgba(255,140,0,.35); }
+
+    @media(max-width:900px){
+      .stats-row,.modules-grid,.why-grid { grid-template-columns:repeat(2,1fr); }
+      .overview-grid,.careers-grid { grid-template-columns:1fr; }
+    }
+    @media(max-width:560px){
+      .stats-row,.modules-grid,.why-grid { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="page-main">
+
+    <section class="hero">
+      <p class="hero-eyebrow">D'Math University | Computing &amp; Interdisciplinary</p>
+      <h1>PhD Applied Mathematics</h1>
+      <p class="hero-desc">A research-intensive doctoral programme exploring the power of mathematics to model, analyse, and solve real-world problems in physics, biology, engineering, and data science. From fluid dynamics and PDEs to mathematical biology and computational modelling, graduates push the boundaries of what mathematics can achieve in applied settings.</p>
+      <div class="hero-pills">
+        <span class="pill">Doctoral</span>
+        <span class="pill">3–5 Years</span>
+        <span class="pill">Research-Intensive</span>
+        <span class="pill">Interdisciplinary</span>
+      </div>
+    </section>
+
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Research Groups</div></div>
+      <div class="stat-box"><div class="stat-num">£72k+</div><div class="stat-label">Average Graduate Salary</div></div>
+      <div class="stat-box"><div class="stat-num">50+</div><div class="stat-label">Partner Universities</div></div>
+      <div class="stat-box"><div class="stat-num">3–5</div><div class="stat-label">Year Programme</div></div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-heading">Programme Overview</h2>
+      <div class="overview-grid">
+        <div class="overview-card">
+          <h3>Programme Overview</h3>
+          <ul>
+            <li>Advanced doctoral research in applied and computational mathematics</li>
+            <li>Year 1: Advanced coursework in PDEs, numerical methods, and mathematical modelling</li>
+            <li>Year 2 onward: Supervised original research with leading applied mathematicians</li>
+            <li>Research groups in fluid dynamics, mathematical biology, industrial mathematics, and scientific computing</li>
+            <li>Close collaboration with physics, engineering, and computer science departments</li>
+            <li>Publications in leading applied mathematics journals expected</li>
+            <li>Conference presentations at SIAM, ICIAM, and other international venues</li>
+          </ul>
+        </div>
+        <div class="overview-card">
+          <h3>Entry Requirements</h3>
+          <ul>
+            <li>MSc in Applied Mathematics, Mathematical Physics, or closely related field</li>
+            <li>First-class or high merit at postgraduate level strongly preferred</li>
+            <li>Strong background in PDEs, numerical analysis, and mathematical modelling</li>
+            <li>Programming experience in MATLAB, Python, or C++ required</li>
+            <li>Research proposal identifying a specific applied mathematics problem</li>
+            <li>Two academic references with knowledge of your analytical and research ability</li>
+            <li>English proficiency: IELTS 7.0+ or equivalent</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Research Areas &amp; Coursework</h2>
+      <div class="modules-grid">
+        <div class="module-card"><div class="module-icon">〰️</div><div class="module-name">Partial Differential Equations</div><div class="module-desc">Elliptic, parabolic, and hyperbolic PDEs: existence, uniqueness, regularity theory, and advanced solution methods.</div></div>
+        <div class="module-card"><div class="module-icon">💻</div><div class="module-name">Numerical Methods for PDEs</div><div class="module-desc">Finite difference, finite element, and spectral methods; error analysis, stability, and high-performance implementation.</div></div>
+        <div class="module-card"><div class="module-icon">🌊</div><div class="module-name">Fluid Dynamics</div><div class="module-desc">Navier-Stokes equations, turbulence modelling, boundary layers, and computational fluid dynamics techniques.</div></div>
+        <div class="module-card"><div class="module-icon">🧬</div><div class="module-name">Mathematical Biology</div><div class="module-desc">Population dynamics, pattern formation, reaction-diffusion systems, and mathematical epidemiology.</div></div>
+        <div class="module-card"><div class="module-icon">⚡</div><div class="module-name">Mathematical Physics</div><div class="module-desc">Classical mechanics, quantum mechanics, electromagnetism, and general relativity from a rigorous mathematical viewpoint.</div></div>
+        <div class="module-card"><div class="module-icon">📐</div><div class="module-name">Asymptotic Methods</div><div class="module-desc">Perturbation theory, matched asymptotic expansions, WKB theory, and averaging methods for singularly perturbed problems.</div></div>
+        <div class="module-card"><div class="module-icon">🤖</div><div class="module-name">Scientific Machine Learning</div><div class="module-desc">Physics-informed neural networks, operator learning, and the integration of machine learning with mathematical models.</div></div>
+        <div class="module-card"><div class="module-icon">🔬</div><div class="module-name">Doctoral Thesis</div><div class="module-desc">Original research making a substantial contribution to applied mathematics, supervised by expert faculty and assessed by international examiners.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Career Pathways</h2>
+      <div class="careers-grid">
+        <div class="career-card"><div class="career-icon">🏛️</div><div class="career-title">Academic Applied Mathematician</div><div class="career-desc">Pursue a research and teaching career at a leading university, publishing in applied mathematics and mentoring future researchers.</div></div>
+        <div class="career-card"><div class="career-icon">🚀</div><div class="career-title">Aerospace &amp; Defence Researcher</div><div class="career-desc">Apply fluid dynamics, structural mechanics, and optimisation mathematics to aerospace, propulsion, and defence problems.</div></div>
+        <div class="career-card"><div class="career-icon">🔬</div><div class="career-title">National Lab Scientist</div><div class="career-desc">Work at Turing Institute, Argonne, CERN, or similar institutions on large-scale computational and mathematical problems.</div></div>
+        <div class="career-card"><div class="career-icon">🤖</div><div class="career-title">AI/ML Research Scientist</div><div class="career-desc">Leverage applied mathematics expertise to develop physically-grounded AI models at technology research laboratories.</div></div>
+        <div class="career-card"><div class="career-icon">🌊</div><div class="career-title">Climate Modeller</div><div class="career-desc">Develop and validate mathematical models of atmospheric, oceanic, and climate systems at research institutions and agencies.</div></div>
+        <div class="career-card"><div class="career-icon">💊</div><div class="career-title">Computational Biologist</div><div class="career-desc">Apply mathematical modelling to drug discovery, disease dynamics, genomics, and biological systems simulation.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Top Global Universities</h2>
+      <div class="uni-pills">
+        <span class="uni-pill">MIT</span>
+        <span class="uni-pill">University of Cambridge</span>
+        <span class="uni-pill">Caltech</span>
+        <span class="uni-pill">ETH Zürich</span>
+        <span class="uni-pill">University of Oxford</span>
+        <span class="uni-pill">Imperial College London</span>
+        <span class="uni-pill">Princeton University</span>
+        <span class="uni-pill">University of Warwick</span>
+        <span class="uni-pill">Courant Institute (NYU)</span>
+        <span class="uni-pill">University of Minnesota</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">Why D'Math University</h2>
+      <div class="why-grid">
+        <div class="why-card"><div class="why-step">STEP 01</div><div class="why-title">Interdisciplinary Research</div><div class="why-desc">Applied mathematics at its best lives at the intersection of disciplines. Our research groups collaborate actively with physics, engineering, and biology.</div></div>
+        <div class="why-card"><div class="why-step">STEP 02</div><div class="why-title">Computational Infrastructure</div><div class="why-desc">Access to HPC clusters, GPU computing resources, and scientific software for large-scale numerical simulation and data-intensive research.</div></div>
+        <div class="why-card"><div class="why-step">STEP 03</div><div class="why-title">Expert Supervisors</div><div class="why-desc">Work with world-leading applied mathematicians who are active contributors to SIAM, CMS, and international applied mathematics communities.</div></div>
+        <div class="why-card"><div class="why-step">STEP 04</div><div class="why-title">Global Impact</div><div class="why-desc">Applied mathematics PhD graduates shape decisions in climate policy, AI development, pharmaceutical research, and national security.</div></div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <a href="#" class="cta-btn">Apply for PhD Applied Mathematics &#8594;</a>
+      <p class="cta-sub">Doctoral applications reviewed year-round &mdash; contact us to discuss your research interests.</p>
+    </section>
+
+  </main>
+
+  <div id="footer-container"></div>
+  <button id="btt" aria-label="Back to top">&#8593;</button>
+
+  <script>
+    fetch('../components/header.html').then(r=>r.text()).then(h=>{document.getElementById('header-container').innerHTML=h;});
+    fetch('../components/footer.html').then(r=>r.text()).then(f=>{document.getElementById('footer-container').innerHTML=f;});
+    const btt=document.getElementById('btt');
+    window.addEventListener('scroll',()=>{btt.style.display=scrollY>300?'flex':'none';});
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+</body>
+</html>
