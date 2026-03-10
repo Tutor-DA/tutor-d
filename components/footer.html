@@ -364,8 +364,12 @@
 </footer>
 
 <div id="tda-chatbot-container"></div>
+<div id="tda-enroll-container"></div>
 <script>
   fetch('/components/chatbot.html').then(function(r){return r.text();}).then(function(h){
     document.getElementById('tda-chatbot-container').innerHTML=h;
+  });
+  fetch('/components/enroll-modal.html').then(function(r){return r.text();}).then(function(h){
+    document.getElementById('tda-enroll-container').innerHTML=h;
   });
 </script>

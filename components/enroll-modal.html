@@ -1,0 +1,493 @@
+<!-- TutorDA Enrollment Modal -->
+<style>
+.enroll-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.85);
+  z-index: 9500;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(6px);
+}
+.enroll-overlay.open { display: flex; }
+
+.enroll-box {
+  background: #0d0d1a;
+  border: 1px solid rgba(255,140,0,.25);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: enroll-pop .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 24px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(255,140,0,.08);
+  font-family: 'Poppins', sans-serif;
+}
+.enroll-box::-webkit-scrollbar { width: 4px; }
+.enroll-box::-webkit-scrollbar-thumb { background: rgba(255,140,0,.25); border-radius: 2px; }
+
+@keyframes enroll-pop {
+  from { transform: scale(.88) translateY(20px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+
+/* Header */
+.enroll-header {
+  background: linear-gradient(135deg, rgba(255,140,0,.14), rgba(255,215,0,.06));
+  border-bottom: 1px solid rgba(255,140,0,.18);
+  padding: 28px 32px 24px;
+  position: relative;
+}
+.enroll-header-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.enroll-icon {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, #ff8c00, #ffd700);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(255,140,0,.35);
+}
+.enroll-header h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ff8c00;
+  letter-spacing: .05em;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.enroll-header p {
+  font-size: .8rem;
+  color: #7878a0;
+  line-height: 1.5;
+}
+.enroll-prog-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 6px 16px;
+  background: rgba(255,140,0,.1);
+  border: 1px solid rgba(255,140,0,.25);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #ffd700;
+}
+.enroll-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: #7878a0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  font-family: sans-serif;
+}
+.enroll-close:hover { border-color: #ff8c00; color: #ff8c00; }
+
+/* Form body */
+.enroll-body { padding: 28px 32px 32px; }
+
+.enroll-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.enroll-field { margin-bottom: 16px; }
+.enroll-field label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #7878a0;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.enroll-field label span { color: #ff8c00; }
+
+.enroll-field input,
+.enroll-field select,
+.enroll-field textarea {
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,140,0,.18);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #e8e8ff;
+  font-family: 'Poppins', sans-serif;
+  font-size: .85rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance: none;
+}
+.enroll-field input:focus,
+.enroll-field select:focus,
+.enroll-field textarea:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255,140,0,.1);
+}
+.enroll-field input::placeholder,
+.enroll-field textarea::placeholder { color: #4a4a70; }
+.enroll-field select { cursor: pointer; }
+.enroll-field select option { background: #141428; color: #e8e8ff; }
+.enroll-field textarea { resize: vertical; min-height: 90px; }
+
+/* Read-only programme field */
+.enroll-field input[readonly] {
+  background: rgba(255,140,0,.07);
+  border-color: rgba(255,140,0,.3);
+  color: #ffd700;
+  cursor: default;
+}
+
+/* Submit */
+.enroll-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #ff8c00, #ffd700);
+  border: none;
+  border-radius: 12px;
+  color: #0d0d1a;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: opacity .2s, transform .2s;
+  margin-top: 6px;
+}
+.enroll-submit:hover { opacity: .88; transform: translateY(-1px); }
+.enroll-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.enroll-note {
+  text-align: center;
+  font-size: .73rem;
+  color: #4a4a70;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.enroll-note a { color: #ff8c00; text-decoration: none; }
+.enroll-note a:hover { text-decoration: underline; }
+
+/* Success state */
+.enroll-success {
+  display: none;
+  text-align: center;
+  padding: 48px 32px;
+}
+.enroll-success.show { display: block; }
+.enroll-success .success-icon {
+  font-size: 3.5rem;
+  margin-bottom: 18px;
+  animation: enroll-pop .4s ease;
+}
+.enroll-success h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: #22c55e;
+  margin-bottom: 10px;
+}
+.enroll-success p {
+  font-size: .88rem;
+  color: #7878a0;
+  line-height: 1.7;
+  max-width: 380px;
+  margin: 0 auto 24px;
+}
+.enroll-success-close {
+  display: inline-block;
+  padding: 12px 32px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.3);
+  border-radius: 999px;
+  color: #22c55e;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: 'Poppins', sans-serif;
+}
+.enroll-success-close:hover { background: rgba(34,197,94,.22); }
+
+/* Error message */
+.enroll-error-msg {
+  display: none;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: .82rem;
+  color: #f87171;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.enroll-error-msg.show { display: block; }
+
+@media (max-width: 560px) {
+  .enroll-box { border-radius: 18px; }
+  .enroll-header { padding: 22px 20px 18px; }
+  .enroll-body  { padding: 20px 20px 24px; }
+  .enroll-row   { grid-template-columns: 1fr; gap: 0; }
+}
+</style>
+
+<!-- Modal Overlay -->
+<div class="enroll-overlay" id="enroll-overlay">
+  <div class="enroll-box" id="enroll-box">
+
+    <!-- Header -->
+    <div class="enroll-header">
+      <button class="enroll-close" onclick="closeEnrollModal()" aria-label="Close">✕</button>
+      <div class="enroll-header-top">
+        <div class="enroll-icon">🎓</div>
+        <div>
+          <h2>Enrol at D'Math University</h2>
+          <p>Complete the form below and our team will contact you within 24 hours to confirm your place.</p>
+        </div>
+      </div>
+      <div class="enroll-prog-badge">📘 Programme: <span id="enroll-prog-name">—</span></div>
+    </div>
+
+    <!-- Form -->
+    <div class="enroll-body">
+
+      <!-- Success -->
+      <div class="enroll-success" id="enroll-success">
+        <div class="success-icon">✅</div>
+        <h3>Application Received!</h3>
+        <p>Thank you for your interest. Our admissions team will review your details and contact you at your email within <strong>24 hours</strong>.</p>
+        <button class="enroll-success-close" onclick="closeEnrollModal()">Close</button>
+      </div>
+
+      <!-- Form fields -->
+      <form id="enroll-form" novalidate>
+
+        <div class="enroll-error-msg" id="enroll-error">Something went wrong. Please email us directly at <a href="mailto:support@tutorda.org">support@tutorda.org</a>.</div>
+
+        <div class="enroll-row">
+          <div class="enroll-field">
+            <label>First Name <span>*</span></label>
+            <input type="text" name="first_name" placeholder="e.g. Arjun" required />
+          </div>
+          <div class="enroll-field">
+            <label>Last Name <span>*</span></label>
+            <input type="text" name="last_name" placeholder="e.g. Sharma" required />
+          </div>
+        </div>
+
+        <div class="enroll-field">
+          <label>Email Address <span>*</span></label>
+          <input type="email" name="email" placeholder="your@email.com" required />
+        </div>
+
+        <div class="enroll-row">
+          <div class="enroll-field">
+            <label>WhatsApp / Phone <span>*</span></label>
+            <input type="tel" name="phone" placeholder="+968 9258 7650" required />
+          </div>
+          <div class="enroll-field">
+            <label>Country <span>*</span></label>
+            <select name="country" required>
+              <option value="" disabled selected>Select country</option>
+              <option>Oman</option>
+              <option>India</option>
+              <option>United Kingdom</option>
+              <option>United Arab Emirates</option>
+              <option>Saudi Arabia</option>
+              <option>Qatar</option>
+              <option>Kuwait</option>
+              <option>Bahrain</option>
+              <option>United States</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>Singapore</option>
+              <option>Malaysia</option>
+              <option>Sri Lanka</option>
+              <option>Bangladesh</option>
+              <option>Pakistan</option>
+              <option>Nepal</option>
+              <option>Nigeria</option>
+              <option>Kenya</option>
+              <option>South Africa</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="enroll-field">
+          <label>Programme Applying For</label>
+          <input type="text" name="programme" id="enroll-prog-input" readonly />
+        </div>
+
+        <div class="enroll-row">
+          <div class="enroll-field">
+            <label>Current Qualification <span>*</span></label>
+            <select name="qualification" required>
+              <option value="" disabled selected>Select level</option>
+              <option>High School / Class 12</option>
+              <option>Diploma</option>
+              <option>BSc / BA / BEd (In Progress)</option>
+              <option>BSc / BA / BEd (Completed)</option>
+              <option>MSc / MA / MEd (In Progress)</option>
+              <option>MSc / MA / MEd (Completed)</option>
+              <option>PhD (In Progress)</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="enroll-field">
+            <label>How Did You Hear About Us?</label>
+            <select name="source">
+              <option value="" disabled selected>Select source</option>
+              <option>Google Search</option>
+              <option>YouTube</option>
+              <option>Instagram</option>
+              <option>Facebook</option>
+              <option>WhatsApp</option>
+              <option>Friend / Colleague</option>
+              <option>School / University</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="enroll-field">
+          <label>Message / Questions (Optional)</label>
+          <textarea name="message" placeholder="Tell us about your background, goals, or any questions you have about the programme…"></textarea>
+        </div>
+
+        <button type="submit" class="enroll-submit" id="enroll-submit-btn">
+          Submit Application →
+        </button>
+
+        <p class="enroll-note">
+          By submitting, you agree to be contacted by TutorDA at the details provided.<br>
+          Questions? Email <a href="mailto:support@tutorda.org">support@tutorda.org</a>
+        </p>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+
+  /* ── Formspree endpoint — replace with your form ID ── */
+  var FORMSPREE_ENDPOINT = 'https://formspree.io/f/xldezdpv';
+
+  /* ── Open modal ── */
+  function openEnrollModal(programmeName) {
+    var name = programmeName || 'D\'Math University Programme';
+    document.getElementById('enroll-prog-name').textContent  = name;
+    document.getElementById('enroll-prog-input').value       = name;
+    document.getElementById('enroll-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    /* Reset form state */
+    document.getElementById('enroll-form').style.display    = '';
+    document.getElementById('enroll-success').classList.remove('show');
+    document.getElementById('enroll-error').classList.remove('show');
+    document.getElementById('enroll-form').reset();
+    document.getElementById('enroll-prog-input').value = name;
+  }
+
+  /* ── Close modal ── */
+  function closeEnrollModal() {
+    document.getElementById('enroll-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Close on overlay click ── */
+  document.getElementById('enroll-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeEnrollModal();
+  });
+
+  /* ── Close on Escape ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeEnrollModal();
+  });
+
+  /* ── Auto-intercept all .cta-btn links with href="#" ── */
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.cta-btn');
+    if (!btn) return;
+    var href = btn.getAttribute('href');
+    if (!href || href === '#') {
+      e.preventDefault();
+      /* Parse programme name from button text */
+      var raw = btn.textContent.trim().replace(/→|&#8594;/g, '').trim();
+      /* Strip "Enrol in", "Apply for" prefixes */
+      var prog = raw
+        .replace(/^enrol\s+in\s+/i, '')
+        .replace(/^apply\s+for\s+/i, '')
+        .trim();
+      openEnrollModal(prog || 'D\'Math University Programme');
+    }
+  });
+
+  /* ── Form submission ── */
+  document.getElementById('enroll-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var form   = this;
+    var btn    = document.getElementById('enroll-submit-btn');
+    var errEl  = document.getElementById('enroll-error');
+
+    /* Basic validation */
+    var required = form.querySelectorAll('[required]');
+    var valid = true;
+    required.forEach(function(field) {
+      if (!field.value.trim()) {
+        field.style.borderColor = '#f87171';
+        valid = false;
+      } else {
+        field.style.borderColor = '';
+      }
+    });
+    if (!valid) return;
+
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    errEl.classList.remove('show');
+
+    var data = new FormData(form);
+
+    fetch(FORMSPREE_ENDPOINT, {
+      method:  'POST',
+      body:    data,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(json) {
+      if (json.ok || json.next) {
+        form.style.display = 'none';
+        document.getElementById('enroll-success').classList.add('show');
+      } else {
+        throw new Error('submission failed');
+      }
+    })
+    .catch(function() {
+      errEl.classList.add('show');
+      btn.disabled    = false;
+      btn.textContent = 'Submit Application →';
+    });
+  });
+
+  /* ── Expose globally ── */
+  window.openEnrollModal  = openEnrollModal;
+  window.closeEnrollModal = closeEnrollModal;
+
+})();
+</script>
