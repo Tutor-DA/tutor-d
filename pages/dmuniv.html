@@ -190,6 +190,62 @@
     /* Hidden state */
     .prog-card.hidden { display:none; }
 
+    /* -- Level Filter Bar -- */
+    .level-filter-bar {
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px;
+    }
+    .level-filter-label {
+      font-size:.75rem; font-weight:600; color:var(--muted); text-transform:uppercase;
+      letter-spacing:.1em; margin-right:4px;
+    }
+    .level-btn {
+      padding:7px 16px; border-radius:999px; border:1px solid rgba(255,255,255,.1);
+      background:transparent; color:var(--muted); font-size:.8rem; font-weight:500;
+      cursor:pointer; font-family:'Poppins',sans-serif; transition:all .2s; white-space:nowrap;
+    }
+    .level-btn:hover { border-color:rgba(255,255,255,.3); color:var(--text); }
+    .level-btn[data-level="all"].active { background:var(--card2); color:var(--text);
+      border-color:rgba(255,255,255,.3); box-shadow:0 0 12px rgba(255,255,255,.06); }
+    .lvl-btn-ug { border-color:rgba(192,132,252,.25); }
+    .lvl-btn-ug:hover,.lvl-btn-ug.active { background:rgba(168,85,247,.12); color:#c084fc;
+      border-color:#a855f7; box-shadow:0 0 14px rgba(168,85,247,.2); }
+    .lvl-btn-pg { border-color:rgba(59,130,246,.25); }
+    .lvl-btn-pg:hover,.lvl-btn-pg.active { background:rgba(59,130,246,.12); color:#60a5fa;
+      border-color:#3b82f6; box-shadow:0 0 14px rgba(59,130,246,.2); }
+    .lvl-btn-dr { border-color:rgba(239,68,68,.25); }
+    .lvl-btn-dr:hover,.lvl-btn-dr.active { background:rgba(239,68,68,.12); color:#f87171;
+      border-color:#ef4444; box-shadow:0 0 14px rgba(239,68,68,.2); }
+
+    /* -- Level Sections -- */
+    .level-section { margin-bottom:60px; }
+    .level-section.hidden { display:none; }
+    .level-section-header {
+      display:flex; align-items:center; gap:18px; padding:20px 24px;
+      border-radius:14px; margin-bottom:24px; border:1px solid;
+    }
+    .lsh-ug { background:rgba(168,85,247,.07); border-color:rgba(168,85,247,.25); }
+    .lsh-pg { background:rgba(59,130,246,.07); border-color:rgba(59,130,246,.25); }
+    .lsh-dr { background:rgba(239,68,68,.07); border-color:rgba(239,68,68,.25); }
+    .lsh-icon { font-size:2.2rem; line-height:1; flex-shrink:0; }
+    .lsh-text { flex:1; }
+    .lsh-text h3 { font-family:'Orbitron',sans-serif; font-size:.95rem; font-weight:700;
+      margin-bottom:5px; }
+    .lsh-ug .lsh-text h3 { color:#c084fc; }
+    .lsh-pg .lsh-text h3 { color:#60a5fa; }
+    .lsh-dr .lsh-text h3 { color:#f87171; }
+    .lsh-text p { font-size:.78rem; color:var(--muted); line-height:1.5; }
+    .lsh-count { font-size:.8rem; font-weight:600; padding:6px 14px; border-radius:999px;
+      white-space:nowrap; flex-shrink:0; }
+    .lsh-ug .lsh-count { background:rgba(168,85,247,.15); color:#c084fc; }
+    .lsh-pg .lsh-count { background:rgba(59,130,246,.15); color:#60a5fa; }
+    .lsh-dr .lsh-count { background:rgba(239,68,68,.15); color:#f87171; }
+    .level-section-empty { text-align:center; padding:32px; color:var(--muted);
+      font-size:.85rem; display:none; font-style:italic; }
+    @media(max-width:640px) {
+      .level-section-header { flex-wrap:wrap; }
+      .lsh-count { order:3; }
+    }
+
     /* ── Features ── */
     .features { margin-bottom:72px; }
     .features-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
@@ -357,12 +413,21 @@
   <div class="programmes">
     <div class="section-eyebrow">Academic Programmes</div>
     <div class="section-heading">50 World-Class Mathematics Degree Programmes</div>
-    <p class="section-lead">Browse all 50 D'Math Univ programmes across five specialisation tracks — from Undergraduate to Doctoral level. Each programme links to its dedicated page with full curriculum, career outcomes, and top universities.</p>
+    <p class="section-lead">Browse all 50 D’Math Univ programmes — grouped by level and filterable by specialisation. Each programme links to its dedicated page with full curriculum, career outcomes, and top universities.</p>
 
-    <!-- Filter Bar -->
+    <!-- Level Filter Bar -->
+    <div class="level-filter-bar">
+      <span class="level-filter-label">Level:</span>
+      <button class="level-btn active" data-level="all">All Levels</button>
+      <button class="level-btn lvl-btn-ug" data-level="ug">🎓 Undergraduate (18)</button>
+      <button class="level-btn lvl-btn-pg" data-level="pg">🏛️ Postgraduate (23)</button>
+      <button class="level-btn lvl-btn-dr" data-level="dr">🔬 Doctoral (9)</button>
+    </div>
+
+    <!-- Subject Filter Bar -->
     <div class="cat-filter-bar">
-      <span class="cat-filter-label">Filter:</span>
-      <button class="cat-btn active" data-cat="all">All 50</button>
+      <span class="cat-filter-label">Subject:</span>
+      <button class="cat-btn active" data-cat="all">All Subjects</button>
       <button class="cat-btn" data-cat="pure">Pure &amp; General</button>
       <button class="cat-btn" data-cat="stats">Statistics &amp; Data</button>
       <button class="cat-btn" data-cat="fin">Finance &amp; Actuarial</button>
@@ -372,10 +437,18 @@
 
     <div class="prog-count">Showing <strong id="vis-count">50</strong> programmes</div>
 
-    <div class="prog-grid" id="prog-grid">
-
-      <!-- ── PURE & GENERAL (1–10) ── -->
-      <a class="prog-card" data-cat="pure" href="dmu-bsc-mathematics.html">
+    <!-- === UNDERGRADUATE SECTION === -->
+    <div class="level-section" id="sec-ug" data-level="ug">
+      <div class="level-section-header lsh-ug">
+        <div class="lsh-icon">🎓</div>
+        <div class="lsh-text">
+          <h3>Undergraduate Programmes</h3>
+          <p>Bachelor’s degrees, Honours and Integrated Masters — the foundation of a mathematics career</p>
+        </div>
+        <div class="lsh-count"><span id="ug-vis-count">18</span> / 18 shown</div>
+      </div>
+      <div class="prog-grid">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-bsc-mathematics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#1</div>
           <div class="prog-name">BSc Mathematics</div>
@@ -390,40 +463,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-msc-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#2</div>
-          <div class="prog-name">MSc Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1–2 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £55k</span>
-          <span class="prog-cat-tag">Pure &amp; General</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-phd-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#3</div>
-          <div class="prog-name">PhD Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £70k+</span>
-          <span class="prog-cat-tag">Pure &amp; General</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-bsc-applied-mathematics.html">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-bsc-applied-mathematics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#4</div>
           <div class="prog-name">BSc Applied Mathematics</div>
@@ -438,24 +478,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-msc-applied-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#5</div>
-          <div class="prog-name">MSc Applied Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £60k</span>
-          <span class="prog-cat-tag">Pure &amp; General</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-bsc-mathematical-sciences.html">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-bsc-mathematical-sciences.html">
         <div class="prog-card-top">
           <div class="prog-rank">#6</div>
           <div class="prog-name">BSc Mathematical Sciences</div>
@@ -470,8 +493,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-bsc-mathematics-honours.html">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-bsc-mathematics-honours.html">
         <div class="prog-card-top">
           <div class="prog-rank">#7</div>
           <div class="prog-name">BSc Mathematics (Honours)</div>
@@ -486,8 +508,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-mmath-integrated.html">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-mmath-integrated.html">
         <div class="prog-card-top">
           <div class="prog-rank">#8</div>
           <div class="prog-name">MMath — Integrated Masters</div>
@@ -502,8 +523,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-ba-mathematics.html">
+      <a class="prog-card" data-level="ug" data-cat="pure" href="dmu-ba-mathematics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#9</div>
           <div class="prog-name">BA Mathematics</div>
@@ -518,25 +538,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="pure" href="dmu-phd-pure-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#10</div>
-          <div class="prog-name">PhD Pure Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £72k+</span>
-          <span class="prog-cat-tag">Pure &amp; General</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <!-- ── STATISTICS & DATA (11–20) ── -->
-      <a class="prog-card" data-cat="stats" href="dmu-bsc-statistics.html">
+      <a class="prog-card" data-level="ug" data-cat="stats" href="dmu-bsc-statistics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#11</div>
           <div class="prog-name">BSc Statistics</div>
@@ -551,40 +553,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-msc-statistics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#12</div>
-          <div class="prog-name">MSc Statistics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £58k</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-phd-statistics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#13</div>
-          <div class="prog-name">PhD Statistics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £75k+</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-bsc-data-science.html">
+      <a class="prog-card" data-level="ug" data-cat="stats" href="dmu-bsc-data-science.html">
         <div class="prog-card-top">
           <div class="prog-rank">#14</div>
           <div class="prog-name">BSc Data Science</div>
@@ -599,40 +568,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-msc-data-science.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#15</div>
-          <div class="prog-name">MSc Data Science</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £65k</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-msc-machine-learning-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#16</div>
-          <div class="prog-name">MSc Machine Learning &amp; Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £70k</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-bsc-probability-statistics.html">
+      <a class="prog-card" data-level="ug" data-cat="stats" href="dmu-bsc-probability-statistics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#17</div>
           <div class="prog-name">BSc Probability &amp; Statistics</div>
@@ -647,40 +583,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-msc-biostatistics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#18</div>
-          <div class="prog-name">MSc Biostatistics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1–2 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £62k</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-phd-statistics-advanced.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#19</div>
-          <div class="prog-name">PhD Statistics — Advanced Track</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £80k+</span>
-          <span class="prog-cat-tag">Statistics &amp; Data</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="stats" href="dmu-bsc-data-analytics.html">
+      <a class="prog-card" data-level="ug" data-cat="stats" href="dmu-bsc-data-analytics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#20</div>
           <div class="prog-name">BSc Data Analytics</div>
@@ -695,9 +598,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <!-- ── FINANCE & ACTUARIAL (21–30) ── -->
-      <a class="prog-card" data-cat="fin" href="dmu-bsc-actuarial-science.html">
+      <a class="prog-card" data-level="ug" data-cat="fin" href="dmu-bsc-actuarial-science.html">
         <div class="prog-card-top">
           <div class="prog-rank">#21</div>
           <div class="prog-name">BSc Actuarial Science</div>
@@ -712,24 +613,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-actuarial-science.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#22</div>
-          <div class="prog-name">MSc Actuarial Science</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £65k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-bsc-financial-mathematics.html">
+      <a class="prog-card" data-level="ug" data-cat="fin" href="dmu-bsc-financial-mathematics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#23</div>
           <div class="prog-name">BSc Financial Mathematics</div>
@@ -744,40 +628,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-financial-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#24</div>
-          <div class="prog-name">MSc Financial Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £72k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-quantitative-finance.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#25</div>
-          <div class="prog-name">MSc Quantitative Finance</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £75k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-bsc-mathematics-economics.html">
+      <a class="prog-card" data-level="ug" data-cat="fin" href="dmu-bsc-mathematics-economics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#26</div>
           <div class="prog-name">BSc Mathematics &amp; Economics</div>
@@ -792,73 +643,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-mathematical-finance.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#27</div>
-          <div class="prog-name">MSc Mathematical Finance</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £78k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-phd-actuarial-science.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#28</div>
-          <div class="prog-name">PhD Actuarial Science</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £85k+</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-operations-research.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#29</div>
-          <div class="prog-name">MSc Operations Research</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £60k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="fin" href="dmu-msc-risk-management-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#30</div>
-          <div class="prog-name">MSc Risk Management &amp; Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £68k</span>
-          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <!-- ── COMPUTING & INTERDISCIPLINARY (31–40) ── -->
-      <a class="prog-card" data-cat="comp" href="dmu-bsc-mathematics-computer-science.html">
+      <a class="prog-card" data-level="ug" data-cat="comp" href="dmu-bsc-mathematics-computer-science.html">
         <div class="prog-card-top">
           <div class="prog-rank">#31</div>
           <div class="prog-name">BSc Mathematics &amp; Computer Science</div>
@@ -873,24 +658,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-msc-mathematics-computing.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#32</div>
-          <div class="prog-name">MSc Mathematics &amp; Computing</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £65k</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-bsc-mathematics-physics.html">
+      <a class="prog-card" data-level="ug" data-cat="comp" href="dmu-bsc-mathematics-physics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#33</div>
           <div class="prog-name">BSc Mathematics &amp; Physics</div>
@@ -905,24 +673,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-msc-computational-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#34</div>
-          <div class="prog-name">MSc Computational Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £62k</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-bsc-mathematical-physics.html">
+      <a class="prog-card" data-level="ug" data-cat="comp" href="dmu-bsc-mathematical-physics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#35</div>
           <div class="prog-name">BSc Mathematical Physics</div>
@@ -937,24 +688,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-msc-numerical-analysis.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#36</div>
-          <div class="prog-name">MSc Numerical Analysis</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £64k</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-bsc-discrete-mathematics.html">
+      <a class="prog-card" data-level="ug" data-cat="comp" href="dmu-bsc-discrete-mathematics.html">
         <div class="prog-card-top">
           <div class="prog-rank">#37</div>
           <div class="prog-name">BSc Discrete Mathematics</div>
@@ -969,57 +703,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-msc-cryptography-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#38</div>
-          <div class="prog-name">MSc Cryptography &amp; Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £70k</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-msc-optimisation-operations.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#39</div>
-          <div class="prog-name">MSc Optimisation &amp; Operations Research</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-pg">Postgraduate</span>
-          <span class="prog-dur">1 Year</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £65k</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="comp" href="dmu-phd-applied-mathematics.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#40</div>
-          <div class="prog-name">PhD Applied Mathematics</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £72k+</span>
-          <span class="prog-cat-tag">Computing</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <!-- ── EDUCATION & SPECIALIST (41–50) ── -->
-      <a class="prog-card" data-cat="edu" href="dmu-bed-mathematics-education.html">
+      <a class="prog-card" data-level="ug" data-cat="edu" href="dmu-bed-mathematics-education.html">
         <div class="prog-card-top">
           <div class="prog-rank">#41</div>
           <div class="prog-name">BEd Mathematics Education</div>
@@ -1034,8 +718,277 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
+      </div>
+      <p class="level-section-empty">No programmes match the selected subject in this level.</p>
+    </div>
 
-      <a class="prog-card" data-cat="edu" href="dmu-med-mathematics-education.html">
+    <!-- === POSTGRADUATE SECTION === -->
+    <div class="level-section" id="sec-pg" data-level="pg">
+      <div class="level-section-header lsh-pg">
+        <div class="lsh-icon">🏛️</div>
+        <div class="lsh-text">
+          <h3>Postgraduate Programmes</h3>
+          <p>Master’s and MEd degrees — advanced specialisation, research preparation and professional development</p>
+        </div>
+        <div class="lsh-count"><span id="pg-vis-count">23</span> / 23 shown</div>
+      </div>
+      <div class="prog-grid">
+      <a class="prog-card" data-level="pg" data-cat="pure" href="dmu-msc-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#2</div>
+          <div class="prog-name">MSc Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1–2 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £55k</span>
+          <span class="prog-cat-tag">Pure &amp; General</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="pure" href="dmu-msc-applied-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#5</div>
+          <div class="prog-name">MSc Applied Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £60k</span>
+          <span class="prog-cat-tag">Pure &amp; General</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="stats" href="dmu-msc-statistics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#12</div>
+          <div class="prog-name">MSc Statistics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £58k</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="stats" href="dmu-msc-data-science.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#15</div>
+          <div class="prog-name">MSc Data Science</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £65k</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="stats" href="dmu-msc-machine-learning-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#16</div>
+          <div class="prog-name">MSc Machine Learning &amp; Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £70k</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="stats" href="dmu-msc-biostatistics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#18</div>
+          <div class="prog-name">MSc Biostatistics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1–2 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £62k</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-actuarial-science.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#22</div>
+          <div class="prog-name">MSc Actuarial Science</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £65k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-financial-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#24</div>
+          <div class="prog-name">MSc Financial Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £72k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-quantitative-finance.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#25</div>
+          <div class="prog-name">MSc Quantitative Finance</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £75k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-mathematical-finance.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#27</div>
+          <div class="prog-name">MSc Mathematical Finance</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £78k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-operations-research.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#29</div>
+          <div class="prog-name">MSc Operations Research</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £60k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="fin" href="dmu-msc-risk-management-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#30</div>
+          <div class="prog-name">MSc Risk Management &amp; Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £68k</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="comp" href="dmu-msc-mathematics-computing.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#32</div>
+          <div class="prog-name">MSc Mathematics &amp; Computing</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £65k</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="comp" href="dmu-msc-computational-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#34</div>
+          <div class="prog-name">MSc Computational Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £62k</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="comp" href="dmu-msc-numerical-analysis.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#36</div>
+          <div class="prog-name">MSc Numerical Analysis</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £64k</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="comp" href="dmu-msc-cryptography-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#38</div>
+          <div class="prog-name">MSc Cryptography &amp; Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £70k</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="comp" href="dmu-msc-optimisation-operations.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#39</div>
+          <div class="prog-name">MSc Optimisation &amp; Operations Research</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-pg">Postgraduate</span>
+          <span class="prog-dur">1 Year</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £65k</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-med-mathematics-education.html">
         <div class="prog-card-top">
           <div class="prog-rank">#42</div>
           <div class="prog-name">MEd Mathematics Education</div>
@@ -1050,24 +1003,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-phd-mathematics-education.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#43</div>
-          <div class="prog-name">PhD Mathematics Education</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £55k+</span>
-          <span class="prog-cat-tag">Education &amp; Specialist</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-msc-history-philosophy.html">
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-msc-history-philosophy.html">
         <div class="prog-card-top">
           <div class="prog-rank">#44</div>
           <div class="prog-name">MSc History &amp; Philosophy of Mathematics</div>
@@ -1082,8 +1018,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-msc-mathematical-logic.html">
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-msc-mathematical-logic.html">
         <div class="prog-card-top">
           <div class="prog-rank">#45</div>
           <div class="prog-name">MSc Mathematical Logic</div>
@@ -1098,8 +1033,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-msc-topology.html">
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-msc-topology.html">
         <div class="prog-card-top">
           <div class="prog-rank">#46</div>
           <div class="prog-name">MSc Topology</div>
@@ -1114,8 +1048,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-msc-algebraic-geometry.html">
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-msc-algebraic-geometry.html">
         <div class="prog-card-top">
           <div class="prog-rank">#47</div>
           <div class="prog-name">MSc Algebraic Geometry</div>
@@ -1130,40 +1063,7 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-phd-number-theory.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#48</div>
-          <div class="prog-name">PhD Number Theory</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £70k+</span>
-          <span class="prog-cat-tag">Education &amp; Specialist</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-phd-differential-equations.html">
-        <div class="prog-card-top">
-          <div class="prog-rank">#49</div>
-          <div class="prog-name">PhD Differential Equations</div>
-        </div>
-        <div class="prog-badges">
-          <span class="prog-level lvl-dr">Doctoral</span>
-          <span class="prog-dur">3–5 Years</span>
-        </div>
-        <div class="prog-meta">
-          <span class="prog-salary">Avg £72k+</span>
-          <span class="prog-cat-tag">Education &amp; Specialist</span>
-        </div>
-        <span class="prog-arrow">→</span>
-      </a>
-
-      <a class="prog-card" data-cat="edu" href="dmu-msc-stochastic-processes.html">
+      <a class="prog-card" data-level="pg" data-cat="edu" href="dmu-msc-stochastic-processes.html">
         <div class="prog-card-top">
           <div class="prog-rank">#50</div>
           <div class="prog-name">MSc Stochastic Processes</div>
@@ -1178,8 +1078,160 @@
         </div>
         <span class="prog-arrow">→</span>
       </a>
+      </div>
+      <p class="level-section-empty">No programmes match the selected subject in this level.</p>
+    </div>
 
-    </div><!-- /prog-grid -->
+    <!-- === DOCTORAL SECTION === -->
+    <div class="level-section" id="sec-dr" data-level="dr">
+      <div class="level-section-header lsh-dr">
+        <div class="lsh-icon">🔬</div>
+        <div class="lsh-text">
+          <h3>Doctoral Programmes</h3>
+          <p>PhD pathways — original research, academic careers, and the highest level of mathematical mastery</p>
+        </div>
+        <div class="lsh-count"><span id="dr-vis-count">9</span> / 9 shown</div>
+      </div>
+      <div class="prog-grid">
+      <a class="prog-card" data-level="dr" data-cat="pure" href="dmu-phd-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#3</div>
+          <div class="prog-name">PhD Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £70k+</span>
+          <span class="prog-cat-tag">Pure &amp; General</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="pure" href="dmu-phd-pure-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#10</div>
+          <div class="prog-name">PhD Pure Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £72k+</span>
+          <span class="prog-cat-tag">Pure &amp; General</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="stats" href="dmu-phd-statistics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#13</div>
+          <div class="prog-name">PhD Statistics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £75k+</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="stats" href="dmu-phd-statistics-advanced.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#19</div>
+          <div class="prog-name">PhD Statistics — Advanced Track</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £80k+</span>
+          <span class="prog-cat-tag">Statistics &amp; Data</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="fin" href="dmu-phd-actuarial-science.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#28</div>
+          <div class="prog-name">PhD Actuarial Science</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £85k+</span>
+          <span class="prog-cat-tag">Finance &amp; Actuarial</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="comp" href="dmu-phd-applied-mathematics.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#40</div>
+          <div class="prog-name">PhD Applied Mathematics</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £72k+</span>
+          <span class="prog-cat-tag">Computing</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="edu" href="dmu-phd-mathematics-education.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#43</div>
+          <div class="prog-name">PhD Mathematics Education</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £55k+</span>
+          <span class="prog-cat-tag">Education &amp; Specialist</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="edu" href="dmu-phd-number-theory.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#48</div>
+          <div class="prog-name">PhD Number Theory</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £70k+</span>
+          <span class="prog-cat-tag">Education &amp; Specialist</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      <a class="prog-card" data-level="dr" data-cat="edu" href="dmu-phd-differential-equations.html">
+        <div class="prog-card-top">
+          <div class="prog-rank">#49</div>
+          <div class="prog-name">PhD Differential Equations</div>
+        </div>
+        <div class="prog-badges">
+          <span class="prog-level lvl-dr">Doctoral</span>
+          <span class="prog-dur">3–5 Years</span>
+        </div>
+        <div class="prog-meta">
+          <span class="prog-salary">Avg £72k+</span>
+          <span class="prog-cat-tag">Education &amp; Specialist</span>
+        </div>
+        <span class="prog-arrow">→</span>
+      </a>
+      </div>
+      <p class="level-section-empty">No programmes match the selected subject in this level.</p>
+    </div>
+
   </div><!-- /programmes -->
 
   <!-- ═══════════════ FEATURES ═══════════════ -->
@@ -1275,27 +1327,57 @@
   fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
   fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
 
-  /* ── Category Filter ── */
+  /* -- Dual Filter: Level + Subject -- */
   const catBtns = document.querySelectorAll('.cat-btn');
+  const levelBtns = document.querySelectorAll('.level-btn');
   const progCards = document.querySelectorAll('.prog-card');
   const visCount = document.getElementById('vis-count');
+  let activeCat = 'all';
+  let activeLevel = 'all';
+
+  function applyFilters() {
+    let total = 0;
+    const counts = { ug:0, pg:0, dr:0 };
+    progCards.forEach(card => {
+      const catMatch = activeCat === 'all' || card.dataset.cat === activeCat;
+      const lvlMatch = activeLevel === 'all' || card.dataset.level === activeLevel;
+      const show = catMatch && lvlMatch;
+      card.classList.toggle('hidden', !show);
+      if (show) { total++; if (counts[card.dataset.level] !== undefined) counts[card.dataset.level]++; }
+    });
+    visCount.textContent = total;
+    ['ug','pg','dr'].forEach(l => {
+      const countEl = document.getElementById(l + '-vis-count');
+      if (countEl) countEl.textContent = counts[l];
+      const sec = document.getElementById('sec-' + l);
+      if (sec) {
+        const lvlVisible = activeLevel === 'all' || activeLevel === l;
+        sec.classList.toggle('hidden', !lvlVisible);
+        const empty = sec.querySelector('.level-section-empty');
+        if (empty) empty.style.display = (lvlVisible && counts[l] === 0) ? 'block' : 'none';
+      }
+    });
+  }
 
   catBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       catBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const selected = btn.dataset.cat;
-      let count = 0;
-      progCards.forEach(card => {
-        const show = selected === 'all' || card.dataset.cat === selected;
-        card.classList.toggle('hidden', !show);
-        if (show) count++;
-      });
-      visCount.textContent = count;
+      activeCat = btn.dataset.cat;
+      applyFilters();
     });
   });
 
-  /* ── Back to Top ── */
+  levelBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      levelBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeLevel = btn.dataset.level;
+      applyFilters();
+    });
+  });
+
+    /* ── Back to Top ── */
   const btt = document.getElementById('backToTop');
   window.addEventListener('scroll', () => btt.style.display = scrollY > 300 ? 'flex' : 'none');
   btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
