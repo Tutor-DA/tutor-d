@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Concept Explainer | TutorDA</title>
+  <meta name="description" content="AI-powered math concept explainer — get clear explanations of any math topic at your level, from simple analogies to research-level depth.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$','$']],
+      displayMath: [['$$','$$']],
+      packages: {'[+]': ['ams']}
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+    startup: { typeset: false }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.min.js" id="MathJax-script" async></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --orange:  #ff8c00;
+      --orange2: #ff6600;
+      --dark:    #0d0d1a;
+      --card:    #141428;
+      --card2:   #1a1a35;
+      --border:  #2a2a4a;
+      --text:    #e8e8ff;
+      --muted:   #7777aa;
+      --gold:    #ffd700;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --blue:    #3b82f6;
+      --cyan:    #06b6d4;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --r:       14px;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 36px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Main Layout ──────────────────────────── */
+    .main-grid{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+
+    /* ── Card Base ─────────────────────────────── */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px}
+
+    /* ── Topic Input ──────────────────────────── */
+    .topic-input-wrap{display:flex;gap:12px;margin-bottom:18px}
+    .topic-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:14px 18px;font-size:1rem;color:var(--text);font-family:'Poppins',sans-serif;outline:none;
+      transition:border-color .2s}
+    .topic-input:focus{border-color:var(--cyan)}
+    .topic-input::placeholder{color:var(--muted)}
+
+    /* ── Quick Topics ─────────────────────────── */
+    .quick-topics{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .quick-btn{background:var(--card2);border:1px solid var(--border);border-radius:20px;
+      padding:6px 16px;font-size:.82rem;color:var(--muted);cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .2s}
+    .quick-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.08)}
+
+    /* ── Level Selector ───────────────────────── */
+    .level-label{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:.15em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:14px}
+    .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+    .level-card{background:var(--card2);border:2px solid var(--border);border-radius:var(--r);
+      padding:18px 14px;text-align:center;cursor:pointer;transition:all .25s;position:relative}
+    .level-card .level-icon{font-size:1.6rem;margin-bottom:8px;display:block}
+    .level-card .level-title{font-size:.78rem;font-weight:600;margin-bottom:4px;color:var(--text)}
+    .level-card .level-desc{font-size:.65rem;color:var(--muted);line-height:1.4}
+    .level-card:hover{transform:translateY(-3px)}
+    .level-card.active{transform:translateY(-3px)}
+
+    .level-card[data-level="child"]{border-color:rgba(34,197,94,.3)}
+    .level-card[data-level="child"].active{border-color:var(--green);background:rgba(34,197,94,.08);box-shadow:0 0 20px rgba(34,197,94,.15)}
+    .level-card[data-level="child"]:hover{border-color:var(--green)}
+
+    .level-card[data-level="highschool"]{border-color:rgba(59,130,246,.3)}
+    .level-card[data-level="highschool"].active{border-color:var(--blue);background:rgba(59,130,246,.08);box-shadow:0 0 20px rgba(59,130,246,.15)}
+    .level-card[data-level="highschool"]:hover{border-color:var(--blue)}
+
+    .level-card[data-level="university"]{border-color:rgba(168,85,247,.3)}
+    .level-card[data-level="university"].active{border-color:var(--purple);background:rgba(168,85,247,.08);box-shadow:0 0 20px rgba(168,85,247,.15)}
+    .level-card[data-level="university"]:hover{border-color:var(--purple)}
+
+    .level-card[data-level="researcher"]{border-color:rgba(236,72,153,.3)}
+    .level-card[data-level="researcher"].active{border-color:var(--pink);background:rgba(236,72,153,.08);box-shadow:0 0 20px rgba(236,72,153,.15)}
+    .level-card[data-level="researcher"]:hover{border-color:var(--pink)}
+
+    /* ── Generate Button ──────────────────────── */
+    .generate-btn{width:100%;padding:14px;border:none;border-radius:10px;font-size:1rem;
+      font-family:'Orbitron',sans-serif;font-weight:700;cursor:pointer;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;
+      letter-spacing:.05em;transition:all .25s;position:relative;overflow:hidden}
+    .generate-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(6,182,212,.3)}
+    .generate-btn:active{transform:translateY(0)}
+    .generate-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+
+    /* ── Loading Indicator ────────────────────── */
+    .typing-indicator{display:none;align-items:center;justify-content:center;gap:6px;padding:32px}
+    .typing-indicator.visible{display:flex}
+    .typing-dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);
+      animation:typingBounce .6s ease-in-out infinite}
+    .typing-dot:nth-child(2){animation-delay:.15s}
+    .typing-dot:nth-child(3){animation-delay:.3s}
+    @keyframes typingBounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-10px);opacity:1}}
+
+    /* ── Response Area ────────────────────────── */
+    .response-panel{margin-top:24px;position:relative;
+      background:var(--card);border-radius:var(--r);
+      border:2px solid transparent;
+      background-clip:padding-box}
+    .response-panel::before{content:'';position:absolute;inset:-2px;border-radius:calc(var(--r) + 2px);
+      background:linear-gradient(135deg,var(--cyan),var(--purple),var(--pink));z-index:-1;opacity:.5}
+    .response-header{display:flex;justify-content:space-between;align-items:center;
+      padding:16px 20px;border-bottom:1px solid var(--border)}
+    .response-header span{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.15em;
+      color:var(--cyan);text-transform:uppercase}
+    .copy-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;
+      padding:6px 14px;font-size:.75rem;color:var(--muted);cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .2s}
+    .copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+    .response-body{padding:24px;min-height:120px;line-height:1.75;font-size:.95rem}
+    .response-body h1,.response-body h2,.response-body h3{font-family:'Orbitron',sans-serif;
+      margin:20px 0 10px;color:var(--cyan)}
+    .response-body h1{font-size:1.3rem}
+    .response-body h2{font-size:1.1rem}
+    .response-body h3{font-size:.95rem;color:var(--purple)}
+    .response-body p{margin-bottom:12px}
+    .response-body ul,.response-body ol{margin:8px 0 12px 20px}
+    .response-body li{margin-bottom:6px}
+    .response-body strong{color:#fff}
+    .response-body code{background:var(--card2);padding:2px 6px;border-radius:4px;
+      font-family:var(--mono);font-size:.85em;color:var(--green)}
+    .response-body pre{background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:16px;overflow-x:auto;margin:12px 0}
+    .response-body pre code{background:none;padding:0;color:var(--text)}
+    .response-body .MathJax{font-size:1.05em}
+    .response-placeholder{color:var(--muted);text-align:center;padding:40px 20px;font-size:.9rem}
+
+    /* ── Settings Toggle ──────────────────────── */
+    .settings-toggle{position:fixed;bottom:80px;right:24px;width:48px;height:48px;border-radius:50%;
+      background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:1.3rem;
+      cursor:pointer;z-index:50;display:flex;align-items:center;justify-content:center;
+      transition:all .2s}
+    .settings-toggle:hover{border-color:var(--cyan);color:var(--cyan);transform:rotate(60deg)}
+
+    /* ── Settings Panel ───────────────────────── */
+    .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;
+      display:none;align-items:center;justify-content:center}
+    .settings-overlay.visible{display:flex}
+    .settings-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:28px;width:90%;max-width:440px;position:relative}
+    .settings-card h3{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);
+      margin-bottom:20px;letter-spacing:.1em}
+    .settings-close{position:absolute;top:16px;right:16px;background:none;border:none;
+      color:var(--muted);font-size:1.2rem;cursor:pointer}
+    .settings-close:hover{color:var(--text)}
+    .field-group{margin-bottom:16px}
+    .field-group label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;
+      font-weight:500;letter-spacing:.04em}
+    .field-group input,.field-group select{width:100%;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;padding:10px 14px;font-size:.88rem;color:var(--text);
+      font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+    .field-group input:focus,.field-group select:focus{border-color:var(--cyan)}
+    .field-group select option{background:var(--card);color:var(--text)}
+    .save-settings-btn{width:100%;padding:11px;border:none;border-radius:8px;font-size:.88rem;
+      font-family:'Poppins',sans-serif;font-weight:600;cursor:pointer;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;
+      margin-top:8px;transition:all .2s}
+    .save-settings-btn:hover{opacity:.9}
+
+    /* ── History Sidebar ──────────────────────── */
+    .history-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:20px;position:sticky;top:100px}
+    .history-title{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.15em;
+      color:var(--purple);text-transform:uppercase;margin-bottom:14px}
+    .history-list{list-style:none}
+    .history-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+    .history-item:hover{border-color:var(--purple)}
+    .history-item .hi-topic{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:4px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .history-item .hi-level{font-size:.68rem;color:var(--muted)}
+    .history-empty{font-size:.82rem;color:var(--muted);text-align:center;padding:20px 0}
+
+    /* ── Toast ─────────────────────────────────── */
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:var(--card);border:1px solid var(--cyan);border-radius:10px;
+      padding:12px 24px;font-size:.85rem;color:var(--cyan);z-index:200;
+      transition:transform .3s ease;pointer-events:none}
+    .toast.visible{transform:translateX(-50%) translateY(0)}
+
+    /* ── Back to Top ──────────────────────────── */
+    #backToTop{display:none;position:fixed;bottom:24px;right:24px;width:44px;height:44px;
+      border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--cyan);
+      font-size:1.1rem;cursor:pointer;z-index:40;text-align:center;line-height:44px}
+    #backToTop:hover{border-color:var(--cyan);box-shadow:0 0 12px rgba(6,182,212,.25)}
+
+    /* ── Responsive ────────────────────────────── */
+    @media(max-width:900px){
+      .main-grid{grid-template-columns:1fr}
+      .history-panel{position:static}
+    }
+    @media(max-width:600px){
+      .levels{grid-template-columns:repeat(2,1fr)}
+      .hero h1{font-size:1.6rem}
+      .settings-toggle{bottom:72px;right:16px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">AI-Powered Tool</div>
+    <h1>Concept Explainer</h1>
+    <p>Enter any math topic and choose your level &mdash; get a clear, tailored explanation powered by Claude AI, complete with formulas, examples, and intuition.</p>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left Column -->
+    <div>
+      <!-- Topic Input -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="topic-input-wrap">
+          <input type="text" id="topicInput" class="topic-input" placeholder="Enter any math topic (e.g. Pythagorean Theorem, Integration by Parts, Eigenvalues)">
+        </div>
+        <div class="quick-topics">
+          <button class="quick-btn" data-topic="Fractions">Fractions</button>
+          <button class="quick-btn" data-topic="Quadratic Formula">Quadratic Formula</button>
+          <button class="quick-btn" data-topic="Derivatives">Derivatives</button>
+          <button class="quick-btn" data-topic="Matrices">Matrices</button>
+          <button class="quick-btn" data-topic="Probability">Probability</button>
+          <button class="quick-btn" data-topic="Complex Numbers">Complex Numbers</button>
+          <button class="quick-btn" data-topic="Limits">Limits</button>
+          <button class="quick-btn" data-topic="Trigonometry">Trigonometry</button>
+          <button class="quick-btn" data-topic="Logarithms">Logarithms</button>
+          <button class="quick-btn" data-topic="Vectors">Vectors</button>
+        </div>
+      </div>
+
+      <!-- Level Selector -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="level-label">Explanation Level</div>
+        <div class="levels">
+          <div class="level-card active" data-level="child">
+            <span class="level-icon">&#x1F9D2;</span>
+            <div class="level-title">Like I'm 10</div>
+            <div class="level-desc">Simple, fun, real-world analogies</div>
+          </div>
+          <div class="level-card" data-level="highschool">
+            <span class="level-icon">&#x1F392;</span>
+            <div class="level-title">High School</div>
+            <div class="level-desc">Clear with examples, some formulas</div>
+          </div>
+          <div class="level-card" data-level="university">
+            <span class="level-icon">&#x1F393;</span>
+            <div class="level-title">University</div>
+            <div class="level-desc">Rigorous, formal definitions, proofs</div>
+          </div>
+          <div class="level-card" data-level="researcher">
+            <span class="level-icon">&#x1F52C;</span>
+            <div class="level-title">Researcher</div>
+            <div class="level-desc">Advanced, connections to other fields, open problems</div>
+          </div>
+        </div>
+        <button class="generate-btn" id="generateBtn">Explain This Concept</button>
+      </div>
+
+      <!-- Response Area -->
+      <div class="response-panel" id="responsePanel" style="display:none">
+        <div class="response-header">
+          <span>Explanation</span>
+          <button class="copy-btn" id="copyBtn">Copy</button>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+        <div class="response-body" id="responseBody">
+          <div class="response-placeholder">Your explanation will appear here...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column — History -->
+    <div class="history-panel">
+      <div class="history-title">Recent Queries</div>
+      <ul class="history-list" id="historyList">
+        <li class="history-empty">No queries yet. Try one!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Gear -->
+<button class="settings-toggle" id="settingsToggle" title="API Settings">&#9881;</button>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-card">
+    <button class="settings-close" id="settingsClose">&times;</button>
+    <h3>API Configuration</h3>
+    <div class="field-group">
+      <label>API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+    </div>
+    <div class="field-group">
+      <label>Model</label>
+      <select id="modelSelect">
+        <option value="claude-sonnet-4-20250514" selected>claude-sonnet-4-20250514</option>
+        <option value="claude-opus-4-20250514">claude-opus-4-20250514</option>
+        <option value="claude-haiku-4-20250514">claude-haiku-4-20250514</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>API Endpoint</label>
+      <input type="text" id="endpointInput" placeholder="https://api.anthropic.com/v1/messages">
+    </div>
+    <button class="save-settings-btn" id="saveSettingsBtn">Save Settings</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Concept Explainer — Pure JS
+   ═══════════════════════════════════════════════════ */
+
+/* ── State ─── */
+let selectedLevel = 'child';
+let rawResponse = '';
+
+const levelPrompts = {
+  child:      'Explain like I am a 10-year-old. Use simple words, fun real-world analogies, and relatable examples. Avoid jargon.',
+  highschool: 'Explain like I am a high-school student. Use clear language with worked examples and introduce relevant formulas.',
+  university: 'Explain like I am a university student. Use rigorous formal definitions, include proofs or proof sketches, and use proper mathematical notation.',
+  researcher: 'Explain like I am a researcher. Provide advanced treatment, connections to other areas of mathematics, generalisations, and mention any open problems.'
+};
+
+const SYSTEM_PROMPT = 'You are a math concept explainer. Explain the given math topic at the specified level. Use LaTeX notation wrapped in $ for inline math and $$ for display math. Be clear, engaging, and include examples. Format with markdown.';
+
+/* ── DOM Refs ─── */
+const topicInput      = document.getElementById('topicInput');
+const generateBtn     = document.getElementById('generateBtn');
+const responsePanel   = document.getElementById('responsePanel');
+const responseBody    = document.getElementById('responseBody');
+const typingIndicator = document.getElementById('typingIndicator');
+const copyBtn         = document.getElementById('copyBtn');
+const settingsToggle  = document.getElementById('settingsToggle');
+const settingsOverlay = document.getElementById('settingsOverlay');
+const settingsClose   = document.getElementById('settingsClose');
+const apiKeyInput     = document.getElementById('apiKeyInput');
+const modelSelect     = document.getElementById('modelSelect');
+const endpointInput   = document.getElementById('endpointInput');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const historyList     = document.getElementById('historyList');
+const toastEl         = document.getElementById('toast');
+
+/* ── Settings persistence ─── */
+function loadSettings() {
+  apiKeyInput.value   = localStorage.getItem('ce_apiKey')   || '';
+  modelSelect.value   = localStorage.getItem('ce_model')    || 'claude-sonnet-4-20250514';
+  endpointInput.value = localStorage.getItem('ce_endpoint')  || 'https://api.anthropic.com/v1/messages';
+}
+loadSettings();
+
+saveSettingsBtn.addEventListener('click', () => {
+  localStorage.setItem('ce_apiKey',   apiKeyInput.value.trim());
+  localStorage.setItem('ce_model',    modelSelect.value);
+  localStorage.setItem('ce_endpoint', endpointInput.value.trim() || 'https://api.anthropic.com/v1/messages');
+  settingsOverlay.classList.remove('visible');
+  showToast('Settings saved');
+});
+
+/* ── Settings panel ─── */
+settingsToggle.addEventListener('click', () => settingsOverlay.classList.add('visible'));
+settingsClose.addEventListener('click',  () => settingsOverlay.classList.remove('visible'));
+settingsOverlay.addEventListener('click', e => { if (e.target === settingsOverlay) settingsOverlay.classList.remove('visible'); });
+
+/* ── Level cards ─── */
+document.querySelectorAll('.level-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.level-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedLevel = card.dataset.level;
+  });
+});
+
+/* ── Quick topic buttons ─── */
+document.querySelectorAll('.quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    topicInput.value = btn.dataset.topic;
+    topicInput.focus();
+  });
+});
+
+/* ── Enter key ─── */
+topicInput.addEventListener('keydown', e => { if (e.key === 'Enter') generateBtn.click(); });
+
+/* ── Generate ─── */
+generateBtn.addEventListener('click', async () => {
+  const topic = topicInput.value.trim();
+  if (!topic) { showToast('Please enter a topic'); topicInput.focus(); return; }
+
+  const apiKey   = localStorage.getItem('ce_apiKey')   || apiKeyInput.value.trim();
+  const model    = localStorage.getItem('ce_model')    || 'claude-sonnet-4-20250514';
+  const endpoint = localStorage.getItem('ce_endpoint') || 'https://api.anthropic.com/v1/messages';
+
+  if (!apiKey) { showToast('Please configure your API key in settings'); settingsOverlay.classList.add('visible'); return; }
+
+  const userPrompt = `Topic: ${topic}\n\nLevel: ${levelPrompts[selectedLevel]}`;
+
+  /* Show loading */
+  responsePanel.style.display = 'block';
+  typingIndicator.classList.add('visible');
+  responseBody.innerHTML = '';
+  generateBtn.disabled = true;
+  generateBtn.textContent = 'Generating...';
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 2048,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API error ${res.status}`);
+    }
+
+    const data = await res.json();
+    rawResponse = data.content?.[0]?.text || 'No response received.';
+
+    typingIndicator.classList.remove('visible');
+    responseBody.innerHTML = renderMarkdown(rawResponse);
+
+    /* Typeset math */
+    if (window.MathJax && MathJax.typesetPromise) {
+      await MathJax.typesetPromise([responseBody]);
+    }
+
+    /* Save to history */
+    addToHistory(topic, selectedLevel);
+
+  } catch (err) {
+    typingIndicator.classList.remove('visible');
+    responseBody.innerHTML = `<div style="color:var(--red)"><strong>Error:</strong> ${escapeHtml(err.message)}</div>`;
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Explain This Concept';
+  }
+});
+
+/* ── Copy ─── */
+copyBtn.addEventListener('click', () => {
+  if (!rawResponse) return;
+  navigator.clipboard.writeText(rawResponse).then(() => showToast('Copied to clipboard')).catch(() => showToast('Copy failed'));
+});
+
+/* ── Simple Markdown Renderer ─── */
+function renderMarkdown(md) {
+  let html = escapeHtml(md);
+
+  /* Preserve LaTeX blocks — temporarily replace $$ and $ so they aren't mangled */
+  const displayMath = [];
+  html = html.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => { displayMath.push(tex); return `%%DISPLAY_MATH_${displayMath.length - 1}%%`; });
+  const inlineMath = [];
+  html = html.replace(/\$([^\n$]+?)\$/g, (_, tex) => { inlineMath.push(tex); return `%%INLINE_MATH_${inlineMath.length - 1}%%`; });
+
+  /* Code blocks */
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code class="lang-${lang}">${code.trim()}</code></pre>`);
+  /* Inline code */
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  /* Headers */
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
+
+  /* Bold & Italic */
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  /* Unordered lists */
+  html = html.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  /* Ordered lists */
+  html = html.replace(/^\d+\. (.+)$/gm, '<oli>$1</oli>');
+  html = html.replace(/((?:<oli>.*<\/oli>\n?)+)/g, m =>
+    '<ol>' + m.replace(/<\/?oli>/g, t => t.replace('oli', 'li')) + '</ol>');
+
+  /* Paragraphs — wrap remaining lines */
+  html = html.replace(/\n{2,}/g, '\n</p><p>\n');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p>\s*(<h[123]|<ul|<ol|<pre)/g, '$1');
+  html = html.replace(/(<\/h[123]>|<\/ul>|<\/ol>|<\/pre>)\s*<\/p>/g, '$1');
+  html = html.replace(/<p>\s*<\/p>/g, '');
+
+  /* Restore math */
+  displayMath.forEach((tex, i) => { html = html.replace(`%%DISPLAY_MATH_${i}%%`, `$$${unescapeHtml(tex)}$$`); });
+  inlineMath.forEach((tex, i)  => { html = html.replace(`%%INLINE_MATH_${i}%%`,  `$${unescapeHtml(tex)}$`); });
+
+  return html;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function unescapeHtml(s) {
+  return s.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+}
+
+/* ── History ─── */
+function getHistory() {
+  try { return JSON.parse(sessionStorage.getItem('ce_history') || '[]'); } catch { return []; }
+}
+function saveHistory(h) { sessionStorage.setItem('ce_history', JSON.stringify(h)); }
+
+function addToHistory(topic, level) {
+  let h = getHistory();
+  h.unshift({ topic, level, time: Date.now() });
+  if (h.length > 5) h = h.slice(0, 5);
+  saveHistory(h);
+  renderHistory();
+}
+
+function renderHistory() {
+  const h = getHistory();
+  if (!h.length) { historyList.innerHTML = '<li class="history-empty">No queries yet. Try one!</li>'; return; }
+  const levelLabels = { child: 'Like I\'m 10', highschool: 'High School', university: 'University', researcher: 'Researcher' };
+  historyList.innerHTML = h.map((item, i) => `
+    <li class="history-item" data-index="${i}">
+      <div class="hi-topic">${escapeHtml(item.topic)}</div>
+      <div class="hi-level">${levelLabels[item.level] || item.level}</div>
+    </li>
+  `).join('');
+
+  historyList.querySelectorAll('.history-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const item = h[parseInt(el.dataset.index)];
+      topicInput.value = item.topic;
+      document.querySelectorAll('.level-card').forEach(c => {
+        c.classList.toggle('active', c.dataset.level === item.level);
+      });
+      selectedLevel = item.level;
+      generateBtn.click();
+    });
+  });
+}
+renderHistory();
+
+/* ── Toast ─── */
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('visible');
+  setTimeout(() => toastEl.classList.remove('visible'), 2200);
+}
+
+/* ── Back to Top ─── */
+const btt = document.getElementById('backToTop');
+if (btt) {
+  window.addEventListener('scroll', () => btt.style.display = window.scrollY > 300 ? 'block' : 'none');
+  btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+/* ── Header / Footer ─── */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>

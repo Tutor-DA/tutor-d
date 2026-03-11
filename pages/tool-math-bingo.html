@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math Bingo | TutorDA</title>
+  <meta name="description" content="Generate bingo cards with math problems — self-checking, classroom-ready, with caller system and win detection.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --card:    #111125;
+      --border:  #1e1e3a;
+      --muted:   #94a3b8;
+      --dark:    #0d0d1a;
+      --text:    #e8e8ff;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* Starfield */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:
+        radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%);
+      animation:twinkle 6s ease-in-out infinite alternate}
+    @keyframes twinkle{0%{opacity:.6}100%{opacity:1}}
+
+    .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+
+    /* Hero */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* Panels */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+    .panel h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--cyan);margin-bottom:16px;letter-spacing:.05em}
+
+    /* Form elements */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:.82rem;color:var(--muted);font-weight:500}
+    .form-group input,.form-group select{
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 14px;
+      color:var(--text);font-family:'Poppins',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+    .form-group input:focus,.form-group select:focus{border-color:var(--cyan)}
+    .form-group select option{background:var(--dark);color:var(--text)}
+
+    .checkbox-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+    .checkbox-grid label{display:flex;align-items:center;gap:6px;font-size:.85rem;cursor:pointer;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:6px 12px;transition:all .2s}
+    .checkbox-grid label:hover{border-color:var(--purple)}
+    .checkbox-grid label.checked{border-color:var(--cyan);background:rgba(0,229,255,.08)}
+    .checkbox-grid input[type=checkbox]{accent-color:var(--cyan);width:16px;height:16px}
+
+    /* Buttons */
+    .btn-primary{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;font-weight:700;
+      border:none;border-radius:10px;padding:14px 32px;font-size:1rem;cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .25s;box-shadow:0 4px 20px rgba(0,229,255,.25)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,229,255,.4)}
+    .btn-primary:active{transform:translateY(0)}
+
+    .btn-secondary{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      background:var(--dark);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 20px;font-size:.88rem;cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .2s}
+    .btn-secondary:hover{border-color:var(--cyan);color:#fff}
+    .btn-secondary.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;align-items:center}
+
+    /* Bingo Grid */
+    .bingo-area{display:none}
+    .bingo-area.active{display:block}
+
+    .game-layout{display:grid;grid-template-columns:1fr 320px;gap:20px}
+
+    .bingo-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden}
+    .bingo-card .card-title{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--muted);
+      text-align:center;margin-bottom:12px;letter-spacing:.1em}
+
+    .bingo-header{display:grid;gap:4px;margin-bottom:4px}
+    .bingo-header .hcell{
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;
+      padding:10px 4px;border-radius:8px;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff}
+
+    .bingo-grid{display:grid;gap:4px}
+    .bingo-cell{
+      position:relative;display:flex;align-items:center;justify-content:center;text-align:center;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      font-family:var(--mono);font-size:.85rem;color:var(--text);cursor:pointer;
+      aspect-ratio:1;padding:4px;transition:all .25s;overflow:hidden;
+      min-width:44px;min-height:44px;word-break:break-word;line-height:1.2}
+    .bingo-cell:hover{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.2)}
+    .bingo-cell.marked{
+      background:rgba(0,229,255,.15);border-color:var(--cyan);
+      box-shadow:0 0 16px rgba(0,229,255,.3)}
+    .bingo-cell.marked::after{
+      content:'\2713';position:absolute;top:4px;right:6px;font-size:.7rem;color:var(--cyan);font-weight:700}
+    .bingo-cell.correct-flash{animation:correctPop .5s ease}
+    .bingo-cell.wrong-flash{animation:wrongShake .5s ease}
+    .bingo-cell.free{background:rgba(168,85,247,.15);border-color:var(--purple);cursor:default}
+    .bingo-cell.free.marked{background:rgba(168,85,247,.3);box-shadow:0 0 16px rgba(168,85,247,.3)}
+    .bingo-cell .cell-problem{font-size:inherit}
+    .bingo-cell.win-cell{animation:winPulse 1s ease infinite;border-color:var(--gold);box-shadow:0 0 20px rgba(250,204,21,.4)}
+
+    @keyframes correctPop{
+      0%{transform:scale(1)}30%{transform:scale(1.15);background:rgba(34,197,94,.25)}100%{transform:scale(1)}}
+    @keyframes wrongShake{
+      0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px);background:rgba(239,68,68,.2)}
+      45%{transform:translateX(-4px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+    @keyframes winPulse{
+      0%,100%{box-shadow:0 0 20px rgba(250,204,21,.4)}50%{box-shadow:0 0 30px rgba(250,204,21,.7)}}
+
+    /* Sidebar */
+    .sidebar .panel{margin-bottom:16px}
+
+    .caller-btn{width:100%;padding:14px;font-size:1rem;font-weight:700;margin-bottom:12px}
+    .called-number{
+      font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:900;text-align:center;
+      color:var(--gold);margin:12px 0;text-shadow:0 0 20px rgba(250,204,21,.4)}
+    .called-problem{text-align:center;color:var(--muted);font-size:.9rem;margin-bottom:12px}
+    .call-history{max-height:200px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px;padding:4px}
+    .call-chip{background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:4px 10px;
+      font-size:.78rem;font-family:var(--mono);color:var(--muted)}
+
+    .pattern-selector{display:flex;flex-wrap:wrap;gap:6px}
+    .pattern-selector label{display:flex;align-items:center;gap:5px;font-size:.8rem;cursor:pointer;
+      background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:5px 10px;transition:all .2s}
+    .pattern-selector label.checked{border-color:var(--gold);color:var(--gold)}
+    .pattern-selector input{accent-color:var(--gold);width:14px;height:14px}
+
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .stat-box{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+    .stat-box .stat-val{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:700;color:var(--cyan)}
+    .stat-box .stat-label{font-size:.7rem;color:var(--muted);margin-top:2px}
+
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;
+      border-bottom:1px solid var(--border)}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-row span{font-size:.85rem}
+    .toggle{position:relative;width:44px;height:24px;cursor:pointer}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle .slider{position:absolute;inset:0;background:var(--border);border-radius:12px;transition:.3s}
+    .toggle .slider::before{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;
+      background:#fff;border-radius:50%;transition:.3s}
+    .toggle input:checked+.slider{background:var(--cyan)}
+    .toggle input:checked+.slider::before{transform:translateX(20px)}
+
+    /* Answer popup */
+    .answer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;
+      align-items:center;justify-content:center}
+    .answer-overlay.active{display:flex}
+    .answer-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:28px;text-align:center;min-width:300px;max-width:90vw;animation:popIn .25s ease}
+    .answer-box h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);margin-bottom:6px}
+    .answer-box .problem-display{font-family:var(--mono);font-size:1.5rem;color:#fff;margin:12px 0}
+    .answer-box input{width:100%;background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      padding:12px;color:var(--text);font-family:var(--mono);font-size:1.2rem;text-align:center;
+      outline:none;margin-bottom:12px}
+    .answer-box input:focus{border-color:var(--cyan)}
+    .answer-box .btn-row{justify-content:center}
+
+    @keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+
+    /* Toast */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+      background:var(--card);border:1px solid var(--border);border-radius:10px;
+      padding:12px 24px;font-size:.9rem;z-index:2000;opacity:0;transition:opacity .3s;pointer-events:none}
+    .toast.show{opacity:1}
+    .toast.success{border-color:var(--green);color:var(--green)}
+    .toast.error{border-color:var(--red);color:var(--red)}
+
+    /* BINGO win overlay */
+    .win-overlay{display:none;position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.7);
+      align-items:center;justify-content:center;flex-direction:column}
+    .win-overlay.active{display:flex}
+    .win-text{font-family:'Orbitron',sans-serif;font-size:clamp(3rem,10vw,6rem);font-weight:900;
+      background:linear-gradient(135deg,var(--gold),var(--pink),var(--cyan));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:winBounce 1s ease infinite alternate;text-align:center}
+    .win-sub{color:var(--muted);font-size:1.1rem;margin-top:12px}
+    @keyframes winBounce{0%{transform:scale(1) rotate(-2deg)}100%{transform:scale(1.08) rotate(2deg)}}
+
+    /* Confetti canvas */
+    #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:1600}
+
+    /* Multi-card area */
+    .multi-cards{display:grid;gap:20px}
+    .multi-cards.cols-2{grid-template-columns:1fr 1fr}
+    .multi-cards.cols-1{grid-template-columns:1fr}
+
+    /* Print styles */
+    @media print{
+      body{background:#fff!important;color:#000!important}
+      .stars,.hero,.sidebar,#header-container,#footer-container,#backToTop,.setup-area,.btn-row,
+      .answer-overlay,.win-overlay,.toast,#confetti-canvas,.no-print{display:none!important}
+      .wrapper{max-width:100%;padding:0}
+      .bingo-area{display:block!important}
+      .game-layout{display:block!important}
+      .bingo-card{background:#fff!important;border:2px solid #000!important;break-inside:avoid;
+        page-break-inside:avoid;margin-bottom:20px;padding:12px}
+      .bingo-card .card-title{color:#000!important}
+      .bingo-header .hcell{background:#000!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .bingo-cell{background:#fff!important;border:1.5px solid #000!important;color:#000!important;
+        -webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .bingo-cell.marked{background:#ddd!important}
+      .bingo-cell.free{background:#eee!important}
+      .print-multi .bingo-card{width:48%;display:inline-block;vertical-align:top;margin:1%}
+    }
+
+    /* Mobile */
+    @media(max-width:768px){
+      .game-layout{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .bingo-cell{font-size:.7rem;min-width:40px;min-height:40px}
+      .bingo-header .hcell{font-size:.85rem;padding:8px 2px}
+      .sidebar{order:2}
+    }
+    @media(max-width:480px){
+      .bingo-cell{font-size:.6rem;padding:2px}
+      .hero{padding:40px 16px 20px}
+      .panel{padding:16px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Math Bingo</h1>
+    <p>Generate bingo cards with math problems, verify answers in real-time, and celebrate wins with style. Perfect for classrooms or solo practice.</p>
+  </section>
+
+  <!-- Setup -->
+  <div class="setup-area">
+    <div class="panel">
+      <h2>Game Setup</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Player Name</label>
+          <input type="text" id="playerName" placeholder="Enter your name" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label>Grid Size</label>
+          <select id="gridSize">
+            <option value="3">3 x 3</option>
+            <option value="4">4 x 4</option>
+            <option value="5" selected>5 x 5 (Classic)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select id="difficulty">
+            <option value="easy">Easy (Add / Subtract within 20)</option>
+            <option value="medium">Medium (Multiply / Divide within 100)</option>
+            <option value="hard">Hard (Mixed, Squares, Roots)</option>
+            <option value="expert">Expert (Algebra Expressions)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Number of Cards</label>
+          <select id="numCards">
+            <option value="1" selected>1 Card</option>
+            <option value="2">2 Cards</option>
+            <option value="3">3 Cards</option>
+            <option value="4">4 Cards</option>
+            <option value="5">5 Cards</option>
+            <option value="6">6 Cards</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:16px">
+        <label>Topics</label>
+        <div class="checkbox-grid" id="topicChecks">
+          <label><input type="checkbox" value="addition" checked> Addition</label>
+          <label><input type="checkbox" value="subtraction" checked> Subtraction</label>
+          <label><input type="checkbox" value="multiplication" checked> Multiplication</label>
+          <label><input type="checkbox" value="division" checked> Division</label>
+          <label><input type="checkbox" value="squares"> Squares</label>
+          <label><input type="checkbox" value="squareroots"> Square Roots</label>
+          <label><input type="checkbox" value="orderofops"> Order of Operations</label>
+          <label><input type="checkbox" value="algebra"> Simple Algebra</label>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btnGenerate">Generate Card</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bingo Area -->
+  <div class="bingo-area" id="bingoArea">
+    <div class="btn-row no-print" style="margin-bottom:16px">
+      <button class="btn-secondary" id="btnNewGame">New Game</button>
+      <button class="btn-secondary" id="btnPrint">Print Card(s)</button>
+      <button class="btn-secondary" id="btnReset">Reset Marks</button>
+    </div>
+
+    <div class="game-layout" id="gameLayout">
+      <div id="cardsContainer"></div>
+      <div class="sidebar no-print" id="sidebarPanel">
+        <!-- Options -->
+        <div class="panel">
+          <h2>Options</h2>
+          <div class="toggle-row">
+            <span>Honor Mode (no answer check)</span>
+            <label class="toggle"><input type="checkbox" id="honorMode"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Speech Announcements</span>
+            <label class="toggle"><input type="checkbox" id="speechMode"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <!-- Caller -->
+        <div class="panel">
+          <h2>Caller System</h2>
+          <button class="btn-primary caller-btn" id="btnCall">Call Number</button>
+          <div class="called-number" id="calledNumber">--</div>
+          <div class="called-problem" id="calledProblem">Press "Call Number" to start</div>
+          <div class="call-history" id="callHistory"></div>
+        </div>
+
+        <!-- Win Patterns -->
+        <div class="panel">
+          <h2>Win Patterns</h2>
+          <div class="pattern-selector" id="patternSelector">
+            <label><input type="checkbox" value="horizontal" checked> Horizontal</label>
+            <label><input type="checkbox" value="vertical" checked> Vertical</label>
+            <label><input type="checkbox" value="diagonal" checked> Diagonal</label>
+            <label><input type="checkbox" value="fourcorners"> Four Corners</label>
+            <label><input type="checkbox" value="blackout"> Blackout</label>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="panel">
+          <h2>Statistics</h2>
+          <div class="stats-grid">
+            <div class="stat-box"><div class="stat-val" id="statWins">0</div><div class="stat-label">Total Wins</div></div>
+            <div class="stat-box"><div class="stat-val" id="statGames">0</div><div class="stat-label">Games Played</div></div>
+            <div class="stat-box"><div class="stat-val" id="statFastest">--</div><div class="stat-label">Fastest Win</div></div>
+            <div class="stat-box"><div class="stat-val" id="statStreak">0</div><div class="stat-label">Win Streak</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Answer Popup -->
+<div class="answer-overlay" id="answerOverlay">
+  <div class="answer-box">
+    <h3>Solve This Problem</h3>
+    <div class="problem-display" id="popupProblem"></div>
+    <input type="text" id="answerInput" placeholder="Your answer" autocomplete="off">
+    <div class="btn-row">
+      <button class="btn-primary" id="btnSubmitAnswer" style="padding:10px 24px;font-size:.9rem">Check</button>
+      <button class="btn-secondary" id="btnCancelAnswer">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Win Overlay -->
+<div class="win-overlay" id="winOverlay">
+  <div class="win-text">BINGO!</div>
+  <div class="win-sub" id="winSub">Congratulations!</div>
+  <button class="btn-primary" style="margin-top:24px" id="btnCloseWin">Continue</button>
+</div>
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ── Helpers ────────────────────────────────── */
+  const $=s=>document.querySelector(s);
+  const $$=s=>document.querySelectorAll(s);
+  const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rand(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+
+  /* ── State ──────────────────────────────────── */
+  let cards=[];        // [{cells:[{problem,answer,marked}], size, headerLetters}]
+  let activeCardIdx=0;
+  let calledAnswers=[];
+  let allProblems=[];  // all problems across cards for caller
+  let gameStartTime=null;
+  let gameWon=false;
+  let currentCellIdx=null;
+
+  /* ── DOM refs ───────────────────────────────── */
+  const setupArea=$('.setup-area');
+  const bingoArea=$('#bingoArea');
+  const cardsContainer=$('#cardsContainer');
+  const answerOverlay=$('#answerOverlay');
+  const winOverlay=$('#winOverlay');
+  const toast=$('#toast');
+  const confettiCanvas=$('#confetti-canvas');
+  const ctx=confettiCanvas.getContext('2d');
+
+  /* ── localStorage ───────────────────────────── */
+  function loadStats(){
+    try{return JSON.parse(localStorage.getItem('mathBingoStats'))||{wins:0,games:0,fastest:null,streak:0}}
+    catch(e){return{wins:0,games:0,fastest:null,streak:0}}
+  }
+  function saveStats(s){localStorage.setItem('mathBingoStats',JSON.stringify(s))}
+  function loadSavedGame(){try{return JSON.parse(localStorage.getItem('mathBingoGame'))}catch(e){return null}}
+  function saveGame(){
+    localStorage.setItem('mathBingoGame',JSON.stringify({
+      cards,activeCardIdx,calledAnswers,gameStartTime,gameWon,
+      playerName:$('#playerName').value,
+      gridSize:$('#gridSize').value,
+      difficulty:$('#difficulty').value
+    }));
+  }
+  function clearSavedGame(){localStorage.removeItem('mathBingoGame')}
+
+  function updateStatsUI(){
+    const s=loadStats();
+    $('#statWins').textContent=s.wins;
+    $('#statGames').textContent=s.games;
+    $('#statFastest').textContent=s.fastest?s.fastest+'s':'--';
+    $('#statStreak').textContent=s.streak;
+  }
+
+  /* ── Init from localStorage ─────────────────── */
+  const savedName=localStorage.getItem('mathBingoPlayerName');
+  if(savedName) $('#playerName').value=savedName;
+
+  /* ── Checkbox visual toggle ─────────────────── */
+  $$('.checkbox-grid input, .pattern-selector input').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      cb.closest('label').classList.toggle('checked',cb.checked);
+    });
+    if(cb.checked) cb.closest('label').classList.add('checked');
+  });
+
+  /* ── Problem Generators ─────────────────────── */
+  const PERFECT_SQUARES=[4,9,16,25,36,49,64,81,100,121,144,169,196,225];
+
+  function genProblem(topics, difficulty, usedAnswers){
+    const maxAttempts=200;
+    for(let attempt=0;attempt<maxAttempts;attempt++){
+      let p=tryGenProblem(topics,difficulty);
+      if(p && !usedAnswers.has(p.answer)){
+        return p;
+      }
+    }
+    // fallback: generate unique addition
+    let a=rand(1,100),b=rand(1,100);
+    while(usedAnswers.has(a+b)){a=rand(1,200);b=rand(1,200)}
+    return{problem:a+' + '+b,answer:a+b};
+  }
+
+  function tryGenProblem(topics,difficulty){
+    const available=topics.filter(t=>{
+      if(difficulty==='easy') return ['addition','subtraction'].includes(t);
+      if(difficulty==='medium') return ['addition','subtraction','multiplication','division'].includes(t);
+      return true;
+    });
+    if(!available.length) return null;
+    const topic=available[rand(0,available.length-1)];
+
+    switch(topic){
+      case 'addition':{
+        const max=difficulty==='easy'?20:difficulty==='medium'?50:100;
+        const a=rand(1,max),b=rand(1,max-a>0?max-a:max);
+        return{problem:a+' + '+b,answer:a+b};
+      }
+      case 'subtraction':{
+        const max=difficulty==='easy'?20:difficulty==='medium'?50:100;
+        let a=rand(2,max),b=rand(1,a-1);
+        return{problem:a+' - '+b,answer:a-b};
+      }
+      case 'multiplication':{
+        const max=difficulty==='easy'?5:difficulty==='medium'?12:15;
+        const a=rand(2,max),b=rand(2,max);
+        return{problem:a+' \u00d7 '+b,answer:a*b};
+      }
+      case 'division':{
+        const max=difficulty==='easy'?5:difficulty==='medium'?12:15;
+        const b=rand(2,max),ans=rand(2,max),a=b*ans;
+        return{problem:a+' \u00f7 '+b,answer:ans};
+      }
+      case 'squares':{
+        const n=rand(2,15);
+        return{problem:n+'\u00b2',answer:n*n};
+      }
+      case 'squareroots':{
+        const sq=PERFECT_SQUARES[rand(0,PERFECT_SQUARES.length-1)];
+        return{problem:'\u221a'+sq,answer:Math.round(Math.sqrt(sq))};
+      }
+      case 'orderofops':{
+        const a=rand(1,10),b=rand(1,10),c=rand(1,10);
+        const ops=['+','-','\u00d7'];
+        const op=ops[rand(0,2)];
+        if(op==='\u00d7'){
+          return{problem:a+' + '+b+' \u00d7 '+c,answer:a+b*c};
+        }else if(op==='+'){
+          return{problem:a+' \u00d7 ('+b+' + '+c+')',answer:a*(b+c)};
+        }else{
+          const big=Math.max(b,c),small=Math.min(b,c);
+          return{problem:a+' \u00d7 ('+big+' - '+small+')',answer:a*(big-small)};
+        }
+      }
+      case 'algebra':{
+        const x=rand(1,20);
+        const a=rand(1,10),b=rand(1,30);
+        const rhs=a*x+b;
+        return{problem:a+'x + '+b+' = '+rhs+', x = ?',answer:x};
+      }
+      default: return null;
+    }
+  }
+
+  /* ── Card Generation ────────────────────────── */
+  function getHeaderLetters(size){
+    if(size===5) return ['M','A','T','H','S'];
+    if(size===4) return ['M','A','T','H'];
+    return ['M','A','T'];
+  }
+
+  function generateCard(size,difficulty,topics){
+    const totalCells=size*size;
+    const hasFree=(size===5);
+    const numProblems=hasFree?totalCells-1:totalCells;
+    const usedAnswers=new Set();
+    const cells=[];
+
+    for(let i=0;i<numProblems;i++){
+      const p=genProblem(topics,difficulty,usedAnswers);
+      usedAnswers.add(p.answer);
+      cells.push({problem:p.problem,answer:p.answer,marked:false});
+    }
+
+    shuffle(cells);
+
+    if(hasFree){
+      const mid=Math.floor(totalCells/2);
+      cells.splice(mid,0,{problem:'FREE',answer:null,marked:true,isFree:true});
+    }
+
+    return{cells,size,headerLetters:getHeaderLetters(size)};
+  }
+
+  /* ── Render Cards ───────────────────────────── */
+  function renderCards(){
+    cardsContainer.innerHTML='';
+    const numCards=cards.length;
+    if(numCards>1){
+      cardsContainer.className='multi-cards cols-'+(numCards<=2?2:2);
+    }else{
+      cardsContainer.className='';
+    }
+
+    cards.forEach((card,ci)=>{
+      const cardEl=document.createElement('div');
+      cardEl.className='bingo-card';
+      cardEl.dataset.cardIdx=ci;
+
+      const playerName=$('#playerName').value||'Player';
+      cardEl.innerHTML=`<div class="card-title">${playerName}${numCards>1?' - Card '+(ci+1):''}</div>`;
+
+      // Header
+      const headerRow=document.createElement('div');
+      headerRow.className='bingo-header';
+      headerRow.style.gridTemplateColumns=`repeat(${card.size},1fr)`;
+      card.headerLetters.forEach(l=>{
+        const h=document.createElement('div');
+        h.className='hcell';
+        h.textContent=l;
+        headerRow.appendChild(h);
+      });
+      cardEl.appendChild(headerRow);
+
+      // Grid
+      const grid=document.createElement('div');
+      grid.className='bingo-grid';
+      grid.style.gridTemplateColumns=`repeat(${card.size},1fr)`;
+
+      card.cells.forEach((cell,idx)=>{
+        const el=document.createElement('div');
+        el.className='bingo-cell'+(cell.marked?' marked':'')+(cell.isFree?' free':'');
+        el.dataset.cardIdx=ci;
+        el.dataset.cellIdx=idx;
+        el.innerHTML=cell.isFree?'<span style="font-size:1.3em">\u2B50</span>'
+          :'<span class="cell-problem">'+cell.problem+'</span>';
+        if(!cell.isFree){
+          el.addEventListener('click',()=>onCellClick(ci,idx,el));
+        }
+        grid.appendChild(el);
+      });
+
+      cardEl.appendChild(grid);
+      cardsContainer.appendChild(cardEl);
+    });
+
+    // Collect all problems for caller
+    allProblems=[];
+    cards.forEach(card=>{
+      card.cells.forEach(cell=>{
+        if(!cell.isFree) allProblems.push({problem:cell.problem,answer:cell.answer});
+      });
+    });
+  }
+
+  /* ── Cell Click ─────────────────────────────── */
+  function onCellClick(cardIdx,cellIdx,el){
+    if(gameWon) return;
+    const cell=cards[cardIdx].cells[cellIdx];
+
+    if(cell.marked){
+      // Unmark
+      cell.marked=false;
+      el.classList.remove('marked');
+      saveGame();
+      checkWin();
+      return;
+    }
+
+    if($('#honorMode').checked){
+      cell.marked=true;
+      el.classList.add('marked');
+      el.classList.add('correct-flash');
+      setTimeout(()=>el.classList.remove('correct-flash'),500);
+      saveGame();
+      checkWin();
+      return;
+    }
+
+    // Show answer popup
+    activeCardIdx=cardIdx;
+    currentCellIdx=cellIdx;
+    $('#popupProblem').textContent=cell.problem;
+    $('#answerInput').value='';
+    answerOverlay.classList.add('active');
+    setTimeout(()=>$('#answerInput').focus(),100);
+  }
+
+  /* ── Answer Submission ──────────────────────── */
+  function submitAnswer(){
+    const cell=cards[activeCardIdx].cells[currentCellIdx];
+    const userAnswer=parseFloat($('#answerInput').value.trim());
+    const el=document.querySelector(`.bingo-cell[data-card-idx="${activeCardIdx}"][data-cell-idx="${currentCellIdx}"]`);
+
+    if(isNaN(userAnswer)){
+      showToast('Please enter a number','error');
+      return;
+    }
+
+    answerOverlay.classList.remove('active');
+
+    if(Math.abs(userAnswer-cell.answer)<0.001){
+      // Correct
+      cell.marked=true;
+      el.classList.add('marked','correct-flash');
+      setTimeout(()=>el.classList.remove('correct-flash'),500);
+      burstConfetti(el);
+      showToast('Correct!','success');
+      saveGame();
+      checkWin();
+    }else{
+      // Wrong
+      el.classList.add('wrong-flash');
+      setTimeout(()=>el.classList.remove('wrong-flash'),500);
+      showToast('Try again!','error');
+    }
+  }
+
+  $('#btnSubmitAnswer').addEventListener('click',submitAnswer);
+  $('#answerInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitAnswer()});
+  $('#btnCancelAnswer').addEventListener('click',()=>answerOverlay.classList.remove('active'));
+  answerOverlay.addEventListener('click',e=>{if(e.target===answerOverlay)answerOverlay.classList.remove('active')});
+
+  /* ── Win Detection ──────────────────────────── */
+  function checkWin(){
+    if(gameWon) return;
+    const patterns=[];
+    $$('#patternSelector input:checked').forEach(cb=>patterns.push(cb.value));
+    if(!patterns.length) return;
+
+    cards.forEach((card,ci)=>{
+      const s=card.size;
+      const m=card.cells.map(c=>c.marked);
+      let winCells=null;
+
+      // Horizontal
+      if(patterns.includes('horizontal')){
+        for(let r=0;r<s;r++){
+          const row=[];
+          let win=true;
+          for(let c=0;c<s;c++){const idx=r*s+c;row.push(idx);if(!m[idx])win=false}
+          if(win){winCells=row;break}
+        }
+      }
+      // Vertical
+      if(!winCells && patterns.includes('vertical')){
+        for(let c=0;c<s;c++){
+          const col=[];
+          let win=true;
+          for(let r=0;r<s;r++){const idx=r*s+c;col.push(idx);if(!m[idx])win=false}
+          if(win){winCells=col;break}
+        }
+      }
+      // Diagonal
+      if(!winCells && patterns.includes('diagonal')){
+        let d1=[],d2=[],w1=true,w2=true;
+        for(let i=0;i<s;i++){
+          const i1=i*s+i;d1.push(i1);if(!m[i1])w1=false;
+          const i2=i*s+(s-1-i);d2.push(i2);if(!m[i2])w2=false;
+        }
+        if(w1) winCells=d1;
+        else if(w2) winCells=d2;
+      }
+      // Four corners
+      if(!winCells && patterns.includes('fourcorners')){
+        const corners=[0,s-1,s*(s-1),s*s-1];
+        if(corners.every(i=>m[i])) winCells=corners;
+      }
+      // Blackout
+      if(!winCells && patterns.includes('blackout')){
+        if(m.every(v=>v)) winCells=[...Array(s*s).keys()];
+      }
+
+      if(winCells){
+        triggerWin(ci,winCells);
+      }
+    });
+  }
+
+  function triggerWin(cardIdx,winCells){
+    gameWon=true;
+    // Highlight winning cells
+    winCells.forEach(idx=>{
+      const el=document.querySelector(`.bingo-cell[data-card-idx="${cardIdx}"][data-cell-idx="${idx}"]`);
+      if(el) el.classList.add('win-cell');
+    });
+
+    // Stats
+    const elapsed=gameStartTime?Math.round((Date.now()-gameStartTime)/1000):0;
+    const stats=loadStats();
+    stats.wins++;
+    stats.games++;
+    stats.streak++;
+    if(elapsed>0 && (!stats.fastest || elapsed<stats.fastest)) stats.fastest=elapsed;
+    saveStats(stats);
+    updateStatsUI();
+
+    // Show overlay
+    const playerName=$('#playerName').value||'Player';
+    $('#winSub').textContent=playerName+' wins in '+elapsed+' seconds!';
+    winOverlay.classList.add('active');
+    bigConfetti();
+    playWinSound();
+    clearSavedGame();
+  }
+
+  $('#btnCloseWin').addEventListener('click',()=>{
+    winOverlay.classList.remove('active');
+    $$('.bingo-cell.win-cell').forEach(el=>el.classList.remove('win-cell'));
+  });
+
+  /* ── Caller System ──────────────────────────── */
+  $('#btnCall').addEventListener('click',()=>{
+    if(!allProblems.length) return;
+    const uncalled=allProblems.filter(p=>!calledAnswers.includes(p.answer));
+    if(!uncalled.length){showToast('All numbers called!','error');return}
+    const pick=uncalled[rand(0,uncalled.length-1)];
+    calledAnswers.push(pick.answer);
+
+    $('#calledNumber').textContent=pick.answer;
+    $('#calledProblem').textContent=pick.problem+' = '+pick.answer;
+
+    // History chip
+    const chip=document.createElement('span');
+    chip.className='call-chip';
+    chip.textContent=pick.answer;
+    $('#callHistory').prepend(chip);
+
+    // Speech
+    if($('#speechMode').checked && 'speechSynthesis' in window){
+      const utter=new SpeechSynthesisUtterance('The answer is '+pick.answer);
+      utter.rate=0.9;
+      speechSynthesis.speak(utter);
+    }
+
+    saveGame();
+  });
+
+  /* ── Toast ──────────────────────────────────── */
+  let toastTimer;
+  function showToast(msg,type){
+    toast.textContent=msg;
+    toast.className='toast show '+(type||'');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove('show'),2000);
+  }
+
+  /* ── Confetti (small burst from cell) ───────── */
+  function burstConfetti(el){
+    const rect=el.getBoundingClientRect();
+    const cx=rect.left+rect.width/2;
+    const cy=rect.top+rect.height/2;
+    spawnParticles(cx,cy,20,false);
+  }
+
+  /* ── Big confetti (win) ─────────────────────── */
+  function bigConfetti(){
+    const w=window.innerWidth;
+    for(let i=0;i<5;i++){
+      setTimeout(()=>spawnParticles(rand(w*0.2,w*0.8),rand(100,300),60,true),i*200);
+    }
+  }
+
+  let particles=[];
+  let animating=false;
+
+  function spawnParticles(x,y,count,big){
+    confettiCanvas.width=window.innerWidth;
+    confettiCanvas.height=window.innerHeight;
+    const colors=['#00e5ff','#a855f7','#ec4899','#facc15','#22c55e','#ef4444'];
+    for(let i=0;i<count;i++){
+      const angle=Math.random()*Math.PI*2;
+      const speed=(big?8:4)+Math.random()*(big?8:5);
+      particles.push({
+        x,y,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed-(big?4:2),
+        size:rand(3,big?8:5),
+        color:colors[rand(0,colors.length-1)],
+        life:1,
+        decay:0.01+Math.random()*0.02
+      });
+    }
+    if(!animating){animating=true;animateConfetti()}
+  }
+
+  function animateConfetti(){
+    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    particles=particles.filter(p=>{
+      p.x+=p.vx;
+      p.y+=p.vy;
+      p.vy+=0.25;
+      p.life-=p.decay;
+      if(p.life<=0) return false;
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.color;
+      ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
+      return true;
+    });
+    ctx.globalAlpha=1;
+    if(particles.length>0){
+      requestAnimationFrame(animateConfetti);
+    }else{
+      animating=false;
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    }
+  }
+
+  /* ── Win Sound (AudioContext) ────────────────── */
+  function playWinSound(){
+    try{
+      const ac=new(window.AudioContext||window.webkitAudioContext)();
+      const notes=[523.25,659.25,783.99,1046.50];
+      notes.forEach((freq,i)=>{
+        const osc=ac.createOscillator();
+        const gain=ac.createGain();
+        osc.type='sine';
+        osc.frequency.value=freq;
+        gain.gain.setValueAtTime(0.15,ac.currentTime+i*0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+i*0.15+0.4);
+        osc.connect(gain);
+        gain.connect(ac.destination);
+        osc.start(ac.currentTime+i*0.15);
+        osc.stop(ac.currentTime+i*0.15+0.4);
+      });
+    }catch(e){}
+  }
+
+  /* ── Generate Button ────────────────────────── */
+  $('#btnGenerate').addEventListener('click',()=>{
+    const size=parseInt($('#gridSize').value);
+    const diff=$('#difficulty').value;
+    const numCards=parseInt($('#numCards').value);
+    const topics=[];
+    $$('#topicChecks input:checked').forEach(cb=>topics.push(cb.value));
+
+    if(!topics.length){showToast('Select at least one topic','error');return}
+
+    // Save player name
+    const name=$('#playerName').value.trim();
+    if(name) localStorage.setItem('mathBingoPlayerName',name);
+
+    // Generate
+    cards=[];
+    calledAnswers=[];
+    gameWon=false;
+    gameStartTime=Date.now();
+    $('#callHistory').innerHTML='';
+    $('#calledNumber').textContent='--';
+    $('#calledProblem').textContent='Press "Call Number" to start';
+
+    for(let i=0;i<numCards;i++){
+      cards.push(generateCard(size,diff,topics));
+    }
+
+    renderCards();
+    setupArea.style.display='none';
+    bingoArea.classList.add('active');
+
+    // Update stats games count
+    const stats=loadStats();
+    // We count games when generated; wins when won
+    saveStats(stats);
+    updateStatsUI();
+    saveGame();
+  });
+
+  /* ── New Game ───────────────────────────────── */
+  $('#btnNewGame').addEventListener('click',()=>{
+    setupArea.style.display='';
+    bingoArea.classList.remove('active');
+    gameWon=false;
+    clearSavedGame();
+  });
+
+  /* ── Reset Marks ────────────────────────────── */
+  $('#btnReset').addEventListener('click',()=>{
+    gameWon=false;
+    cards.forEach(card=>{
+      card.cells.forEach(cell=>{
+        if(!cell.isFree) cell.marked=false;
+      });
+    });
+    renderCards();
+    $$('.bingo-cell.win-cell').forEach(el=>el.classList.remove('win-cell'));
+    calledAnswers=[];
+    $('#callHistory').innerHTML='';
+    $('#calledNumber').textContent='--';
+    $('#calledProblem').textContent='Press "Call Number" to start';
+    gameStartTime=Date.now();
+    saveGame();
+  });
+
+  /* ── Print ──────────────────────────────────── */
+  $('#btnPrint').addEventListener('click',()=>window.print());
+
+  /* ── Restore saved game ─────────────────────── */
+  const saved=loadSavedGame();
+  if(saved && saved.cards && saved.cards.length){
+    cards=saved.cards;
+    activeCardIdx=saved.activeCardIdx||0;
+    calledAnswers=saved.calledAnswers||[];
+    gameStartTime=saved.gameStartTime;
+    gameWon=saved.gameWon||false;
+    if(saved.playerName) $('#playerName').value=saved.playerName;
+    if(saved.gridSize) $('#gridSize').value=saved.gridSize;
+    if(saved.difficulty) $('#difficulty').value=saved.difficulty;
+
+    renderCards();
+    setupArea.style.display='none';
+    bingoArea.classList.add('active');
+
+    // Restore call history chips
+    calledAnswers.forEach(a=>{
+      const chip=document.createElement('span');
+      chip.className='call-chip';
+      chip.textContent=a;
+      $('#callHistory').appendChild(chip);
+    });
+  }
+
+  updateStatsUI();
+
+  /* ── Back to Top ────────────────────────────── */
+  const btt=document.getElementById('backToTop');
+  if(btt){
+    window.addEventListener('scroll',()=>{btt.style.display=window.scrollY>300?'flex':'none'});
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  }
+
+  /* ── Load header/footer ─────────────────────── */
+  fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+  fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+})();
+</script>
+</body>
+</html>

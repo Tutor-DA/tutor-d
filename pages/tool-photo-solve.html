@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Photo-to-Solution | TutorDA</title>
+  <meta name="description" content="Snap a photo of any math problem and get a step-by-step solution instantly using OCR and AI.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax -->
+  <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$','$']],
+      displayMath: [['$$','$$']],
+      packages: {'[+]': ['ams']}
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+    startup: { typeset: false }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.min.js" id="MathJax-script" async></script>
+
+  <!-- Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --orange:  #ff8c00;
+      --orange2: #ff6600;
+      --dark:    #0d0d1a;
+      --card:    #141428;
+      --card2:   #1a1a35;
+      --border:  #2a2a4a;
+      --text:    #e8e8ff;
+      --muted:   #7777aa;
+      --gold:    #ffd700;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --blue:    #3b82f6;
+      --cyan:    #06b6d4;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --r:       14px;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 36px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--blue) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Input Tabs ────────────────────────────── */
+    .input-tabs{display:flex;gap:0;margin-bottom:0}
+    .input-tab{flex:1;padding:12px 20px;text-align:center;cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.08em;
+      background:var(--card);color:var(--muted);border:1px solid var(--border);
+      transition:all .25s ease}
+    .input-tab:first-child{border-radius:var(--r) var(--r) 0 0;border-right:none}
+    .input-tab:last-child{border-radius:var(--r) var(--r) 0 0;border-left:none}
+    .input-tab.active{background:var(--card2);color:var(--cyan);border-bottom-color:var(--cyan);
+      box-shadow:inset 0 -2px 0 var(--cyan)}
+    .input-tab:hover:not(.active){color:var(--text)}
+
+    .tab-panel{display:none;background:var(--card2);border:1px solid var(--border);border-top:none;
+      border-radius:0 0 var(--r) var(--r);padding:28px;margin-bottom:24px}
+    .tab-panel.active{display:block}
+
+    /* ── Upload Zone ───────────────────────────── */
+    .upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:40px 24px;
+      text-align:center;cursor:pointer;min-height:200px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:14px;
+      transition:border-color .3s,background .3s}
+    .upload-zone:hover,.upload-zone.dragover{border-color:var(--cyan);background:rgba(6,182,212,.05)}
+    .upload-zone .icon{font-size:3rem;line-height:1}
+    .upload-zone p{color:var(--muted);font-size:.95rem}
+    .upload-zone .formats{font-size:.78rem;color:var(--muted);opacity:.7}
+
+    .upload-btns{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;justify-content:center}
+    .upload-btn{padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;
+      font-size:.88rem;font-weight:600;transition:all .25s}
+    .upload-btn.primary{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff}
+    .upload-btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(6,182,212,.35)}
+    .upload-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .upload-btn.secondary:hover{border-color:var(--green);color:var(--green)}
+
+    /* ── Image Preview ─────────────────────────── */
+    .preview-container{display:none;text-align:center;margin-top:20px}
+    .preview-container img{max-height:300px;max-width:100%;border-radius:var(--r);
+      border:1px solid var(--border);object-fit:contain}
+    .preview-container .remove-btn{display:inline-block;margin-top:10px;font-size:.82rem;
+      color:var(--red);cursor:pointer;border:none;background:none;font-family:'Poppins',sans-serif}
+    .preview-container .remove-btn:hover{text-decoration:underline}
+
+    /* ── Progress Bar ──────────────────────────── */
+    .progress-wrap{display:none;margin-top:18px}
+    .progress-label{font-size:.82rem;color:var(--muted);margin-bottom:6px}
+    .progress-bar{height:8px;border-radius:4px;background:var(--card);overflow:hidden}
+    .progress-fill{height:100%;width:0%;border-radius:4px;
+      background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .3s ease}
+
+    /* ── OCR Text ──────────────────────────────── */
+    .ocr-text-wrap{display:none;margin-top:18px}
+    .ocr-text-wrap label{font-size:.85rem;color:var(--muted);margin-bottom:6px;display:block}
+    .ocr-textarea{width:100%;min-height:100px;background:var(--card);color:var(--text);
+      border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--mono);
+      font-size:.88rem;resize:vertical;line-height:1.6}
+    .ocr-textarea:focus{outline:none;border-color:var(--cyan)}
+
+    /* ── Manual Input ──────────────────────────── */
+    .manual-textarea{width:100%;min-height:160px;background:var(--card);color:var(--text);
+      border:1px solid var(--border);border-radius:8px;padding:14px;font-family:var(--mono);
+      font-size:.92rem;resize:vertical;line-height:1.6}
+    .manual-textarea:focus{outline:none;border-color:var(--cyan)}
+    .manual-textarea::placeholder{color:var(--muted)}
+
+    /* ── Solve Button ──────────────────────────── */
+    .solve-row{text-align:center;margin-bottom:32px}
+    .solve-btn{padding:14px 48px;border:none;border-radius:10px;cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.08em;
+      background:linear-gradient(135deg,var(--cyan),var(--green));color:#0d0d1a;
+      transition:all .3s ease;box-shadow:0 4px 20px rgba(6,182,212,.25)}
+    .solve-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(6,182,212,.4)}
+    .solve-btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* ── Stepper ───────────────────────────────── */
+    .stepper{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:32px;flex-wrap:wrap}
+    .step-item{display:flex;align-items:center;gap:0}
+    .step-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;border:2px solid var(--border);background:var(--card);color:var(--muted);
+      transition:all .35s ease;flex-shrink:0}
+    .step-circle.done{border-color:var(--green);background:rgba(34,197,94,.15);color:var(--green)}
+    .step-circle.active{border-color:var(--cyan);background:rgba(6,182,212,.15);color:var(--cyan);
+      animation:stepPulse 1.5s infinite}
+    @keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(6,182,212,.3)}50%{box-shadow:0 0 0 8px rgba(6,182,212,0)}}
+    .step-label{font-size:.72rem;color:var(--muted);margin-top:4px;text-align:center;max-width:80px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .step-label.done{color:var(--green)}
+    .step-label.active{color:var(--cyan)}
+    .step-col{display:flex;flex-direction:column;align-items:center;gap:4px}
+    .step-line{width:40px;height:2px;background:var(--border);flex-shrink:0;margin:0 4px;margin-bottom:20px;
+      transition:background .35s ease}
+    .step-line.done{background:var(--green)}
+
+    /* ── Solution Display ──────────────────────── */
+    .solution-wrap{display:none}
+    .solution-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+    .solution-header h2{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;
+      color:var(--cyan)}
+    .copy-btn{padding:8px 18px;border:1px solid var(--border);border-radius:8px;background:var(--card);
+      color:var(--text);cursor:pointer;font-size:.82rem;font-family:'Poppins',sans-serif;
+      transition:all .25s}
+    .copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    .step-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--cyan);
+      border-radius:0 var(--r) var(--r) 0;padding:18px 22px;margin-bottom:14px;
+      line-height:1.75;font-size:.95rem}
+    .step-card .step-num{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--cyan);
+      letter-spacing:.1em;margin-bottom:6px;display:block}
+
+    .final-answer-box{border:2px solid var(--cyan);border-radius:var(--r);padding:20px 24px;
+      background:rgba(6,182,212,.06);text-align:center;margin-top:8px}
+    .final-answer-box .label{font-family:'Orbitron',sans-serif;font-size:.78rem;color:var(--cyan);
+      letter-spacing:.12em;margin-bottom:8px}
+    .final-answer-box .answer{font-size:1.2rem;font-weight:600;line-height:1.6}
+
+    /* ── Settings Panel ────────────────────────── */
+    .settings-toggle{position:fixed;bottom:80px;right:24px;width:48px;height:48px;border-radius:50%;
+      border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;
+      font-size:1.3rem;display:flex;align-items:center;justify-content:center;z-index:50;
+      transition:all .25s}
+    .settings-toggle:hover{border-color:var(--cyan);color:var(--cyan);transform:rotate(45deg)}
+
+    .settings-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:98}
+    .settings-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:90%;max-width:440px;background:var(--card2);border:1px solid var(--border);
+      border-radius:var(--r);padding:28px;z-index:99}
+    .settings-panel h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);
+      margin-bottom:20px}
+    .settings-panel label{font-size:.82rem;color:var(--muted);margin-bottom:4px;display:block}
+    .settings-panel input,.settings-panel select{width:100%;padding:10px 14px;border-radius:8px;
+      border:1px solid var(--border);background:var(--card);color:var(--text);font-family:var(--mono);
+      font-size:.85rem;margin-bottom:14px}
+    .settings-panel input:focus,.settings-panel select:focus{outline:none;border-color:var(--cyan)}
+    .settings-save{width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:700;
+      background:linear-gradient(135deg,var(--cyan),var(--green));color:#0d0d1a;
+      transition:all .25s}
+    .settings-save:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(6,182,212,.3)}
+
+    /* ── Error ──────────────────────────────────── */
+    .error-box{display:none;background:rgba(239,68,68,.1);border:1px solid var(--red);
+      border-radius:var(--r);padding:14px 18px;color:var(--red);font-size:.88rem;margin-bottom:18px}
+
+    /* ── Back to Top ───────────────────────────── */
+    #backToTop{display:none;position:fixed;bottom:24px;right:24px;width:44px;height:44px;
+      border-radius:50%;background:var(--cyan);color:var(--dark);border:none;cursor:pointer;
+      font-size:1.2rem;z-index:50;box-shadow:0 4px 16px rgba(6,182,212,.3);transition:all .25s}
+    #backToTop:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(6,182,212,.4)}
+
+    /* ── Responsive ────────────────────────────── */
+    @media(max-width:600px){
+      .wrapper{padding:0 12px 40px}
+      .hero{padding:40px 12px 24px}
+      .tab-panel{padding:18px}
+      .upload-zone{min-height:160px;padding:28px 16px}
+      .step-line{width:20px}
+      .step-circle{width:36px;height:36px;font-size:.95rem}
+      .step-label{font-size:.65rem}
+      .solve-btn{padding:12px 32px;font-size:.88rem}
+      .settings-toggle{bottom:70px;right:14px;width:42px;height:42px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">AI-Powered Math Tool</div>
+    <h1>Photo to Solution</h1>
+    <p>Snap or upload a photo of any math problem. We extract the text with OCR, then solve it step-by-step with AI.</p>
+  </section>
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step-col">
+      <div class="step-circle" id="sc1">&#128247;</div>
+      <div class="step-label" id="sl1">Image Uploaded</div>
+    </div>
+    <div class="step-line" id="line1"></div>
+    <div class="step-col">
+      <div class="step-circle" id="sc2">&#128270;</div>
+      <div class="step-label" id="sl2">Text Extracted</div>
+    </div>
+    <div class="step-line" id="line2"></div>
+    <div class="step-col">
+      <div class="step-circle" id="sc3">&#129504;</div>
+      <div class="step-label" id="sl3">Solving...</div>
+    </div>
+    <div class="step-line" id="line3"></div>
+    <div class="step-col">
+      <div class="step-circle" id="sc4">&#9989;</div>
+      <div class="step-label" id="sl4">Solution Ready</div>
+    </div>
+  </div>
+
+  <!-- Input Tabs -->
+  <div class="input-tabs">
+    <div class="input-tab active" data-tab="upload">Upload Photo</div>
+    <div class="input-tab" data-tab="manual">Type Problem</div>
+  </div>
+
+  <!-- Upload Panel -->
+  <div class="tab-panel active" id="panel-upload">
+    <div class="upload-zone" id="uploadZone">
+      <div class="icon">&#128247;</div>
+      <p>Drag &amp; drop an image here, or click to browse</p>
+      <div class="formats">PNG, JPG, JPEG, WEBP</div>
+      <div class="upload-btns">
+        <label class="upload-btn primary">
+          Choose File
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg,image/webp" hidden>
+        </label>
+        <label class="upload-btn secondary">
+          Take Photo
+          <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+        </label>
+      </div>
+    </div>
+
+    <div class="preview-container" id="previewContainer">
+      <img id="previewImg" src="" alt="Uploaded problem image">
+      <br>
+      <button class="remove-btn" id="removeBtn">Remove image</button>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label" id="progressLabel">Running OCR... 0%</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="ocr-text-wrap" id="ocrTextWrap">
+      <label>Extracted text (edit if needed):</label>
+      <textarea class="ocr-textarea" id="ocrTextarea" placeholder="OCR text will appear here..."></textarea>
+    </div>
+  </div>
+
+  <!-- Manual Panel -->
+  <div class="tab-panel" id="panel-manual">
+    <textarea class="manual-textarea" id="manualTextarea" placeholder="Type or paste your math problem here...&#10;&#10;Example: Solve for x: 3x^2 + 5x - 2 = 0"></textarea>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- Solve Button -->
+  <div class="solve-row">
+    <button class="solve-btn" id="solveBtn">Solve It</button>
+  </div>
+
+  <!-- Solution -->
+  <div class="solution-wrap" id="solutionWrap">
+    <div class="solution-header">
+      <h2>Step-by-Step Solution</h2>
+      <button class="copy-btn" id="copyBtn">Copy Solution</button>
+    </div>
+    <div id="solutionContent"></div>
+  </div>
+</div>
+
+<!-- Settings Toggle -->
+<button class="settings-toggle" id="settingsToggle" title="API Settings">&#9881;</button>
+
+<!-- Settings Overlay + Panel -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <h3>API Settings</h3>
+  <label>API Key</label>
+  <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
+  <label>Model</label>
+  <select id="modelSelect">
+    <option value="claude-sonnet-4-20250514" selected>claude-sonnet-4-20250514</option>
+    <option value="claude-haiku-4-20250414">claude-haiku-4-20250414</option>
+    <option value="claude-opus-4-20250514">claude-opus-4-20250514</option>
+  </select>
+  <label>API Endpoint</label>
+  <input type="text" id="endpointInput" value="https://api.anthropic.com/v1/messages">
+  <button class="settings-save" id="settingsSave">Save Settings</button>
+</div>
+
+<div id="footer-container"></div>
+<button id="backToTop" title="Back to top">&#8679;</button>
+
+<script>
+/* ═══════════════════════════════════════════════
+   Photo-to-Solution  —  Pure JS
+   ═══════════════════════════════════════════════ */
+
+/* ── State ─────────────────────────────────── */
+let currentTab = 'upload';
+let uploadedFile = null;
+let ocrText = '';
+
+const SYSTEM_PROMPT = "You are a math problem solver. Given a math problem (possibly extracted from a photo with OCR, so it may have minor errors), solve it step-by-step. Format your response with clear numbered steps. Use LaTeX notation ($..$ for inline, $$...$$ for display math). End with 'Final Answer: ' followed by the answer in a clear format.";
+
+/* ── DOM refs ──────────────────────────────── */
+const tabs        = document.querySelectorAll('.input-tab');
+const panelUpload = document.getElementById('panel-upload');
+const panelManual = document.getElementById('panel-manual');
+const uploadZone  = document.getElementById('uploadZone');
+const fileInput   = document.getElementById('fileInput');
+const cameraInput = document.getElementById('cameraInput');
+const previewCont = document.getElementById('previewContainer');
+const previewImg  = document.getElementById('previewImg');
+const removeBtn   = document.getElementById('removeBtn');
+const progressWrap= document.getElementById('progressWrap');
+const progressLabel=document.getElementById('progressLabel');
+const progressFill= document.getElementById('progressFill');
+const ocrTextWrap = document.getElementById('ocrTextWrap');
+const ocrTextarea = document.getElementById('ocrTextarea');
+const manualTa    = document.getElementById('manualTextarea');
+const solveBtn    = document.getElementById('solveBtn');
+const solutionWrap= document.getElementById('solutionWrap');
+const solutionCont= document.getElementById('solutionContent');
+const copyBtn     = document.getElementById('copyBtn');
+const errorBox    = document.getElementById('errorBox');
+
+/* ── Tab switching ─────────────────────────── */
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  currentTab = t.dataset.tab;
+  panelUpload.classList.toggle('active', currentTab === 'upload');
+  panelManual.classList.toggle('active', currentTab === 'manual');
+}));
+
+/* ── Drag & Drop ───────────────────────────── */
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) handleImage(f);
+});
+
+fileInput.addEventListener('change', e => { if (e.target.files[0]) handleImage(e.target.files[0]); });
+cameraInput.addEventListener('change', e => { if (e.target.files[0]) handleImage(e.target.files[0]); });
+
+/* ── Image handling ────────────────────────── */
+function handleImage(file) {
+  uploadedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    previewImg.src = e.target.result;
+    previewCont.style.display = 'block';
+    uploadZone.style.display = 'none';
+    updateStep(1, 'done');
+    runOCR(file);
+  };
+  reader.readAsDataURL(file);
+}
+
+removeBtn.addEventListener('click', () => {
+  uploadedFile = null;
+  ocrText = '';
+  previewCont.style.display = 'none';
+  uploadZone.style.display = 'flex';
+  progressWrap.style.display = 'none';
+  ocrTextWrap.style.display = 'none';
+  ocrTextarea.value = '';
+  fileInput.value = '';
+  cameraInput.value = '';
+  resetSteps();
+});
+
+/* ── OCR ───────────────────────────────────── */
+async function runOCR(file) {
+  progressWrap.style.display = 'block';
+  ocrTextWrap.style.display = 'none';
+  progressFill.style.width = '0%';
+  progressLabel.textContent = 'Running OCR... 0%';
+  hideError();
+
+  try {
+    const worker = await Tesseract.createWorker('eng', 1, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          progressFill.style.width = pct + '%';
+          progressLabel.textContent = 'Running OCR... ' + pct + '%';
+        }
+      }
+    });
+
+    const { data: { text } } = await worker.recognize(file);
+    await worker.terminate();
+
+    ocrText = text.trim();
+    ocrTextarea.value = ocrText;
+    progressFill.style.width = '100%';
+    progressLabel.textContent = 'OCR complete!';
+    ocrTextWrap.style.display = 'block';
+    updateStep(2, 'done');
+  } catch (err) {
+    showError('OCR failed: ' + err.message);
+    progressLabel.textContent = 'OCR failed';
+  }
+}
+
+/* ── Stepper ───────────────────────────────── */
+function updateStep(n, state) {
+  for (let i = 1; i <= 4; i++) {
+    const circle = document.getElementById('sc' + i);
+    const label  = document.getElementById('sl' + i);
+    const line   = document.getElementById('line' + (i - 1));
+    if (i < n || (i === n && state === 'done')) {
+      circle.classList.add('done'); circle.classList.remove('active');
+      label.classList.add('done'); label.classList.remove('active');
+      if (line) line.classList.add('done');
+    } else if (i === n && state === 'active') {
+      circle.classList.remove('done'); circle.classList.add('active');
+      label.classList.remove('done'); label.classList.add('active');
+    } else {
+      circle.classList.remove('done','active');
+      label.classList.remove('done','active');
+      if (line) line.classList.remove('done');
+    }
+  }
+}
+
+function resetSteps() {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('sc' + i).classList.remove('done','active');
+    document.getElementById('sl' + i).classList.remove('done','active');
+    const line = document.getElementById('line' + (i - 1));
+    if (line) line.classList.remove('done');
+  }
+}
+
+/* ── Error ─────────────────────────────────── */
+function showError(msg) { errorBox.textContent = msg; errorBox.style.display = 'block'; }
+function hideError() { errorBox.style.display = 'none'; }
+
+/* ── Settings ──────────────────────────────── */
+const settingsToggle  = document.getElementById('settingsToggle');
+const settingsPanel   = document.getElementById('settingsPanel');
+const settingsOverlay = document.getElementById('settingsOverlay');
+const apiKeyInput     = document.getElementById('apiKeyInput');
+const modelSelect     = document.getElementById('modelSelect');
+const endpointInput   = document.getElementById('endpointInput');
+const settingsSave    = document.getElementById('settingsSave');
+
+function loadSettings() {
+  apiKeyInput.value   = localStorage.getItem('ps_apiKey') || '';
+  modelSelect.value   = localStorage.getItem('ps_model') || 'claude-sonnet-4-20250514';
+  endpointInput.value = localStorage.getItem('ps_endpoint') || 'https://api.anthropic.com/v1/messages';
+}
+loadSettings();
+
+settingsToggle.addEventListener('click', () => {
+  const open = settingsPanel.style.display === 'block';
+  settingsPanel.style.display   = open ? 'none' : 'block';
+  settingsOverlay.style.display = open ? 'none' : 'block';
+});
+settingsOverlay.addEventListener('click', () => {
+  settingsPanel.style.display = 'none';
+  settingsOverlay.style.display = 'none';
+});
+settingsSave.addEventListener('click', () => {
+  localStorage.setItem('ps_apiKey',   apiKeyInput.value.trim());
+  localStorage.setItem('ps_model',    modelSelect.value);
+  localStorage.setItem('ps_endpoint', endpointInput.value.trim());
+  settingsPanel.style.display = 'none';
+  settingsOverlay.style.display = 'none';
+});
+
+/* ── Solve ─────────────────────────────────── */
+solveBtn.addEventListener('click', async () => {
+  hideError();
+
+  /* Determine problem text */
+  let problemText = '';
+  if (currentTab === 'upload') {
+    problemText = ocrTextarea.value.trim();
+    if (!problemText) { showError('Please upload an image first, or switch to the "Type Problem" tab.'); return; }
+  } else {
+    problemText = manualTa.value.trim();
+    if (!problemText) { showError('Please type a math problem.'); return; }
+    updateStep(1, 'done');
+    updateStep(2, 'done');
+  }
+
+  const apiKey   = localStorage.getItem('ps_apiKey') || '';
+  const model    = localStorage.getItem('ps_model') || 'claude-sonnet-4-20250514';
+  const endpoint = localStorage.getItem('ps_endpoint') || 'https://api.anthropic.com/v1/messages';
+
+  if (!apiKey) { showError('API key not set. Click the gear icon to configure your Claude API key.'); return; }
+
+  solveBtn.disabled = true;
+  solveBtn.textContent = 'Solving...';
+  solutionWrap.style.display = 'none';
+  updateStep(3, 'active');
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: model,
+        max_tokens: 2048,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: 'Solve this math problem:\n' + problemText }]
+      })
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error?.message || 'API error: ' + res.status);
+    }
+
+    const data = await res.json();
+    const rawText = data.content?.[0]?.text || '';
+
+    updateStep(3, 'done');
+    updateStep(4, 'done');
+    renderSolution(rawText);
+  } catch (err) {
+    showError('Solve failed: ' + err.message);
+    updateStep(3, 'done');
+  } finally {
+    solveBtn.disabled = false;
+    solveBtn.textContent = 'Solve It';
+  }
+});
+
+/* ── Render Solution ───────────────────────── */
+function renderSolution(text) {
+  solutionCont.innerHTML = '';
+  solutionWrap.style.display = 'block';
+
+  /* Split into "Final Answer" and steps */
+  let mainText = text;
+  let finalAnswer = '';
+
+  const faMatch = text.match(/Final\s*Answer\s*:\s*([\s\S]+?)$/i);
+  if (faMatch) {
+    finalAnswer = faMatch[1].trim();
+    mainText = text.slice(0, faMatch.index).trim();
+  }
+
+  /* Parse numbered steps: look for "Step N:" or "N." or "N)" at line start */
+  const stepRegex = /(?:^|\n)\s*(?:(?:Step\s*)?(\d+)[.):])\s*/gi;
+  const parts = [];
+  let last = 0;
+  let match;
+  const matches = [];
+
+  while ((match = stepRegex.exec(mainText)) !== null) {
+    matches.push({ index: match.index, length: match[0].length, num: match[1] });
+  }
+
+  if (matches.length > 1) {
+    for (let i = 0; i < matches.length; i++) {
+      const start = matches[i].index + matches[i].length;
+      const end = (i + 1 < matches.length) ? matches[i + 1].index : mainText.length;
+      parts.push({ num: matches[i].num, text: mainText.slice(start, end).trim() });
+    }
+  } else {
+    /* No clear steps found — render as single block */
+    parts.push({ num: '1', text: mainText });
+  }
+
+  parts.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    card.innerHTML = '<span class="step-num">STEP ' + s.num + '</span>' + escapeAndFormat(s.text);
+    solutionCont.appendChild(card);
+  });
+
+  if (finalAnswer) {
+    const box = document.createElement('div');
+    box.className = 'final-answer-box';
+    box.innerHTML = '<div class="label">FINAL ANSWER</div><div class="answer">' + escapeAndFormat(finalAnswer) + '</div>';
+    solutionCont.appendChild(box);
+  }
+
+  /* Typeset MathJax */
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([solutionCont]).catch(() => {});
+  }
+}
+
+function escapeAndFormat(text) {
+  /* Escape HTML but preserve LaTeX delimiters */
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+}
+
+/* ── Copy ──────────────────────────────────── */
+copyBtn.addEventListener('click', () => {
+  const text = solutionCont.innerText || solutionCont.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    copyBtn.textContent = 'Copied!';
+    setTimeout(() => copyBtn.textContent = 'Copy Solution', 2000);
+  }).catch(() => {
+    showError('Failed to copy.');
+  });
+});
+
+/* ── Back to Top ───────────────────────────── */
+const btt = document.getElementById('backToTop');
+if (btt) {
+  window.addEventListener('scroll', () => btt.style.display = window.scrollY > 300 ? 'block' : 'none');
+  btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+/* ── Load header / footer ──────────────────── */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>

@@ -389,7 +389,7 @@
 
     .teach-card{
       background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
-      padding:24px;transition:all .25s;cursor:default;position:relative;overflow:hidden
+      padding:24px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden
     }
     .teach-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
       background:linear-gradient(90deg,var(--purple),var(--pink));opacity:0;transition:opacity .25s}
@@ -423,6 +423,9 @@
     }
     .teach-status.coming{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.2)}
     .teach-status.coming::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);
+      animation:statusPulse 1.5s ease-in-out infinite}
+    .teach-status.live{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25)}
+    .teach-status.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#22c55e;
       animation:statusPulse 1.5s ease-in-out infinite}
     @keyframes statusPulse{0%,100%{opacity:1}50%{opacity:.3}}
 
@@ -910,8 +913,8 @@
     <div class="teach-section-label">🤖 AI-Powered Tools</div>
     <div class="teach-grid">
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-math-tutor.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">💬</span>
         <div class="tc-title">AI Math Tutor Chat</div>
         <div class="tc-desc">Claude-powered chat assistant that guides students through problems step-by-step with hints, encouragement, and Socratic questioning — without revealing the full answer.</div>
@@ -920,10 +923,10 @@
           <span class="tc-tag">Step-by-Step</span>
           <span class="tc-tag">Adaptive</span>
         </div>
-      </div>
+      </a>
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-hint-generator.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">💡</span>
         <div class="tc-title">Auto Hint Generator</div>
         <div class="tc-desc">Paste any math problem and get progressive hints — from gentle nudges to detailed guidance. Perfect for teachers who want to scaffold learning without giving away the solution.</div>
@@ -932,10 +935,10 @@
           <span class="tc-tag">Progressive Hints</span>
           <span class="tc-tag">Scaffolded</span>
         </div>
-      </div>
+      </a>
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-photo-solve.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">📸</span>
         <div class="tc-title">Photo-to-Solution</div>
         <div class="tc-desc">Upload a photo of a handwritten math problem and receive a full step-by-step solution walkthrough. Supports arithmetic, algebra, calculus, and more.</div>
@@ -944,10 +947,10 @@
           <span class="tc-tag">Handwriting OCR</span>
           <span class="tc-tag">Walkthrough</span>
         </div>
-      </div>
+      </a>
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-concept-explainer.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">🎓</span>
         <div class="tc-title">Concept Explainer</div>
         <div class="tc-desc">Enter any math topic and choose your level — "Explain like I'm 12" or "Explain like I'm a university student." Get clear, tailored explanations with examples.</div>
@@ -956,7 +959,7 @@
           <span class="tc-tag">Multi-Level</span>
           <span class="tc-tag">Visual Examples</span>
         </div>
-      </div>
+      </a>
 
     </div>
 
@@ -964,8 +967,8 @@
     <div class="teach-section-label">🤝 Collaboration &amp; Engagement</div>
     <div class="teach-grid">
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-whiteboard.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">🖊️</span>
         <div class="tc-title">Virtual Whiteboard</div>
         <div class="tc-desc">Shared drawing canvas for live tutoring sessions. Teachers and students can draw, annotate, and solve problems together in real time with built-in math symbols.</div>
@@ -974,10 +977,10 @@
           <span class="tc-tag">Shared Canvas</span>
           <span class="tc-tag">Math Symbols</span>
         </div>
-      </div>
+      </a>
 
-      <div class="teach-card">
-        <span class="teach-status coming">Coming Soon</span>
+      <a href="tool-peer-challenge.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
         <span class="tc-icon">⚔️</span>
         <div class="tc-title">Peer Challenge System</div>
         <div class="tc-desc">Students challenge each other to solve math problems within a time limit. Earn points, climb leaderboards, and build a competitive learning community.</div>
@@ -986,7 +989,61 @@
           <span class="tc-tag">Gamified</span>
           <span class="tc-tag">Leaderboard</span>
         </div>
-      </div>
+      </a>
+
+      <a href="tool-live-quiz.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
+        <span class="tc-icon">⚡</span>
+        <div class="tc-title">Live Math Quiz</div>
+        <div class="tc-desc">Kahoot-style multiplayer quiz — host on projector, players join on phones via room code. Speed-based scoring, streak multipliers, animated podium, and 5 pre-built quiz banks.</div>
+        <div class="tc-tags">
+          <span class="tc-tag live">Real-Time</span>
+          <span class="tc-tag live">Multiplayer</span>
+          <span class="tc-tag">Quiz Builder</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Study & Practice -->
+    <div class="teach-section-label">📚 Study &amp; Practice</div>
+    <div class="teach-grid">
+
+      <a href="tool-formula-sheet.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
+        <span class="tc-icon">📋</span>
+        <div class="tc-title">Formula Sheet Builder</div>
+        <div class="tc-desc">Drag-and-drop formula cards from a library of 60+ formulas to build your personal cheat sheet. Add custom formulas, organize by topic, and export as a clean PDF.</div>
+        <div class="tc-tags">
+          <span class="tc-tag">Drag &amp; Drop</span>
+          <span class="tc-tag">PDF Export</span>
+          <span class="tc-tag">Custom Formulas</span>
+        </div>
+      </a>
+
+      <a href="tool-flashcard-drill.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
+        <span class="tc-icon">🧠</span>
+        <div class="tc-title">Flashcard Drill</div>
+        <div class="tc-desc">Spaced repetition flashcards across 6 math topics with 96+ built-in cards. Track mastery, study streaks, and create custom decks — all saved locally.</div>
+        <div class="tc-tags">
+          <span class="tc-tag">Spaced Repetition</span>
+          <span class="tc-tag">Mastery Tracking</span>
+          <span class="tc-tag">Custom Decks</span>
+        </div>
+      </a>
+
+      <a href="tool-math-bingo.html" class="teach-card" style="text-decoration:none;color:inherit;">
+        <span class="teach-status live">Try Now</span>
+        <span class="tc-icon">🎯</span>
+        <div class="tc-title">Math Bingo</div>
+        <div class="tc-desc">Generate bingo cards with math problems instead of numbers. Self-checking answers, teacher caller system with speech, win detection, and classroom-ready printing.</div>
+        <div class="tc-tags">
+          <span class="tc-tag live">Gamified</span>
+          <span class="tc-tag">Printable</span>
+          <span class="tc-tag">Classroom Ready</span>
+        </div>
+      </a>
 
     </div>
 

@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formula Sheet Builder | TutorDA</title>
+  <meta name="description" content="Build a personal formula cheat sheet — drag-and-drop formula cards, add custom formulas with LaTeX, then export as PDF.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <!-- jsPDF + html2canvas for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --dark:    #0d0d1a;
+      --card:    #111125;
+      --card2:   #1a1a35;
+      --border:  #1e1e3a;
+      --text:    #e8e8ff;
+      --muted:   #94a3b8;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Main Grid: Sidebar + Builder ─────────── */
+    .app-layout{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+
+    /* ── Toolbar ───────────────────────────────── */
+    .toolbar{
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:12px 16px;margin-bottom:16px;
+    }
+    .toolbar .sep{width:1px;height:28px;background:var(--border);margin:0 4px}
+
+    .tb-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:5px;
+      background:var(--dark);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:7px 13px;font-family:'Poppins',sans-serif;
+      font-size:.82rem;cursor:pointer;transition:all .2s;white-space:nowrap;
+    }
+    .tb-btn:hover{border-color:var(--cyan);color:#fff}
+    .tb-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+    .tb-btn.accent{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;border:none;font-weight:600}
+    .tb-btn.accent:hover{opacity:.88}
+    .tb-btn.danger{border-color:var(--red);color:var(--red)}
+    .tb-btn.danger:hover{background:rgba(239,68,68,.12)}
+
+    .tb-label{font-size:.78rem;color:var(--muted);margin-right:2px}
+
+    .font-slider{width:80px;accent-color:var(--cyan);cursor:pointer}
+
+    /* ── Sidebar ──────────────────────────────── */
+    .sidebar{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px;position:sticky;top:20px;max-height:calc(100vh - 40px);
+      display:flex;flex-direction:column;overflow:hidden;
+    }
+    .sidebar h2{font-family:'Orbitron',sans-serif;font-size:.95rem;color:var(--cyan);margin-bottom:12px}
+
+    .search-box{
+      width:100%;padding:8px 12px;background:var(--dark);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:'Poppins',sans-serif;font-size:.85rem;
+      margin-bottom:12px;outline:none;transition:border-color .2s;
+    }
+    .search-box:focus{border-color:var(--cyan)}
+    .search-box::placeholder{color:var(--muted)}
+
+    .cat-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+    .cat-tab{
+      padding:5px 11px;font-size:.73rem;border-radius:20px;border:1px solid var(--border);
+      background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;
+      font-family:'Poppins',sans-serif;
+    }
+    .cat-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .cat-tab.active{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:600}
+
+    .lib-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px}
+    .lib-cards::-webkit-scrollbar{width:5px}
+    .lib-cards::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+    .lib-card{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:10px 12px;cursor:grab;transition:all .2s;position:relative;
+      user-select:none;
+    }
+    .lib-card:hover{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.12)}
+    .lib-card.dragging{opacity:.4}
+    .lib-card .drag-handle{position:absolute;right:8px;top:8px;color:var(--muted);font-size:.75rem}
+    .lib-card .fc-name{font-size:.78rem;font-weight:600;color:var(--text);margin-bottom:4px;padding-right:20px}
+    .lib-card .fc-formula{font-size:.85rem;color:var(--muted)}
+
+    /* ── Builder Area ─────────────────────────── */
+    .builder{min-height:500px}
+
+    .sheet-title-wrap{margin-bottom:14px;display:flex;align-items:center;gap:10px}
+    .sheet-title{
+      font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;
+      background:transparent;border:none;border-bottom:2px solid transparent;
+      padding:4px 0;outline:none;width:100%;transition:border-color .2s;
+    }
+    .sheet-title:focus{border-bottom-color:var(--cyan)}
+
+    .sheet-area{
+      background:var(--card);border:2px dashed var(--border);border-radius:var(--r);
+      min-height:600px;padding:24px;position:relative;transition:border-color .2s;
+      /* A4 proportions hint */
+      aspect-ratio: auto;
+    }
+    .sheet-area.drag-over{border-color:var(--cyan);background:rgba(0,229,255,.03)}
+
+    .sheet-empty{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;color:var(--muted);
+      pointer-events:none;gap:8px;
+    }
+    .sheet-empty svg{width:48px;height:48px;opacity:.35}
+    .sheet-empty span{font-size:.9rem}
+
+    .sheet-grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+    .sheet-grid.cols-1{grid-template-columns:1fr}
+    .sheet-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+
+    .sheet-card{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:12px 14px;position:relative;cursor:grab;transition:all .2s;
+    }
+    .sheet-card:hover{border-color:var(--purple)}
+    .sheet-card.dragging{opacity:.35}
+    .sheet-card .sc-name{font-size:.82rem;font-weight:600;color:var(--text);margin-bottom:6px;padding-right:50px}
+    .sheet-card .sc-formula{font-size:.9rem;color:var(--muted);margin-bottom:4px;overflow-x:auto}
+    .sheet-card .sc-notes{
+      font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);
+      margin-top:6px;padding-top:6px;font-style:italic;min-height:0;
+    }
+    .sheet-card .sc-notes:empty{display:none}
+
+    .sheet-card .sc-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px}
+    .sc-act{
+      width:24px;height:24px;border-radius:6px;border:1px solid var(--border);
+      background:var(--card);color:var(--muted);cursor:pointer;display:flex;
+      align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;
+    }
+    .sc-act:hover{border-color:var(--cyan);color:var(--text)}
+    .sc-act.del:hover{border-color:var(--red);color:var(--red)}
+
+    /* ── Modal ─────────────────────────────────── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;
+      display:none;align-items:center;justify-content:center;
+    }
+    .modal-overlay.open{display:flex}
+    .modal{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:28px;width:92%;max-width:520px;position:relative;
+    }
+    .modal h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);margin-bottom:16px}
+    .modal label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:4px}
+    .modal input,.modal textarea{
+      width:100%;padding:9px 12px;background:var(--dark);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:'Poppins',sans-serif;font-size:.88rem;
+      outline:none;margin-bottom:14px;transition:border-color .2s;
+    }
+    .modal input:focus,.modal textarea:focus{border-color:var(--cyan)}
+    .modal textarea{min-height:80px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:.82rem}
+    .modal .preview-box{
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      padding:14px;min-height:50px;margin-bottom:16px;font-size:1rem;text-align:center;
+    }
+    .modal .modal-btns{display:flex;gap:10px;justify-content:flex-end}
+    .modal .modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
+
+    /* ── Save/Load Modal ──────────────────────── */
+    .sheet-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .sheet-item{
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      padding:8px 12px;cursor:pointer;transition:all .2s;
+    }
+    .sheet-item:hover{border-color:var(--cyan)}
+    .sheet-item .si-name{font-size:.85rem;font-weight:500}
+    .sheet-item .si-date{font-size:.72rem;color:var(--muted)}
+    .sheet-item .si-del{
+      background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem;
+      padding:2px 6px;border-radius:4px;transition:all .2s;
+    }
+    .sheet-item .si-del:hover{color:var(--red)}
+
+    /* ── PDF capture (temp white theme) ───────── */
+    .sheet-area.pdf-mode{
+      background:#fff!important;border-color:#ccc!important;color:#111!important;
+    }
+    .sheet-area.pdf-mode .sheet-card{
+      background:#fff!important;border-color:#ddd!important;color:#111!important;
+    }
+    .sheet-area.pdf-mode .sc-name{color:#111!important}
+    .sheet-area.pdf-mode .sc-formula{color:#333!important}
+    .sheet-area.pdf-mode .sc-notes{color:#555!important;border-top-color:#ddd!important}
+    .sheet-area.pdf-mode .sc-actions{display:none!important}
+    .sheet-area.pdf-mode .sheet-empty{display:none!important}
+    .sheet-title.pdf-mode{color:#111!important}
+
+    /* ── Responsive ────────────────────────────── */
+    @media(max-width:900px){
+      .app-layout{grid-template-columns:1fr}
+      .sidebar{
+        position:static;max-height:none;flex-direction:column;
+      }
+      .lib-cards{
+        flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:10px;
+        padding-bottom:6px;flex-wrap:nowrap;
+      }
+      .lib-card{min-width:200px;flex-shrink:0}
+      .sheet-grid{grid-template-columns:1fr!important}
+    }
+    @media(max-width:520px){
+      .toolbar{gap:5px;padding:10px 12px}
+      .tb-btn{padding:6px 9px;font-size:.75rem}
+      .hero h1{font-size:1.5rem}
+    }
+
+    /* scrollbar globally */
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">Study Tool</div>
+    <h1>Formula Sheet Builder</h1>
+    <p>Drag formulas from the library, add your own, arrange them on a printable cheat sheet, and export as PDF.</p>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <span class="tb-label">Columns:</span>
+    <button class="tb-btn col-btn" data-cols="1">1</button>
+    <button class="tb-btn col-btn active" data-cols="2">2</button>
+    <button class="tb-btn col-btn" data-cols="3">3</button>
+    <div class="sep"></div>
+    <span class="tb-label">Font:</span>
+    <input type="range" class="font-slider" id="fontSlider" min="12" max="22" value="16">
+    <div class="sep"></div>
+    <button class="tb-btn" id="btnAddCustom">+ Custom Formula</button>
+    <div class="sep"></div>
+    <button class="tb-btn" id="btnSave">Save</button>
+    <button class="tb-btn" id="btnLoad">Load</button>
+    <div class="sep"></div>
+    <button class="tb-btn danger" id="btnClear">Clear Sheet</button>
+    <button class="tb-btn accent" id="btnExport">Export PDF</button>
+  </div>
+
+  <!-- App layout -->
+  <div class="app-layout">
+    <!-- Sidebar / Formula Library -->
+    <aside class="sidebar">
+      <h2>Formula Library</h2>
+      <input type="text" class="search-box" id="searchBox" placeholder="Search formulas...">
+      <div class="cat-tabs" id="catTabs"></div>
+      <div class="lib-cards" id="libCards"></div>
+    </aside>
+
+    <!-- Builder -->
+    <main class="builder">
+      <div class="sheet-title-wrap">
+        <input type="text" class="sheet-title" id="sheetTitle" value="My Formula Sheet" spellcheck="false">
+      </div>
+      <div class="sheet-area" id="sheetArea">
+        <div class="sheet-empty" id="sheetEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v16m-8-8h16"/></svg>
+          <span>Drag formulas here to build your sheet</span>
+        </div>
+        <div class="sheet-grid" id="sheetGrid"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Custom Formula Modal -->
+<div class="modal-overlay" id="modalCustom">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalCustom')">&times;</button>
+    <h3>Add Custom Formula</h3>
+    <label>Formula Name</label>
+    <input type="text" id="customName" placeholder="e.g. My Special Identity">
+    <label>LaTeX Formula</label>
+    <textarea id="customLatex" placeholder="e.g. E = mc^2"></textarea>
+    <label>Live Preview</label>
+    <div class="preview-box" id="customPreview"></div>
+    <div class="modal-btns">
+      <button class="tb-btn" onclick="closeModal('modalCustom')">Cancel</button>
+      <button class="tb-btn accent" id="btnAddCustomConfirm">Add to Sheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Card Modal -->
+<div class="modal-overlay" id="modalEdit">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalEdit')">&times;</button>
+    <h3>Edit Formula Card</h3>
+    <label>Formula Name</label>
+    <input type="text" id="editName">
+    <label>LaTeX Formula</label>
+    <textarea id="editLatex"></textarea>
+    <label>Live Preview</label>
+    <div class="preview-box" id="editPreview"></div>
+    <label>Personal Notes</label>
+    <input type="text" id="editNotes" placeholder="Add a note or hint...">
+    <div class="modal-btns">
+      <button class="tb-btn" onclick="closeModal('modalEdit')">Cancel</button>
+      <button class="tb-btn accent" id="btnEditConfirm">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save Modal -->
+<div class="modal-overlay" id="modalSave">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalSave')">&times;</button>
+    <h3>Save Sheet</h3>
+    <label>Sheet Name</label>
+    <input type="text" id="saveName" placeholder="My Formula Sheet">
+    <div class="modal-btns">
+      <button class="tb-btn" onclick="closeModal('modalSave')">Cancel</button>
+      <button class="tb-btn accent" id="btnSaveConfirm">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Load Modal -->
+<div class="modal-overlay" id="modalLoad">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalLoad')">&times;</button>
+    <h3>Load Sheet</h3>
+    <div class="sheet-list" id="sheetList"></div>
+    <div class="modal-btns">
+      <button class="tb-btn" onclick="closeModal('modalLoad')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ====================================================================
+   FORMULA DATA
+   ==================================================================== */
+const FORMULAS = {
+  Algebra: [
+    { name:"Quadratic Formula", latex:"x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}" },
+    { name:"Slope-Intercept Form", latex:"y = mx + b" },
+    { name:"Point-Slope Form", latex:"y - y_1 = m(x - x_1)" },
+    { name:"Distance Formula", latex:"d = \\sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}" },
+    { name:"Midpoint Formula", latex:"M = \\left(\\frac{x_1+x_2}{2},\\;\\frac{y_1+y_2}{2}\\right)" },
+    { name:"Difference of Squares", latex:"a^2 - b^2 = (a+b)(a-b)" },
+    { name:"Completing the Square", latex:"x^2 + bx = \\left(x + \\frac{b}{2}\\right)^2 - \\frac{b^2}{4}" },
+    { name:"Binomial Theorem", latex:"(a+b)^n = \\sum_{k=0}^{n} \\binom{n}{k} a^{n-k} b^k" },
+    { name:"Arithmetic Sequence", latex:"a_n = a_1 + (n-1)d" },
+    { name:"Geometric Sequence", latex:"a_n = a_1 \\cdot r^{n-1}" },
+  ],
+  Geometry: [
+    { name:"Area of Circle", latex:"A = \\pi r^2" },
+    { name:"Circumference", latex:"C = 2\\pi r" },
+    { name:"Area of Triangle", latex:"A = \\frac{1}{2}bh" },
+    { name:"Pythagorean Theorem", latex:"a^2 + b^2 = c^2" },
+    { name:"Volume of Sphere", latex:"V = \\frac{4}{3}\\pi r^3" },
+    { name:"Volume of Cylinder", latex:"V = \\pi r^2 h" },
+    { name:"Surface Area of Sphere", latex:"S = 4\\pi r^2" },
+    { name:"Area of Trapezoid", latex:"A = \\frac{1}{2}(a+b)h" },
+    { name:"Area of Parallelogram", latex:"A = bh" },
+    { name:"Heron's Formula", latex:"A = \\sqrt{s(s-a)(s-b)(s-c)},\\quad s=\\frac{a+b+c}{2}" },
+  ],
+  Trigonometry: [
+    { name:"Sin / Cos / Tan", latex:"\\sin\\theta = \\frac{\\text{opp}}{\\text{hyp}},\\; \\cos\\theta = \\frac{\\text{adj}}{\\text{hyp}},\\; \\tan\\theta = \\frac{\\text{opp}}{\\text{adj}}" },
+    { name:"Pythagorean Identity", latex:"\\sin^2\\theta + \\cos^2\\theta = 1" },
+    { name:"Double Angle (sin)", latex:"\\sin 2\\theta = 2\\sin\\theta\\cos\\theta" },
+    { name:"Double Angle (cos)", latex:"\\cos 2\\theta = \\cos^2\\theta - \\sin^2\\theta" },
+    { name:"Law of Sines", latex:"\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}" },
+    { name:"Law of Cosines", latex:"c^2 = a^2 + b^2 - 2ab\\cos C" },
+    { name:"Half Angle (sin)", latex:"\\sin\\frac{\\theta}{2} = \\pm\\sqrt{\\frac{1-\\cos\\theta}{2}}" },
+    { name:"Sum Formula (sin)", latex:"\\sin(\\alpha \\pm \\beta) = \\sin\\alpha\\cos\\beta \\pm \\cos\\alpha\\sin\\beta" },
+    { name:"Sec / Csc / Cot", latex:"\\sec\\theta = \\frac{1}{\\cos\\theta},\\; \\csc\\theta = \\frac{1}{\\sin\\theta},\\; \\cot\\theta = \\frac{1}{\\tan\\theta}" },
+    { name:"Area of Triangle (SAS)", latex:"A = \\frac{1}{2}ab\\sin C" },
+  ],
+  Calculus: [
+    { name:"Power Rule", latex:"\\frac{d}{dx}x^n = nx^{n-1}" },
+    { name:"Product Rule", latex:"\\frac{d}{dx}[fg] = f'g + fg'" },
+    { name:"Quotient Rule", latex:"\\frac{d}{dx}\\!\\left[\\frac{f}{g}\\right] = \\frac{f'g - fg'}{g^2}" },
+    { name:"Chain Rule", latex:"\\frac{d}{dx}f(g(x)) = f'(g(x))\\cdot g'(x)" },
+    { name:"Integration by Parts", latex:"\\int u\\,dv = uv - \\int v\\,du" },
+    { name:"Fundamental Theorem", latex:"\\int_a^b f(x)\\,dx = F(b) - F(a)" },
+    { name:"Derivative of sin/cos", latex:"\\frac{d}{dx}\\sin x = \\cos x,\\quad \\frac{d}{dx}\\cos x = -\\sin x" },
+    { name:"Derivative of e^x / ln x", latex:"\\frac{d}{dx}e^x = e^x,\\quad \\frac{d}{dx}\\ln x = \\frac{1}{x}" },
+    { name:"L'Hopital's Rule", latex:"\\lim_{x\\to c}\\frac{f(x)}{g(x)} = \\lim_{x\\to c}\\frac{f'(x)}{g'(x)}" },
+    { name:"Mean Value Theorem", latex:"f'(c) = \\frac{f(b)-f(a)}{b-a}" },
+  ],
+  Statistics: [
+    { name:"Mean", latex:"\\bar{x} = \\frac{1}{n}\\sum_{i=1}^{n}x_i" },
+    { name:"Median", latex:"\\tilde{x} = \\text{middle value of sorted data}" },
+    { name:"Mode", latex:"\\text{Mode} = \\text{most frequent value}" },
+    { name:"Standard Deviation", latex:"\\sigma = \\sqrt{\\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})^2}" },
+    { name:"Variance", latex:"\\sigma^2 = \\frac{1}{n}\\sum_{i=1}^{n}(x_i - \\bar{x})^2" },
+    { name:"Z-Score", latex:"z = \\frac{x - \\mu}{\\sigma}" },
+    { name:"Combination", latex:"\\binom{n}{r} = \\frac{n!}{r!(n-r)!}" },
+    { name:"Permutation", latex:"P(n,r) = \\frac{n!}{(n-r)!}" },
+    { name:"Bayes' Theorem", latex:"P(A|B) = \\frac{P(B|A)\\,P(A)}{P(B)}" },
+    { name:"Normal Distribution PDF", latex:"f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}\\,e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}" },
+  ],
+  Physics: [
+    { name:"Newton's Second Law", latex:"F = ma" },
+    { name:"Kinetic Energy", latex:"KE = \\frac{1}{2}mv^2" },
+    { name:"Potential Energy", latex:"PE = mgh" },
+    { name:"Ohm's Law", latex:"V = IR" },
+    { name:"Speed of Light", latex:"c = 3 \\times 10^8 \\;\\text{m/s}" },
+    { name:"Gravitational Force", latex:"F = G\\frac{m_1 m_2}{r^2}" },
+    { name:"Work", latex:"W = Fd\\cos\\theta" },
+    { name:"Power", latex:"P = \\frac{W}{t}" },
+    { name:"Momentum", latex:"p = mv" },
+    { name:"Wave Equation", latex:"v = f\\lambda" },
+  ],
+};
+
+/* ====================================================================
+   STATE
+   ==================================================================== */
+let sheetCards = [];      // [{id,name,latex,notes}]
+let currentCols = 2;
+let currentFont = 16;
+let editingCardId = null;
+let dragSrcIndex = null;  // for reorder inside sheet
+
+/* ====================================================================
+   INIT
+   ==================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  buildCategoryTabs();
+  selectCategory('Algebra');
+  autoLoad();
+  renderSheet();
+
+  // Column buttons
+  document.querySelectorAll('.col-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.col-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCols = +btn.dataset.cols;
+      applyLayout();
+    });
+  });
+
+  // Font slider
+  document.getElementById('fontSlider').addEventListener('input', e => {
+    currentFont = +e.target.value;
+    applyLayout();
+  });
+
+  // Custom formula modal
+  document.getElementById('btnAddCustom').addEventListener('click', () => openModal('modalCustom'));
+  document.getElementById('customLatex').addEventListener('input', () => renderPreview('customLatex','customPreview'));
+  document.getElementById('btnAddCustomConfirm').addEventListener('click', addCustomFormula);
+
+  // Edit modal
+  document.getElementById('editLatex').addEventListener('input', () => renderPreview('editLatex','editPreview'));
+  document.getElementById('btnEditConfirm').addEventListener('click', saveEdit);
+
+  // Save / Load
+  document.getElementById('btnSave').addEventListener('click', () => {
+    document.getElementById('saveName').value = document.getElementById('sheetTitle').value;
+    openModal('modalSave');
+  });
+  document.getElementById('btnSaveConfirm').addEventListener('click', saveSheet);
+  document.getElementById('btnLoad').addEventListener('click', () => { populateLoadList(); openModal('modalLoad'); });
+
+  // Clear
+  document.getElementById('btnClear').addEventListener('click', () => {
+    if(confirm('Clear all formulas from the sheet?')){ sheetCards=[]; renderSheet(); autoSave(); }
+  });
+
+  // Export
+  document.getElementById('btnExport').addEventListener('click', exportPDF);
+
+  // Search
+  document.getElementById('searchBox').addEventListener('input', filterLibrary);
+
+  // Drop zone
+  const area = document.getElementById('sheetArea');
+  area.addEventListener('dragover', e => { e.preventDefault(); area.classList.add('drag-over'); });
+  area.addEventListener('dragleave', () => area.classList.remove('drag-over'));
+  area.addEventListener('drop', handleSheetDrop);
+});
+
+/* ====================================================================
+   CATEGORY TABS & LIBRARY RENDERING
+   ==================================================================== */
+let activeCategory = 'Algebra';
+
+function buildCategoryTabs(){
+  const wrap = document.getElementById('catTabs');
+  Object.keys(FORMULAS).forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab';
+    btn.textContent = cat;
+    btn.addEventListener('click', () => selectCategory(cat));
+    wrap.appendChild(btn);
+  });
+}
+
+function selectCategory(cat){
+  activeCategory = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.textContent===cat));
+  renderLibrary();
+}
+
+function renderLibrary(){
+  const wrap = document.getElementById('libCards');
+  const q = document.getElementById('searchBox').value.toLowerCase();
+  wrap.innerHTML = '';
+  const list = FORMULAS[activeCategory] || [];
+  list.forEach((f,i) => {
+    if(q && !f.name.toLowerCase().includes(q) && !f.latex.toLowerCase().includes(q)) return;
+    const card = document.createElement('div');
+    card.className = 'lib-card';
+    card.draggable = true;
+    card.dataset.cat = activeCategory;
+    card.dataset.idx = i;
+    card.innerHTML = `<span class="drag-handle">&#x2630;</span>
+      <div class="fc-name">${esc(f.name)}</div>
+      <div class="fc-formula">\\(${f.latex}\\)</div>`;
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', JSON.stringify({type:'lib',cat:activeCategory,idx:i}));
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    wrap.appendChild(card);
+  });
+  typesetEl(wrap);
+}
+
+function filterLibrary(){ renderLibrary(); }
+
+/* ====================================================================
+   SHEET RENDERING
+   ==================================================================== */
+function renderSheet(){
+  const grid = document.getElementById('sheetGrid');
+  const empty = document.getElementById('sheetEmpty');
+  grid.innerHTML = '';
+  empty.style.display = sheetCards.length ? 'none' : 'flex';
+  applyLayout();
+
+  sheetCards.forEach((c,i) => {
+    const card = document.createElement('div');
+    card.className = 'sheet-card';
+    card.draggable = true;
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <div class="sc-actions">
+        <button class="sc-act edit" title="Edit">&#9998;</button>
+        <button class="sc-act del" title="Remove">&times;</button>
+      </div>
+      <div class="sc-name">${esc(c.name)}</div>
+      <div class="sc-formula">\\(${c.latex}\\)</div>
+      <div class="sc-notes">${esc(c.notes||'')}</div>`;
+
+    // Reorder drag
+    card.addEventListener('dragstart', e => {
+      dragSrcIndex = i;
+      e.dataTransfer.setData('text/plain', JSON.stringify({type:'sheet',idx:i}));
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => { card.classList.remove('dragging'); dragSrcIndex = null; });
+    card.addEventListener('dragover', e => e.preventDefault());
+    card.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      try {
+        const d = JSON.parse(e.dataTransfer.getData('text/plain'));
+        if(d.type==='sheet'){
+          const moved = sheetCards.splice(d.idx,1)[0];
+          const target = i > d.idx ? i : i; // recalc after splice not needed for simple insert
+          sheetCards.splice(i,0,moved);
+          renderSheet(); autoSave();
+        } else if(d.type==='lib'){
+          // Insert at position
+          const f = FORMULAS[d.cat][d.idx];
+          sheetCards.splice(i,0,{id:uid(),name:f.name,latex:f.latex,notes:''});
+          renderSheet(); autoSave();
+        }
+      } catch(err){}
+    });
+
+    // Actions
+    card.querySelector('.del').addEventListener('click', () => {
+      sheetCards.splice(i,1); renderSheet(); autoSave();
+    });
+    card.querySelector('.edit').addEventListener('click', () => openEditModal(i));
+
+    grid.appendChild(card);
+  });
+  typesetEl(grid);
+}
+
+function applyLayout(){
+  const grid = document.getElementById('sheetGrid');
+  grid.className = 'sheet-grid cols-' + currentCols;
+  grid.style.fontSize = currentFont + 'px';
+}
+
+/* ====================================================================
+   DROP HANDLER (sheet area)
+   ==================================================================== */
+function handleSheetDrop(e){
+  e.preventDefault();
+  document.getElementById('sheetArea').classList.remove('drag-over');
+  try {
+    const d = JSON.parse(e.dataTransfer.getData('text/plain'));
+    if(d.type==='lib'){
+      const f = FORMULAS[d.cat][d.idx];
+      sheetCards.push({id:uid(),name:f.name,latex:f.latex,notes:''});
+      renderSheet(); autoSave();
+    }
+    // sheet reorder handled on card-level drop
+  } catch(err){}
+}
+
+/* ====================================================================
+   CUSTOM FORMULA
+   ==================================================================== */
+function addCustomFormula(){
+  const name = document.getElementById('customName').value.trim();
+  const latex = document.getElementById('customLatex').value.trim();
+  if(!name||!latex){ alert('Please fill in both fields.'); return; }
+  sheetCards.push({id:uid(),name,latex,notes:''});
+  renderSheet(); autoSave();
+  document.getElementById('customName').value='';
+  document.getElementById('customLatex').value='';
+  document.getElementById('customPreview').innerHTML='';
+  closeModal('modalCustom');
+}
+
+/* ====================================================================
+   EDIT CARD
+   ==================================================================== */
+function openEditModal(idx){
+  editingCardId = idx;
+  const c = sheetCards[idx];
+  document.getElementById('editName').value = c.name;
+  document.getElementById('editLatex').value = c.latex;
+  document.getElementById('editNotes').value = c.notes||'';
+  renderPreview('editLatex','editPreview');
+  openModal('modalEdit');
+}
+
+function saveEdit(){
+  if(editingCardId===null) return;
+  const c = sheetCards[editingCardId];
+  c.name = document.getElementById('editName').value.trim()||c.name;
+  c.latex = document.getElementById('editLatex').value.trim()||c.latex;
+  c.notes = document.getElementById('editNotes').value.trim();
+  editingCardId = null;
+  closeModal('modalEdit');
+  renderSheet(); autoSave();
+}
+
+/* ====================================================================
+   MODAL HELPERS
+   ==================================================================== */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function renderPreview(inputId, previewId){
+  const latex = document.getElementById(inputId).value.trim();
+  const box = document.getElementById(previewId);
+  box.innerHTML = latex ? `\\[${latex}\\]` : '<span style="color:var(--muted)">Preview appears here</span>';
+  typesetEl(box);
+}
+
+/* ====================================================================
+   SAVE / LOAD (localStorage)
+   ==================================================================== */
+const LS_KEY = 'fsb_sheets';
+const LS_AUTO = 'fsb_autosave';
+
+function getSheets(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; }
+}
+
+function saveSheet(){
+  const name = document.getElementById('saveName').value.trim();
+  if(!name){ alert('Enter a name.'); return; }
+  const sheets = getSheets();
+  sheets[name] = {
+    title: document.getElementById('sheetTitle').value,
+    cards: sheetCards,
+    cols: currentCols,
+    font: currentFont,
+    date: new Date().toISOString()
+  };
+  localStorage.setItem(LS_KEY, JSON.stringify(sheets));
+  closeModal('modalSave');
+}
+
+function autoSave(){
+  localStorage.setItem(LS_AUTO, JSON.stringify({
+    title: document.getElementById('sheetTitle').value,
+    cards: sheetCards,
+    cols: currentCols,
+    font: currentFont,
+  }));
+}
+
+function autoLoad(){
+  try{
+    const d = JSON.parse(localStorage.getItem(LS_AUTO));
+    if(d && d.cards && d.cards.length){
+      sheetCards = d.cards;
+      document.getElementById('sheetTitle').value = d.title||'My Formula Sheet';
+      currentCols = d.cols||2;
+      currentFont = d.font||16;
+      document.getElementById('fontSlider').value = currentFont;
+      document.querySelectorAll('.col-btn').forEach(b => b.classList.toggle('active', +b.dataset.cols===currentCols));
+    }
+  }catch(e){}
+}
+
+function populateLoadList(){
+  const wrap = document.getElementById('sheetList');
+  const sheets = getSheets();
+  const keys = Object.keys(sheets);
+  if(!keys.length){ wrap.innerHTML='<p style="color:var(--muted);font-size:.85rem">No saved sheets yet.</p>'; return; }
+  wrap.innerHTML='';
+  keys.forEach(k => {
+    const s = sheets[k];
+    const item = document.createElement('div');
+    item.className='sheet-item';
+    const d = s.date ? new Date(s.date).toLocaleDateString() : '';
+    item.innerHTML=`<div><div class="si-name">${esc(k)}</div><div class="si-date">${d}</div></div><button class="si-del" title="Delete">&times;</button>`;
+    item.addEventListener('click', e => {
+      if(e.target.classList.contains('si-del')){
+        delete sheets[k];
+        localStorage.setItem(LS_KEY, JSON.stringify(sheets));
+        populateLoadList();
+        return;
+      }
+      sheetCards = s.cards||[];
+      document.getElementById('sheetTitle').value = s.title||'My Formula Sheet';
+      currentCols = s.cols||2;
+      currentFont = s.font||16;
+      document.getElementById('fontSlider').value = currentFont;
+      document.querySelectorAll('.col-btn').forEach(b => b.classList.toggle('active', +b.dataset.cols===currentCols));
+      renderSheet(); autoSave();
+      closeModal('modalLoad');
+    });
+    wrap.appendChild(item);
+  });
+}
+
+/* ====================================================================
+   PDF EXPORT
+   ==================================================================== */
+async function exportPDF(){
+  if(!sheetCards.length){ alert('Add some formulas first!'); return; }
+
+  const area = document.getElementById('sheetArea');
+  const title = document.getElementById('sheetTitle');
+
+  // Apply white/print theme temporarily
+  area.classList.add('pdf-mode');
+  title.classList.add('pdf-mode');
+  // Hide empty message
+  document.getElementById('sheetEmpty').style.display='none';
+  // Hide action buttons inside cards
+  area.querySelectorAll('.sc-actions').forEach(a=>a.style.display='none');
+
+  // Wait a tick for reflow
+  await new Promise(r=>setTimeout(r,200));
+
+  try{
+    const titleText = title.value || 'My Formula Sheet';
+
+    const canvas = await html2canvas(area, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      logging: false,
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p','mm','a4');
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 12;
+
+    // Title
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica','bold');
+    pdf.text(titleText, pageW/2, 18, {align:'center'});
+
+    // Image
+    const imgData = canvas.toDataURL('image/png');
+    const imgW = pageW - margin*2;
+    const imgH = (canvas.height / canvas.width) * imgW;
+    let y = 26;
+
+    if(imgH + y > pageH - margin){
+      // Scale to fit page
+      const scale = (pageH - margin - y) / imgH;
+      pdf.addImage(imgData,'PNG', margin, y, imgW*scale, imgH*scale);
+    } else {
+      pdf.addImage(imgData,'PNG', margin, y, imgW, imgH);
+    }
+
+    pdf.save(titleText.replace(/[^a-zA-Z0-9 ]/g,'').replace(/\s+/g,'_') + '.pdf');
+  } catch(err){
+    console.error(err);
+    alert('PDF export failed. Please try again.');
+  }
+
+  // Restore dark theme
+  area.classList.remove('pdf-mode');
+  title.classList.remove('pdf-mode');
+  area.querySelectorAll('.sc-actions').forEach(a=>a.style.display='');
+  renderSheet();
+}
+
+/* ====================================================================
+   UTIL
+   ==================================================================== */
+let _uid = 0;
+function uid(){ return 'fc_' + Date.now() + '_' + (++_uid); }
+
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+function typesetEl(el){
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise([el]).catch(()=>{});
+  }
+}
+
+/* ====================================================================
+   HEADER / FOOTER INJECTION
+   ==================================================================== */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>

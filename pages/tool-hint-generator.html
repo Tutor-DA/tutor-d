@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auto Hint Generator | TutorDA</title>
+  <meta name="description" content="AI-powered progressive hint generator for math problems. Get step-by-step hints from gentle nudges to full solutions.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$','$']],
+      displayMath: [['$$','$$']],
+      packages: {'[+]': ['ams']}
+    },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+    startup: { typeset: false }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.min.js" id="MathJax-script" async></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --orange:  #ff8c00;
+      --orange2: #ff6600;
+      --dark:    #0d0d1a;
+      --card:    #141428;
+      --card2:   #1a1a35;
+      --border:  #2a2a4a;
+      --text:    #e8e8ff;
+      --muted:   #7777aa;
+      --gold:    #ffd700;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --blue:    #3b82f6;
+      --cyan:    #06b6d4;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --r:       14px;
+      --mono:    'JetBrains Mono', monospace;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 36px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--blue) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Card ──────────────────────────────────── */
+    .tool-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px}
+    .tool-card + .tool-card{margin-top:20px}
+
+    /* ── Textarea ──────────────────────────────── */
+    .problem-textarea{
+      width:100%;background:#0d0d1a;border:1.5px solid var(--border);
+      color:var(--text);border-radius:10px;padding:16px 18px;
+      font-family:var(--mono);font-size:1rem;outline:none;
+      transition:border-color .2s;resize:vertical;min-height:120px;
+      line-height:1.6;
+    }
+    .problem-textarea:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(6,182,212,.15)}
+    .problem-textarea::placeholder{color:var(--muted);opacity:.7}
+
+    /* ── Quick Examples ────────────────────────── */
+    .examples-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;margin-top:18px}
+    .example-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .example-chip{
+      padding:7px 16px;border-radius:999px;
+      border:1.5px solid var(--border);background:transparent;
+      color:var(--muted);font-family:'Poppins',sans-serif;
+      font-size:.8rem;font-weight:500;cursor:pointer;
+      transition:all .2s;white-space:nowrap;
+    }
+    .example-chip:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.08)}
+
+    /* ── Stepper / Progress ────────────────────── */
+    .stepper{display:flex;align-items:center;justify-content:center;gap:0;margin:28px 0 24px;position:relative}
+    .step{display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;flex:1;max-width:120px}
+    .step-circle{
+      width:36px;height:36px;border-radius:50%;
+      border:2.5px solid var(--border);background:var(--card);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.85rem;font-weight:700;color:var(--muted);
+      transition:all .35s ease;position:relative;
+    }
+    .step-label{font-size:.6rem;color:var(--muted);margin-top:6px;text-align:center;
+      font-weight:600;letter-spacing:.04em;text-transform:uppercase;transition:color .35s}
+    .step-line{flex:1;height:2.5px;background:var(--border);transition:background .35s;max-width:60px;align-self:flex-start;margin-top:18px}
+
+    /* Step states */
+    .step.revealed .step-circle{border-color:var(--step-color);color:#fff;background:var(--step-color);
+      box-shadow:0 0 16px color-mix(in srgb, var(--step-color) 50%, transparent)}
+    .step.revealed .step-label{color:var(--step-color)}
+    .step-line.revealed{background:var(--line-color)}
+
+    .step.active .step-circle{border-color:var(--gold);animation:pulse-ring 1.5s infinite}
+    @keyframes pulse-ring{
+      0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.4)}
+      50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+    }
+
+    /* ── Buttons ───────────────────────────────── */
+    .btn-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+
+    .btn-hint{
+      padding:14px 40px;border-radius:12px;border:none;
+      font-family:'Poppins',sans-serif;font-weight:700;font-size:1rem;
+      cursor:pointer;transition:all .25s;
+      background:linear-gradient(135deg,var(--gold),var(--orange));
+      color:#0d0d1a;letter-spacing:.02em;
+      box-shadow:0 4px 20px rgba(255,215,0,.3);
+    }
+    .btn-hint:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(255,215,0,.45)}
+    .btn-hint:active{transform:translateY(0)}
+    .btn-hint:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+
+    .btn-reset{
+      padding:14px 28px;border-radius:12px;
+      border:1.5px solid var(--border);background:var(--card2);
+      color:var(--muted);font-family:'Poppins',sans-serif;
+      font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;
+    }
+    .btn-reset:hover{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+
+    /* ── Hint Cards ────────────────────────────── */
+    .hints-container{margin-top:24px;display:flex;flex-direction:column;gap:16px}
+
+    .hint-card{
+      background:var(--card);border-radius:var(--r);padding:22px 24px;
+      border-left:4px solid var(--hint-color);
+      opacity:0;transform:translateY(20px);
+      animation:slideIn .45s ease forwards;
+      position:relative;overflow:hidden;
+    }
+    .hint-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+      background:linear-gradient(135deg,color-mix(in srgb, var(--hint-color) 6%, transparent),transparent 60%);
+      pointer-events:none;
+    }
+    @keyframes slideIn{to{opacity:1;transform:translateY(0)}}
+
+    .hint-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;position:relative}
+    .hint-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:4px 14px;border-radius:999px;
+      font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+      background:color-mix(in srgb, var(--hint-color) 18%, transparent);
+      color:var(--hint-color);border:1px solid color-mix(in srgb, var(--hint-color) 30%, transparent);
+    }
+    .hint-level-name{font-size:.8rem;color:var(--muted);font-weight:500}
+    .hint-body{position:relative;font-size:.95rem;line-height:1.75;color:var(--text)}
+    .hint-body p{margin-bottom:8px}
+
+    /* ── Loading ───────────────────────────────── */
+    .loading-overlay{
+      display:none;position:fixed;inset:0;z-index:1000;
+      background:rgba(13,13,26,.85);backdrop-filter:blur(6px);
+      align-items:center;justify-content:center;flex-direction:column;gap:18px;
+    }
+    .loading-overlay.show{display:flex}
+    .loading-spinner{
+      width:48px;height:48px;border-radius:50%;
+      border:3.5px solid var(--border);border-top-color:var(--cyan);
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:.1em}
+
+    /* ── Settings ──────────────────────────────── */
+    .settings-toggle{
+      display:flex;align-items:center;gap:8px;
+      background:none;border:1.5px solid var(--border);border-radius:10px;
+      color:var(--muted);padding:8px 16px;cursor:pointer;
+      font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:600;
+      transition:all .2s;margin:16px auto 0;
+    }
+    .settings-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
+    .settings-toggle .gear{font-size:1rem;transition:transform .3s}
+    .settings-toggle.open .gear{transform:rotate(90deg)}
+
+    .settings-panel{
+      max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;
+      background:var(--card2);border-radius:var(--r);margin-top:12px;
+      border:1px solid transparent;
+    }
+    .settings-panel.open{max-height:400px;padding:22px 24px;border-color:var(--border)}
+
+    .settings-field{margin-bottom:14px}
+    .settings-field:last-child{margin-bottom:0}
+    .settings-label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase}
+    .settings-input{
+      width:100%;background:#0d0d1a;border:1.5px solid var(--border);
+      color:var(--text);border-radius:8px;padding:10px 14px;
+      font-family:var(--mono);font-size:.85rem;outline:none;transition:border-color .2s;
+    }
+    .settings-input:focus{border-color:var(--cyan)}
+    .settings-select{
+      width:100%;background:#0d0d1a;border:1.5px solid var(--border);
+      color:var(--text);border-radius:8px;padding:10px 14px;
+      font-family:var(--mono);font-size:.85rem;outline:none;transition:border-color .2s;
+      cursor:pointer;
+    }
+    .settings-select option{background:#141428;color:var(--text)}
+    .btn-save{
+      padding:9px 22px;border-radius:8px;border:none;
+      background:linear-gradient(135deg,var(--cyan),var(--blue));
+      color:#fff;font-family:'Poppins',sans-serif;font-weight:700;
+      font-size:.82rem;cursor:pointer;transition:all .2s;margin-top:4px;
+    }
+    .btn-save:hover{opacity:.88;transform:translateY(-1px)}
+
+    /* ── Toast ─────────────────────────────────── */
+    .toast{
+      position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:var(--card);border:1.5px solid var(--cyan);border-radius:10px;
+      padding:12px 28px;color:var(--cyan);font-size:.85rem;font-weight:600;
+      z-index:9999;opacity:0;transition:all .35s ease;pointer-events:none;
+      box-shadow:0 4px 24px rgba(6,182,212,.2);
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{border-color:var(--red);color:var(--red);box-shadow:0 4px 24px rgba(239,68,68,.2)}
+
+    /* ── All-revealed message ──────────────────── */
+    .all-revealed{
+      text-align:center;padding:20px;margin-top:16px;
+      border:1.5px dashed var(--cyan);border-radius:var(--r);
+      color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.9rem;
+      font-weight:700;letter-spacing:.05em;
+      background:rgba(6,182,212,.05);
+    }
+
+    /* ── Responsive ────────────────────────────── */
+    @media(max-width:600px){
+      .wrapper{padding:0 12px 40px}
+      .hero{padding:40px 16px 24px}
+      .tool-card{padding:20px 16px}
+      .stepper{gap:0}
+      .step-label{font-size:.5rem}
+      .step-circle{width:30px;height:30px;font-size:.75rem}
+      .step-line{max-width:32px}
+      .btn-hint{padding:12px 28px;font-size:.9rem}
+      .hint-card{padding:16px 18px}
+      .example-chips{gap:6px}
+      .example-chip{font-size:.72rem;padding:6px 12px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">AI-Powered Learning</div>
+    <h1>Auto Hint Generator</h1>
+    <p>Stuck on a math problem? Get progressive hints — from a gentle nudge to the full solution. Learn at your own pace.</p>
+  </div>
+
+  <!-- Problem Input Card -->
+  <div class="tool-card">
+    <textarea id="problemInput" class="problem-textarea" placeholder="Solve: &#x222B; x&#xB2;&#xB7;e&#x02E3; dx"></textarea>
+
+    <div class="examples-label">Quick Examples</div>
+    <div class="example-chips">
+      <button class="example-chip" data-problem="Solve x² - 5x + 6 = 0">Solve x² - 5x + 6 = 0</button>
+      <button class="example-chip" data-problem="Find the derivative of sin(x²)">Find the derivative of sin(x²)</button>
+      <button class="example-chip" data-problem="∫ ln(x) dx">∫ ln(x) dx</button>
+      <button class="example-chip" data-problem="Prove √2 is irrational">Prove √2 is irrational</button>
+      <button class="example-chip" data-problem="Find eigenvalues of [[2,1],[1,2]]">Find eigenvalues of [[2,1],[1,2]]</button>
+    </div>
+
+    <!-- Hint Level Stepper -->
+    <div class="stepper" id="stepper">
+      <div class="step" data-step="1" style="--step-color:#22c55e">
+        <div class="step-circle">1</div>
+        <div class="step-label">Nudge</div>
+      </div>
+      <div class="step-line" data-line="1" style="--line-color:#22c55e"></div>
+      <div class="step" data-step="2" style="--step-color:#eab308">
+        <div class="step-circle">2</div>
+        <div class="step-label">Direction</div>
+      </div>
+      <div class="step-line" data-line="2" style="--line-color:#eab308"></div>
+      <div class="step" data-step="3" style="--step-color:#f97316">
+        <div class="step-circle">3</div>
+        <div class="step-label">Detailed</div>
+      </div>
+      <div class="step-line" data-line="3" style="--line-color:#f97316"></div>
+      <div class="step" data-step="4" style="--step-color:#ef4444">
+        <div class="step-circle">4</div>
+        <div class="step-label">Almost</div>
+      </div>
+      <div class="step-line" data-line="4" style="--line-color:#ef4444"></div>
+      <div class="step" data-step="5" style="--step-color:#06b6d4">
+        <div class="step-circle">5</div>
+        <div class="step-label">Solution</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-row">
+      <button class="btn-hint" id="btnHint">Get Hint</button>
+      <button class="btn-reset" id="btnReset">Reset</button>
+    </div>
+
+    <!-- Hint Cards Container -->
+    <div class="hints-container" id="hintsContainer"></div>
+
+    <!-- Settings Toggle -->
+    <button class="settings-toggle" id="settingsToggle">
+      <span class="gear">&#9881;</span> API Settings
+    </button>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-field">
+        <label class="settings-label">API Key</label>
+        <input type="password" class="settings-input" id="apiKeyInput" placeholder="sk-ant-...">
+      </div>
+      <div class="settings-field">
+        <label class="settings-label">Model</label>
+        <select class="settings-select" id="modelSelect">
+          <option value="claude-sonnet-4-20250514" selected>claude-sonnet-4-20250514</option>
+          <option value="claude-haiku-4-20250414">claude-haiku-4-20250414</option>
+          <option value="claude-opus-4-20250514">claude-opus-4-20250514</option>
+        </select>
+      </div>
+      <div class="settings-field">
+        <label class="settings-label">API Endpoint</label>
+        <input type="text" class="settings-input" id="endpointInput" value="https://api.anthropic.com/v1/messages">
+      </div>
+      <button class="btn-save" id="btnSave">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Generating hints...</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   Auto Hint Generator — TutorDA
+   ═══════════════════════════════════════════════════ */
+
+const HINT_LEVELS = [
+  { level: 1, emoji: '\u{1F7E2}', name: 'Gentle Nudge',    desc: 'Think about what approach to use',    color: '#22c55e' },
+  { level: 2, emoji: '\u{1F7E1}', name: 'Direction',        desc: "Here's the method to try",            color: '#eab308' },
+  { level: 3, emoji: '\u{1F7E0}', name: 'Detailed Hint',    desc: 'Here are the first steps',            color: '#f97316' },
+  { level: 4, emoji: '\u{1F534}', name: 'Almost There',     desc: "Here's most of the solution",         color: '#ef4444' },
+  { level: 5, emoji: '\u2705',    name: 'Full Solution',    desc: 'Complete step-by-step answer',        color: '#06b6d4' },
+];
+
+const SYSTEM_PROMPT = `You are a math hint generator. Given a math problem, generate exactly 5 progressive hints, from vague to complete solution. Format your response as a JSON array with 5 objects, each having 'level' (1-5) and 'hint' fields. Use LaTeX notation ($..$ for inline, $$...$$ for display). Level 1: Very vague nudge about the approach. Level 2: Name the method/technique. Level 3: Show the first 1-2 steps. Level 4: Show most of the solution with one step missing. Level 5: Complete step-by-step solution. Return ONLY the JSON array, no other text.`;
+
+/* ── State ────────────────────────────────── */
+let hints = [];          // parsed array of 5 hints
+let revealedCount = 0;   // how many have been shown
+let isLoading = false;
+
+/* ── DOM refs ─────────────────────────────── */
+const problemInput   = document.getElementById('problemInput');
+const btnHint        = document.getElementById('btnHint');
+const btnReset       = document.getElementById('btnReset');
+const hintsContainer = document.getElementById('hintsContainer');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const settingsToggle = document.getElementById('settingsToggle');
+const settingsPanel  = document.getElementById('settingsPanel');
+const apiKeyInput    = document.getElementById('apiKeyInput');
+const modelSelect    = document.getElementById('modelSelect');
+const endpointInput  = document.getElementById('endpointInput');
+const btnSave        = document.getElementById('btnSave');
+const toastEl        = document.getElementById('toast');
+
+/* ── Init saved settings ──────────────────── */
+(function loadSettings() {
+  const key = localStorage.getItem('hintgen_apiKey');
+  const model = localStorage.getItem('hintgen_model');
+  const endpoint = localStorage.getItem('hintgen_endpoint');
+  if (key) apiKeyInput.value = key;
+  if (model) modelSelect.value = model;
+  if (endpoint) endpointInput.value = endpoint;
+})();
+
+/* ── Toast helper ─────────────────────────── */
+function showToast(msg, isError) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { toastEl.className = 'toast'; }, 3500);
+}
+
+/* ── Example chips ────────────────────────── */
+document.querySelectorAll('.example-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    problemInput.value = chip.dataset.problem;
+    problemInput.focus();
+  });
+});
+
+/* ── Settings toggle ──────────────────────── */
+settingsToggle.addEventListener('click', () => {
+  settingsToggle.classList.toggle('open');
+  settingsPanel.classList.toggle('open');
+});
+
+/* ── Save settings ────────────────────────── */
+btnSave.addEventListener('click', () => {
+  localStorage.setItem('hintgen_apiKey', apiKeyInput.value.trim());
+  localStorage.setItem('hintgen_model', modelSelect.value);
+  localStorage.setItem('hintgen_endpoint', endpointInput.value.trim());
+  showToast('Settings saved');
+});
+
+/* ── Update stepper UI ────────────────────── */
+function updateStepper() {
+  document.querySelectorAll('.step').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.remove('revealed', 'active');
+    if (s <= revealedCount) el.classList.add('revealed');
+    else if (s === revealedCount + 1 && hints.length > 0) el.classList.add('active');
+  });
+  document.querySelectorAll('.step-line').forEach(el => {
+    const l = parseInt(el.dataset.line);
+    el.classList.toggle('revealed', l <= revealedCount);
+  });
+}
+
+/* ── Render a single hint card ────────────── */
+function renderHintCard(hintObj, idx) {
+  const meta = HINT_LEVELS[idx];
+  const card = document.createElement('div');
+  card.className = 'hint-card';
+  card.style.setProperty('--hint-color', meta.color);
+  card.style.animationDelay = '0.05s';
+  card.innerHTML = `
+    <div class="hint-header">
+      <span class="hint-badge">${meta.emoji} Level ${meta.level}</span>
+      <span class="hint-level-name">${meta.name} &mdash; ${meta.desc}</span>
+    </div>
+    <div class="hint-body">${formatHint(hintObj.hint)}</div>
+  `;
+  hintsContainer.appendChild(card);
+
+  // Typeset MathJax
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([card]).catch(() => {});
+  }
+}
+
+/* ── Format hint text (newlines → <p>) ────── */
+function formatHint(text) {
+  if (!text) return '';
+  return text.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+/* ── API call ─────────────────────────────── */
+async function fetchHints(problem) {
+  const apiKey   = apiKeyInput.value.trim() || localStorage.getItem('hintgen_apiKey') || '';
+  const model    = modelSelect.value || 'claude-sonnet-4-20250514';
+  const endpoint = endpointInput.value.trim() || 'https://api.anthropic.com/v1/messages';
+
+  if (!apiKey) {
+    showToast('Please set your API key in settings', true);
+    settingsToggle.classList.add('open');
+    settingsPanel.classList.add('open');
+    return null;
+  }
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: model,
+      max_tokens: 2048,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: problem }]
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`API error ${res.status}: ${err}`);
+  }
+
+  const data = await res.json();
+  const text = data.content?.[0]?.text || '';
+
+  // Extract JSON array from response
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error('Could not parse hint JSON from response');
+
+  const parsed = JSON.parse(match[0]);
+  if (!Array.isArray(parsed) || parsed.length < 5) throw new Error('Expected 5 hints, got ' + (parsed?.length || 0));
+
+  return parsed.slice(0, 5);
+}
+
+/* ── Get Hint click ───────────────────────── */
+btnHint.addEventListener('click', async () => {
+  if (isLoading) return;
+
+  const problem = problemInput.value.trim();
+  if (!problem) {
+    showToast('Please enter a math problem first', true);
+    problemInput.focus();
+    return;
+  }
+
+  // If we have no hints yet, fetch them
+  if (hints.length === 0) {
+    isLoading = true;
+    btnHint.disabled = true;
+    loadingOverlay.classList.add('show');
+
+    try {
+      const result = await fetchHints(problem);
+      if (!result) { // settings issue
+        isLoading = false;
+        btnHint.disabled = false;
+        loadingOverlay.classList.remove('show');
+        return;
+      }
+      hints = result;
+    } catch (err) {
+      showToast(err.message, true);
+      isLoading = false;
+      btnHint.disabled = false;
+      loadingOverlay.classList.remove('show');
+      return;
+    }
+
+    isLoading = false;
+    loadingOverlay.classList.remove('show');
+    btnHint.disabled = false;
+  }
+
+  // Reveal next hint
+  if (revealedCount < 5) {
+    renderHintCard(hints[revealedCount], revealedCount);
+    revealedCount++;
+    updateStepper();
+
+    if (revealedCount >= 5) {
+      btnHint.disabled = true;
+      const msg = document.createElement('div');
+      msg.className = 'all-revealed';
+      msg.textContent = 'All hints revealed!';
+      hintsContainer.appendChild(msg);
+    }
+  }
+});
+
+/* ── Reset ────────────────────────────────── */
+btnReset.addEventListener('click', () => {
+  hints = [];
+  revealedCount = 0;
+  hintsContainer.innerHTML = '';
+  btnHint.disabled = false;
+  problemInput.value = '';
+  updateStepper();
+  problemInput.focus();
+});
+
+/* ── Back to Top ──────────────────────────── */
+const btt = document.getElementById('backToTop');
+if (btt) {
+  window.addEventListener('scroll', () => btt.style.display = window.scrollY > 300 ? 'block' : 'none');
+  btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+/* ── Load header / footer ─────────────────── */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>
