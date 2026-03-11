@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Number System Explorer | TutorDA</title>
+  <meta name="description" content="Convert between number bases with step-by-step working, bit visualizations, base arithmetic, ASCII tables, and interactive practice challenges.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --muted:#94a3b8;--text:#e8e8ff;--r:14px;
+      --green:#22c55e;--red:#ef4444;--orange:#ff8c00;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      background:var(--card);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 20px;font-family:'Poppins',sans-serif;
+      font-size:.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+    .btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;color:#fff;font-weight:600}
+    .btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn.sm{padding:6px 14px;font-size:.8rem}
+    .btn.danger{border-color:var(--red);color:var(--red)}
+    .btn.danger:hover{background:rgba(239,68,68,.15)}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+
+    .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+    .nav-tab{padding:8px 18px;border-radius:8px;background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.85rem;transition:all .2s;font-family:'Poppins',sans-serif}
+    .nav-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .section-title{font-family:'Orbitron',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:16px;
+      display:flex;align-items:center;gap:10px}
+    .section-title .icon{font-size:1.3rem}
+
+    /* ── Converter ── */
+    .converter-input-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px}
+    .converter-input-row .field{flex:1;min-width:200px}
+    .converter-input-row label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+    .converter-input-row input, .converter-input-row select{
+      width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s}
+    .converter-input-row input:focus, .converter-input-row select:focus{border-color:var(--cyan)}
+    .converter-input-row select option{background:var(--card);color:var(--text)}
+
+    .output-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+    .output-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px;cursor:pointer;transition:all .2s;position:relative}
+    .output-card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+    .output-card .base-label{font-family:'Orbitron',sans-serif;font-size:.68rem;letter-spacing:.15em;
+      text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+    .output-card .base-value{font-family:var(--mono);font-size:1.2rem;word-break:break-all;line-height:1.5;min-height:1.8em}
+    .output-card .copied{position:absolute;top:8px;right:12px;font-size:.7rem;color:var(--green);
+      opacity:0;transition:opacity .3s}
+    .output-card .copied.show{opacity:1}
+    .output-card .digit{transition:background .2s;padding:1px 2px;border-radius:3px}
+    .output-card .digit.hl-a{background:rgba(0,229,255,.2)}
+    .output-card .digit.hl-b{background:rgba(168,85,247,.2)}
+    .output-card .digit.hl-c{background:rgba(236,72,153,.2)}
+    .output-card .digit.hl-d{background:rgba(250,204,21,.2)}
+
+    /* ── Steps ── */
+    .step-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:16px 20px;margin-bottom:10px;opacity:0;transform:translateY(12px);
+      transition:all .4s ease}
+    .step-card.visible{opacity:1;transform:translateY(0)}
+    .step-card .step-num{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--cyan);
+      letter-spacing:.1em;margin-bottom:6px}
+    .step-card .step-body{font-family:var(--mono);font-size:.92rem;line-height:1.7}
+    .step-card .remainder{color:var(--gold);font-weight:600}
+    .step-card .quotient{color:var(--cyan)}
+    .step-card .position{color:var(--purple);font-weight:600}
+    .step-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+
+    /* ── Bit Visualizer ── */
+    .bit-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+    .bit-grid{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px;justify-content:center}
+    .bit-cell{width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+      font-family:var(--mono);font-size:1.1rem;font-weight:600;border-radius:8px;cursor:pointer;
+      transition:all .2s;border:1px solid var(--border);user-select:none}
+    .bit-cell.on{background:rgba(0,229,255,.18);color:var(--cyan);border-color:var(--cyan)}
+    .bit-cell.off{background:var(--card2);color:var(--muted)}
+    .bit-cell:hover{transform:scale(1.08);border-color:var(--cyan)}
+    .bit-cell.sign-bit{border-color:var(--pink)!important}
+    .bit-cell.sign-bit.on{background:rgba(236,72,153,.18);color:var(--pink)}
+    .nibble-a .bit-cell.on{background:rgba(0,229,255,.18);color:var(--cyan)}
+    .nibble-b .bit-cell.on{background:rgba(168,85,247,.18);color:var(--purple)}
+    .nibble-group{display:flex;gap:4px;padding:4px 8px;border-radius:10px;background:rgba(255,255,255,.02)}
+    .nibble-group:nth-child(even){background:rgba(255,255,255,.04)}
+    .bit-info{display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .bit-info .val{font-family:var(--mono);font-size:1.4rem;color:var(--cyan);font-weight:700}
+    .bit-info label{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+    .bit-info input[type=checkbox]{accent-color:var(--cyan)}
+
+    /* ── Arithmetic ── */
+    .arith-inputs{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+    .arith-inputs .field{flex:1;min-width:140px}
+    .arith-inputs label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px}
+    .arith-inputs input,.arith-inputs select{width:100%;padding:10px 14px;background:var(--card2);
+      border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s}
+    .arith-inputs input:focus,.arith-inputs select:focus{border-color:var(--cyan)}
+    .arith-inputs select option{background:var(--card);color:var(--text)}
+    .arith-display{font-family:var(--mono);font-size:1.1rem;line-height:2;padding:20px;
+      background:var(--card2);border-radius:10px;border:1px solid var(--border);overflow-x:auto;
+      white-space:pre;min-height:120px;margin-bottom:12px}
+    .arith-display .carry{color:var(--gold);font-size:.8rem}
+    .arith-display .borrow{color:var(--red);font-size:.8rem}
+    .arith-display .result-digit{color:var(--green);font-weight:700}
+    .arith-display .active-col{background:rgba(0,229,255,.1);border-radius:4px}
+
+    /* ── ASCII ── */
+    .ascii-search{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+    .ascii-search input{flex:1;min-width:200px;padding:10px 14px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:.95rem;outline:none}
+    .ascii-search input:focus{border-color:var(--cyan)}
+    .ascii-table-wrap{overflow-x:auto;max-height:500px;overflow-y:auto;border-radius:var(--r);border:1px solid var(--border)}
+    .ascii-table{width:100%;border-collapse:collapse;font-size:.82rem}
+    .ascii-table th{position:sticky;top:0;background:var(--card);font-family:'Orbitron',sans-serif;
+      font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+      padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);z-index:2}
+    .ascii-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);
+      color:var(--text);transition:background .2s}
+    .ascii-table tr:hover td{background:rgba(0,229,255,.05)}
+    .ascii-table tr.highlight td{background:rgba(250,204,21,.08)}
+    .ascii-table .char-cell{font-size:1.1rem;min-width:40px;text-align:center}
+    .ascii-detail{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);
+      padding:20px;margin-bottom:16px;display:none}
+    .ascii-detail.show{display:block}
+    .ascii-detail .big-char{font-size:3rem;text-align:center;margin-bottom:12px;color:var(--cyan)}
+    .ascii-detail .repr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+    .ascii-detail .repr-item{text-align:center;padding:10px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
+    .ascii-detail .repr-item .rlabel{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+    .ascii-detail .repr-item .rval{font-family:var(--mono);font-size:1rem;color:var(--text)}
+
+    /* ── Practice ── */
+    .practice-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+    .practice-stats{display:flex;gap:16px;flex-wrap:wrap}
+    .practice-stats .stat{text-align:center}
+    .practice-stats .stat .sv{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--cyan)}
+    .practice-stats .stat .sl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .challenge-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);
+      padding:28px;text-align:center;margin-bottom:20px}
+    .challenge-card .prompt{font-size:1.15rem;margin-bottom:20px;line-height:1.6}
+    .challenge-card .prompt .highlight{color:var(--cyan);font-family:var(--mono);font-weight:600}
+    .challenge-card input{width:100%;max-width:360px;padding:12px 16px;background:var(--card);
+      border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);
+      font-size:1.2rem;text-align:center;outline:none;transition:border-color .3s}
+    .challenge-card input:focus{border-color:var(--cyan)}
+    .challenge-card input.correct{border-color:var(--green);background:rgba(34,197,94,.08)}
+    .challenge-card input.wrong{border-color:var(--red);background:rgba(239,68,68,.08)}
+    .challenge-card .feedback{margin-top:14px;font-size:.95rem;min-height:1.5em}
+    .challenge-card .feedback.correct{color:var(--green)}
+    .challenge-card .feedback.wrong{color:var(--red)}
+    .difficulty-tabs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+
+    /* ── Reference ── */
+    .ref-section{margin-bottom:12px}
+    .ref-toggle{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;
+      padding:14px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+      transition:all .2s;color:var(--text);font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:500}
+    .ref-toggle:hover{border-color:var(--cyan)}
+    .ref-toggle .arrow{transition:transform .3s;color:var(--muted);font-size:.8rem}
+    .ref-toggle.open .arrow{transform:rotate(180deg)}
+    .ref-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+    .ref-body.open{max-height:2000px}
+    .ref-body-inner{padding:16px 20px;background:var(--card);border:1px solid var(--border);
+      border-top:none;border-radius:0 0 10px 10px}
+    .ref-table{width:100%;border-collapse:collapse;font-size:.82rem}
+    .ref-table th{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.1em;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:6px 10px;font-family:var(--mono);border-bottom:1px solid rgba(30,30,58,.5)}
+    .ref-table tr:hover td{background:rgba(0,229,255,.03)}
+    .ref-tip{background:rgba(0,229,255,.06);border-left:3px solid var(--cyan);border-radius:0 8px 8px 0;
+      padding:12px 16px;margin-bottom:10px;font-size:.88rem;line-height:1.6}
+    .ref-tip code{font-family:var(--mono);color:var(--cyan);background:rgba(0,229,255,.1);padding:2px 6px;border-radius:4px}
+
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:var(--card);border:1px solid var(--cyan);border-radius:10px;padding:10px 24px;
+      font-size:.88rem;color:var(--cyan);z-index:1000;opacity:0;transition:all .3s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:700px){
+      .converter-input-row{flex-direction:column}
+      .output-grid{grid-template-columns:1fr}
+      .arith-inputs{flex-direction:column}
+      .bit-cell{width:36px;height:36px;font-size:.95rem}
+      .practice-header{flex-direction:column;text-align:center}
+      .hero{padding:40px 16px 20px}
+      .panel{padding:16px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Number System Explorer</h1>
+    <p>Convert between number bases with step-by-step working, bit visualizations, and interactive practice.</p>
+  </div>
+
+  <div class="nav-tabs" id="mainTabs">
+    <button class="nav-tab active" data-tab="converter">Converter</button>
+    <button class="nav-tab" data-tab="steps">Step-by-Step</button>
+    <button class="nav-tab" data-tab="bits">Bit Visualizer</button>
+    <button class="nav-tab" data-tab="arithmetic">Arithmetic</button>
+    <button class="nav-tab" data-tab="ascii">ASCII Table</button>
+    <button class="nav-tab" data-tab="practice">Practice</button>
+    <button class="nav-tab" data-tab="reference">Reference</button>
+  </div>
+
+  <!-- ═══════════ TAB 1: CONVERTER ═══════════ -->
+  <div class="tab-content" id="tab-converter">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F504;</span> Live Multi-Base Display</div>
+      <div class="converter-input-row">
+        <div class="field" style="flex:2">
+          <label>Enter a number</label>
+          <input type="text" id="convInput" placeholder="e.g. 255, FF, 11111111" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field" style="flex:1;min-width:120px">
+          <label>Input Base</label>
+          <select id="convBase">
+            <option value="2">Binary (2)</option>
+            <option value="8">Octal (8)</option>
+            <option value="10" selected>Decimal (10)</option>
+            <option value="16">Hexadecimal (16)</option>
+          </select>
+        </div>
+      </div>
+      <div class="output-grid" id="convOutputs">
+        <div class="output-card" data-base="2" onclick="copyOutput(this)">
+          <div class="base-label">Binary (Base 2)</div>
+          <div class="base-value" id="out-bin">--</div>
+          <div class="copied">Copied!</div>
+        </div>
+        <div class="output-card" data-base="8" onclick="copyOutput(this)">
+          <div class="base-label">Octal (Base 8)</div>
+          <div class="base-value" id="out-oct">--</div>
+          <div class="copied">Copied!</div>
+        </div>
+        <div class="output-card" data-base="10" onclick="copyOutput(this)">
+          <div class="base-label">Decimal (Base 10)</div>
+          <div class="base-value" id="out-dec">--</div>
+          <div class="copied">Copied!</div>
+        </div>
+        <div class="output-card" data-base="16" onclick="copyOutput(this)">
+          <div class="base-label">Hexadecimal (Base 16)</div>
+          <div class="base-value" id="out-hex">--</div>
+          <div class="copied">Copied!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 2: STEP-BY-STEP ═══════════ -->
+  <div class="tab-content" id="tab-steps" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F4DD;</span> Step-by-Step Conversion</div>
+      <div class="converter-input-row">
+        <div class="field" style="flex:2">
+          <label>Number to convert</label>
+          <input type="text" id="stepInput" placeholder="e.g. 42" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field" style="flex:1;min-width:100px">
+          <label>From Base</label>
+          <select id="stepFromBase">
+            <option value="2">2</option><option value="8">8</option>
+            <option value="10" selected>10</option><option value="16">16</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1;min-width:100px">
+          <label>To Base</label>
+          <select id="stepToBase">
+            <option value="2" selected>2</option><option value="8">8</option>
+            <option value="10">10</option><option value="16">16</option>
+          </select>
+        </div>
+      </div>
+      <div class="step-controls">
+        <button class="btn primary" onclick="generateSteps()">Generate Steps</button>
+        <button class="btn" id="btnNextStep" onclick="showNextStep()" disabled>Next Step</button>
+        <button class="btn" id="btnAllSteps" onclick="showAllSteps()" disabled>Show All</button>
+      </div>
+      <div id="stepsContainer"></div>
+      <div id="stepResult" style="display:none" class="step-card visible">
+        <div class="step-num">RESULT</div>
+        <div class="step-body" id="stepResultBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 3: BIT VISUALIZER ═══════════ -->
+  <div class="tab-content" id="tab-bits" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F4A1;</span> Bit Visualizer</div>
+      <div class="bit-controls">
+        <button class="btn sm" data-bits="8" onclick="setBitWidth(8,this)">8-bit</button>
+        <button class="btn sm active" data-bits="16" onclick="setBitWidth(16,this)" style="border-color:var(--cyan);color:var(--cyan)">16-bit</button>
+        <button class="btn sm" data-bits="32" onclick="setBitWidth(32,this)">32-bit</button>
+        <button class="btn sm" onclick="clearBits()">Clear</button>
+        <button class="btn sm" onclick="invertBits()">Invert</button>
+      </div>
+      <div class="bit-info">
+        <div>Unsigned: <span class="val" id="bitUnsigned">0</span></div>
+        <div>Signed: <span class="val" id="bitSigned" style="color:var(--purple)">0</span></div>
+        <label><input type="checkbox" id="twosCompToggle" onchange="updateBitDisplay()"> Two's complement</label>
+      </div>
+      <div class="bit-grid" id="bitGrid"></div>
+      <div style="text-align:center;margin-top:8px">
+        <label style="font-size:.78rem;color:var(--muted)">Direct decimal input: </label>
+        <input type="number" id="bitDecInput" value="0" style="width:140px;padding:6px 10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:.95rem;outline:none" onchange="setFromDecimal()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 4: ARITHMETIC ═══════════ -->
+  <div class="tab-content" id="tab-arithmetic" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x2795;</span> Base Arithmetic</div>
+      <div class="arith-inputs">
+        <div class="field" style="flex:2">
+          <label>Number A</label>
+          <input type="text" id="arithA" placeholder="e.g. 1010" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field" style="flex:1;min-width:80px">
+          <label>Operation</label>
+          <select id="arithOp">
+            <option value="add">+ Add</option>
+            <option value="sub">- Subtract</option>
+            <option value="mul">x Multiply</option>
+          </select>
+        </div>
+        <div class="field" style="flex:2">
+          <label>Number B</label>
+          <input type="text" id="arithB" placeholder="e.g. 0110" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field" style="flex:1;min-width:100px">
+          <label>Base</label>
+          <select id="arithBase">
+            <option value="2">Binary (2)</option>
+            <option value="8">Octal (8)</option>
+            <option value="10" selected>Decimal (10)</option>
+            <option value="16">Hex (16)</option>
+          </select>
+        </div>
+      </div>
+      <div class="step-controls">
+        <button class="btn primary" onclick="doArithmetic()">Calculate</button>
+        <button class="btn" id="btnArithStep" onclick="nextArithStep()" disabled>Next Column</button>
+        <button class="btn" id="btnArithAll" onclick="allArithSteps()" disabled>Show All</button>
+      </div>
+      <div class="arith-display" id="arithDisplay">Enter two numbers and select an operation.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 5: ASCII TABLE ═══════════ -->
+  <div class="tab-content" id="tab-ascii" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F524;</span> ASCII / Unicode Table</div>
+      <div class="ascii-detail" id="asciiDetail">
+        <div class="big-char" id="asciiDetailChar">A</div>
+        <div class="repr-grid" id="asciiDetailGrid"></div>
+      </div>
+      <div class="ascii-search">
+        <input type="text" id="asciiSearch" placeholder="Search by character, decimal, hex..." oninput="filterAscii()">
+        <select id="asciiRange" onchange="filterAscii()" style="padding:10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Poppins',sans-serif;font-size:.88rem;outline:none">
+          <option value="all">All (0-127)</option>
+          <option value="printable">Printable (32-126)</option>
+          <option value="upper">A-Z</option>
+          <option value="lower">a-z</option>
+          <option value="digits">0-9</option>
+          <option value="special">Special</option>
+        </select>
+      </div>
+      <div class="ascii-table-wrap">
+        <table class="ascii-table" id="asciiTable">
+          <thead><tr><th>Char</th><th>Dec</th><th>Hex</th><th>Oct</th><th>Binary</th><th>Name</th></tr></thead>
+          <tbody id="asciiBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 6: PRACTICE ═══════════ -->
+  <div class="tab-content" id="tab-practice" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F3AF;</span> Practice Mode</div>
+      <div class="practice-header">
+        <div class="difficulty-tabs">
+          <button class="nav-tab active" data-diff="easy" onclick="setDifficulty('easy',this)">Easy</button>
+          <button class="nav-tab" data-diff="medium" onclick="setDifficulty('medium',this)">Medium</button>
+          <button class="nav-tab" data-diff="hard" onclick="setDifficulty('hard',this)">Hard</button>
+        </div>
+        <div class="practice-stats">
+          <div class="stat"><div class="sv" id="pScore">0</div><div class="sl">Score</div></div>
+          <div class="stat"><div class="sv" id="pStreak">0</div><div class="sl">Streak</div></div>
+          <div class="stat"><div class="sv" id="pBest">0</div><div class="sl">Best</div></div>
+        </div>
+      </div>
+      <div class="challenge-card" id="challengeCard">
+        <div class="prompt" id="challengePrompt">Press "New Challenge" to start!</div>
+        <input type="text" id="challengeInput" placeholder="Your answer..." autocomplete="off" spellcheck="false" style="display:none" onkeydown="if(event.key==='Enter')checkAnswer()">
+        <div class="feedback" id="challengeFeedback"></div>
+      </div>
+      <div style="text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="newChallenge()">New Challenge</button>
+        <button class="btn" onclick="checkAnswer()">Submit</button>
+        <button class="btn danger" onclick="resetPractice()">Reset Score</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 7: REFERENCE ═══════════ -->
+  <div class="tab-content" id="tab-reference" style="display:none">
+    <div class="panel">
+      <div class="section-title"><span class="icon">&#x1F4D6;</span> Quick Reference Cards</div>
+
+      <div class="ref-section">
+        <button class="ref-toggle" onclick="toggleRef(this)">Powers of 2 <span class="arrow">&#9660;</span></button>
+        <div class="ref-body"><div class="ref-body-inner">
+          <table class="ref-table" id="powersTable">
+            <thead><tr><th>n</th><th>2^n</th><th>Hex</th><th>Binary</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="ref-section">
+        <button class="ref-toggle" onclick="toggleRef(this)">Hex Digits Reference <span class="arrow">&#9660;</span></button>
+        <div class="ref-body"><div class="ref-body-inner">
+          <table class="ref-table">
+            <thead><tr><th>Hex</th><th>Decimal</th><th>Binary</th></tr></thead>
+            <tbody id="hexRefBody"></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="ref-section">
+        <button class="ref-toggle" onclick="toggleRef(this)">Common Conversions <span class="arrow">&#9660;</span></button>
+        <div class="ref-body"><div class="ref-body-inner">
+          <table class="ref-table">
+            <thead><tr><th>Decimal</th><th>Binary</th><th>Octal</th><th>Hex</th></tr></thead>
+            <tbody id="commonConvBody"></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="ref-section">
+        <button class="ref-toggle" onclick="toggleRef(this)">Binary Tricks <span class="arrow">&#9660;</span></button>
+        <div class="ref-body"><div class="ref-body-inner">
+          <div class="ref-tip">Multiply by 2 = <code>shift left by 1</code> (append a 0). Example: <code>5 (101)</code> shifted left = <code>10 (1010)</code></div>
+          <div class="ref-tip">Divide by 2 = <code>shift right by 1</code> (remove last bit). Example: <code>10 (1010)</code> shifted right = <code>5 (101)</code></div>
+          <div class="ref-tip">Check if even/odd: look at the <code>last bit</code>. If it's 0 the number is even, if 1 it's odd.</div>
+          <div class="ref-tip">Multiply by 2^n = <code>shift left by n</code>. Example: <code>3 &lt;&lt; 4 = 48</code> (3 x 16)</div>
+          <div class="ref-tip">One hex digit = <code>4 binary digits</code> (a nibble). Two hex digits = 1 byte.</div>
+          <div class="ref-tip">To negate in two's complement: <code>invert all bits</code> then <code>add 1</code>.</div>
+          <div class="ref-tip">A power of 2 has exactly <code>one bit set</code>. Test: <code>n &amp; (n-1) == 0</code>.</div>
+          <div class="ref-tip"><code>XOR</code> with itself = 0. <code>XOR</code> with all 1s = bitwise NOT.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x1F51D;</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  SETUP
+// ═══════════════════════════════════════════════
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+// Back to top button
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('backToTop');
+  if(b)b.style.display=window.scrollY>300?'flex':'none';
+});
+
+// Tab switching
+document.querySelectorAll('#mainTabs .nav-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('#mainTabs .nav-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(x=>x.style.display='none');
+    document.getElementById('tab-'+t.dataset.tab).style.display='block';
+  });
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ═══════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════
+const DIGITS='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function parseToDecimal(str,base){
+  str=str.trim().toUpperCase();
+  if(!str)return NaN;
+  let val=0n;
+  const b=BigInt(base);
+  for(let i=0;i<str.length;i++){
+    const d=DIGITS.indexOf(str[i]);
+    if(d<0||d>=base)return NaN;
+    val=val*b+BigInt(d);
+  }
+  return val;
+}
+
+function fromDecimal(dec,base){
+  if(dec===0n)return '0';
+  let s='';const b=BigInt(base);
+  let v=dec<0n?-dec:dec;
+  while(v>0n){s=DIGITS[Number(v%b)]+s;v=v/b;}
+  return (dec<0n?'-':'')+s;
+}
+
+function padBin(s,bits){return s.padStart(bits,'0');}
+
+// ═══════════════════════════════════════════════
+//  TAB 1: CONVERTER
+// ═══════════════════════════════════════════════
+const convInput=document.getElementById('convInput');
+const convBase=document.getElementById('convBase');
+
+function updateConverter(){
+  const str=convInput.value.trim();
+  const base=parseInt(convBase.value);
+  const dec=parseToDecimal(str,base);
+  const targets=[
+    {id:'out-bin',base:2},
+    {id:'out-oct',base:8},
+    {id:'out-dec',base:10},
+    {id:'out-hex',base:16}
+  ];
+  if(str===''||dec!==dec){
+    targets.forEach(t=>document.getElementById(t.id).textContent='--');
+    return;
+  }
+  const binStr=fromDecimal(dec,2);
+  const hexStr=fromDecimal(dec,16);
+  targets.forEach(t=>{
+    const el=document.getElementById(t.id);
+    const val=fromDecimal(dec,t.base);
+    // Add digit group highlighting for bin/hex correspondence
+    if(t.base===2){
+      const padded=padBin(val,Math.ceil(val.length/4)*4);
+      let html='';
+      const colors=['hl-a','hl-b','hl-c','hl-d'];
+      for(let i=0;i<padded.length;i++){
+        const g=Math.floor(i/4)%4;
+        html+=`<span class="digit ${colors[g]}">${padded[i]}</span>`;
+        if((i+1)%4===0&&i<padded.length-1)html+=' ';
+      }
+      el.innerHTML=html;
+    } else if(t.base===16){
+      const bLen=Math.ceil(binStr.length/4);
+      const padded=val.padStart(bLen,'0');
+      let html='';
+      const colors=['hl-a','hl-b','hl-c','hl-d'];
+      for(let i=0;i<padded.length;i++){
+        html+=`<span class="digit ${colors[i%4]}">${padded[i]}</span>`;
+        if((i+1)%2===0&&i<padded.length-1)html+=' ';
+      }
+      el.innerHTML=html;
+    } else {
+      el.textContent=val;
+    }
+  });
+}
+
+convInput.addEventListener('input',updateConverter);
+convBase.addEventListener('change',updateConverter);
+
+function copyOutput(card){
+  const val=card.querySelector('.base-value').textContent.replace(/\s/g,'');
+  if(val==='--')return;
+  navigator.clipboard.writeText(val).then(()=>{
+    const c=card.querySelector('.copied');
+    c.classList.add('show');
+    setTimeout(()=>c.classList.remove('show'),1500);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  TAB 2: STEP-BY-STEP
+// ═══════════════════════════════════════════════
+let stepCards=[], stepIdx=0;
+
+function generateSteps(){
+  const str=document.getElementById('stepInput').value.trim();
+  const fromB=parseInt(document.getElementById('stepFromBase').value);
+  const toB=parseInt(document.getElementById('stepToBase').value);
+  const dec=parseToDecimal(str,fromB);
+  if(str===''||dec!==dec){showToast('Invalid input for the selected base');return;}
+  const container=document.getElementById('stepsContainer');
+  container.innerHTML='';
+  stepCards=[];stepIdx=0;
+  document.getElementById('stepResult').style.display='none';
+
+  if(fromB===toB){
+    container.innerHTML='<div class="step-card visible"><div class="step-body">Same base -- no conversion needed! Result: '+str.toUpperCase()+'</div></div>';
+    document.getElementById('btnNextStep').disabled=true;
+    document.getElementById('btnAllSteps').disabled=true;
+    return;
+  }
+
+  // Phase 1: convert to decimal if not already decimal
+  if(fromB!==10){
+    const digits=str.toUpperCase().split('');
+    digits.forEach((d,i)=>{
+      const dVal=DIGITS.indexOf(d);
+      const power=digits.length-1-i;
+      const contribution=dVal*Math.pow(fromB,power);
+      const card=document.createElement('div');
+      card.className='step-card';
+      card.innerHTML=`<div class="step-num">TO DECIMAL - STEP ${i+1}</div>
+        <div class="step-body"><span class="position">${d}</span> x ${fromB}<sup>${power}</sup> = <span class="position">${d}</span> x ${Math.pow(fromB,power)} = <span class="remainder">${contribution}</span></div>`;
+      container.appendChild(card);
+      stepCards.push(card);
+    });
+    // Sum step
+    const sumCard=document.createElement('div');
+    sumCard.className='step-card';
+    const parts=digits.map((d,i)=>{
+      const dVal=DIGITS.indexOf(d);
+      return dVal*Math.pow(fromB,digits.length-1-i);
+    });
+    sumCard.innerHTML=`<div class="step-num">TO DECIMAL - SUM</div>
+      <div class="step-body">${parts.join(' + ')} = <span class="quotient">${Number(dec)}</span> (decimal)</div>`;
+    container.appendChild(sumCard);
+    stepCards.push(sumCard);
+  }
+
+  // Phase 2: convert from decimal to target if not decimal
+  if(toB!==10){
+    let q=Number(dec);
+    let divSteps=[];
+    if(q===0)divSteps.push({q:0,r:0,qNext:0});
+    let stepNum=0;
+    while(q>0){
+      const r=q%toB;
+      const qNext=Math.floor(q/toB);
+      divSteps.push({q,r,qNext});
+      q=qNext;
+      stepNum++;
+    }
+    divSteps.forEach((s,i)=>{
+      const card=document.createElement('div');
+      card.className='step-card';
+      card.innerHTML=`<div class="step-num">TO BASE ${toB} - STEP ${i+1}</div>
+        <div class="step-body"><span class="quotient">${s.q}</span> / ${toB} = <span class="quotient">${s.qNext}</span> remainder <span class="remainder">${DIGITS[s.r]}</span></div>`;
+      container.appendChild(card);
+      stepCards.push(card);
+    });
+    // Result
+    const result=fromDecimal(dec,toB);
+    const resCard=document.createElement('div');
+    resCard.className='step-card';
+    resCard.innerHTML=`<div class="step-num">READ REMAINDERS (BOTTOM TO TOP)</div>
+      <div class="step-body">Result: <span class="quotient" style="font-size:1.2rem">${result}</span> (base ${toB})</div>`;
+    container.appendChild(resCard);
+    stepCards.push(resCard);
+  }
+
+  if(toB===10&&fromB!==10){
+    // Already done above, show final
+  }
+
+  document.getElementById('btnNextStep').disabled=false;
+  document.getElementById('btnAllSteps').disabled=false;
+}
+
+function showNextStep(){
+  if(stepIdx<stepCards.length){
+    stepCards[stepIdx].classList.add('visible');
+    stepIdx++;
+    if(stepIdx>=stepCards.length){document.getElementById('btnNextStep').disabled=true;}
+  }
+}
+
+function showAllSteps(){
+  stepCards.forEach(c=>c.classList.add('visible'));
+  stepIdx=stepCards.length;
+  document.getElementById('btnNextStep').disabled=true;
+}
+
+// ═══════════════════════════════════════════════
+//  TAB 3: BIT VISUALIZER
+// ═══════════════════════════════════════════════
+let bitWidth=16;
+let bits=[];
+
+function setBitWidth(n,btn){
+  bitWidth=n;
+  document.querySelectorAll('.bit-controls .btn').forEach(b=>{ b.style.borderColor=''; b.style.color=''; b.classList.remove('active'); });
+  if(btn){btn.style.borderColor='var(--cyan)';btn.style.color='var(--cyan)';}
+  bits=new Array(n).fill(0);
+  renderBitGrid();
+  updateBitDisplay();
+}
+
+function renderBitGrid(){
+  const grid=document.getElementById('bitGrid');
+  grid.innerHTML='';
+  const nibbleCount=bitWidth/4;
+  for(let g=0;g<nibbleCount;g++){
+    const ng=document.createElement('div');
+    ng.className='nibble-group';
+    for(let b=0;b<4;b++){
+      const idx=g*4+b;
+      const cell=document.createElement('div');
+      cell.className='bit-cell '+(bits[idx]?'on':'off');
+      if(idx===0)cell.classList.add('sign-bit');
+      cell.textContent=bits[idx];
+      cell.dataset.idx=idx;
+      cell.addEventListener('click',()=>toggleBit(idx));
+      ng.appendChild(cell);
+    }
+    grid.appendChild(ng);
+  }
+}
+
+function toggleBit(idx){
+  bits[idx]=bits[idx]?0:1;
+  renderBitGrid();
+  updateBitDisplay();
+}
+
+function clearBits(){bits.fill(0);renderBitGrid();updateBitDisplay();}
+function invertBits(){bits=bits.map(b=>b?0:1);renderBitGrid();updateBitDisplay();}
+
+function updateBitDisplay(){
+  const unsigned=bits.reduce((a,b,i)=>a+b*Math.pow(2,bitWidth-1-i),0);
+  document.getElementById('bitUnsigned').textContent=unsigned.toLocaleString();
+  document.getElementById('bitDecInput').value=unsigned;
+
+  const twos=document.getElementById('twosCompToggle').checked;
+  if(twos&&bits[0]===1){
+    // Two's complement: sign bit set means negative
+    const max=Math.pow(2,bitWidth);
+    document.getElementById('bitSigned').textContent=(unsigned-max).toLocaleString();
+  } else {
+    document.getElementById('bitSigned').textContent=unsigned.toLocaleString();
+  }
+}
+
+function setFromDecimal(){
+  let val=parseInt(document.getElementById('bitDecInput').value)||0;
+  const max=Math.pow(2,bitWidth)-1;
+  if(val<0)val=0;if(val>max)val=max;
+  for(let i=bitWidth-1;i>=0;i--){
+    bits[bitWidth-1-i]=(val>>i)&1;
+  }
+  renderBitGrid();
+  updateBitDisplay();
+}
+
+// Init bit grid
+setBitWidth(16,document.querySelector('.bit-controls [data-bits="16"]'));
+
+// ═══════════════════════════════════════════════
+//  TAB 4: ARITHMETIC
+// ═══════════════════════════════════════════════
+let arithSteps=[], arithStepIdx=0, arithFullHTML='';
+
+function doArithmetic(){
+  const a=document.getElementById('arithA').value.trim().toUpperCase();
+  const b=document.getElementById('arithB').value.trim().toUpperCase();
+  const base=parseInt(document.getElementById('arithBase').value);
+  const op=document.getElementById('arithOp').value;
+  const decA=parseToDecimal(a,base);
+  const decB=parseToDecimal(b,base);
+  if(decA!==decA||decB!==decB){showToast('Invalid input for the selected base');return;}
+
+  let result;
+  if(op==='add')result=decA+decB;
+  else if(op==='sub')result=decA-decB;
+  else result=decA*decB;
+
+  const resStr=fromDecimal(result,base);
+  arithSteps=[];arithStepIdx=0;
+
+  if(op==='add')buildAddSteps(a,b,base,resStr);
+  else if(op==='sub')buildSubSteps(a,b,base,resStr);
+  else buildMulSteps(a,b,base,resStr);
+
+  document.getElementById('btnArithStep').disabled=false;
+  document.getElementById('btnArithAll').disabled=false;
+  // Show initial layout
+  document.getElementById('arithDisplay').innerHTML=arithSteps[0]||arithFullHTML;
+}
+
+function buildAddSteps(a,b,base,result){
+  const maxLen=Math.max(a.length,b.length)+1;
+  const pa=a.padStart(maxLen,' ');
+  const pb=b.padStart(maxLen,' ');
+  const pr=result.padStart(maxLen,' ');
+  let carries=new Array(maxLen).fill(' ');
+  let resArr=new Array(maxLen).fill(' ');
+  let carry=0;
+
+  // Pre-calculate all carries
+  for(let i=0;i<maxLen;i++){
+    const ia=a.length-1-i,ib=b.length-1-i;
+    const da=ia>=0?DIGITS.indexOf(a[ia]):0;
+    const db=ib>=0?DIGITS.indexOf(b[ib]):0;
+    const sum=da+db+carry;
+    const digit=sum%base;
+    carry=Math.floor(sum/base);
+    resArr[maxLen-1-i]=DIGITS[digit];
+    if(carry>0&&i<maxLen-1)carries[maxLen-2-i]=String(carry);
+  }
+
+  // Build progressive steps
+  let revealedRes=new Array(maxLen).fill(' ');
+  let revealedCarry=new Array(maxLen).fill(' ');
+  carry=0;
+
+  for(let i=0;i<maxLen;i++){
+    const ia=a.length-1-i,ib=b.length-1-i;
+    const da=ia>=0?DIGITS.indexOf(a[ia]):0;
+    const db=ib>=0?DIGITS.indexOf(b[ib]):0;
+    const sum=da+db+carry;
+    const digit=sum%base;
+    carry=Math.floor(sum/base);
+    revealedRes[maxLen-1-i]=`<span class="result-digit">${DIGITS[digit]}</span>`;
+    if(carry>0&&i<maxLen-1)revealedCarry[maxLen-2-i]=`<span class="carry">${carry}</span>`;
+
+    const html=`<span class="carry">${revealedCarry.join('')}</span>\n  ${pa}\n+ ${pb}\n${'─'.repeat(maxLen+2)}\n  ${revealedRes.join('')}\n\n<span style="color:var(--muted);font-size:.82rem">Column ${i+1}: ${da} + ${db}${carry>0?' + carry':''}${i>0&&(function(){const ia2=a.length-i,ib2=b.length-i;const da2=ia2>=0&&ia2<a.length?DIGITS.indexOf(a[ia2]):0;const db2=ib2>=0&&ib2<b.length?DIGITS.indexOf(b[ib2]):0;const prevCarry=sum-da-db;return prevCarry>0;}())?'':''} = ${sum}${sum>=base?` (write ${DIGITS[digit]}, carry ${carry})`:''}</span>`;
+    arithSteps.push(html);
+  }
+
+  arithFullHTML=arithSteps[arithSteps.length-1];
+}
+
+function buildSubSteps(a,b,base,result){
+  const maxLen=Math.max(a.length,b.length);
+  const pa=a.padStart(maxLen,' ');
+  const pb=b.padStart(maxLen,' ');
+  let revealedRes=new Array(maxLen+1).fill(' ');
+  let borrow=0;
+
+  for(let i=0;i<maxLen;i++){
+    const ia=a.length-1-i,ib=b.length-1-i;
+    let da=ia>=0?DIGITS.indexOf(a[ia]):0;
+    const db=ib>=0?DIGITS.indexOf(b[ib]):0;
+    da-=borrow;
+    if(da<db){da+=base;borrow=1;}else{borrow=0;}
+    const digit=da-db;
+    revealedRes[maxLen-i]=`<span class="result-digit">${DIGITS[digit]}</span>`;
+
+    const html=`  ${pa}\n- ${pb}\n${'─'.repeat(maxLen+2)}\n  ${revealedRes.join('')}\n\n<span style="color:var(--muted);font-size:.82rem">Column ${i+1}: ${ia>=0?a[ia]:'0'} - ${ib>=0?b[ib]:'0'}${borrow?' (borrowed)':''} = ${DIGITS[digit]}</span>`;
+    arithSteps.push(html);
+  }
+  arithFullHTML=arithSteps[arithSteps.length-1];
+}
+
+function buildMulSteps(a,b,base,result){
+  const decA=parseToDecimal(a,parseInt(document.getElementById('arithBase').value));
+  const decB=parseToDecimal(b,parseInt(document.getElementById('arithBase').value));
+  const maxLen=a.length+b.length+2;
+  let partials=[];
+
+  for(let i=0;i<b.length;i++){
+    const db=DIGITS.indexOf(b[b.length-1-i]);
+    let carry=0, partial='';
+    for(let j=a.length-1;j>=0;j--){
+      const da=DIGITS.indexOf(a[j]);
+      const prod=da*db+carry;
+      partial=DIGITS[prod%base]+partial;
+      carry=Math.floor(prod/base);
+    }
+    if(carry>0)partial=DIGITS[carry]+partial;
+    partial+='0'.repeat(i);
+    partials.push(partial);
+
+    let lines=`  ${a.padStart(maxLen)}\nx ${b.padStart(maxLen)}\n${'─'.repeat(maxLen+2)}\n`;
+    partials.forEach((p,k)=>{lines+=`  ${p.padStart(maxLen)}${k===0?' (partial)':''}\n`;});
+    if(i>0)lines+=`${'─'.repeat(maxLen+2)}\n  ${result.padStart(maxLen)}`;
+    lines+=`\n\n<span style="color:var(--muted);font-size:.82rem">Multiply ${a} by ${b[b.length-1-i]} (digit ${i+1})</span>`;
+    arithSteps.push(lines);
+  }
+  // Final
+  let fin=`  ${a.padStart(maxLen)}\nx ${b.padStart(maxLen)}\n${'─'.repeat(maxLen+2)}\n`;
+  partials.forEach(p=>{fin+=`  ${p.padStart(maxLen)}\n`;});
+  fin+=`${'─'.repeat(maxLen+2)}\n  <span class="result-digit">${result.padStart(maxLen)}</span>`;
+  arithSteps.push(fin);
+  arithFullHTML=arithSteps[arithSteps.length-1];
+}
+
+function nextArithStep(){
+  if(arithStepIdx<arithSteps.length){
+    document.getElementById('arithDisplay').innerHTML=arithSteps[arithStepIdx];
+    arithStepIdx++;
+    if(arithStepIdx>=arithSteps.length)document.getElementById('btnArithStep').disabled=true;
+  }
+}
+
+function allArithSteps(){
+  document.getElementById('arithDisplay').innerHTML=arithFullHTML;
+  arithStepIdx=arithSteps.length;
+  document.getElementById('btnArithStep').disabled=true;
+}
+
+// ═══════════════════════════════════════════════
+//  TAB 5: ASCII TABLE
+// ═══════════════════════════════════════════════
+const ASCII_NAMES=[
+  'NUL','SOH','STX','ETX','EOT','ENQ','ACK','BEL','BS','HT','LF','VT','FF','CR','SO','SI',
+  'DLE','DC1','DC2','DC3','DC4','NAK','SYN','ETB','CAN','EM','SUB','ESC','FS','GS','RS','US',
+  'Space'
+];
+
+function buildAsciiTable(){
+  const body=document.getElementById('asciiBody');
+  let html='';
+  for(let i=0;i<128;i++){
+    let ch,name;
+    if(i<32){ch='&#x2400;';name=ASCII_NAMES[i];}
+    else if(i===32){ch='&#x2420;';name='Space';}
+    else if(i===127){ch='&#x2421;';name='DEL';}
+    else{ch=String.fromCharCode(i);name='';}
+    const isHighlight=(i>=48&&i<=57)||(i>=65&&i<=90)||(i>=97&&i<=122);
+    const bin=i.toString(2).padStart(8,'0');
+    html+=`<tr class="${isHighlight?'highlight':''}" data-code="${i}" onclick="showAsciiDetail(${i})" style="cursor:pointer">
+      <td class="char-cell">${ch}</td><td>${i}</td><td>${i.toString(16).toUpperCase().padStart(2,'0')}</td>
+      <td>${i.toString(8).padStart(3,'0')}</td><td>${bin}</td><td>${name}</td></tr>`;
+  }
+  body.innerHTML=html;
+}
+
+function filterAscii(){
+  const q=document.getElementById('asciiSearch').value.toLowerCase();
+  const range=document.getElementById('asciiRange').value;
+  const rows=document.querySelectorAll('#asciiBody tr');
+  rows.forEach(r=>{
+    const code=parseInt(r.dataset.code);
+    let show=true;
+    if(range==='printable')show=code>=32&&code<=126;
+    else if(range==='upper')show=code>=65&&code<=90;
+    else if(range==='lower')show=code>=97&&code<=122;
+    else if(range==='digits')show=code>=48&&code<=57;
+    else if(range==='special')show=(code>=33&&code<=47)||(code>=58&&code<=64)||(code>=91&&code<=96)||(code>=123&&code<=126);
+    if(show&&q){
+      const text=r.textContent.toLowerCase();
+      show=text.includes(q)||code.toString()===q||code.toString(16).includes(q);
+    }
+    r.style.display=show?'':'none';
+  });
+}
+
+function showAsciiDetail(code){
+  const detail=document.getElementById('asciiDetail');
+  detail.classList.add('show');
+  let ch;
+  if(code<32)ch='Control';
+  else if(code===32)ch='(Space)';
+  else if(code===127)ch='(DEL)';
+  else ch=String.fromCharCode(code);
+  document.getElementById('asciiDetailChar').textContent=ch;
+  const grid=document.getElementById('asciiDetailGrid');
+  const bin=code.toString(2).padStart(8,'0');
+  grid.innerHTML=`
+    <div class="repr-item"><div class="rlabel">Decimal</div><div class="rval">${code}</div></div>
+    <div class="repr-item"><div class="rlabel">Hexadecimal</div><div class="rval">0x${code.toString(16).toUpperCase().padStart(2,'0')}</div></div>
+    <div class="repr-item"><div class="rlabel">Octal</div><div class="rval">0o${code.toString(8).padStart(3,'0')}</div></div>
+    <div class="repr-item"><div class="rlabel">Binary</div><div class="rval">${bin}</div></div>
+    <div class="repr-item"><div class="rlabel">HTML Entity</div><div class="rval">&amp;#${code};</div></div>
+    <div class="repr-item"><div class="rlabel">CSS/JS</div><div class="rval">\\u${code.toString(16).toUpperCase().padStart(4,'0')}</div></div>`;
+}
+
+buildAsciiTable();
+
+// ═══════════════════════════════════════════════
+//  TAB 6: PRACTICE
+// ═══════════════════════════════════════════════
+let practiceState={score:0,streak:0,best:0,difficulty:'easy',current:null};
+
+function loadPractice(){
+  const s=localStorage.getItem('baseConverterPractice');
+  if(s){const d=JSON.parse(s);practiceState.score=d.score||0;practiceState.streak=d.streak||0;practiceState.best=d.best||0;}
+  updatePracticeUI();
+}
+
+function savePractice(){
+  localStorage.setItem('baseConverterPractice',JSON.stringify({score:practiceState.score,streak:practiceState.streak,best:practiceState.best}));
+}
+
+function updatePracticeUI(){
+  document.getElementById('pScore').textContent=practiceState.score;
+  document.getElementById('pStreak').textContent=practiceState.streak;
+  document.getElementById('pBest').textContent=practiceState.best;
+}
+
+function setDifficulty(d,btn){
+  practiceState.difficulty=d;
+  document.querySelectorAll('.difficulty-tabs .nav-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function newChallenge(){
+  const d=practiceState.difficulty;
+  let num,fromB,toB,type;
+  const bases=[2,8,10,16];
+  const baseNames={2:'binary',8:'octal',10:'decimal',16:'hexadecimal'};
+
+  if(d==='easy'){
+    num=Math.floor(Math.random()*64);
+    const pairs=[[10,2],[2,10],[10,8],[8,10]];
+    const p=pairs[Math.floor(Math.random()*pairs.length)];
+    fromB=p[0];toB=p[1];type='convert';
+  } else if(d==='medium'){
+    num=Math.floor(Math.random()*256);
+    fromB=bases[Math.floor(Math.random()*bases.length)];
+    do{toB=bases[Math.floor(Math.random()*bases.length)];}while(toB===fromB);
+    type='convert';
+  } else {
+    const r=Math.random();
+    if(r<0.6){
+      num=Math.floor(Math.random()*4096);
+      fromB=bases[Math.floor(Math.random()*bases.length)];
+      do{toB=bases[Math.floor(Math.random()*bases.length)];}while(toB===fromB);
+      type='convert';
+    } else {
+      num=Math.floor(Math.random()*64);
+      const num2=Math.floor(Math.random()*64);
+      fromB=bases[Math.floor(Math.random()*bases.length)];
+      type='arith';
+      practiceState.current={num,num2,base:fromB,op:Math.random()<0.5?'+':'-',type:'arith'};
+    }
+  }
+
+  const input=document.getElementById('challengeInput');
+  input.style.display='block';input.value='';input.className='';
+  document.getElementById('challengeFeedback').textContent='';
+  document.getElementById('challengeFeedback').className='feedback';
+
+  if(type==='arith'){
+    const c=practiceState.current;
+    const aStr=fromDecimal(BigInt(c.num),c.base);
+    const bStr=fromDecimal(BigInt(c.num2),c.base);
+    const answer=c.op==='+'?c.num+c.num2:c.num-c.num2;
+    c.answer=fromDecimal(BigInt(answer<0?0:answer),c.base);
+    document.getElementById('challengePrompt').innerHTML=
+      `What is <span class="highlight">${aStr}</span> ${c.op} <span class="highlight">${bStr}</span> in ${baseNames[c.base]}?`;
+  } else {
+    const numStr=fromDecimal(BigInt(num),fromB);
+    const answer=fromDecimal(BigInt(num),toB);
+    practiceState.current={num,fromB,toB,answer,type:'convert'};
+    document.getElementById('challengePrompt').innerHTML=
+      `Convert <span class="highlight">${numStr}</span> from ${baseNames[fromB]} to ${baseNames[toB]}`;
+  }
+  input.focus();
+}
+
+function checkAnswer(){
+  const c=practiceState.current;
+  if(!c)return;
+  const input=document.getElementById('challengeInput');
+  const fb=document.getElementById('challengeFeedback');
+  const userAns=input.value.trim().toUpperCase();
+  if(!userAns)return;
+  const correct=userAns===c.answer.toUpperCase();
+
+  if(correct){
+    input.className='correct';
+    fb.className='feedback correct';
+    fb.textContent='Correct! Well done!';
+    practiceState.score++;
+    practiceState.streak++;
+    if(practiceState.streak>practiceState.best)practiceState.best=practiceState.streak;
+  } else {
+    input.className='wrong';
+    fb.className='feedback wrong';
+    fb.textContent=`Incorrect. The answer is ${c.answer}`;
+    practiceState.streak=0;
+  }
+  practiceState.current=null;
+  updatePracticeUI();
+  savePractice();
+}
+
+function resetPractice(){
+  practiceState.score=0;practiceState.streak=0;practiceState.best=0;
+  updatePracticeUI();savePractice();
+}
+
+loadPractice();
+
+// ═══════════════════════════════════════════════
+//  TAB 7: REFERENCE
+// ═══════════════════════════════════════════════
+function toggleRef(btn){
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+// Powers of 2
+(function(){
+  const tbody=document.querySelector('#powersTable tbody');
+  let html='';
+  for(let n=0;n<=16;n++){
+    const v=Math.pow(2,n);
+    html+=`<tr><td>${n}</td><td>${v.toLocaleString()}</td><td>${v.toString(16).toUpperCase()}</td><td>${v.toString(2)}</td></tr>`;
+  }
+  tbody.innerHTML=html;
+})();
+
+// Hex reference
+(function(){
+  const tbody=document.getElementById('hexRefBody');
+  let html='';
+  for(let i=0;i<16;i++){
+    html+=`<tr><td>${DIGITS[i]}</td><td>${i}</td><td>${i.toString(2).padStart(4,'0')}</td></tr>`;
+  }
+  tbody.innerHTML=html;
+})();
+
+// Common conversions
+(function(){
+  const tbody=document.getElementById('commonConvBody');
+  const vals=[0,1,7,8,10,15,16,32,42,64,100,127,128,255,256,512,1000,1024,4096,65535];
+  let html='';
+  vals.forEach(v=>{
+    html+=`<tr><td>${v}</td><td>${v.toString(2)}</td><td>${v.toString(8)}</td><td>${v.toString(16).toUpperCase()}</td></tr>`;
+  });
+  tbody.innerHTML=html;
+})();
+
+</script>
+</body>
+</html>

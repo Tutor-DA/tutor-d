@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Geometry Playground | TutorDA</title>
+  <meta name="description" content="Interactive geometry construction tool — create, measure, and explore geometric shapes and theorems with a live canvas.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --card:#111125;--card2:#1a1a35;--border:#1e1e3a;--muted:#94a3b8;
+      --dark:#0d0d1a;--text:#e8e8ff;--green:#22c55e;--red:#ef4444;
+      --blue:#3b82f6;--r:14px;--mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh;overflow-x:hidden}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 16px 60px}
+
+    /* Hero */
+    .hero{text-align:center;padding:56px 24px 20px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* Toolbar */
+    .gp-toolbar{
+      display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:10px 14px;margin-bottom:10px;
+    }
+    .gp-toolbar .sep{width:1px;height:28px;background:var(--border);margin:0 4px}
+    .gp-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:5px;
+      background:var(--dark);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:7px 12px;font-family:'Poppins',sans-serif;
+      font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap;
+    }
+    .gp-btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .gp-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08);box-shadow:0 0 8px rgba(0,229,255,.25)}
+    .gp-btn.danger{border-color:var(--red)}
+    .gp-btn.danger:hover{background:rgba(239,68,68,.15);color:var(--red)}
+    .gp-btn svg{width:15px;height:15px;fill:currentColor;flex-shrink:0}
+
+    /* Main layout */
+    .gp-main{display:flex;gap:12px;align-items:flex-start}
+    .gp-canvas-col{flex:1;min-width:0}
+    .gp-sidebar{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+
+    /* Canvas container */
+    .gp-canvas-wrap{
+      position:relative;background:#0a0a18;border:1px solid var(--border);
+      border-radius:var(--r);overflow:hidden;
+    }
+    .gp-canvas-wrap canvas{display:block;width:100%;cursor:crosshair}
+
+    /* Coord display */
+    .gp-coords{
+      position:absolute;bottom:8px;left:10px;font-family:var(--mono);font-size:.7rem;
+      color:var(--muted);background:rgba(13,13,26,.85);padding:3px 8px;border-radius:6px;
+      pointer-events:none;
+    }
+
+    /* Sidebar panels */
+    .gp-panel{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;
+    }
+    .gp-panel h3{
+      font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--cyan);margin-bottom:10px;
+    }
+    .gp-panel label{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:6px;cursor:pointer}
+    .gp-panel input[type=checkbox]{accent-color:var(--cyan);width:15px;height:15px}
+    .gp-panel select,.gp-panel input[type=color]{
+      background:var(--dark);color:var(--text);border:1px solid var(--border);border-radius:6px;
+      padding:5px 8px;font-size:.78rem;font-family:'Poppins',sans-serif;
+    }
+    .gp-panel input[type=range]{
+      -webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;
+    }
+    .gp-panel input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--cyan);cursor:pointer;
+    }
+    .gp-panel input[type=range]::-moz-range-thumb{
+      width:14px;height:14px;border-radius:50%;background:var(--cyan);cursor:pointer;border:none;
+    }
+
+    /* Properties list */
+    .prop-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:.78rem}
+    .prop-row:last-child{border-bottom:none}
+    .prop-key{color:var(--muted)}
+    .prop-val{color:var(--cyan);font-family:var(--mono);font-size:.72rem}
+
+    /* Theorem cards */
+    .gp-theorem-bar{
+      display:flex;flex-wrap:wrap;gap:6px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:10px 14px;margin-top:10px;
+    }
+    .gp-theorem-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:14px;margin-top:10px;display:none;
+    }
+    .gp-theorem-card.visible{display:block}
+    .gp-theorem-card h4{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--gold);margin-bottom:8px;letter-spacing:.08em}
+    .gp-theorem-card p{font-size:.82rem;color:var(--muted);line-height:1.6}
+    .gp-theorem-card .formula{font-family:var(--mono);color:var(--cyan);font-size:.85rem;
+      background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);border-radius:6px;
+      padding:8px 12px;margin-top:8px;text-align:center}
+
+    /* Back to top */
+    #backToTop{
+      position:fixed;bottom:28px;right:28px;z-index:999;display:none;width:44px;height:44px;
+      border-radius:50%;background:var(--card);border:1px solid var(--border);
+      color:var(--cyan);font-size:1.2rem;cursor:pointer;
+      display:none;align-items:center;justify-content:center;
+    }
+
+    /* Responsive */
+    @media(max-width:900px){
+      .gp-main{flex-direction:column}
+      .gp-sidebar{width:100%;flex-direction:row;flex-wrap:wrap}
+      .gp-sidebar .gp-panel{flex:1;min-width:240px}
+      .gp-toolbar{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .gp-toolbar::-webkit-scrollbar{display:none}
+    }
+    @media(max-width:600px){
+      .hero{padding:40px 16px 14px}
+      .gp-btn{padding:6px 9px;font-size:.72rem}
+      .gp-sidebar .gp-panel{min-width:100%}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Geometry Playground</h1>
+    <p>Construct, measure, and explore geometric shapes and theorems on an interactive canvas. Drag points to see everything update in real-time.</p>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="gp-toolbar" id="toolbar">
+    <button class="gp-btn active" data-tool="point" title="Point (P)">&#9679; Point</button>
+    <button class="gp-btn" data-tool="segment" title="Line Segment (L)">&#9135; Segment</button>
+    <button class="gp-btn" data-tool="ray" title="Ray (R)">&#10132; Ray</button>
+    <button class="gp-btn" data-tool="circle" title="Circle (C)">&#9675; Circle</button>
+    <button class="gp-btn" data-tool="polygon" title="Polygon (G)">&#11040; Polygon</button>
+    <div class="sep"></div>
+    <button class="gp-btn" data-tool="perpendicular" title="Perpendicular">&#8869; Perp</button>
+    <button class="gp-btn" data-tool="parallel" title="Parallel">&#8741; Parallel</button>
+    <button class="gp-btn" data-tool="bisector" title="Angle Bisector">&#8736; Bisector</button>
+    <button class="gp-btn" data-tool="midpoint" title="Midpoint">&#8857; Midpoint</button>
+    <div class="sep"></div>
+    <button class="gp-btn" data-tool="select" title="Select / Move (V)">&#9997; Select</button>
+    <div class="sep"></div>
+    <button class="gp-btn" id="btnUndo" title="Undo (Ctrl+Z)">&#8630; Undo</button>
+    <button class="gp-btn" id="btnRedo" title="Redo (Ctrl+Y)">&#8631; Redo</button>
+    <button class="gp-btn danger" id="btnDelete" title="Delete selected (Del)">&#128465; Del</button>
+    <div class="sep"></div>
+    <button class="gp-btn" id="btnExport" title="Download PNG">&#128190; PNG</button>
+    <button class="gp-btn danger" id="btnClear" title="Clear All">&#128711; Clear</button>
+  </div>
+
+  <!-- Main layout -->
+  <div class="gp-main">
+    <div class="gp-canvas-col">
+      <div class="gp-canvas-wrap" id="canvasWrap">
+        <canvas id="geoCanvas"></canvas>
+        <div class="gp-coords" id="coordsDisplay">x: 0, y: 0</div>
+      </div>
+
+      <!-- Theorem selector -->
+      <div class="gp-theorem-bar" id="theoremBar">
+        <button class="gp-btn" data-theorem="pythagorean">Pythagorean</button>
+        <button class="gp-btn" data-theorem="circle-theorems">Circle Theorems</button>
+        <button class="gp-btn" data-theorem="triangle-centers">Triangle Centers</button>
+        <button class="gp-btn" data-theorem="parallel-transversal">Parallel + Transversal</button>
+        <button class="gp-btn" data-theorem="exterior-angle">Exterior Angle</button>
+      </div>
+
+      <!-- Theorem explanation cards -->
+      <div class="gp-theorem-card" id="card-pythagorean">
+        <h4>Pythagorean Theorem</h4>
+        <p>In a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides. Drag the vertices to see the relationship update live.</p>
+        <div class="formula" id="pythFormula">a&sup2; + b&sup2; = c&sup2;</div>
+      </div>
+      <div class="gp-theorem-card" id="card-circle-theorems">
+        <h4>Circle Theorems</h4>
+        <p>The inscribed angle is half the central angle subtending the same arc. A tangent is perpendicular to the radius at the point of tangency. Drag points around the circle to explore.</p>
+        <div class="formula" id="circleFormula">Inscribed angle = &frac12; &times; Central angle</div>
+      </div>
+      <div class="gp-theorem-card" id="card-triangle-centers">
+        <h4>Triangle Centers</h4>
+        <p>Every triangle has four classic centers: centroid (medians), circumcenter (perpendicular bisectors), incenter (angle bisectors), and orthocenter (altitudes). Toggle each to see them as you drag vertices.</p>
+        <div class="formula" id="centersFormula">Centroid divides each median 2 : 1</div>
+      </div>
+      <div class="gp-theorem-card" id="card-parallel-transversal">
+        <h4>Parallel Lines &amp; Transversal</h4>
+        <p>When a transversal crosses two parallel lines it creates 8 angles. Alternate interior, alternate exterior, corresponding, and co-interior angle pairs have special relationships. Drag to see them change.</p>
+        <div class="formula" id="parallelFormula">Corresponding angles are equal; co-interior angles sum to 180&deg;</div>
+      </div>
+      <div class="gp-theorem-card" id="card-exterior-angle">
+        <h4>Exterior Angle Theorem</h4>
+        <p>An exterior angle of a triangle equals the sum of the two non-adjacent (remote) interior angles. Drag the vertices to verify.</p>
+        <div class="formula" id="exteriorFormula">Exterior = Remote Interior 1 + Remote Interior 2</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="gp-sidebar">
+      <!-- Style panel -->
+      <div class="gp-panel">
+        <h3>Style</h3>
+        <label>Stroke <input type="color" id="strokeColor" value="#00e5ff"></label>
+        <label>Fill <input type="color" id="fillColor" value="#a855f7"></label>
+        <label style="margin-top:4px">Line Width
+          <input type="range" id="lineWidth" min="1" max="5" value="2" style="flex:1">
+          <span id="lineWidthVal" style="font-family:var(--mono);font-size:.72rem;color:var(--cyan);min-width:18px;text-align:center">2</span>
+        </label>
+        <label>Fill Opacity
+          <input type="range" id="fillOpacity" min="0" max="100" value="20" style="flex:1">
+          <span id="fillOpacityVal" style="font-family:var(--mono);font-size:.72rem;color:var(--cyan);min-width:28px;text-align:center">20%</span>
+        </label>
+        <label>Point Size
+          <input type="range" id="pointSize" min="3" max="10" value="5" style="flex:1">
+          <span id="pointSizeVal" style="font-family:var(--mono);font-size:.72rem;color:var(--cyan);min-width:18px;text-align:center">5</span>
+        </label>
+      </div>
+
+      <!-- Options panel -->
+      <div class="gp-panel">
+        <h3>Options</h3>
+        <label><input type="checkbox" id="chkGrid" checked> Show Grid</label>
+        <label><input type="checkbox" id="chkSnap"> Snap to Grid</label>
+        <label><input type="checkbox" id="chkLabels" checked> Show Labels</label>
+        <label><input type="checkbox" id="chkMeasurements" checked> Show Measurements</label>
+      </div>
+
+      <!-- Properties panel -->
+      <div class="gp-panel" id="propsPanel">
+        <h3>Properties</h3>
+        <div id="propsContent"><p style="font-size:.78rem;color:var(--muted)">Select a shape to see its properties.</p></div>
+      </div>
+
+      <!-- Triangle centers toggles (visible in theorem mode) -->
+      <div class="gp-panel" id="centersPanel" style="display:none">
+        <h3>Triangle Centers</h3>
+        <label><input type="checkbox" id="chkCentroid" checked> Centroid</label>
+        <label><input type="checkbox" id="chkCircumcenter" checked> Circumcenter</label>
+        <label><input type="checkbox" id="chkIncenter" checked> Incenter</label>
+        <label><input type="checkbox" id="chkOrthocenter" checked> Orthocenter</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#128285;</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================================================================
+   STATE
+   ================================================================ */
+const canvas = document.getElementById('geoCanvas');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('canvasWrap');
+
+let W = 900, H = 600, dpr = window.devicePixelRatio || 1;
+
+// View transform
+let view = { x: 0, y: 0, zoom: 1 };
+const GRID_SIZE = 40;
+
+// Objects
+let points = [];      // {id, x, y, label, color, size}
+let shapes = [];      // {id, type, pointIds:[], color, lineWidth, fillColor, fillOpacity, ...}
+let nextLabel = 0;
+let nextId = 1;
+let selectedId = null;
+
+// Tool state
+let currentTool = 'point';
+let toolState = { step: 0, ids: [] };
+
+// History
+let undoStack = [];
+let redoStack = [];
+
+// Options
+let showGrid = true, snapToGrid = false, showLabels = true, showMeasurements = true;
+let strokeColor = '#00e5ff', fillColor = '#a855f7', lineWidth = 2, fillOpacity = 0.2, pointSize = 5;
+
+// Drag
+let dragging = null; // point id
+let dragStart = null;
+let isPanning = false;
+let panStart = null;
+let lastMouse = { x: 0, y: 0 };
+
+// Active theorem
+let activeTheorem = null;
+
+/* ================================================================
+   HELPERS
+   ================================================================ */
+function genLabel() {
+  let l = '';
+  let n = nextLabel;
+  do { l = String.fromCharCode(65 + (n % 26)) + l; n = Math.floor(n / 26) - 1; } while (n >= 0);
+  nextLabel++;
+  return l;
+}
+
+function dist(a, b) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
+function angle(a, b, c) { // angle at b
+  let ba = { x: a.x - b.x, y: a.y - b.y };
+  let bc = { x: c.x - b.x, y: c.y - b.y };
+  let dot = ba.x * bc.x + ba.y * bc.y;
+  let cross = ba.x * bc.y - ba.y * bc.x;
+  let ang = Math.atan2(Math.abs(cross), dot);
+  return ang * 180 / Math.PI;
+}
+function signedAngle(a, b, c) {
+  let ba = { x: a.x - b.x, y: a.y - b.y };
+  let bc = { x: c.x - b.x, y: c.y - b.y };
+  return Math.atan2(ba.x * bc.y - ba.y * bc.x, ba.x * bc.x + ba.y * bc.y);
+}
+function midpoint(a, b) { return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+function polygonArea(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) {
+    let j = (i + 1) % pts.length;
+    a += pts[i].x * pts[j].y - pts[j].x * pts[i].y;
+  }
+  return Math.abs(a / 2);
+}
+
+function pointById(id) { return points.find(p => p.id === id); }
+function shapeById(id) { return shapes.find(s => s.id === id); }
+function shapePoints(s) { return s.pointIds.map(id => pointById(id)).filter(Boolean); }
+
+function screenToWorld(sx, sy) {
+  return { x: (sx - view.x) / view.zoom, y: (sy - view.y) / view.zoom };
+}
+function worldToScreen(wx, wy) {
+  return { x: wx * view.zoom + view.x, y: wy * view.zoom + view.y };
+}
+
+function snap(v) {
+  if (!snapToGrid) return v;
+  return { x: Math.round(v.x / GRID_SIZE) * GRID_SIZE, y: Math.round(v.y / GRID_SIZE) * GRID_SIZE };
+}
+
+function hitPoint(wx, wy, threshold) {
+  threshold = threshold || 12 / view.zoom;
+  let best = null, bestD = threshold;
+  for (let p of points) {
+    let d = dist(p, { x: wx, y: wy });
+    if (d < bestD) { bestD = d; best = p; }
+  }
+  return best;
+}
+
+function hitShape(wx, wy) {
+  let threshold = 8 / view.zoom;
+  for (let s of shapes) {
+    let pts = shapePoints(s);
+    if (s.type === 'segment' || s.type === 'perpendicular' || s.type === 'parallel') {
+      if (pts.length >= 2) {
+        let d = pointToSegDist({ x: wx, y: wy }, pts[0], pts[1]);
+        if (d < threshold) return s;
+      }
+    } else if (s.type === 'circle') {
+      if (pts.length >= 2) {
+        let r = dist(pts[0], pts[1]);
+        let d = Math.abs(dist(pts[0], { x: wx, y: wy }) - r);
+        if (d < threshold) return s;
+      }
+    } else if (s.type === 'polygon') {
+      if (pts.length >= 3) {
+        if (pointInPolygon({ x: wx, y: wy }, pts)) return s;
+        for (let i = 0; i < pts.length; i++) {
+          let j = (i + 1) % pts.length;
+          if (pointToSegDist({ x: wx, y: wy }, pts[i], pts[j]) < threshold) return s;
+        }
+      }
+    } else if (s.type === 'ray') {
+      if (pts.length >= 2) {
+        let d = pointToRayDist({ x: wx, y: wy }, pts[0], pts[1]);
+        if (d < threshold) return s;
+      }
+    }
+  }
+  return null;
+}
+
+function pointToSegDist(p, a, b) {
+  let dx = b.x - a.x, dy = b.y - a.y;
+  let lenSq = dx * dx + dy * dy;
+  if (lenSq === 0) return dist(p, a);
+  let t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lenSq));
+  return dist(p, { x: a.x + t * dx, y: a.y + t * dy });
+}
+
+function pointToRayDist(p, origin, dir) {
+  let dx = dir.x - origin.x, dy = dir.y - origin.y;
+  let lenSq = dx * dx + dy * dy;
+  if (lenSq === 0) return dist(p, origin);
+  let t = Math.max(0, ((p.x - origin.x) * dx + (p.y - origin.y) * dy) / lenSq);
+  return dist(p, { x: origin.x + t * dx, y: origin.y + t * dy });
+}
+
+function pointInPolygon(p, verts) {
+  let inside = false;
+  for (let i = 0, j = verts.length - 1; i < verts.length; j = i++) {
+    let xi = verts[i].x, yi = verts[i].y;
+    let xj = verts[j].x, yj = verts[j].y;
+    if (((yi > p.y) !== (yj > p.y)) && (p.x < (xj - xi) * (p.y - yi) / (yj - yi) + xi)) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function hexToRgba(hex, a) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+/* ================================================================
+   HISTORY
+   ================================================================ */
+function saveState() {
+  undoStack.push(JSON.stringify({ points, shapes, nextLabel, nextId }));
+  if (undoStack.length > 80) undoStack.shift();
+  redoStack = [];
+}
+function undo() {
+  if (undoStack.length < 2) return;
+  redoStack.push(undoStack.pop());
+  restoreState(undoStack[undoStack.length - 1]);
+}
+function redo() {
+  if (redoStack.length === 0) return;
+  let s = redoStack.pop();
+  undoStack.push(s);
+  restoreState(s);
+}
+function restoreState(json) {
+  let st = JSON.parse(json);
+  points = st.points;
+  shapes = st.shapes;
+  nextLabel = st.nextLabel;
+  nextId = st.nextId;
+  selectedId = null;
+  toolState = { step: 0, ids: [] };
+  render();
+  updateProps();
+}
+
+/* ================================================================
+   RESIZE
+   ================================================================ */
+function resize() {
+  let rect = wrap.getBoundingClientRect();
+  W = rect.width;
+  H = Math.max(400, Math.min(W * 0.65, 650));
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  render();
+}
+
+/* ================================================================
+   RENDER
+   ================================================================ */
+function render() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0a0a18';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.translate(view.x, view.y);
+  ctx.scale(view.zoom, view.zoom);
+
+  if (showGrid) drawGrid();
+  drawShapes();
+  drawPoints();
+  if (activeTheorem) drawTheoremOverlay();
+
+  ctx.restore();
+}
+
+function drawGrid() {
+  let startX = Math.floor(-view.x / view.zoom / GRID_SIZE) * GRID_SIZE - GRID_SIZE;
+  let startY = Math.floor(-view.y / view.zoom / GRID_SIZE) * GRID_SIZE - GRID_SIZE;
+  let endX = startX + (W / view.zoom) + GRID_SIZE * 2;
+  let endY = startY + (H / view.zoom) + GRID_SIZE * 2;
+
+  ctx.strokeStyle = '#1a1a30';
+  ctx.lineWidth = 0.5 / view.zoom;
+  ctx.beginPath();
+  for (let x = startX; x <= endX; x += GRID_SIZE) {
+    ctx.moveTo(x, startY); ctx.lineTo(x, endY);
+  }
+  for (let y = startY; y <= endY; y += GRID_SIZE) {
+    ctx.moveTo(startX, y); ctx.lineTo(endX, y);
+  }
+  ctx.stroke();
+
+  // Origin
+  ctx.strokeStyle = '#2a2a55';
+  ctx.lineWidth = 1 / view.zoom;
+  ctx.beginPath();
+  ctx.moveTo(0, startY); ctx.lineTo(0, endY);
+  ctx.moveTo(startX, 0); ctx.lineTo(endX, 0);
+  ctx.stroke();
+
+  // Origin marker
+  ctx.fillStyle = '#444';
+  ctx.font = `${11 / view.zoom}px 'JetBrains Mono', monospace`;
+  ctx.fillText('O', 4 / view.zoom, -4 / view.zoom);
+}
+
+function drawShapes() {
+  for (let s of shapes) {
+    let pts = shapePoints(s);
+    let isSelected = (s.id === selectedId);
+    let col = s.color || strokeColor;
+    let lw = (s.lineWidth || lineWidth) / view.zoom;
+
+    ctx.strokeStyle = isSelected ? '#facc15' : col;
+    ctx.lineWidth = isSelected ? (lw * 1.6) : lw;
+
+    if (s.type === 'segment' || s.type === 'perpendicular' || s.type === 'parallel') {
+      if (pts.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        ctx.lineTo(pts[1].x, pts[1].y);
+        ctx.stroke();
+        if (showMeasurements) {
+          let d = dist(pts[0], pts[1]);
+          let mp = midpoint(pts[0], pts[1]);
+          drawMeasurement(mp.x, mp.y, d.toFixed(1));
+        }
+      }
+    } else if (s.type === 'ray') {
+      if (pts.length >= 2) {
+        let dx = pts[1].x - pts[0].x, dy = pts[1].y - pts[0].y;
+        let len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 0) {
+          let ex = pts[0].x + (dx / len) * 5000;
+          let ey = pts[0].y + (dy / len) * 5000;
+          ctx.beginPath();
+          ctx.moveTo(pts[0].x, pts[0].y);
+          ctx.lineTo(ex, ey);
+          ctx.stroke();
+        }
+      }
+    } else if (s.type === 'circle') {
+      if (pts.length >= 2) {
+        let r = dist(pts[0], pts[1]);
+        ctx.beginPath();
+        ctx.arc(pts[0].x, pts[0].y, r, 0, Math.PI * 2);
+        if (s.fillColor) {
+          ctx.fillStyle = hexToRgba(s.fillColor, s.fillOpacity || 0.2);
+          ctx.fill();
+        }
+        ctx.stroke();
+        if (showMeasurements) {
+          drawMeasurement(pts[0].x, pts[0].y - r - 15 / view.zoom, 'r=' + r.toFixed(1));
+          drawMeasurement(pts[0].x, pts[0].y + r + 15 / view.zoom, 'A=' + (Math.PI * r * r).toFixed(1));
+        }
+      }
+    } else if (s.type === 'polygon') {
+      if (pts.length >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        if (s.closed) {
+          ctx.closePath();
+          if (s.fillColor) {
+            ctx.fillStyle = hexToRgba(s.fillColor, s.fillOpacity || 0.2);
+            ctx.fill();
+          }
+        }
+        ctx.stroke();
+
+        if (showMeasurements && s.closed && pts.length >= 3) {
+          // Perimeter
+          let peri = 0;
+          for (let i = 0; i < pts.length; i++) peri += dist(pts[i], pts[(i + 1) % pts.length]);
+          // Area
+          let area = polygonArea(pts);
+          // Centroid for label position
+          let cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
+          let cy = pts.reduce((a, p) => a + p.y, 0) / pts.length;
+          drawMeasurement(cx, cy - 10 / view.zoom, 'A=' + area.toFixed(1));
+          drawMeasurement(cx, cy + 10 / view.zoom, 'P=' + peri.toFixed(1));
+
+          // Angles
+          if (showMeasurements) {
+            for (let i = 0; i < pts.length; i++) {
+              let prev = pts[(i - 1 + pts.length) % pts.length];
+              let curr = pts[i];
+              let next = pts[(i + 1) % pts.length];
+              let a = angle(prev, curr, next);
+              drawMeasurement(curr.x + 18 / view.zoom, curr.y - 10 / view.zoom, a.toFixed(1) + '\u00B0', 9);
+            }
+          }
+        }
+
+        // Segment lengths
+        if (showMeasurements) {
+          let n = s.closed ? pts.length : pts.length - 1;
+          for (let i = 0; i < n; i++) {
+            let j = (i + 1) % pts.length;
+            let d = dist(pts[i], pts[j]);
+            let mp = midpoint(pts[i], pts[j]);
+            drawMeasurement(mp.x, mp.y, d.toFixed(1), 9);
+          }
+        }
+      }
+    } else if (s.type === 'bisector') {
+      if (pts.length >= 3) {
+        // pts[1] is vertex
+        let a1 = Math.atan2(pts[0].y - pts[1].y, pts[0].x - pts[1].x);
+        let a2 = Math.atan2(pts[2].y - pts[1].y, pts[2].x - pts[1].x);
+        let bisA = (a1 + a2) / 2;
+        // Check if we need the other bisector
+        if (Math.abs(a1 - a2) > Math.PI) bisA += Math.PI;
+        let ex = pts[1].x + Math.cos(bisA) * 3000;
+        let ey = pts[1].y + Math.sin(bisA) * 3000;
+        ctx.setLineDash([6 / view.zoom, 4 / view.zoom]);
+        ctx.beginPath();
+        ctx.moveTo(pts[1].x, pts[1].y);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+}
+
+function drawMeasurement(x, y, text, fontSize) {
+  fontSize = fontSize || 10;
+  ctx.save();
+  ctx.font = `${fontSize / view.zoom}px 'JetBrains Mono', monospace`;
+  ctx.fillStyle = 'rgba(0,229,255,0.85)';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+
+function drawPoints() {
+  for (let p of points) {
+    let s = (p.size || pointSize) / view.zoom;
+    let isSelected = (p.id === selectedId);
+    ctx.fillStyle = isSelected ? '#facc15' : (p.color || strokeColor);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, s, 0, Math.PI * 2);
+    ctx.fill();
+
+    if (showLabels && p.label) {
+      ctx.font = `bold ${12 / view.zoom}px 'Poppins', sans-serif`;
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'left';
+      ctx.fillText(p.label, p.x + s + 4 / view.zoom, p.y - s);
+    }
+  }
+}
+
+/* ================================================================
+   THEOREM OVERLAYS
+   ================================================================ */
+function drawTheoremOverlay() {
+  if (activeTheorem === 'pythagorean') drawPythagoreanOverlay();
+  else if (activeTheorem === 'circle-theorems') drawCircleTheoremsOverlay();
+  else if (activeTheorem === 'triangle-centers') drawTriangleCentersOverlay();
+  else if (activeTheorem === 'parallel-transversal') drawParallelTransversalOverlay();
+  else if (activeTheorem === 'exterior-angle') drawExteriorAngleOverlay();
+}
+
+function drawPythagoreanOverlay() {
+  // Expect first 3 points as the right triangle (C is right angle)
+  if (points.length < 3) return;
+  let A = points[0], B = points[1], C = points[2];
+  let a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  // Draw squares on each side
+  drawSquareOnSide(C, B, '#ec489966');
+  drawSquareOnSide(A, C, '#a855f766');
+  drawSquareOnSide(A, B, '#00e5ff44');
+
+  let formula = document.getElementById('pythFormula');
+  if (formula) {
+    formula.textContent = `a\u00B2 + b\u00B2 = ${(a*a).toFixed(0)} + ${(b*b).toFixed(0)} = ${(a*a+b*b).toFixed(0)} | c\u00B2 = ${(c*c).toFixed(0)}`;
+  }
+}
+
+function drawSquareOnSide(p1, p2, color) {
+  let dx = p2.x - p1.x, dy = p2.y - p1.y;
+  let px = -dy, py = dx; // perpendicular
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(p1.x, p1.y);
+  ctx.lineTo(p2.x, p2.y);
+  ctx.lineTo(p2.x + px, p2.y + py);
+  ctx.lineTo(p1.x + px, p1.y + py);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#ffffff33';
+  ctx.lineWidth = 1 / view.zoom;
+  ctx.stroke();
+}
+
+function drawCircleTheoremsOverlay() {
+  // Expect: center, point on circle, then 2 points on circumference for inscribed angle, 1 more for central angle
+  if (points.length < 5) return;
+  let O = points[0], P = points[1];
+  let r = dist(O, P);
+  let A = points[2], B = points[3], C = points[4];
+  // Inscribed angle at C between A and B
+  let inscribed = angle(A, C, B);
+  // Central angle at O between A and B
+  let central = angle(A, O, B);
+  // Draw arcs
+  ctx.strokeStyle = '#facc1566';
+  ctx.lineWidth = 2 / view.zoom;
+  drawAngleArc(O, A, B, 25 / view.zoom, '#facc15');
+  drawAngleArc(C, A, B, 20 / view.zoom, '#ec4899');
+
+  let formula = document.getElementById('circleFormula');
+  if (formula) {
+    formula.textContent = `Inscribed = ${inscribed.toFixed(1)}\u00B0 | Central = ${central.toFixed(1)}\u00B0 | Ratio = ${(central / (inscribed || 1)).toFixed(2)}`;
+  }
+}
+
+function drawAngleArc(vertex, p1, p2, radius, color) {
+  let a1 = Math.atan2(p1.y - vertex.y, p1.x - vertex.x);
+  let a2 = Math.atan2(p2.y - vertex.y, p2.x - vertex.x);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2 / view.zoom;
+  ctx.beginPath();
+  ctx.arc(vertex.x, vertex.y, radius, a1, a2);
+  ctx.stroke();
+}
+
+function drawTriangleCentersOverlay() {
+  if (points.length < 3) return;
+  let A = points[0], B = points[1], C = points[2];
+
+  if (document.getElementById('chkCentroid').checked) {
+    let cx = (A.x + B.x + C.x) / 3, cy = (A.y + B.y + C.y) / 3;
+    drawSpecialPoint(cx, cy, '#22c55e', 'G');
+    // Draw medians
+    ctx.strokeStyle = '#22c55e44';
+    ctx.lineWidth = 1 / view.zoom;
+    ctx.setLineDash([4 / view.zoom, 3 / view.zoom]);
+    [[A, midpoint(B, C)], [B, midpoint(A, C)], [C, midpoint(A, B)]].forEach(([f, t]) => {
+      ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+  }
+
+  if (document.getElementById('chkCircumcenter').checked) {
+    let cc = circumcenter(A, B, C);
+    if (cc) {
+      drawSpecialPoint(cc.x, cc.y, '#3b82f6', 'O');
+      let r = dist(cc, A);
+      ctx.strokeStyle = '#3b82f644';
+      ctx.lineWidth = 1 / view.zoom;
+      ctx.setLineDash([4 / view.zoom, 3 / view.zoom]);
+      ctx.beginPath(); ctx.arc(cc.x, cc.y, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  if (document.getElementById('chkIncenter').checked) {
+    let ic = incenter(A, B, C);
+    drawSpecialPoint(ic.x, ic.y, '#ec4899', 'I');
+  }
+
+  if (document.getElementById('chkOrthocenter').checked) {
+    let oc = orthocenter(A, B, C);
+    if (oc) drawSpecialPoint(oc.x, oc.y, '#facc15', 'H');
+  }
+
+  let formula = document.getElementById('centersFormula');
+  if (formula) {
+    let area = polygonArea([A, B, C]);
+    let peri = dist(A, B) + dist(B, C) + dist(C, A);
+    formula.textContent = `Area = ${area.toFixed(1)} | Perimeter = ${peri.toFixed(1)}`;
+  }
+}
+
+function circumcenter(A, B, C) {
+  let D = 2 * (A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y));
+  if (Math.abs(D) < 0.001) return null;
+  let ux = ((A.x * A.x + A.y * A.y) * (B.y - C.y) + (B.x * B.x + B.y * B.y) * (C.y - A.y) + (C.x * C.x + C.y * C.y) * (A.y - B.y)) / D;
+  let uy = ((A.x * A.x + A.y * A.y) * (C.x - B.x) + (B.x * B.x + B.y * B.y) * (A.x - C.x) + (C.x * C.x + C.y * C.y) * (B.x - A.x)) / D;
+  return { x: ux, y: uy };
+}
+
+function incenter(A, B, C) {
+  let a = dist(B, C), b = dist(A, C), c = dist(A, B);
+  let p = a + b + c;
+  return { x: (a * A.x + b * B.x + c * C.x) / p, y: (a * A.y + b * B.y + c * C.y) / p };
+}
+
+function orthocenter(A, B, C) {
+  let D = A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y);
+  if (Math.abs(D) < 0.001) return null;
+  // H = A + B + C - 2*O (Euler line relation) where O is circumcenter
+  let O = circumcenter(A, B, C);
+  if (!O) return null;
+  return { x: A.x + B.x + C.x - 2 * O.x, y: A.y + B.y + C.y - 2 * O.y };
+}
+
+function drawSpecialPoint(x, y, color, label) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, 6 / view.zoom, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.5 / view.zoom;
+  ctx.stroke();
+  if (showLabels) {
+    ctx.font = `bold ${12 / view.zoom}px 'Poppins', sans-serif`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x + 10 / view.zoom, y - 6 / view.zoom);
+  }
+}
+
+function drawParallelTransversalOverlay() {
+  if (points.length < 4) return;
+  let A = points[0], B = points[1]; // line 1
+  let C = points[2], D = points[3]; // transversal (must have 2 more for line 2)
+  // line 2 is parallel to AB through a computed point
+  let dx = B.x - A.x, dy = B.y - A.y;
+  let offset = 150;
+  let E = { x: A.x - dy / dist(A, B) * offset, y: A.y + dx / dist(A, B) * offset };
+  let F = { x: B.x - dy / dist(A, B) * offset, y: B.y + dx / dist(A, B) * offset };
+
+  // Draw parallel lines extended
+  ctx.strokeStyle = '#a855f7';
+  ctx.lineWidth = 2 / view.zoom;
+  drawExtendedLine(A, B);
+  drawExtendedLine(E, F);
+
+  // Draw transversal
+  ctx.strokeStyle = '#00e5ff';
+  drawExtendedLine(C, D);
+
+  // Find intersections
+  let int1 = lineIntersect(A, B, C, D);
+  let int2 = lineIntersect(E, F, C, D);
+
+  if (int1 && int2) {
+    // Draw angle arcs at both intersections
+    let tAngle1 = Math.atan2(D.y - C.y, D.x - C.x);
+    let lAngle1 = Math.atan2(B.y - A.y, B.x - A.x);
+
+    let angles = [];
+    for (let q = 0; q < 4; q++) {
+      let a = tAngle1 + q * Math.PI / 2;
+      // approximate angle
+    }
+
+    // Label the angles at int1
+    let angDeg = angle(B, int1, D);
+    let suppl = 180 - angDeg;
+    drawMeasurement(int1.x + 30 / view.zoom, int1.y - 15 / view.zoom, angDeg.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int1.x - 30 / view.zoom, int1.y + 15 / view.zoom, angDeg.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int1.x + 30 / view.zoom, int1.y + 15 / view.zoom, suppl.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int1.x - 30 / view.zoom, int1.y - 15 / view.zoom, suppl.toFixed(1) + '\u00B0', 9);
+
+    // Same pattern at int2 (corresponding angles equal)
+    drawMeasurement(int2.x + 30 / view.zoom, int2.y - 15 / view.zoom, angDeg.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int2.x - 30 / view.zoom, int2.y + 15 / view.zoom, angDeg.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int2.x + 30 / view.zoom, int2.y + 15 / view.zoom, suppl.toFixed(1) + '\u00B0', 9);
+    drawMeasurement(int2.x - 30 / view.zoom, int2.y - 15 / view.zoom, suppl.toFixed(1) + '\u00B0', 9);
+
+    // Intersection points
+    drawSpecialPoint(int1.x, int1.y, '#facc15', '');
+    drawSpecialPoint(int2.x, int2.y, '#facc15', '');
+
+    let formula = document.getElementById('parallelFormula');
+    if (formula) {
+      formula.textContent = `Corresponding = ${angDeg.toFixed(1)}\u00B0 | Co-interior = ${(angDeg + suppl).toFixed(1)}\u00B0 (= 180\u00B0)`;
+    }
+  }
+}
+
+function drawExtendedLine(A, B) {
+  let dx = B.x - A.x, dy = B.y - A.y;
+  let len = Math.sqrt(dx * dx + dy * dy);
+  if (len < 0.001) return;
+  let ux = dx / len, uy = dy / len;
+  ctx.beginPath();
+  ctx.moveTo(A.x - ux * 5000, A.y - uy * 5000);
+  ctx.lineTo(B.x + ux * 5000, B.y + uy * 5000);
+  ctx.stroke();
+}
+
+function lineIntersect(A, B, C, D) {
+  let dx1 = B.x - A.x, dy1 = B.y - A.y;
+  let dx2 = D.x - C.x, dy2 = D.y - C.y;
+  let denom = dx1 * dy2 - dy1 * dx2;
+  if (Math.abs(denom) < 0.001) return null;
+  let t = ((C.x - A.x) * dy2 - (C.y - A.y) * dx2) / denom;
+  return { x: A.x + t * dx1, y: A.y + t * dy1 };
+}
+
+function drawExteriorAngleOverlay() {
+  if (points.length < 3) return;
+  let A = points[0], B = points[1], C = points[2];
+  // Exterior angle at B: extend AB beyond B
+  let dx = B.x - A.x, dy = B.y - A.y;
+  let len = Math.sqrt(dx * dx + dy * dy);
+  if (len < 1) return;
+  let D = { x: B.x + (dx / len) * 120, y: B.y + (dy / len) * 120 };
+
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 2 / view.zoom;
+  ctx.setLineDash([6 / view.zoom, 4 / view.zoom]);
+  ctx.beginPath();
+  ctx.moveTo(B.x, B.y);
+  ctx.lineTo(D.x, D.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  let extAngle = 180 - angle(A, B, C);
+  let angA = angle(B, A, C);
+  let angC = angle(A, C, B);
+
+  drawAngleArc(B, D, C, 30 / view.zoom, '#facc15');
+  drawMeasurement(D.x, D.y - 10 / view.zoom, 'Ext=' + extAngle.toFixed(1) + '\u00B0');
+
+  let formula = document.getElementById('exteriorFormula');
+  if (formula) {
+    formula.textContent = `Ext angle = ${extAngle.toFixed(1)}\u00B0 | \u2220A = ${angA.toFixed(1)}\u00B0 + \u2220C = ${angC.toFixed(1)}\u00B0 = ${(angA + angC).toFixed(1)}\u00B0`;
+  }
+}
+
+/* ================================================================
+   TOOLS - CANVAS EVENTS
+   ================================================================ */
+function getCanvasPos(e) {
+  let rect = canvas.getBoundingClientRect();
+  let sx, sy;
+  if (e.touches) {
+    sx = e.touches[0].clientX - rect.left;
+    sy = e.touches[0].clientY - rect.top;
+  } else {
+    sx = e.clientX - rect.left;
+    sy = e.clientY - rect.top;
+  }
+  return screenToWorld(sx, sy);
+}
+
+function addPoint(x, y, label) {
+  let p = { id: nextId++, x: x, y: y, label: label || genLabel(), color: strokeColor, size: pointSize };
+  points.push(p);
+  return p;
+}
+
+function addShape(type, pointIds, extra) {
+  let s = Object.assign({
+    id: nextId++, type: type, pointIds: pointIds,
+    color: strokeColor, lineWidth: lineWidth,
+    fillColor: fillColor, fillOpacity: fillOpacity,
+    closed: false
+  }, extra || {});
+  shapes.push(s);
+  return s;
+}
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('mouseup', onUp);
+canvas.addEventListener('dblclick', onDblClick);
+canvas.addEventListener('wheel', onWheel, { passive: false });
+canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+canvas.addEventListener('touchend', onTouchEnd);
+
+let touchDist0 = 0;
+
+function onTouchStart(e) {
+  e.preventDefault();
+  if (e.touches.length === 2) {
+    isPanning = true;
+    let dx = e.touches[0].clientX - e.touches[1].clientX;
+    let dy = e.touches[0].clientY - e.touches[1].clientY;
+    touchDist0 = Math.sqrt(dx * dx + dy * dy);
+    panStart = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - view.x,
+                 y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - view.y };
+    return;
+  }
+  onDown(e);
+}
+function onTouchMove(e) {
+  e.preventDefault();
+  if (e.touches.length === 2 && isPanning) {
+    let dx = e.touches[0].clientX - e.touches[1].clientX;
+    let dy = e.touches[0].clientY - e.touches[1].clientY;
+    let d = Math.sqrt(dx * dx + dy * dy);
+    let scale = d / touchDist0;
+    view.zoom = Math.max(0.2, Math.min(5, view.zoom * scale));
+    touchDist0 = d;
+    let mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    let my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    view.x = mx - panStart.x;
+    view.y = my - panStart.y;
+    render();
+    return;
+  }
+  onMove(e);
+}
+function onTouchEnd(e) {
+  isPanning = false;
+  onUp(e);
+}
+
+function onDown(e) {
+  let w = getCanvasPos(e);
+  let { x, y } = snap(w);
+
+  // Middle mouse = pan
+  if (e.button === 1) {
+    isPanning = true;
+    panStart = { x: e.clientX - view.x, y: e.clientY - view.y };
+    canvas.style.cursor = 'grab';
+    e.preventDefault();
+    return;
+  }
+
+  // Update coords
+  updateCoords(x, y);
+
+  if (currentTool === 'select') {
+    // Try to hit a point first
+    let hp = hitPoint(x, y);
+    if (hp) {
+      selectedId = hp.id;
+      dragging = hp.id;
+      dragStart = { x: hp.x, y: hp.y };
+      render();
+      updateProps();
+      return;
+    }
+    let hs = hitShape(x, y);
+    if (hs) {
+      selectedId = hs.id;
+      render();
+      updateProps();
+      return;
+    }
+    selectedId = null;
+    // Start pan
+    isPanning = true;
+    panStart = { x: e.clientX - view.x, y: e.clientY - view.y };
+    canvas.style.cursor = 'grab';
+    render();
+    updateProps();
+    return;
+  }
+
+  if (currentTool === 'point') {
+    addPoint(x, y);
+    saveState();
+    render();
+    return;
+  }
+
+  if (currentTool === 'segment' || currentTool === 'ray' || currentTool === 'circle') {
+    let hp = hitPoint(x, y);
+    if (toolState.step === 0) {
+      let p = hp || addPoint(x, y);
+      toolState = { step: 1, ids: [p.id] };
+      render();
+    } else if (toolState.step === 1) {
+      let p = hp || addPoint(x, y);
+      addShape(currentTool, [toolState.ids[0], p.id], {
+        closed: false,
+        fillColor: currentTool === 'circle' ? fillColor : null,
+        fillOpacity: currentTool === 'circle' ? fillOpacity : 0
+      });
+      toolState = { step: 0, ids: [] };
+      saveState();
+      render();
+    }
+    return;
+  }
+
+  if (currentTool === 'polygon') {
+    let hp = hitPoint(x, y, 18 / view.zoom);
+    if (toolState.step === 0) {
+      let p = hp || addPoint(x, y);
+      let s = addShape('polygon', [p.id], { closed: false, fillColor: fillColor, fillOpacity: fillOpacity });
+      toolState = { step: 1, ids: [p.id], shapeId: s.id };
+      render();
+    } else {
+      // If clicking first point, close
+      if (hp && hp.id === toolState.ids[0] && toolState.ids.length >= 3) {
+        let s = shapeById(toolState.shapeId);
+        if (s) s.closed = true;
+        toolState = { step: 0, ids: [] };
+        saveState();
+        render();
+        return;
+      }
+      let p = hp || addPoint(x, y);
+      let s = shapeById(toolState.shapeId);
+      if (s) s.pointIds.push(p.id);
+      toolState.ids.push(p.id);
+      render();
+    }
+    return;
+  }
+
+  if (currentTool === 'perpendicular') {
+    if (toolState.step === 0) {
+      // Select a segment
+      let hs = hitShape(x, y);
+      if (hs && (hs.type === 'segment' || hs.type === 'perpendicular' || hs.type === 'parallel')) {
+        selectedId = hs.id;
+        toolState = { step: 1, ids: [], refShape: hs.id };
+        render();
+      }
+    } else if (toolState.step === 1) {
+      let hp = hitPoint(x, y);
+      let p = hp || addPoint(x, y);
+      let ref = shapeById(toolState.refShape);
+      if (ref) {
+        let pts = shapePoints(ref);
+        let dx = pts[1].x - pts[0].x, dy = pts[1].y - pts[0].y;
+        // Perpendicular direction
+        let px = -dy, py = dx;
+        let len = Math.sqrt(px * px + py * py);
+        if (len > 0) {
+          let p2 = addPoint(p.x + px / len * 100, p.y + py / len * 100);
+          addShape('perpendicular', [p.id, p2.id]);
+        }
+      }
+      toolState = { step: 0, ids: [] };
+      selectedId = null;
+      saveState();
+      render();
+    }
+    return;
+  }
+
+  if (currentTool === 'parallel') {
+    if (toolState.step === 0) {
+      let hs = hitShape(x, y);
+      if (hs && (hs.type === 'segment' || hs.type === 'perpendicular' || hs.type === 'parallel')) {
+        selectedId = hs.id;
+        toolState = { step: 1, ids: [], refShape: hs.id };
+        render();
+      }
+    } else if (toolState.step === 1) {
+      let hp = hitPoint(x, y);
+      let p = hp || addPoint(x, y);
+      let ref = shapeById(toolState.refShape);
+      if (ref) {
+        let pts = shapePoints(ref);
+        let dx = pts[1].x - pts[0].x, dy = pts[1].y - pts[0].y;
+        let len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 0) {
+          let p2 = addPoint(p.x + dx / len * 100, p.y + dy / len * 100);
+          addShape('parallel', [p.id, p2.id]);
+        }
+      }
+      toolState = { step: 0, ids: [] };
+      selectedId = null;
+      saveState();
+      render();
+    }
+    return;
+  }
+
+  if (currentTool === 'bisector') {
+    let hp = hitPoint(x, y);
+    if (!hp) return;
+    toolState.ids.push(hp.id);
+    if (toolState.ids.length === 3) {
+      addShape('bisector', [toolState.ids[0], toolState.ids[1], toolState.ids[2]]);
+      toolState = { step: 0, ids: [] };
+      saveState();
+      render();
+    }
+    return;
+  }
+
+  if (currentTool === 'midpoint') {
+    let hs = hitShape(x, y);
+    if (hs && hs.type === 'segment') {
+      let pts = shapePoints(hs);
+      let mp = midpoint(pts[0], pts[1]);
+      addPoint(mp.x, mp.y);
+      saveState();
+      render();
+    }
+    return;
+  }
+}
+
+function onMove(e) {
+  let w = getCanvasPos(e);
+  let { x, y } = snap(w);
+  updateCoords(x, y);
+
+  if (isPanning && panStart) {
+    view.x = e.clientX - panStart.x;
+    view.y = e.clientY - panStart.y;
+    render();
+    return;
+  }
+
+  if (dragging != null) {
+    let p = pointById(dragging);
+    if (p) {
+      p.x = x;
+      p.y = y;
+      render();
+      updateProps();
+    }
+    return;
+  }
+
+  // Cursor hints
+  if (currentTool === 'select') {
+    let hp = hitPoint(x, y);
+    canvas.style.cursor = hp ? 'move' : (hitShape(x, y) ? 'pointer' : 'default');
+  } else {
+    canvas.style.cursor = 'crosshair';
+  }
+}
+
+function onUp(e) {
+  if (dragging != null) {
+    saveState();
+    dragging = null;
+  }
+  if (isPanning) {
+    isPanning = false;
+    panStart = null;
+    canvas.style.cursor = currentTool === 'select' ? 'default' : 'crosshair';
+  }
+}
+
+function onDblClick(e) {
+  // Close polygon on double click
+  if (currentTool === 'polygon' && toolState.step === 1 && toolState.ids.length >= 3) {
+    let s = shapeById(toolState.shapeId);
+    if (s) s.closed = true;
+    toolState = { step: 0, ids: [] };
+    saveState();
+    render();
+  }
+}
+
+function onWheel(e) {
+  e.preventDefault();
+  let rect = canvas.getBoundingClientRect();
+  let mx = e.clientX - rect.left;
+  let my = e.clientY - rect.top;
+  let factor = e.deltaY < 0 ? 1.1 : 0.9;
+  let newZoom = Math.max(0.15, Math.min(6, view.zoom * factor));
+  // Zoom toward mouse
+  view.x = mx - (mx - view.x) * (newZoom / view.zoom);
+  view.y = my - (my - view.y) * (newZoom / view.zoom);
+  view.zoom = newZoom;
+  render();
+}
+
+function updateCoords(x, y) {
+  document.getElementById('coordsDisplay').textContent = `x: ${x.toFixed(0)}, y: ${y.toFixed(0)}`;
+}
+
+/* ================================================================
+   TOOLBAR EVENTS
+   ================================================================ */
+document.querySelectorAll('#toolbar .gp-btn[data-tool]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentTool = btn.dataset.tool;
+    toolState = { step: 0, ids: [] };
+    document.querySelectorAll('#toolbar .gp-btn[data-tool]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    canvas.style.cursor = currentTool === 'select' ? 'default' : 'crosshair';
+  });
+});
+
+document.getElementById('btnUndo').addEventListener('click', undo);
+document.getElementById('btnRedo').addEventListener('click', redo);
+
+document.getElementById('btnDelete').addEventListener('click', deleteSelected);
+function deleteSelected() {
+  if (selectedId == null) return;
+  // Remove point
+  let pi = points.findIndex(p => p.id === selectedId);
+  if (pi >= 0) {
+    // Remove shapes referencing this point
+    shapes = shapes.filter(s => !s.pointIds.includes(selectedId));
+    points.splice(pi, 1);
+  } else {
+    // Remove shape
+    let si = shapes.findIndex(s => s.id === selectedId);
+    if (si >= 0) shapes.splice(si, 1);
+  }
+  selectedId = null;
+  saveState();
+  render();
+  updateProps();
+}
+
+document.getElementById('btnExport').addEventListener('click', () => {
+  let link = document.createElement('a');
+  link.download = 'geometry-playground.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+document.getElementById('btnClear').addEventListener('click', () => {
+  if (!confirm('Clear all constructions?')) return;
+  points = [];
+  shapes = [];
+  nextLabel = 0;
+  selectedId = null;
+  toolState = { step: 0, ids: [] };
+  activeTheorem = null;
+  document.querySelectorAll('.gp-theorem-card').forEach(c => c.classList.remove('visible'));
+  document.querySelectorAll('#theoremBar .gp-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('centersPanel').style.display = 'none';
+  saveState();
+  render();
+  updateProps();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+  if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+  if (e.key === 'Delete' || e.key === 'Backspace') { if (selectedId != null) { e.preventDefault(); deleteSelected(); } }
+  if (e.key === 'v' || e.key === 'V') setTool('select');
+  if (e.key === 'p' || e.key === 'P') setTool('point');
+  if (e.key === 'l' || e.key === 'L') setTool('segment');
+  if (e.key === 'r' || e.key === 'R') setTool('ray');
+  if (e.key === 'c' && !e.ctrlKey) setTool('circle');
+  if (e.key === 'g' || e.key === 'G') setTool('polygon');
+});
+
+function setTool(t) {
+  currentTool = t;
+  toolState = { step: 0, ids: [] };
+  document.querySelectorAll('#toolbar .gp-btn[data-tool]').forEach(b => {
+    b.classList.toggle('active', b.dataset.tool === t);
+  });
+  canvas.style.cursor = t === 'select' ? 'default' : 'crosshair';
+}
+
+/* ================================================================
+   SIDEBAR CONTROLS
+   ================================================================ */
+document.getElementById('strokeColor').addEventListener('input', e => { strokeColor = e.target.value; });
+document.getElementById('fillColor').addEventListener('input', e => { fillColor = e.target.value; });
+document.getElementById('lineWidth').addEventListener('input', e => {
+  lineWidth = parseInt(e.target.value);
+  document.getElementById('lineWidthVal').textContent = lineWidth;
+});
+document.getElementById('fillOpacity').addEventListener('input', e => {
+  fillOpacity = parseInt(e.target.value) / 100;
+  document.getElementById('fillOpacityVal').textContent = e.target.value + '%';
+});
+document.getElementById('pointSize').addEventListener('input', e => {
+  pointSize = parseInt(e.target.value);
+  document.getElementById('pointSizeVal').textContent = pointSize;
+  render();
+});
+document.getElementById('chkGrid').addEventListener('change', e => { showGrid = e.target.checked; render(); });
+document.getElementById('chkSnap').addEventListener('change', e => { snapToGrid = e.target.checked; });
+document.getElementById('chkLabels').addEventListener('change', e => { showLabels = e.target.checked; render(); });
+document.getElementById('chkMeasurements').addEventListener('change', e => { showMeasurements = e.target.checked; render(); });
+
+// Triangle centers checkboxes
+['chkCentroid','chkCircumcenter','chkIncenter','chkOrthocenter'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => render());
+});
+
+/* ================================================================
+   PROPERTIES PANEL
+   ================================================================ */
+function updateProps() {
+  let el = document.getElementById('propsContent');
+  if (selectedId == null) {
+    el.innerHTML = '<p style="font-size:.78rem;color:var(--muted)">Select a shape to see its properties.</p>';
+    return;
+  }
+
+  let p = pointById(selectedId);
+  if (p) {
+    el.innerHTML = `
+      <div class="prop-row"><span class="prop-key">Type</span><span class="prop-val">Point</span></div>
+      <div class="prop-row"><span class="prop-key">Label</span><span class="prop-val">${p.label}</span></div>
+      <div class="prop-row"><span class="prop-key">X</span><span class="prop-val">${p.x.toFixed(1)}</span></div>
+      <div class="prop-row"><span class="prop-key">Y</span><span class="prop-val">${p.y.toFixed(1)}</span></div>`;
+    return;
+  }
+
+  let s = shapeById(selectedId);
+  if (!s) { el.innerHTML = ''; return; }
+  let pts = shapePoints(s);
+  let html = `<div class="prop-row"><span class="prop-key">Type</span><span class="prop-val">${s.type}</span></div>`;
+
+  if (s.type === 'segment' || s.type === 'perpendicular' || s.type === 'parallel') {
+    if (pts.length >= 2) {
+      let d = dist(pts[0], pts[1]);
+      html += `<div class="prop-row"><span class="prop-key">Length</span><span class="prop-val">${d.toFixed(2)}</span></div>`;
+      html += `<div class="prop-row"><span class="prop-key">Midpoint</span><span class="prop-val">(${((pts[0].x+pts[1].x)/2).toFixed(1)}, ${((pts[0].y+pts[1].y)/2).toFixed(1)})</span></div>`;
+    }
+  } else if (s.type === 'circle') {
+    if (pts.length >= 2) {
+      let r = dist(pts[0], pts[1]);
+      html += `<div class="prop-row"><span class="prop-key">Radius</span><span class="prop-val">${r.toFixed(2)}</span></div>`;
+      html += `<div class="prop-row"><span class="prop-key">Diameter</span><span class="prop-val">${(r*2).toFixed(2)}</span></div>`;
+      html += `<div class="prop-row"><span class="prop-key">Area</span><span class="prop-val">${(Math.PI*r*r).toFixed(2)}</span></div>`;
+      html += `<div class="prop-row"><span class="prop-key">Circumference</span><span class="prop-val">${(2*Math.PI*r).toFixed(2)}</span></div>`;
+      html += `<div class="prop-row"><span class="prop-key">Center</span><span class="prop-val">(${pts[0].x.toFixed(1)}, ${pts[0].y.toFixed(1)})</span></div>`;
+    }
+  } else if (s.type === 'polygon' && s.closed && pts.length >= 3) {
+    let n = pts.length;
+    let peri = 0;
+    let angles = [];
+    for (let i = 0; i < n; i++) {
+      peri += dist(pts[i], pts[(i + 1) % n]);
+      let prev = pts[(i - 1 + n) % n], curr = pts[i], next = pts[(i + 1) % n];
+      angles.push(angle(prev, curr, next));
+    }
+    let area = polygonArea(pts);
+
+    // Classify triangle
+    if (n === 3) {
+      let sides = [dist(pts[0], pts[1]), dist(pts[1], pts[2]), dist(pts[2], pts[0])].sort((a, b) => a - b);
+      let sideType = 'Scalene';
+      if (Math.abs(sides[0] - sides[1]) < 1 && Math.abs(sides[1] - sides[2]) < 1) sideType = 'Equilateral';
+      else if (Math.abs(sides[0] - sides[1]) < 1 || Math.abs(sides[1] - sides[2]) < 1) sideType = 'Isosceles';
+      let maxA = Math.max(...angles);
+      let angType = maxA > 91 ? 'Obtuse' : (maxA > 89 ? 'Right' : 'Acute');
+      html += `<div class="prop-row"><span class="prop-key">Triangle</span><span class="prop-val">${sideType}, ${angType}</span></div>`;
+    }
+
+    // Check regularity
+    if (n > 3) {
+      let side0 = dist(pts[0], pts[1]);
+      let regular = true;
+      for (let i = 1; i < n; i++) {
+        if (Math.abs(dist(pts[i], pts[(i + 1) % n]) - side0) > 2) { regular = false; break; }
+      }
+      html += `<div class="prop-row"><span class="prop-key">Regular</span><span class="prop-val">${regular ? 'Yes' : 'No'}</span></div>`;
+    }
+
+    html += `<div class="prop-row"><span class="prop-key">Sides</span><span class="prop-val">${n}</span></div>`;
+    html += `<div class="prop-row"><span class="prop-key">Area</span><span class="prop-val">${area.toFixed(2)}</span></div>`;
+    html += `<div class="prop-row"><span class="prop-key">Perimeter</span><span class="prop-val">${peri.toFixed(2)}</span></div>`;
+    html += `<div class="prop-row"><span class="prop-key">Angle Sum</span><span class="prop-val">${angles.reduce((a, b) => a + b, 0).toFixed(1)}\u00B0</span></div>`;
+    for (let i = 0; i < n; i++) {
+      html += `<div class="prop-row"><span class="prop-key">\u2220${pts[i].label || i}</span><span class="prop-val">${angles[i].toFixed(1)}\u00B0</span></div>`;
+    }
+  }
+
+  // Point coords
+  html += '<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:6px">';
+  html += '<div class="prop-row"><span class="prop-key" style="color:var(--gold)">Vertices</span><span class="prop-val"></span></div>';
+  for (let pt of pts) {
+    html += `<div class="prop-row"><span class="prop-key">${pt.label}</span><span class="prop-val">(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})</span></div>`;
+  }
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+/* ================================================================
+   THEOREM PRESETS
+   ================================================================ */
+document.querySelectorAll('#theoremBar .gp-btn[data-theorem]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    let th = btn.dataset.theorem;
+    let wasActive = (activeTheorem === th);
+
+    // Clear
+    points = [];
+    shapes = [];
+    nextLabel = 0;
+    selectedId = null;
+    toolState = { step: 0, ids: [] };
+
+    document.querySelectorAll('#theoremBar .gp-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.gp-theorem-card').forEach(c => c.classList.remove('visible'));
+    document.getElementById('centersPanel').style.display = 'none';
+
+    if (wasActive) {
+      activeTheorem = null;
+      saveState();
+      render();
+      return;
+    }
+
+    activeTheorem = th;
+    btn.classList.add('active');
+    let card = document.getElementById('card-' + th);
+    if (card) card.classList.add('visible');
+
+    // Center view
+    view = { x: W / 2, y: H / 2, zoom: 1 };
+
+    if (th === 'pythagorean') {
+      addPoint(-80, 60, 'A');
+      addPoint(80, 60, 'B');
+      addPoint(-80, -60, 'C');
+      addShape('polygon', [points[0].id, points[1].id, points[2].id], { closed: true, fillColor: '#00e5ff', fillOpacity: 0.08 });
+    } else if (th === 'circle-theorems') {
+      addPoint(0, 0, 'O'); // center
+      addPoint(120, 0, 'P'); // on circle
+      // Points on circumference
+      let r = 120;
+      addPoint(r * Math.cos(2.2), r * Math.sin(2.2), 'A');
+      addPoint(r * Math.cos(4.5), r * Math.sin(4.5), 'B');
+      addPoint(r * Math.cos(0.8), r * Math.sin(0.8), 'C');
+      addShape('circle', [points[0].id, points[1].id], { fillColor: '#a855f7', fillOpacity: 0.05 });
+      addShape('segment', [points[2].id, points[4].id]); // CA
+      addShape('segment', [points[3].id, points[4].id]); // CB
+      addShape('segment', [points[2].id, points[0].id]); // OA
+      addShape('segment', [points[3].id, points[0].id]); // OB
+    } else if (th === 'triangle-centers') {
+      addPoint(-120, 80, 'A');
+      addPoint(120, 80, 'B');
+      addPoint(20, -100, 'C');
+      addShape('polygon', [points[0].id, points[1].id, points[2].id], { closed: true, fillColor: '#00e5ff', fillOpacity: 0.06 });
+      document.getElementById('centersPanel').style.display = 'block';
+    } else if (th === 'parallel-transversal') {
+      addPoint(-150, -40, 'A');
+      addPoint(150, -40, 'B');
+      addPoint(-100, 150, 'C');
+      addPoint(100, -180, 'D');
+    } else if (th === 'exterior-angle') {
+      addPoint(-100, 80, 'A');
+      addPoint(100, 80, 'B');
+      addPoint(30, -80, 'C');
+      addShape('polygon', [points[0].id, points[1].id, points[2].id], { closed: true, fillColor: '#ec4899', fillOpacity: 0.06 });
+    }
+
+    setTool('select');
+    saveState();
+    render();
+  });
+});
+
+/* ================================================================
+   INIT
+   ================================================================ */
+window.addEventListener('resize', resize);
+resize();
+
+// Center view initially
+view.x = W / 2;
+view.y = H / 2;
+saveState();
+render();
+
+/* Back to Top */
+const btt = document.getElementById('backToTop');
+if (btt) {
+  window.addEventListener('scroll', function(){ btt.style.display = window.scrollY > 300 ? 'flex' : 'none'; });
+  btt.addEventListener('click', function(){ window.scrollTo({ top: 0, behavior: 'smooth' }); });
+}
+
+/* Load header / footer */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+})();
+</script>
+</body>
+</html>

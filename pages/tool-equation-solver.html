@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Equation Solver | TutorDA</title>
+  <meta name="description" content="Solve equations visually with animated step-by-step working. Linear, quadratic, systems of equations, polynomial factoring and inequalities.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --dark:    #0d0d1a;
+      --card:    #111125;
+      --card2:   #1a1a35;
+      --border:  #1e1e3a;
+      --text:    #e8e8ff;
+      --muted:   #94a3b8;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Input Area ───────────────────────────── */
+    .input-section{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-bottom:20px;
+    }
+    .input-row{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+    .eq-input{
+      flex:1;min-width:200px;padding:14px 18px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.15rem;
+      outline:none;transition:border-color .2s;
+    }
+    .eq-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.15)}
+    .eq-input::placeholder{color:var(--muted);font-size:.95rem}
+
+    .eq-input-2{
+      display:none;flex:1;min-width:200px;padding:14px 18px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.15rem;
+      outline:none;transition:border-color .2s;
+    }
+    .eq-input-2:focus{border-color:var(--purple);box-shadow:0 0 12px rgba(168,85,247,.15)}
+    .eq-input-2.show{display:block}
+
+    .solve-btn{
+      padding:14px 32px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;border:none;border-radius:10px;font-family:'Orbitron',sans-serif;
+      font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;
+    }
+    .solve-btn:hover{opacity:.85}
+
+    .preview-row{
+      margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    }
+    .latex-preview{
+      flex:1;min-height:36px;padding:8px 14px;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      font-size:1.1rem;color:var(--text);
+    }
+    .type-badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:600;
+      background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.25);
+      white-space:nowrap;
+    }
+
+    /* ── Examples ──────────────────────────────── */
+    .examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .ex-btn{
+      padding:6px 14px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;font-size:.8rem;
+      font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;
+    }
+    .ex-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    /* ── Method selector ──────────────────────── */
+    .method-row{
+      display:none;margin-top:14px;gap:8px;flex-wrap:wrap;align-items:center;
+    }
+    .method-row.show{display:flex}
+    .method-label{font-size:.82rem;color:var(--muted);margin-right:4px}
+    .pill{
+      padding:6px 16px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:20px;font-size:.8rem;
+      cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .pill:hover{border-color:var(--purple);color:var(--purple)}
+    .pill.active{background:rgba(168,85,247,.12);border-color:var(--purple);color:var(--purple)}
+
+    /* ── Main Grid ────────────────────────────── */
+    .main-grid{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+
+    /* ── Steps ────────────────────────────────── */
+    .steps-panel{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:20px;min-height:200px;
+    }
+    .steps-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+    .steps-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan)}
+    .step-controls{display:flex;gap:8px}
+    .ctrl-btn{
+      padding:5px 14px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;font-size:.78rem;
+      cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .ctrl-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+    .ctrl-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .step-card{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:14px 18px;margin-bottom:12px;
+      opacity:0;transform:translateY(20px);
+      transition:opacity .4s ease,transform .4s ease;
+    }
+    .step-card.visible{opacity:1;transform:translateY(0)}
+    .step-card .step-num{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:26px;height:26px;border-radius:50%;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;font-size:.75rem;font-weight:700;margin-right:10px;
+    }
+    .step-card .step-desc{font-size:.88rem;color:var(--muted);margin-bottom:8px}
+    .step-card .step-math{font-size:1.05rem;padding:6px 0}
+    .step-card .step-math .hl{color:var(--cyan);font-weight:600}
+
+    .empty-msg{color:var(--muted);font-size:.9rem;text-align:center;padding:40px 0}
+
+    /* ── Solution Box ─────────────────────────── */
+    .solution-box{
+      display:none;
+      background:var(--card);border:2px solid var(--cyan);border-radius:var(--r);
+      padding:20px;margin-top:16px;position:relative;
+      box-shadow:0 0 30px rgba(0,229,255,.12);
+    }
+    .solution-box.show{display:block}
+    .solution-box .sol-label{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--cyan);margin-bottom:8px}
+    .solution-box .sol-answer{font-size:1.3rem;margin-bottom:12px}
+    .solution-box .sol-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .sol-btn{
+      padding:6px 16px;border-radius:8px;font-size:.8rem;cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .2s;
+    }
+    .sol-btn.verify{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .sol-btn.verify:hover{background:rgba(34,197,94,.2)}
+    .sol-btn.copy{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+    .sol-btn.copy:hover{background:rgba(0,229,255,.2)}
+
+    .verify-result{
+      margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.85rem;display:none;
+    }
+    .verify-result.show{display:block}
+    .verify-result.ok{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+    .verify-result.fail{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+
+    /* ── Right column ─────────────────────────── */
+    .right-col{display:flex;flex-direction:column;gap:20px}
+
+    /* ── Graph ────────────────────────────────── */
+    .graph-panel{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px;
+    }
+    .graph-panel h3{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--purple);margin-bottom:12px}
+    .graph-canvas{width:100%;aspect-ratio:1;border-radius:10px;background:var(--dark);border:1px solid var(--border);cursor:crosshair}
+    .graph-coords{font-size:.75rem;color:var(--muted);margin-top:6px;text-align:center;min-height:18px}
+
+    /* ── History ───────────────────────────────── */
+    .history-panel{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px;
+    }
+    .history-panel h3{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--gold);margin-bottom:12px;
+      display:flex;align-items:center;justify-content:space-between}
+    .history-toggle{
+      font-size:.75rem;color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;
+      background:none;border:none;transition:color .2s;
+    }
+    .history-toggle:hover{color:var(--gold)}
+    .history-list{list-style:none}
+    .history-list.collapsed{display:none}
+    .history-item{
+      padding:8px 12px;margin-bottom:6px;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted);
+      cursor:pointer;transition:all .2s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    }
+    .history-item:hover{border-color:var(--gold);color:var(--gold)}
+
+    /* ── Multi-method layout ──────────────────── */
+    .multi-method{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .method-col{
+      background:var(--dark);border:1px solid var(--border);border-radius:var(--r);padding:16px;
+    }
+    .method-col h4{font-family:'Orbitron',sans-serif;font-size:.82rem;margin-bottom:12px}
+    .method-col h4.factor-h{color:var(--green)}
+    .method-col h4.complete-h{color:var(--purple)}
+    .method-col h4.formula-h{color:var(--cyan)}
+
+    /* ── Responsive ───────────────────────────── */
+    @media(max-width:860px){
+      .main-grid{grid-template-columns:1fr}
+      .right-col{order:2}
+      .steps-panel{order:1}
+    }
+    @media(max-width:600px){
+      .hero{padding:40px 16px 20px}
+      .input-section{padding:16px}
+      .eq-input{font-size:1rem;padding:12px 14px}
+      .solve-btn{width:100%;padding:12px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Step-by-Step Equation Solver</h1>
+    <p>Type any equation and watch it solved with animated, step-by-step working. Choose your method, see the graph, and verify the answer.</p>
+  </section>
+
+  <!-- Input Section -->
+  <section class="input-section">
+    <div class="input-row">
+      <input class="eq-input" id="eqInput" type="text" placeholder="Type an equation, e.g. 2x + 5 = 13" autocomplete="off" spellcheck="false">
+      <input class="eq-input-2" id="eqInput2" type="text" placeholder="Second equation, e.g. x - y = 1" autocomplete="off" spellcheck="false">
+      <button class="solve-btn" id="solveBtn">Solve</button>
+    </div>
+
+    <div class="preview-row">
+      <div class="latex-preview" id="latexPreview">&nbsp;</div>
+      <span class="type-badge" id="typeBadge" style="display:none"></span>
+    </div>
+
+    <!-- Method selector (quadratics) -->
+    <div class="method-row" id="methodRow">
+      <span class="method-label">Method:</span>
+      <button class="pill active" data-method="formula">Quadratic Formula</button>
+      <button class="pill" data-method="factor">Factoring</button>
+      <button class="pill" data-method="complete">Completing Square</button>
+      <button class="pill" data-method="all">All Methods</button>
+    </div>
+
+    <!-- System method selector -->
+    <div class="method-row" id="sysMethodRow">
+      <span class="method-label">Method:</span>
+      <button class="pill active" data-smethod="elimination">Elimination</button>
+      <button class="pill" data-smethod="substitution">Substitution</button>
+      <button class="pill" data-smethod="matrix">Matrix (Cramer)</button>
+    </div>
+
+    <div class="examples">
+      <button class="ex-btn" data-eq="2x + 5 = 13">2x + 5 = 13</button>
+      <button class="ex-btn" data-eq="x^2 - 5x + 6 = 0">x&sup2; - 5x + 6 = 0</button>
+      <button class="ex-btn" data-eq="3x + 2y = 12, x - y = 1" data-sys="1">3x+2y=12, x-y=1</button>
+      <button class="ex-btn" data-eq="x^2 - 9" data-type="factor">x&sup2; - 9</button>
+      <button class="ex-btn" data-eq="2x + 3 > 7">2x + 3 &gt; 7</button>
+      <button class="ex-btn" data-eq="x^2 + 2x - 8 = 0">x&sup2; + 2x - 8 = 0</button>
+      <button class="ex-btn" data-eq="x^3 - 27" data-type="factor">x&sup3; - 27</button>
+    </div>
+  </section>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+    <!-- Steps Panel -->
+    <div class="steps-panel" id="stepsPanel">
+      <div class="steps-header">
+        <span class="steps-title">Solution Steps</span>
+        <div class="step-controls">
+          <button class="ctrl-btn" id="btnStepMode" title="Step through one at a time">Next Step</button>
+          <button class="ctrl-btn active" id="btnShowAll" title="Show all steps at once">Show All</button>
+        </div>
+      </div>
+      <div id="stepsContainer">
+        <div class="empty-msg">Enter an equation above to get started.</div>
+      </div>
+      <!-- Solution box -->
+      <div class="solution-box" id="solutionBox">
+        <div class="sol-label">Solution</div>
+        <div class="sol-answer" id="solAnswer"></div>
+        <div class="sol-actions">
+          <button class="sol-btn verify" id="verifyBtn">Verify</button>
+          <button class="sol-btn copy" id="copyBtn">Copy Answer</button>
+        </div>
+        <div class="verify-result" id="verifyResult"></div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col">
+      <!-- Graph -->
+      <div class="graph-panel">
+        <h3>Graph</h3>
+        <canvas class="graph-canvas" id="graphCanvas"></canvas>
+        <div class="graph-coords" id="graphCoords">&nbsp;</div>
+      </div>
+      <!-- History -->
+      <div class="history-panel">
+        <h3>
+          History
+          <button class="history-toggle" id="histToggle">collapse</button>
+        </h3>
+        <ul class="history-list" id="histList">
+          <li style="color:var(--muted);font-size:.82rem;padding:8px 0">No equations solved yet.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ====================================================================
+   DOM REFERENCES
+   ==================================================================== */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const eqInput   = $('#eqInput');
+const eqInput2  = $('#eqInput2');
+const solveBtn  = $('#solveBtn');
+const preview   = $('#latexPreview');
+const badge     = $('#typeBadge');
+const methodRow = $('#methodRow');
+const sysMethodRow = $('#sysMethodRow');
+const stepsContainer = $('#stepsContainer');
+const solutionBox = $('#solutionBox');
+const solAnswer = $('#solAnswer');
+const verifyBtn = $('#verifyBtn');
+const copyBtn   = $('#copyBtn');
+const verifyResult = $('#verifyResult');
+const canvas    = $('#graphCanvas');
+const ctx       = canvas.getContext('2d');
+const coordsDiv = $('#graphCoords');
+const histList  = $('#histList');
+
+let showAllMode = true;
+let currentSteps = [];
+let currentStepIdx = 0;
+let currentSolution = null;
+let currentType = '';
+let selectedMethod = 'formula';
+let selectedSysMethod = 'elimination';
+let history = JSON.parse(sessionStorage.getItem('eqHistory') || '[]');
+
+/* ====================================================================
+   MATHJAX HELPERS
+   ==================================================================== */
+function typeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([el]).catch(()=>{});
+  }
+}
+
+/* ====================================================================
+   INIT & EVENTS
+   ==================================================================== */
+renderHistory();
+
+// Example buttons
+$$('.ex-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    const eq = b.dataset.eq;
+    if (eq.includes(',')) {
+      const parts = eq.split(',').map(s=>s.trim());
+      eqInput.value = parts[0];
+      eqInput2.value = parts[1];
+      eqInput2.classList.add('show');
+    } else {
+      eqInput.value = eq;
+      eqInput2.value = '';
+      eqInput2.classList.remove('show');
+    }
+    updatePreview();
+    if (b.dataset.type === 'factor') currentType = 'factor';
+    solve();
+  });
+});
+
+// Method pills (quadratic)
+$$('.pill[data-method]').forEach(p => {
+  p.addEventListener('click', () => {
+    $$('.pill[data-method]').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    selectedMethod = p.dataset.method;
+    if (currentType === 'quadratic') solve();
+  });
+});
+
+// System method pills
+$$('.pill[data-smethod]').forEach(p => {
+  p.addEventListener('click', () => {
+    $$('.pill[data-smethod]').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    selectedSysMethod = p.dataset.smethod;
+    if (currentType === 'system') solve();
+  });
+});
+
+// Solve button
+solveBtn.addEventListener('click', solve);
+eqInput.addEventListener('keydown', e => { if (e.key==='Enter') solve(); });
+eqInput2.addEventListener('keydown', e => { if (e.key==='Enter') solve(); });
+eqInput.addEventListener('input', updatePreview);
+eqInput2.addEventListener('input', updatePreview);
+
+// Step controls
+$('#btnShowAll').addEventListener('click', () => {
+  showAllMode = true;
+  $('#btnShowAll').classList.add('active');
+  $('#btnStepMode').classList.remove('active');
+  showAllSteps();
+});
+$('#btnStepMode').addEventListener('click', () => {
+  showAllMode = false;
+  $('#btnStepMode').classList.add('active');
+  $('#btnShowAll').classList.remove('active');
+  currentStepIdx = 0;
+  renderStepsUpTo(0);
+});
+
+// Verify
+verifyBtn.addEventListener('click', doVerify);
+copyBtn.addEventListener('click', () => {
+  if (currentSolution) {
+    navigator.clipboard.writeText(currentSolution.answerText || '').then(()=>{
+      copyBtn.textContent = 'Copied!';
+      setTimeout(()=>copyBtn.textContent='Copy Answer',1500);
+    });
+  }
+});
+
+// History toggle
+$('#histToggle').addEventListener('click', () => {
+  histList.classList.toggle('collapsed');
+  $('#histToggle').textContent = histList.classList.contains('collapsed') ? 'expand' : 'collapse';
+});
+
+// Graph mouse
+canvas.addEventListener('mousemove', e => {
+  if (!currentSolution || !currentSolution.graphFn) return;
+  const rect = canvas.getBoundingClientRect();
+  const px = e.clientX - rect.left;
+  const py = e.clientY - rect.top;
+  const gw = canvas.width, gh = canvas.height;
+  const vw = currentSolution.graphView;
+  if (!vw) return;
+  const x = vw.xMin + (px/gw)*(vw.xMax-vw.xMin);
+  const y = vw.yMax - (py/gh)*(vw.yMax-vw.yMin);
+  coordsDiv.textContent = `(${x.toFixed(2)}, ${y.toFixed(2)})`;
+});
+
+/* ====================================================================
+   LIVE PREVIEW
+   ==================================================================== */
+function updatePreview() {
+  let eq = eqInput.value.trim();
+  let eq2 = eqInput2.value.trim();
+  if (!eq) { preview.innerHTML = '&nbsp;'; badge.style.display='none'; return; }
+
+  const type = detectType(eq, eq2);
+  let latex = eqToLatex(eq);
+  if (eq2) latex += ' \\quad , \\quad ' + eqToLatex(eq2);
+  preview.innerHTML = '\\(' + latex + '\\)';
+  typeset(preview);
+
+  const labels = {linear:'Linear Equation',quadratic:'Quadratic Equation',system:'System of Equations',factor:'Polynomial Factoring',inequality:'Inequality'};
+  badge.textContent = labels[type] || type;
+  badge.style.display = 'inline-flex';
+
+  // Show/hide method rows and second input
+  methodRow.classList.toggle('show', type==='quadratic');
+  sysMethodRow.classList.toggle('show', type==='system');
+
+  if (type==='system' && !eqInput2.classList.contains('show')) {
+    if (eq.includes(',')) {
+      const parts = eq.split(',').map(s=>s.trim());
+      eqInput.value = parts[0];
+      eqInput2.value = parts[1];
+      eqInput2.classList.add('show');
+    } else {
+      eqInput2.classList.add('show');
+    }
+  } else if (type!=='system') {
+    eqInput2.classList.remove('show');
+  }
+}
+
+function eqToLatex(s) {
+  return s.replace(/\*/g, '\\cdot ')
+          .replace(/\^(\d+)/g, '^{$1}')
+          .replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}')
+          .replace(/>=/g, '\\geq ').replace(/<=/g, '\\leq ')
+          .replace(/>/g, '\\gt ').replace(/</g, '\\lt ');
+}
+
+/* ====================================================================
+   TYPE DETECTION
+   ==================================================================== */
+function detectType(eq, eq2) {
+  eq = eq.toLowerCase().replace(/\s+/g,'');
+  if (eq2 && eq2.trim()) return 'system';
+  if (eq.includes(',') && /[xy]/.test(eq)) return 'system';
+  if (/[<>]|>=|<=/.test(eq)) return 'inequality';
+  if (!eq.includes('=') && /\^[23]|x[23]/.test(eq)) return 'factor';
+  if (!eq.includes('=') && /x/.test(eq)) return 'factor';
+  if (/x\^2|x\*\*2|x²/.test(eq) || /\^3|x³/.test(eq)) return 'quadratic';
+  if (/[xy]/.test(eq) && eq.includes('=')) return 'linear';
+  return 'linear';
+}
+
+/* ====================================================================
+   MAIN SOLVE
+   ==================================================================== */
+function solve() {
+  let eq = eqInput.value.trim();
+  let eq2 = eqInput2.value.trim();
+  if (!eq) return;
+
+  // Handle comma-separated system
+  if (eq.includes(',') && !eq2) {
+    const parts = eq.split(',').map(s=>s.trim());
+    eq = parts[0]; eq2 = parts[1] || '';
+    eqInput.value = eq;
+    eqInput2.value = eq2;
+    eqInput2.classList.add('show');
+  }
+
+  currentType = detectType(eq, eq2);
+  updatePreview();
+
+  let result;
+  try {
+    switch (currentType) {
+      case 'linear':     result = solveLinear(eq); break;
+      case 'quadratic':  result = solveQuadratic(eq, selectedMethod); break;
+      case 'system':     result = solveSystem(eq, eq2, selectedSysMethod); break;
+      case 'factor':     result = factorPoly(eq); break;
+      case 'inequality': result = solveInequality(eq); break;
+      default:           result = solveLinear(eq);
+    }
+  } catch(e) {
+    stepsContainer.innerHTML = `<div class="empty-msg" style="color:var(--red)">Could not parse: ${esc(e.message||e)}</div>`;
+    solutionBox.classList.remove('show');
+    return;
+  }
+
+  currentSolution = result;
+  currentSteps = result.steps || [];
+  currentStepIdx = 0;
+
+  if (showAllMode) showAllSteps(); else renderStepsUpTo(0);
+
+  // Solution box
+  if (result.answerLatex) {
+    solAnswer.innerHTML = '\\(' + result.answerLatex + '\\)';
+    typeset(solAnswer);
+    solutionBox.classList.add('show');
+    verifyResult.classList.remove('show');
+  }
+
+  // Graph
+  if (result.graphFn) result.graphFn();
+
+  // History
+  addHistory(eq + (eq2 ? ', '+eq2 : ''));
+}
+
+/* ====================================================================
+   STEP RENDERING
+   ==================================================================== */
+function renderSteps(steps) {
+  stepsContainer.innerHTML = '';
+  steps.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    card.innerHTML = `
+      <span class="step-num">${i+1}</span>
+      <span class="step-desc">${esc(s.desc)}</span>
+      <div class="step-math">${s.latex ? '\\(' + s.latex + '\\)' : (s.html||'')}</div>
+    `;
+    stepsContainer.appendChild(card);
+    typeset(card);
+  });
+  return stepsContainer.querySelectorAll('.step-card');
+}
+
+function showAllSteps() {
+  const cards = renderSteps(currentSteps);
+  let delay = 0;
+  cards.forEach(c => {
+    setTimeout(() => c.classList.add('visible'), delay);
+    delay += 120;
+  });
+}
+
+function renderStepsUpTo(idx) {
+  const cards = renderSteps(currentSteps);
+  cards.forEach((c, i) => {
+    if (i <= idx) { c.classList.add('visible'); }
+    else { c.style.display = 'none'; }
+  });
+  currentStepIdx = idx;
+  // Update next button
+  $('#btnStepMode').textContent = idx >= currentSteps.length-1 ? 'Done' : 'Next Step';
+}
+
+$('#btnStepMode').addEventListener('click', () => {
+  if (showAllMode) return;
+  if (currentStepIdx < currentSteps.length - 1) {
+    currentStepIdx++;
+    renderStepsUpTo(currentStepIdx);
+  }
+});
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ====================================================================
+   PARSER UTILITIES
+   ==================================================================== */
+function normalize(s) {
+  return s.replace(/\s+/g,'').replace(/\*\*/g,'^').replace(/[²]/g,'^2').replace(/[³]/g,'^3')
+          .replace(/(\d)([a-z])/gi,'$1*$2')
+          .replace(/([a-z])(\d)/gi, (m,a,b)=> a+'^'+b.length===1?a+'*'+b:m)
+          .replace(/\)\(/g,')*(').replace(/(\d)\(/g,'$1*(').replace(/\)(\d)/g,')*$1')
+          .replace(/([a-z])\(/gi,'$1*(');
+}
+
+// Parse "ax + b" style expression, returns {coeff of x, constant}
+function parseLinearExpr(s, variable) {
+  variable = variable || 'x';
+  s = s.replace(/\s+/g,'');
+  // Add '+' before minus if not at start
+  let tokens = [];
+  let cur = '';
+  for (let i = 0; i < s.length; i++) {
+    if ((s[i] === '+' || s[i] === '-') && i > 0) {
+      tokens.push(cur);
+      cur = s[i] === '-' ? '-' : '';
+    } else {
+      cur += s[i];
+    }
+  }
+  if (cur) tokens.push(cur);
+
+  let coeff = 0, constant = 0;
+  const vr = variable.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const varRe = new RegExp('^([+-]?[\\d.]*)' + vr + '$');
+
+  tokens.forEach(t => {
+    t = t.replace(/^\+/,'');
+    const m = t.match(varRe);
+    if (m) {
+      let c = m[1];
+      if (c === '' || c === '+') c = '1';
+      else if (c === '-') c = '-1';
+      coeff += parseFloat(c);
+    } else {
+      constant += parseFloat(t) || 0;
+    }
+  });
+  return { coeff, constant };
+}
+
+// Parse 2-variable linear: ax + by, returns {a, b, c(constant)}
+function parseLinear2(s) {
+  s = s.replace(/\s+/g,'');
+  let tokens = [];
+  let cur = '';
+  for (let i = 0; i < s.length; i++) {
+    if ((s[i]==='+' || s[i]==='-') && i > 0) { tokens.push(cur); cur = s[i]==='-'?'-':''; }
+    else cur += s[i];
+  }
+  if (cur) tokens.push(cur);
+
+  let a = 0, b = 0, c = 0;
+  tokens.forEach(t => {
+    t = t.replace(/^\+/,'');
+    const mx = t.match(/^([+-]?[\d.]*)x$/);
+    const my = t.match(/^([+-]?[\d.]*)y$/);
+    if (mx) { let v=mx[1]; if(v===''||v==='+')v='1'; if(v==='-')v='-1'; a+=parseFloat(v); }
+    else if (my) { let v=my[1]; if(v===''||v==='+')v='1'; if(v==='-')v='-1'; b+=parseFloat(v); }
+    else { c+=parseFloat(t)||0; }
+  });
+  return {a, b, c};
+}
+
+// Parse quadratic ax^2 + bx + c
+function parseQuadratic(s) {
+  s = s.replace(/\s+/g,'').replace(/\*\*/g,'^').replace(/²/g,'^2');
+  // Insert * between coeff and x
+  s = s.replace(/(\d)(x)/g,'$1*$2');
+  let tokens = [];
+  let cur = '';
+  for (let i=0;i<s.length;i++){
+    if((s[i]==='+'||s[i]==='-')&&i>0&&s[i-1]!=='^'){tokens.push(cur);cur=s[i]==='-'?'-':'';}
+    else cur+=s[i];
+  }
+  if(cur)tokens.push(cur);
+
+  let a=0,b=0,c=0;
+  tokens.forEach(t=>{
+    t=t.replace(/^\+/,'');
+    const m2=t.match(/^([+-]?[\d.]*)(?:\*?)x\^2$/);
+    const m1=t.match(/^([+-]?[\d.]*)(?:\*?)x$/);
+    if(m2){let v=m2[1];if(v===''||v==='+')v='1';if(v==='-')v='-1';a+=parseFloat(v);}
+    else if(m1){let v=m1[1];if(v===''||v==='+')v='1';if(v==='-')v='-1';b+=parseFloat(v);}
+    else{c+=parseFloat(t)||0;}
+  });
+  return{a,b,c};
+}
+
+function frac(n, d) {
+  if (d < 0) { n=-n; d=-d; }
+  const g = gcd(Math.abs(n), Math.abs(d));
+  n /= g; d /= g;
+  if (d === 1) return '' + n;
+  return '\\frac{' + n + '}{' + d + '}';
+}
+
+function gcd(a,b){ a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a; }
+
+function niceNum(x) {
+  if (Number.isInteger(x)) return ''+x;
+  // Check common fractions
+  for (let d=2;d<=100;d++){
+    const n = x*d;
+    if (Math.abs(n-Math.round(n))<1e-9) return frac(Math.round(n),d);
+  }
+  return x.toFixed(4).replace(/0+$/,'').replace(/\.$/,'');
+}
+
+function niceNumPlain(x) {
+  if (Number.isInteger(x)) return ''+x;
+  for (let d=2;d<=100;d++){
+    const n=x*d;
+    if(Math.abs(n-Math.round(n))<1e-9) return Math.round(n)+'/'+d;
+  }
+  return x.toFixed(4);
+}
+
+/* ====================================================================
+   LINEAR SOLVER: ax + b = c
+   ==================================================================== */
+function solveLinear(eq) {
+  if (!eq.includes('=')) throw new Error('Expected an equation with "="');
+  const [lhs, rhs] = eq.split('=').map(s=>s.trim());
+  const L = parseLinearExpr(lhs, 'x');
+  const R = parseLinearExpr(rhs, 'x');
+
+  // ax + b = cx + d  =>  (a-c)x = d - b
+  const a = L.coeff - R.coeff;
+  const d = R.constant - L.constant;
+
+  const steps = [];
+  steps.push({ desc: 'Start with the equation', latex: eqToLatex(eq) });
+
+  if (R.coeff !== 0) {
+    steps.push({ desc: `Move ${niceNumPlain(R.coeff)}x from the right side to the left`, latex: `${niceNum(a)}x + ${niceNum(L.constant)} = ${niceNum(R.constant)}` });
+  }
+  if (L.constant !== 0) {
+    const sub = L.constant > 0 ? `Subtract ${niceNumPlain(L.constant)}` : `Add ${niceNumPlain(-L.constant)}`;
+    steps.push({ desc: `${sub} from both sides`, latex: `${niceNum(a)}x = ${niceNum(d)}` });
+  }
+  if (a === 0) {
+    if (d === 0) {
+      steps.push({ desc: 'Identity: equation is true for all x', latex: '0 = 0' });
+      return { steps, answerLatex: 'x \\in \\mathbb{R}', answerText: 'All real numbers', graphFn: () => drawLinearGraph(L.coeff, L.constant, R.coeff, R.constant, null) };
+    } else {
+      steps.push({ desc: 'Contradiction: no solution exists', latex: `0 = ${niceNum(d)}` });
+      return { steps, answerLatex: '\\text{No solution}', answerText: 'No solution', graphFn: () => drawLinearGraph(L.coeff, L.constant, R.coeff, R.constant, null) };
+    }
+  }
+
+  if (a !== 1) {
+    steps.push({ desc: `Divide both sides by ${niceNumPlain(a)}`, latex: `x = ${niceNum(d/a)}` });
+  }
+
+  const x = d / a;
+  steps.push({ desc: 'Solution', latex: `\\boxed{x = ${niceNum(x)}}` });
+
+  return {
+    steps,
+    answerLatex: `x = ${niceNum(x)}`,
+    answerText: `x = ${niceNumPlain(x)}`,
+    verification: { variable: 'x', value: x, original: eq },
+    graphFn: () => drawLinearGraph(L.coeff, L.constant, 0, R.coeff * x + R.constant, x)
+  };
+}
+
+/* ====================================================================
+   QUADRATIC SOLVER
+   ==================================================================== */
+function solveQuadratic(eq, method) {
+  let lhsStr, rhsStr;
+  if (eq.includes('=')) {
+    [lhsStr, rhsStr] = eq.split('=').map(s=>s.trim());
+  } else {
+    lhsStr = eq; rhsStr = '0';
+  }
+  const L = parseQuadratic(lhsStr);
+  const R = parseQuadratic(rhsStr);
+  const a = L.a - R.a;
+  const b = L.b - R.b;
+  const c = L.c - R.c;
+
+  if (a === 0) {
+    // Actually linear
+    return solveLinear(eq.includes('=') ? eq : eq + ' = 0');
+  }
+
+  if (method === 'all') {
+    return solveQuadraticAll(a, b, c, eq);
+  }
+
+  let steps = [];
+  let roots;
+
+  steps.push({ desc: 'Start with the equation', latex: eqToLatex(eq) });
+
+  if (rhsStr !== '0') {
+    steps.push({ desc: 'Move all terms to the left side', latex: `${niceNum(a)}x^{2} + ${niceNum(b)}x + ${niceNum(c)} = 0` });
+  }
+
+  const disc = b*b - 4*a*c;
+  steps.push({ desc: `Identify coefficients: a = ${niceNumPlain(a)}, b = ${niceNumPlain(b)}, c = ${niceNumPlain(c)}`, latex: `a=${niceNum(a)},\\; b=${niceNum(b)},\\; c=${niceNum(c)}` });
+
+  if (method === 'factor') {
+    roots = solveQuadFactor(a, b, c, steps);
+  } else if (method === 'complete') {
+    roots = solveQuadComplete(a, b, c, steps);
+  } else {
+    roots = solveQuadFormula(a, b, c, steps);
+  }
+
+  let ansLatex, ansTxt;
+  if (roots.complex) {
+    ansLatex = `x = ${roots.r1Latex} \\quad \\text{or} \\quad x = ${roots.r2Latex}`;
+    ansTxt = `x = ${roots.r1Text} or x = ${roots.r2Text}`;
+  } else if (roots.r1 === roots.r2) {
+    ansLatex = `x = ${niceNum(roots.r1)}`;
+    ansTxt = `x = ${niceNumPlain(roots.r1)}`;
+  } else {
+    ansLatex = `x = ${niceNum(roots.r1)} \\quad \\text{or} \\quad x = ${niceNum(roots.r2)}`;
+    ansTxt = `x = ${niceNumPlain(roots.r1)} or x = ${niceNumPlain(roots.r2)}`;
+  }
+
+  steps.push({ desc: 'Solution', latex: `\\boxed{${ansLatex}}` });
+
+  return {
+    steps,
+    answerLatex: ansLatex,
+    answerText: ansTxt,
+    verification: { type: 'quadratic', a, b, c, roots },
+    graphFn: () => drawQuadraticGraph(a, b, c, roots)
+  };
+}
+
+function solveQuadFormula(a, b, c, steps) {
+  const disc = b*b - 4*a*c;
+  steps.push({ desc: `Calculate the discriminant: b² - 4ac`, latex: `\\Delta = (${niceNum(b)})^2 - 4(${niceNum(a)})(${niceNum(c)}) = ${niceNum(disc)}` });
+
+  if (disc > 0) {
+    steps.push({ desc: 'Discriminant > 0: two distinct real roots', latex: `\\Delta = ${niceNum(disc)} > 0` });
+  } else if (disc === 0) {
+    steps.push({ desc: 'Discriminant = 0: one repeated real root', latex: `\\Delta = 0` });
+  } else {
+    steps.push({ desc: 'Discriminant < 0: two complex conjugate roots', latex: `\\Delta = ${niceNum(disc)} < 0` });
+  }
+
+  steps.push({ desc: 'Apply the quadratic formula', latex: `x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a} = \\frac{${niceNum(-b)} \\pm \\sqrt{${niceNum(disc)}}}{${niceNum(2*a)}}` });
+
+  if (disc < 0) {
+    const re = -b / (2*a);
+    const im = Math.sqrt(-disc) / (2*a);
+    const r1L = `${niceNum(re)} + ${niceNum(Math.abs(im))}i`;
+    const r2L = `${niceNum(re)} - ${niceNum(Math.abs(im))}i`;
+    steps.push({ desc: 'Simplify', latex: `x = ${r1L} \\quad \\text{or} \\quad x = ${r2L}` });
+    return { complex: true, r1Latex: r1L, r2Latex: r2L, r1Text: `${niceNumPlain(re)} + ${niceNumPlain(Math.abs(im))}i`, r2Text: `${niceNumPlain(re)} - ${niceNumPlain(Math.abs(im))}i`, re, im: Math.abs(im) };
+  }
+
+  const sqrtD = Math.sqrt(disc);
+  const r1 = (-b + sqrtD) / (2*a);
+  const r2 = (-b - sqrtD) / (2*a);
+  steps.push({ desc: 'Calculate the roots', latex: `x = \\frac{${niceNum(-b)} + ${niceNum(sqrtD)}}{${niceNum(2*a)}} = ${niceNum(r1)} \\quad , \\quad x = \\frac{${niceNum(-b)} - ${niceNum(sqrtD)}}{${niceNum(2*a)}} = ${niceNum(r2)}` });
+
+  return { r1, r2 };
+}
+
+function solveQuadFactor(a, b, c, steps) {
+  // Try to find integer factors
+  const disc = b*b - 4*a*c;
+  if (disc < 0) {
+    steps.push({ desc: 'Cannot factor over the reals (discriminant < 0). Using quadratic formula instead.', latex: '' });
+    return solveQuadFormula(a, b, c, steps);
+  }
+
+  // For ax^2+bx+c, find p,q such that p+q=b and p*q=a*c
+  const product = a * c;
+  let p = null, q = null;
+  const limit = Math.ceil(Math.sqrt(Math.abs(product))) + Math.abs(product);
+  for (let i = -limit; i <= limit; i++) {
+    if (i === 0 && product !== 0) continue;
+    if (product % i === 0) {
+      const j = product / i;
+      if (i + j === b) { p = i; q = j; break; }
+    }
+  }
+
+  if (p === null) {
+    steps.push({ desc: 'Cannot factor with integers. Falling back to quadratic formula.', latex: '' });
+    return solveQuadFormula(a, b, c, steps);
+  }
+
+  steps.push({ desc: `Find two numbers that multiply to ${niceNumPlain(product)} and add to ${niceNumPlain(b)}`, latex: `${niceNum(p)} \\times ${niceNum(q)} = ${niceNum(product)} \\quad , \\quad ${niceNum(p)} + ${niceNum(q)} = ${niceNum(b)}` });
+
+  if (a === 1) {
+    steps.push({ desc: 'Write in factored form', latex: `(x + ${niceNum(p)})(x + ${niceNum(q)}) = 0` });
+    const r1 = -p, r2 = -q;
+    steps.push({ desc: 'Set each factor to zero', latex: `x = ${niceNum(r1)} \\quad \\text{or} \\quad x = ${niceNum(r2)}` });
+    return { r1, r2 };
+  } else {
+    // Factor by grouping
+    steps.push({ desc: 'Rewrite the middle term and factor by grouping', latex: `${niceNum(a)}x^2 + ${niceNum(p)}x + ${niceNum(q)}x + ${niceNum(c)} = 0` });
+    const sqrtD = Math.sqrt(disc);
+    const r1 = (-b + sqrtD) / (2*a);
+    const r2 = (-b - sqrtD) / (2*a);
+    steps.push({ desc: 'The roots are', latex: `x = ${niceNum(r1)} \\quad \\text{or} \\quad x = ${niceNum(r2)}` });
+    return { r1, r2 };
+  }
+}
+
+function solveQuadComplete(a, b, c, steps) {
+  if (a !== 1) {
+    steps.push({ desc: `Divide everything by ${niceNumPlain(a)}`, latex: `x^2 + ${niceNum(b/a)}x + ${niceNum(c/a)} = 0` });
+  }
+  const B = b/a, C = c/a;
+  steps.push({ desc: `Move the constant to the right side`, latex: `x^2 + ${niceNum(B)}x = ${niceNum(-C)}` });
+
+  const half = B/2;
+  const sq = half*half;
+  steps.push({ desc: `Take half of ${niceNumPlain(B)}, square it, and add to both sides`, latex: `x^2 + ${niceNum(B)}x + ${niceNum(sq)} = ${niceNum(-C + sq)}` });
+
+  const rhs = -C + sq;
+  steps.push({ desc: 'Write the left side as a perfect square', latex: `\\left(x + ${niceNum(half)}\\right)^2 = ${niceNum(rhs)}` });
+
+  if (rhs < 0) {
+    const im = Math.sqrt(-rhs);
+    steps.push({ desc: 'Take the square root (complex)', latex: `x + ${niceNum(half)} = \\pm ${niceNum(im)}i` });
+    const re = -half;
+    return { complex: true, r1Latex: `${niceNum(re)} + ${niceNum(im)}i`, r2Latex: `${niceNum(re)} - ${niceNum(im)}i`, r1Text: `${niceNumPlain(re)}+${niceNumPlain(im)}i`, r2Text: `${niceNumPlain(re)}-${niceNumPlain(im)}i`, re, im };
+  }
+
+  const sqrtRhs = Math.sqrt(rhs);
+  steps.push({ desc: 'Take the square root of both sides', latex: `x + ${niceNum(half)} = \\pm ${niceNum(sqrtRhs)}` });
+
+  const r1 = -half + sqrtRhs;
+  const r2 = -half - sqrtRhs;
+  steps.push({ desc: 'Solve for x', latex: `x = ${niceNum(r1)} \\quad \\text{or} \\quad x = ${niceNum(r2)}` });
+  return { r1, r2 };
+}
+
+function solveQuadraticAll(a, b, c, eq) {
+  // Return a multi-method display
+  const stepsFormula = [{ desc: 'Start', latex: eqToLatex(eq) }];
+  const stepsComplete = [{ desc: 'Start', latex: eqToLatex(eq) }];
+  const stepsFactor = [{ desc: 'Start', latex: eqToLatex(eq) }];
+
+  if (eq.includes('=') && !eq.endsWith('=0') && !eq.endsWith('= 0')) {
+    const std = `${niceNum(a)}x^{2} + ${niceNum(b)}x + ${niceNum(c)} = 0`;
+    stepsFormula.push({ desc: 'Standard form', latex: std });
+    stepsComplete.push({ desc: 'Standard form', latex: std });
+    stepsFactor.push({ desc: 'Standard form', latex: std });
+  }
+
+  stepsFormula.push({ desc: `a=${niceNumPlain(a)}, b=${niceNumPlain(b)}, c=${niceNumPlain(c)}`, latex: '' });
+  stepsComplete.push({ desc: `a=${niceNumPlain(a)}, b=${niceNumPlain(b)}, c=${niceNumPlain(c)}`, latex: '' });
+  stepsFactor.push({ desc: `a=${niceNumPlain(a)}, b=${niceNumPlain(b)}, c=${niceNumPlain(c)}`, latex: '' });
+
+  const rFormula = solveQuadFormula(a, b, c, stepsFormula);
+  const rComplete = solveQuadComplete(a, b, c, stepsComplete);
+  const rFactor = solveQuadFactor(a, b, c, stepsFactor);
+
+  const roots = rFormula;
+  let ansLatex, ansTxt;
+  if (roots.complex) {
+    ansLatex = `x = ${roots.r1Latex} \\;\\text{or}\\; x = ${roots.r2Latex}`;
+    ansTxt = `${roots.r1Text} or ${roots.r2Text}`;
+  } else if (roots.r1 === roots.r2) {
+    ansLatex = `x = ${niceNum(roots.r1)}`;
+    ansTxt = `x = ${niceNumPlain(roots.r1)}`;
+  } else {
+    ansLatex = `x = ${niceNum(roots.r1)} \\;\\text{or}\\; x = ${niceNum(roots.r2)}`;
+    ansTxt = `x = ${niceNumPlain(roots.r1)} or x = ${niceNumPlain(roots.r2)}`;
+  }
+
+  // Render multi-method view
+  currentSteps = [];
+  stepsContainer.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'multi-method';
+
+  function makeCol(title, cls, steps) {
+    const col = document.createElement('div');
+    col.className = 'method-col';
+    col.innerHTML = `<h4 class="${cls}">${esc(title)}</h4>`;
+    steps.forEach((s,i) => {
+      const card = document.createElement('div');
+      card.className = 'step-card visible';
+      card.innerHTML = `<span class="step-num">${i+1}</span><span class="step-desc">${esc(s.desc)}</span><div class="step-math">${s.latex?'\\('+s.latex+'\\)':''}</div>`;
+      col.appendChild(card);
+    });
+    return col;
+  }
+
+  grid.appendChild(makeCol('Quadratic Formula','formula-h',stepsFormula));
+  grid.appendChild(makeCol('Completing the Square','complete-h',stepsComplete));
+  grid.appendChild(makeCol('Factoring','factor-h',stepsFactor));
+  stepsContainer.appendChild(grid);
+  typeset(stepsContainer);
+
+  solAnswer.innerHTML = '\\(' + ansLatex + '\\)';
+  typeset(solAnswer);
+  solutionBox.classList.add('show');
+  verifyResult.classList.remove('show');
+
+  return {
+    steps: [],
+    answerLatex: ansLatex,
+    answerText: ansTxt,
+    verification: { type:'quadratic', a, b, c, roots },
+    graphFn: () => drawQuadraticGraph(a, b, c, roots)
+  };
+}
+
+/* ====================================================================
+   SYSTEM OF EQUATIONS
+   ==================================================================== */
+function solveSystem(eq1, eq2, method) {
+  if (!eq1.includes('=') || !eq2.includes('=')) throw new Error('Each equation needs "="');
+
+  const [l1, r1s] = eq1.split('=').map(s=>s.trim());
+  const [l2, r2s] = eq2.split('=').map(s=>s.trim());
+
+  const L1 = parseLinear2(l1), R1 = parseFloat(r1s) || 0;
+  const L2 = parseLinear2(l2), R2 = parseFloat(r2s) || 0;
+
+  // a1*x + b1*y = c1
+  const a1 = L1.a, b1 = L1.b, c1 = R1 - L1.c;
+  const a2 = L2.a, b2 = L2.b, c2 = R2 - L2.c;
+
+  const steps = [];
+  steps.push({ desc: 'System of equations', latex: `\\begin{cases} ${niceNum(a1)}x + ${niceNum(b1)}y = ${niceNum(c1)} \\\\ ${niceNum(a2)}x + ${niceNum(b2)}y = ${niceNum(c2)} \\end{cases}` });
+
+  const det = a1*b2 - a2*b1;
+
+  if (method === 'matrix') {
+    // Cramer's rule
+    steps.push({ desc: "Write in matrix form Ax = b", latex: `\\begin{pmatrix}${niceNum(a1)}&${niceNum(b1)}\\\\${niceNum(a2)}&${niceNum(b2)}\\end{pmatrix}\\begin{pmatrix}x\\\\y\\end{pmatrix}=\\begin{pmatrix}${niceNum(c1)}\\\\${niceNum(c2)}\\end{pmatrix}` });
+
+    steps.push({ desc: 'Calculate determinant of coefficient matrix', latex: `D = ${niceNum(a1)}\\cdot${niceNum(b2)} - ${niceNum(a2)}\\cdot${niceNum(b1)} = ${niceNum(det)}` });
+
+    if (det === 0) {
+      steps.push({ desc: 'Determinant is 0: system has no unique solution', latex: '' });
+      return { steps, answerLatex: '\\text{No unique solution}', answerText: 'No unique solution', graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,null,null) };
+    }
+
+    const dx = c1*b2 - c2*b1;
+    const dy = a1*c2 - a2*c1;
+    steps.push({ desc: 'Calculate Dx and Dy', latex: `D_x = ${niceNum(c1)}\\cdot${niceNum(b2)} - ${niceNum(c2)}\\cdot${niceNum(b1)} = ${niceNum(dx)} \\quad , \\quad D_y = ${niceNum(a1)}\\cdot${niceNum(c2)} - ${niceNum(a2)}\\cdot${niceNum(c1)} = ${niceNum(dy)}` });
+
+    const x = dx/det, y = dy/det;
+    steps.push({ desc: 'Apply Cramer\'s rule', latex: `x = \\frac{D_x}{D} = ${niceNum(x)} \\quad , \\quad y = \\frac{D_y}{D} = ${niceNum(y)}` });
+    steps.push({ desc: 'Solution', latex: `\\boxed{x = ${niceNum(x)},\\; y = ${niceNum(y)}}` });
+
+    return { steps, answerLatex: `x = ${niceNum(x)},\\; y = ${niceNum(y)}`, answerText: `x = ${niceNumPlain(x)}, y = ${niceNumPlain(y)}`, verification:{type:'system',a1,b1,c1,a2,b2,c2,x,y}, graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,x,y) };
+
+  } else if (method === 'substitution') {
+    // Solve eq1 for x (or whichever has coeff 1)
+    let solveFor = 'x', fromEq = 1;
+    if (Math.abs(a1) === 1) { solveFor='x'; fromEq=1; }
+    else if (Math.abs(b1) === 1) { solveFor='y'; fromEq=1; }
+    else if (Math.abs(a2) === 1) { solveFor='x'; fromEq=2; }
+    else if (Math.abs(b2) === 1) { solveFor='y'; fromEq=2; }
+
+    const fa = fromEq===1?a1:a2, fb = fromEq===1?b1:b2, fc = fromEq===1?c1:c2;
+    const oa = fromEq===1?a2:a1, ob = fromEq===1?b2:b1, oc = fromEq===1?c2:c1;
+
+    if (solveFor === 'x') {
+      steps.push({ desc: `Solve equation ${fromEq} for x`, latex: `x = \\frac{${niceNum(fc)} - ${niceNum(fb)}y}{${niceNum(fa)}}` });
+      // Substitute into other
+      steps.push({ desc: `Substitute into equation ${fromEq===1?2:1}`, latex: `${niceNum(oa)}\\left(\\frac{${niceNum(fc)} - ${niceNum(fb)}y}{${niceNum(fa)}}\\right) + ${niceNum(ob)}y = ${niceNum(oc)}` });
+    } else {
+      steps.push({ desc: `Solve equation ${fromEq} for y`, latex: `y = \\frac{${niceNum(fc)} - ${niceNum(fa)}x}{${niceNum(fb)}}` });
+      steps.push({ desc: `Substitute into equation ${fromEq===1?2:1}`, latex: `${niceNum(oa)}x + ${niceNum(ob)}\\left(\\frac{${niceNum(fc)} - ${niceNum(fa)}x}{${niceNum(fb)}}\\right) = ${niceNum(oc)}` });
+    }
+
+    if (det === 0) {
+      steps.push({ desc: 'System has no unique solution', latex: '' });
+      return { steps, answerLatex: '\\text{No unique solution}', answerText: 'No unique solution', graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,null,null) };
+    }
+
+    const x = (c1*b2-c2*b1)/det;
+    const y = (a1*c2-a2*c1)/det;
+    steps.push({ desc: 'Simplify and solve', latex: `${solveFor==='x'?'y':'x'} = ${solveFor==='x'?niceNum(y):niceNum(x)}` });
+    steps.push({ desc: 'Back-substitute to find the other variable', latex: `${solveFor==='x'?'x':'y'} = ${solveFor==='x'?niceNum(x):niceNum(y)}` });
+    steps.push({ desc: 'Solution', latex: `\\boxed{x = ${niceNum(x)},\\; y = ${niceNum(y)}}` });
+
+    return { steps, answerLatex: `x = ${niceNum(x)},\\; y = ${niceNum(y)}`, answerText: `x = ${niceNumPlain(x)}, y = ${niceNumPlain(y)}`, verification:{type:'system',a1,b1,c1,a2,b2,c2,x,y}, graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,x,y) };
+
+  } else {
+    // Elimination
+    steps.push({ desc: 'Use elimination: multiply equations to match coefficients', latex: '' });
+
+    // Eliminate x: multiply eq1 by a2, eq2 by a1
+    const m1 = a2, m2 = a1;
+    steps.push({ desc: `Multiply equation 1 by ${niceNumPlain(m1)} and equation 2 by ${niceNumPlain(m2)}`, latex: `\\begin{cases}${niceNum(a1*m1)}x + ${niceNum(b1*m1)}y = ${niceNum(c1*m1)} \\\\ ${niceNum(a2*m2)}x + ${niceNum(b2*m2)}y = ${niceNum(c2*m2)}\\end{cases}` });
+
+    steps.push({ desc: 'Subtract the second from the first to eliminate x', latex: `${niceNum(b1*m1 - b2*m2)}y = ${niceNum(c1*m1 - c2*m2)}` });
+
+    if (det === 0) {
+      if (c1*m1 - c2*m2 === 0) {
+        steps.push({ desc: 'Infinite solutions (dependent system)', latex: '' });
+        return { steps, answerLatex: '\\text{Infinitely many solutions}', answerText: 'Infinitely many solutions', graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,null,null) };
+      }
+      steps.push({ desc: 'No solution (inconsistent system)', latex: '' });
+      return { steps, answerLatex: '\\text{No solution}', answerText: 'No solution', graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,null,null) };
+    }
+
+    const y = (a1*c2 - a2*c1) / det;
+    steps.push({ desc: 'Solve for y', latex: `y = ${niceNum(y)}` });
+
+    const x = (c1 - b1*y) / a1;
+    steps.push({ desc: 'Substitute back to find x', latex: `x = \\frac{${niceNum(c1)} - ${niceNum(b1)}(${niceNum(y)})}{${niceNum(a1)}} = ${niceNum(x)}` });
+
+    steps.push({ desc: 'Solution', latex: `\\boxed{x = ${niceNum(x)},\\; y = ${niceNum(y)}}` });
+
+    return { steps, answerLatex: `x = ${niceNum(x)},\\; y = ${niceNum(y)}`, answerText: `x = ${niceNumPlain(x)}, y = ${niceNumPlain(y)}`, verification:{type:'system',a1,b1,c1,a2,b2,c2,x,y}, graphFn:()=>drawSystemGraph(a1,b1,c1,a2,b2,c2,x,y) };
+  }
+}
+
+/* ====================================================================
+   POLYNOMIAL FACTORING
+   ==================================================================== */
+function factorPoly(eq) {
+  let expr = eq.replace(/=.*$/,'').trim();
+  const steps = [];
+  steps.push({ desc: 'Factor the expression', latex: eqToLatex(expr) });
+
+  const q = parseQuadratic(expr);
+
+  // Difference of squares: a*x^2 - c where c is perfect square
+  if (q.a !== 0 && q.b === 0 && q.c < 0) {
+    const val = -q.c;
+    const sqrtVal = Math.sqrt(val);
+    const sqrtA = Math.sqrt(q.a);
+    if (Number.isInteger(sqrtVal) && Number.isInteger(sqrtA)) {
+      steps.push({ desc: 'Recognize as a difference of squares: a² - b²', latex: `(${sqrtA === 1 ? '' : niceNum(sqrtA)}x)^2 - ${niceNum(sqrtVal)}^2` });
+      steps.push({ desc: 'Apply the identity a² - b² = (a+b)(a-b)', latex: `(${sqrtA===1?'':niceNum(sqrtA)}x + ${niceNum(sqrtVal)})(${sqrtA===1?'':niceNum(sqrtA)}x - ${niceNum(sqrtVal)})` });
+      const ans = `(${sqrtA===1?'':sqrtA}x + ${sqrtVal})(${sqrtA===1?'':sqrtA}x - ${sqrtVal})`;
+      return { steps, answerLatex: ans, answerText: ans, graphFn: () => drawQuadraticGraph(q.a, q.b, q.c, {r1:sqrtVal/sqrtA, r2:-sqrtVal/sqrtA}) };
+    }
+  }
+
+  // Check for sum/diff of cubes: x^3 +/- n
+  const cubicMatch = expr.replace(/\s+/g,'').match(/^x\^3([+-]\d+)$/);
+  if (cubicMatch) {
+    const n = parseInt(cubicMatch[1]);
+    const cbrt = Math.round(Math.cbrt(Math.abs(n)));
+    if (cbrt*cbrt*cbrt === Math.abs(n)) {
+      if (n > 0) {
+        // sum of cubes: x^3 + a^3 = (x+a)(x^2 - ax + a^2)
+        steps.push({ desc: 'Recognize as a sum of cubes: a³ + b³', latex: `x^3 + ${cbrt}^3` });
+        steps.push({ desc: 'Apply a³ + b³ = (a + b)(a² - ab + b²)', latex: `(x + ${cbrt})(x^2 - ${cbrt}x + ${cbrt*cbrt})` });
+        const ans = `(x + ${cbrt})(x^2 - ${cbrt}x + ${cbrt*cbrt})`;
+        return { steps, answerLatex: ans, answerText: ans, graphFn:()=>{} };
+      } else {
+        // diff of cubes: x^3 - a^3 = (x-a)(x^2 + ax + a^2)
+        steps.push({ desc: 'Recognize as a difference of cubes: a³ - b³', latex: `x^3 - ${cbrt}^3` });
+        steps.push({ desc: 'Apply a³ - b³ = (a - b)(a² + ab + b²)', latex: `(x - ${cbrt})(x^2 + ${cbrt}x + ${cbrt*cbrt})` });
+        const ans = `(x - ${cbrt})(x^2 + ${cbrt}x + ${cbrt*cbrt})`;
+        return { steps, answerLatex: ans, answerText: ans, graphFn:()=>{} };
+      }
+    }
+  }
+
+  // General quadratic factoring
+  if (q.a !== 0) {
+    const {a, b, c} = q;
+    const disc = b*b - 4*a*c;
+    steps.push({ desc: `Coefficients: a=${niceNumPlain(a)}, b=${niceNumPlain(b)}, c=${niceNumPlain(c)}`, latex: '' });
+
+    if (disc < 0) {
+      steps.push({ desc: 'Discriminant < 0: cannot factor over the reals', latex: `\\Delta = ${niceNum(disc)} < 0` });
+      return { steps, answerLatex: '\\text{Cannot be factored over } \\mathbb{R}', answerText: 'Cannot be factored over the reals', graphFn:()=>drawQuadraticGraph(a,b,c,{complex:true}) };
+    }
+
+    // Find integer factors
+    const product = a * c;
+    let p = null, qq = null;
+    for (let i = -Math.abs(product)-1; i <= Math.abs(product)+1; i++) {
+      if (i === 0 && product !== 0) continue;
+      if (product !== 0 && product % i !== 0) continue;
+      const j = product === 0 ? b : product / i;
+      if (i + j === b) { p = i; qq = j; break; }
+    }
+
+    if (p !== null && a === 1) {
+      steps.push({ desc: `Find p, q where p+q = ${niceNumPlain(b)} and p*q = ${niceNumPlain(c)}`, latex: `p = ${niceNum(p)}, \\; q = ${niceNum(qq)}` });
+      steps.push({ desc: 'Write in factored form', latex: `(x + ${niceNum(p)})(x + ${niceNum(qq)})` });
+      const ans = `(x + ${p})(x + ${qq})`;
+      return { steps, answerLatex: `(x + ${niceNum(p)})(x + ${niceNum(qq)})`, answerText: ans, graphFn:()=>drawQuadraticGraph(a,b,c,{r1:-p,r2:-qq}) };
+    }
+
+    // Fall back to roots
+    const sqrtD = Math.sqrt(disc);
+    const r1 = (-b + sqrtD) / (2*a);
+    const r2 = (-b - sqrtD) / (2*a);
+    steps.push({ desc: 'Find roots using quadratic formula', latex: `x = ${niceNum(r1)}, \\; x = ${niceNum(r2)}` });
+    if (a !== 1) {
+      steps.push({ desc: 'Factor as a(x - r1)(x - r2)', latex: `${niceNum(a)}(x - ${niceNum(r1)})(x - ${niceNum(r2)})` });
+    } else {
+      steps.push({ desc: 'Factor as (x - r1)(x - r2)', latex: `(x - ${niceNum(r1)})(x - ${niceNum(r2)})` });
+    }
+    const ans = a===1 ? `(x - ${niceNumPlain(r1)})(x - ${niceNumPlain(r2)})` : `${niceNumPlain(a)}(x - ${niceNumPlain(r1)})(x - ${niceNumPlain(r2)})`;
+    return { steps, answerLatex: a===1?`(x-${niceNum(r1)})(x-${niceNum(r2)})`:`${niceNum(a)}(x-${niceNum(r1)})(x-${niceNum(r2)})`, answerText: ans, graphFn:()=>drawQuadraticGraph(a,b,c,{r1,r2}) };
+  }
+
+  throw new Error('Could not parse expression for factoring');
+}
+
+/* ====================================================================
+   INEQUALITY SOLVER
+   ==================================================================== */
+function solveInequality(eq) {
+  // Parse: ax + b > c, ax + b >= c, etc.
+  let op;
+  let parts;
+  for (const o of ['>=','<=','>','<']) {
+    if (eq.includes(o)) { op = o; parts = eq.split(o).map(s=>s.trim()); break; }
+  }
+  if (!parts || parts.length !== 2) throw new Error('Expected an inequality with >, <, >=, or <=');
+
+  const L = parseLinearExpr(parts[0], 'x');
+  const R = parseLinearExpr(parts[1], 'x');
+  const a = L.coeff - R.coeff;
+  const d = R.constant - L.constant;
+
+  const steps = [];
+  const opLatex = op === '>=' ? '\\geq' : op === '<=' ? '\\leq' : op === '>' ? '>' : '<';
+  steps.push({ desc: 'Start with the inequality', latex: eqToLatex(eq) });
+
+  if (L.constant !== 0) {
+    const sub = L.constant > 0 ? `Subtract ${niceNumPlain(L.constant)}` : `Add ${niceNumPlain(-L.constant)}`;
+    steps.push({ desc: `${sub} from both sides`, latex: `${niceNum(a)}x ${opLatex} ${niceNum(d)}` });
+  }
+
+  if (a === 0) {
+    const holds = (op === '>' && 0 > d) || (op === '<' && 0 < d) || (op === '>=' && 0 >= d) || (op === '<=' && 0 <= d);
+    steps.push({ desc: holds ? 'True for all x' : 'No solution', latex: holds ? '\\text{All real numbers}' : '\\varnothing' });
+    return { steps, answerLatex: holds ? 'x \\in \\mathbb{R}' : '\\varnothing', answerText: holds ? 'All real numbers' : 'No solution', graphFn:()=>{} };
+  }
+
+  let finalOp = op;
+  if (a < 0) {
+    // Flip inequality when dividing by negative
+    if (op === '>') finalOp = '<';
+    else if (op === '<') finalOp = '>';
+    else if (op === '>=') finalOp = '<=';
+    else if (op === '<=') finalOp = '>=';
+    steps.push({ desc: `Divide both sides by ${niceNumPlain(a)} (negative, so flip the inequality)`, latex: '' });
+  } else {
+    steps.push({ desc: `Divide both sides by ${niceNumPlain(a)}`, latex: '' });
+  }
+
+  const val = d / a;
+  const fOpLatex = finalOp === '>=' ? '\\geq' : finalOp === '<=' ? '\\leq' : finalOp === '>' ? '>' : '<';
+  steps.push({ desc: 'Solution', latex: `\\boxed{x ${fOpLatex} ${niceNum(val)}}` });
+
+  const ansTxt = `x ${finalOp} ${niceNumPlain(val)}`;
+  return {
+    steps,
+    answerLatex: `x ${fOpLatex} ${niceNum(val)}`,
+    answerText: ansTxt,
+    graphFn: () => drawNumberLine(val, finalOp)
+  };
+}
+
+/* ====================================================================
+   VERIFICATION
+   ==================================================================== */
+function doVerify() {
+  if (!currentSolution || !currentSolution.verification) return;
+  const v = currentSolution.verification;
+  let ok = false, msg = '';
+
+  if (v.type === 'quadratic') {
+    const {a,b,c,roots} = v;
+    if (roots.complex) {
+      msg = `Substituting x = ${roots.r1Text}: a(re² - im²) + b*re + c = ${niceNumPlain(a*(roots.re*roots.re - roots.im*roots.im) + b*roots.re + c)} (should be 0)`;
+      ok = Math.abs(a*(roots.re*roots.re - roots.im*roots.im) + b*roots.re + c) < 1e-9;
+    } else {
+      const v1 = a*roots.r1*roots.r1 + b*roots.r1 + c;
+      const v2 = a*roots.r2*roots.r2 + b*roots.r2 + c;
+      msg = `Substituting x=${niceNumPlain(roots.r1)}: ${niceNumPlain(v1)}. Substituting x=${niceNumPlain(roots.r2)}: ${niceNumPlain(v2)}.`;
+      ok = Math.abs(v1) < 1e-9 && Math.abs(v2) < 1e-9;
+    }
+  } else if (v.type === 'system') {
+    const {a1,b1,c1,a2,b2,c2,x,y} = v;
+    const v1 = a1*x + b1*y;
+    const v2 = a2*x + b2*y;
+    msg = `Eq1: ${niceNumPlain(a1)}(${niceNumPlain(x)}) + ${niceNumPlain(b1)}(${niceNumPlain(y)}) = ${niceNumPlain(v1)} (expected ${niceNumPlain(c1)}). Eq2: ${niceNumPlain(a2)}(${niceNumPlain(x)}) + ${niceNumPlain(b2)}(${niceNumPlain(y)}) = ${niceNumPlain(v2)} (expected ${niceNumPlain(c2)}).`;
+    ok = Math.abs(v1-c1)<1e-9 && Math.abs(v2-c2)<1e-9;
+  } else {
+    // Linear
+    const {variable, value, original} = v;
+    const [lhs, rhs] = original.split('=');
+    const evalSide = s => {
+      const p = parseLinearExpr(s, variable);
+      return p.coeff * value + p.constant;
+    };
+    const lv = evalSide(lhs), rv = evalSide(rhs);
+    msg = `LHS = ${niceNumPlain(lv)}, RHS = ${niceNumPlain(rv)}`;
+    ok = Math.abs(lv - rv) < 1e-9;
+  }
+
+  verifyResult.className = 'verify-result show ' + (ok ? 'ok' : 'fail');
+  verifyResult.textContent = ok ? `Verified! ${msg}` : `Verification issue: ${msg}`;
+}
+
+/* ====================================================================
+   GRAPHING
+   ==================================================================== */
+function setupCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { w: rect.width, h: rect.height };
+}
+
+function drawGrid(xMin, xMax, yMin, yMax) {
+  const {w, h} = setupCanvas();
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, w, h);
+
+  const toX = x => (x - xMin) / (xMax - xMin) * w;
+  const toY = y => h - (y - yMin) / (yMax - yMin) * h;
+
+  // Grid lines
+  ctx.strokeStyle = '#1e1e3a';
+  ctx.lineWidth = 0.5;
+  const stepX = niceStep((xMax-xMin)/8);
+  const stepY = niceStep((yMax-yMin)/8);
+
+  for (let x = Math.ceil(xMin/stepX)*stepX; x <= xMax; x += stepX) {
+    ctx.beginPath(); ctx.moveTo(toX(x),0); ctx.lineTo(toX(x),h); ctx.stroke();
+  }
+  for (let y = Math.ceil(yMin/stepY)*stepY; y <= yMax; y += stepY) {
+    ctx.beginPath(); ctx.moveTo(0,toY(y)); ctx.lineTo(w,toY(y)); ctx.stroke();
+  }
+
+  // Axes
+  ctx.strokeStyle = '#3a3a5a';
+  ctx.lineWidth = 1.2;
+  if (xMin <= 0 && xMax >= 0) {
+    ctx.beginPath(); ctx.moveTo(toX(0),0); ctx.lineTo(toX(0),h); ctx.stroke();
+  }
+  if (yMin <= 0 && yMax >= 0) {
+    ctx.beginPath(); ctx.moveTo(0,toY(0)); ctx.lineTo(w,toY(0)); ctx.stroke();
+  }
+
+  // Labels
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px Poppins, sans-serif';
+  ctx.textAlign = 'center';
+  for (let x = Math.ceil(xMin/stepX)*stepX; x <= xMax; x += stepX) {
+    if (Math.abs(x) < 1e-9) continue;
+    const px = toX(x), py = toY(0);
+    const ly = Math.min(Math.max(py+14, 14), h-2);
+    ctx.fillText(niceLabel(x), px, ly);
+  }
+  ctx.textAlign = 'right';
+  for (let y = Math.ceil(yMin/stepY)*stepY; y <= yMax; y += stepY) {
+    if (Math.abs(y) < 1e-9) continue;
+    const px = toX(0), py = toY(y);
+    const lx = Math.min(Math.max(px-4, 30), w-2);
+    ctx.fillText(niceLabel(y), lx, py+3);
+  }
+
+  return { w, h, toX, toY, xMin, xMax, yMin, yMax };
+}
+
+function niceStep(rough) {
+  const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+  const norm = rough / pow;
+  if (norm <= 1.5) return pow;
+  if (norm <= 3.5) return 2*pow;
+  if (norm <= 7.5) return 5*pow;
+  return 10*pow;
+}
+
+function niceLabel(v) {
+  if (Number.isInteger(v)) return ''+v;
+  return v.toFixed(1);
+}
+
+function drawLinearGraph(aL, bL, aR, bR, xSol) {
+  // Plot y = aL*x + bL  (LHS) and y = aR*x + bR (RHS as function of x... simplified)
+  // Actually for linear ax+b = c, let's plot y = ax+b and y = c
+  const x0 = xSol !== null ? xSol : 0;
+  const xMin = x0 - 8, xMax = x0 + 8;
+  const yMin = Math.min(aL*xMin+bL, aL*xMax+bL, -2) - 2;
+  const yMax = Math.max(aL*xMin+bL, aL*xMax+bL, 2) + 2;
+
+  const g = drawGrid(xMin, xMax, yMin, yMax);
+  currentSolution.graphView = { xMin, xMax, yMin, yMax };
+
+  // Line
+  ctx.strokeStyle = '#00e5ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let px = 0; px <= g.w; px++) {
+    const x = xMin + (px/g.w)*(xMax-xMin);
+    const y = aL * x + bL;
+    if (px === 0) ctx.moveTo(px, g.toY(y));
+    else ctx.lineTo(px, g.toY(y));
+  }
+  ctx.stroke();
+
+  // Solution point
+  if (xSol !== null) {
+    const sy = aL * xSol + bL;
+    ctx.beginPath();
+    ctx.arc(g.toX(xSol), g.toY(sy), 6, 0, Math.PI*2);
+    ctx.fillStyle = '#ec4899';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px Poppins';
+    ctx.textAlign = 'left';
+    ctx.fillText(`(${niceLabel(xSol)}, ${niceLabel(sy)})`, g.toX(xSol)+10, g.toY(sy)-8);
+  }
+}
+
+function drawQuadraticGraph(a, b, c, roots) {
+  const vertex_x = -b / (2*a);
+  const vertex_y = a*vertex_x*vertex_x + b*vertex_x + c;
+
+  let xMin, xMax;
+  if (roots && !roots.complex && roots.r1 !== undefined) {
+    const lo = Math.min(roots.r1, roots.r2, vertex_x);
+    const hi = Math.max(roots.r1, roots.r2, vertex_x);
+    const pad = Math.max((hi-lo)*0.5, 3);
+    xMin = lo - pad; xMax = hi + pad;
+  } else {
+    xMin = vertex_x - 6; xMax = vertex_x + 6;
+  }
+
+  // Compute y range
+  let yLo = vertex_y, yHi = vertex_y;
+  for (let px = 0; px <= 100; px++) {
+    const x = xMin + (px/100)*(xMax-xMin);
+    const y = a*x*x + b*x + c;
+    if (y < yLo) yLo = y;
+    if (y > yHi) yHi = y;
+  }
+  const yPad = Math.max((yHi-yLo)*0.15, 2);
+  const yMin = yLo - yPad;
+  const yMax = yHi + yPad;
+
+  const g = drawGrid(xMin, xMax, yMin, yMax);
+  currentSolution.graphView = { xMin, xMax, yMin, yMax };
+
+  // Parabola
+  ctx.strokeStyle = '#a855f7';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (let px = 0; px <= g.w; px++) {
+    const x = xMin + (px/g.w)*(xMax-xMin);
+    const y = a*x*x + b*x + c;
+    if (px === 0) ctx.moveTo(px, g.toY(y));
+    else ctx.lineTo(px, g.toY(y));
+  }
+  ctx.stroke();
+
+  // Axis of symmetry
+  ctx.setLineDash([6,4]);
+  ctx.strokeStyle = 'rgba(168,85,247,0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(g.toX(vertex_x), 0);
+  ctx.lineTo(g.toX(vertex_x), g.h);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Vertex
+  ctx.beginPath();
+  ctx.arc(g.toX(vertex_x), g.toY(vertex_y), 5, 0, Math.PI*2);
+  ctx.fillStyle = '#facc15';
+  ctx.fill();
+  ctx.fillStyle = '#facc15';
+  ctx.font = '10px Poppins';
+  ctx.textAlign = 'center';
+  ctx.fillText(`vertex (${niceLabel(vertex_x)}, ${niceLabel(vertex_y)})`, g.toX(vertex_x), g.toY(vertex_y) + (a>0?16:-10));
+
+  // Roots
+  if (roots && !roots.complex && roots.r1 !== undefined) {
+    [roots.r1, roots.r2].forEach(r => {
+      ctx.beginPath();
+      ctx.arc(g.toX(r), g.toY(0), 6, 0, Math.PI*2);
+      ctx.fillStyle = '#ec4899';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+  }
+}
+
+function drawSystemGraph(a1,b1,c1,a2,b2,c2,xSol,ySol) {
+  const cx = xSol !== null ? xSol : 0;
+  const cy = ySol !== null ? ySol : 0;
+  const pad = 8;
+  const xMin = cx - pad, xMax = cx + pad, yMin = cy - pad, yMax = cy + pad;
+
+  const g = drawGrid(xMin, xMax, yMin, yMax);
+  currentSolution.graphView = { xMin, xMax, yMin, yMax };
+
+  // Line 1: a1*x + b1*y = c1 => y = (c1 - a1*x)/b1
+  function drawLine(a, b, c, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (Math.abs(b) > 1e-12) {
+      for (let px=0;px<=g.w;px++){
+        const x = xMin+(px/g.w)*(xMax-xMin);
+        const y = (c-a*x)/b;
+        if(px===0)ctx.moveTo(px,g.toY(y)); else ctx.lineTo(px,g.toY(y));
+      }
+    } else if (Math.abs(a)>1e-12) {
+      const x=c/a;
+      ctx.moveTo(g.toX(x),0);ctx.lineTo(g.toX(x),g.h);
+    }
+    ctx.stroke();
+  }
+  drawLine(a1,b1,c1,'#00e5ff');
+  drawLine(a2,b2,c2,'#a855f7');
+
+  // Intersection
+  if (xSol !== null && ySol !== null) {
+    ctx.beginPath();
+    ctx.arc(g.toX(xSol), g.toY(ySol), 7, 0, Math.PI*2);
+    ctx.fillStyle = '#ec4899';
+    ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+
+    ctx.fillStyle='#fff';ctx.font='bold 11px Poppins';ctx.textAlign='left';
+    ctx.fillText(`(${niceLabel(xSol)}, ${niceLabel(ySol)})`, g.toX(xSol)+10, g.toY(ySol)-10);
+  }
+
+  // Legend
+  ctx.font = '11px Poppins';
+  ctx.fillStyle='#00e5ff';ctx.fillText('Eq 1',10,16);
+  ctx.fillStyle='#a855f7';ctx.fillText('Eq 2',10,30);
+}
+
+function drawNumberLine(val, op) {
+  const {w, h} = setupCanvas();
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,w,h);
+  currentSolution.graphView = null;
+
+  const pad = Math.max(Math.abs(val)*0.6, 5);
+  const xMin = val - pad, xMax = val + pad;
+  const cy = h/2;
+
+  // Line
+  ctx.strokeStyle='#3a3a5a';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(20,cy);ctx.lineTo(w-20,cy);ctx.stroke();
+
+  const toX = x => 20 + (x-xMin)/(xMax-xMin)*(w-40);
+
+  // Ticks
+  const step = niceStep((xMax-xMin)/8);
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;
+  ctx.fillStyle='#94a3b8';ctx.font='10px Poppins';ctx.textAlign='center';
+  for (let x = Math.ceil(xMin/step)*step; x <= xMax; x+=step) {
+    ctx.beginPath();ctx.moveTo(toX(x),cy-6);ctx.lineTo(toX(x),cy+6);ctx.stroke();
+    ctx.fillText(niceLabel(x),toX(x),cy+20);
+  }
+
+  // Highlight region
+  const leftDir = op==='<' || op==='<=';
+  ctx.fillStyle='rgba(0,229,255,0.15)';
+  if (leftDir) {
+    ctx.fillRect(20, cy-20, toX(val)-20, 40);
+  } else {
+    ctx.fillRect(toX(val), cy-20, w-20-toX(val), 40);
+  }
+
+  // Arrow
+  ctx.strokeStyle='#00e5ff';ctx.lineWidth=3;
+  ctx.beginPath();
+  if (leftDir) {
+    ctx.moveTo(toX(val),cy);ctx.lineTo(20,cy);
+    ctx.moveTo(30,cy-8);ctx.lineTo(20,cy);ctx.lineTo(30,cy+8);
+  } else {
+    ctx.moveTo(toX(val),cy);ctx.lineTo(w-20,cy);
+    ctx.moveTo(w-30,cy-8);ctx.lineTo(w-20,cy);ctx.lineTo(w-30,cy+8);
+  }
+  ctx.stroke();
+
+  // Point
+  const open = op==='>'||op==='<';
+  ctx.beginPath();ctx.arc(toX(val),cy,7,0,Math.PI*2);
+  if(open){ctx.strokeStyle='#ec4899';ctx.lineWidth=2.5;ctx.stroke();ctx.fillStyle='#0d0d1a';ctx.fill();}
+  else{ctx.fillStyle='#ec4899';ctx.fill();}
+
+  ctx.fillStyle='#fff';ctx.font='bold 12px Poppins';ctx.textAlign='center';
+  ctx.fillText(niceLabel(val), toX(val), cy-16);
+}
+
+/* ====================================================================
+   HISTORY
+   ==================================================================== */
+function addHistory(eq) {
+  history = history.filter(h => h !== eq);
+  history.unshift(eq);
+  if (history.length > 10) history.pop();
+  sessionStorage.setItem('eqHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!history.length) {
+    histList.innerHTML = '<li style="color:var(--muted);font-size:.82rem;padding:8px 0">No equations solved yet.</li>';
+    return;
+  }
+  histList.innerHTML = '';
+  history.forEach(eq => {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+    li.textContent = eq;
+    li.addEventListener('click', () => {
+      if (eq.includes(',')) {
+        const parts = eq.split(',').map(s=>s.trim());
+        eqInput.value = parts[0];
+        eqInput2.value = parts[1];
+        eqInput2.classList.add('show');
+      } else {
+        eqInput.value = eq;
+        eqInput2.value = '';
+        eqInput2.classList.remove('show');
+      }
+      updatePreview();
+      solve();
+    });
+    histList.appendChild(li);
+  });
+}
+
+/* ====================================================================
+   HEADER / FOOTER INJECTION
+   ==================================================================== */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>
