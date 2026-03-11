@@ -466,50 +466,107 @@
   ═══════════════════════════════════════════════ -->
   <div class="category-section active" id="section-learn">
 
-  <!-- Tool Tabs -->
-  <div class="tool-tabs">
-    <button class="tool-tab active" onclick="switchTool('unit',this)">
-      <span class="tab-icon">⇄</span><span class="tab-text">Unit Converter</span>
-    </button>
-    <button class="tool-tab" onclick="switchTool('graph',this)">
-      <span class="tab-icon">📈</span><span class="tab-text">Graph Plotter</span>
-    </button>
-    <button class="tool-tab" onclick="switchTool('fdp',this)">
-      <span class="tab-icon">½</span><span class="tab-text">Fraction ↔ Decimal</span>
-    </button>
-    <button class="tool-tab" onclick="switchTool('stats',this)">
-      <span class="tab-icon">σ</span><span class="tab-text">Statistics</span>
-    </button>
-    <button class="tool-tab" onclick="switchTool('matrix',this)">
-      <span class="tab-icon">⊞</span><span class="tab-text">Matrix Calc</span>
-    </button>
-    <button class="tool-tab" onclick="switchTool('worksheet',this)" style="border-color:rgba(34,197,94,.4);color:#4ade80;">
-      <span class="tab-icon">📄</span><span class="tab-text">Worksheet Generator</span>
-    </button>
-    <a href="tool-percentage-calc.html" class="tool-tab" style="text-decoration:none;border-color:rgba(0,229,255,.4);color:#00e5ff;">
-      <span class="tab-icon">%</span><span class="tab-text">Percentage Calc</span>
+  <!-- Learning Tool Cards Grid -->
+  <div class="teach-section-label">🔧 Calculators &amp; Converters</div>
+  <div class="teach-grid">
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('unit');scrollToPanel();">
+      <span class="tc-icon">⇄</span>
+      <div class="tc-title">Unit Converter</div>
+      <div class="tc-desc">Convert between length, mass, temperature, area, volume, speed, time, angle, and data units.</div>
+      <div class="tc-tags"><span class="tc-tag">9 Categories</span><span class="tc-tag">Instant</span></div>
+    </div>
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('fdp');scrollToPanel();">
+      <span class="tc-icon">½</span>
+      <div class="tc-title">Fraction · Decimal · %</div>
+      <div class="tc-desc">Enter any form — get all three. Simplify fractions, find GCD and LCM with step-by-step working.</div>
+      <div class="tc-tags"><span class="tc-tag">3-Way Convert</span><span class="tc-tag">GCD/LCM</span></div>
+    </div>
+    <a href="tool-percentage-calc.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">%</span>
+      <div class="tc-title">Percentage Calculator</div>
+      <div class="tc-desc">All percentage operations — basic %, change, increase/decrease, discounts, tip calculator, and ratio/proportion converter.</div>
+      <div class="tc-tags"><span class="tc-tag">6 Modes</span><span class="tc-tag">Step-by-Step</span></div>
     </a>
-    <a href="tool-number-theory.html" class="tool-tab" style="text-decoration:none;border-color:rgba(168,85,247,.4);color:#a855f7;">
-      <span class="tab-icon">🔢</span><span class="tab-text">Number Theory</span>
-    </a>
-    <a href="tool-area-volume.html" class="tool-tab" style="text-decoration:none;border-color:rgba(236,72,153,.4);color:#ec4899;">
-      <span class="tab-icon">📐</span><span class="tab-text">Shape Calculator</span>
-    </a>
-    <a href="tool-log-exp.html" class="tool-tab" style="text-decoration:none;border-color:rgba(250,204,21,.4);color:#facc15;">
-      <span class="tab-icon">logₓ</span><span class="tab-text">Log & Exponent</span>
-    </a>
-    <a href="tool-trig-explorer.html" class="tool-tab" style="text-decoration:none;border-color:rgba(0,229,255,.4);color:#00e5ff;">
-      <span class="tab-icon">∿</span><span class="tab-text">Trigonometry</span>
-    </a>
-    <a href="tool-set-theory.html" class="tool-tab" style="text-decoration:none;border-color:rgba(168,85,247,.4);color:#a855f7;">
-      <span class="tab-icon">∩</span><span class="tab-text">Set Theory & Venn</span>
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('stats');scrollToPanel();">
+      <span class="tc-icon">σ</span>
+      <div class="tc-title">Statistics Calculator</div>
+      <div class="tc-desc">Mean, median, mode, range, variance, standard deviation, Z-score, frequency table, and histogram.</div>
+      <div class="tc-tags"><span class="tc-tag">Histogram</span><span class="tc-tag">Z-Score</span></div>
+    </div>
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('matrix');scrollToPanel();">
+      <span class="tc-icon">⊞</span>
+      <div class="tc-title">Matrix Calculator</div>
+      <div class="tc-desc">Add, subtract, multiply matrices up to 4×4. Find determinant, inverse, transpose, and scalar operations.</div>
+      <div class="tc-tags"><span class="tc-tag">Up to 4×4</span><span class="tc-tag">Inverse</span></div>
+    </div>
+    <a href="tool-number-theory.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🔢</span>
+      <div class="tc-title">Number Theory Toolkit</div>
+      <div class="tc-desc">Prime factorization with animated tree, GCD/LCM via Euclidean algorithm, Sieve of Eratosthenes, modular arithmetic, and divisibility tests.</div>
+      <div class="tc-tags"><span class="tc-tag">Factor Tree</span><span class="tc-tag">Sieve</span><span class="tc-tag">Modular</span></div>
     </a>
   </div>
+
+  <div class="teach-section-label">📈 Graphing &amp; Visualization</div>
+  <div class="teach-grid">
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('graph');scrollToPanel();">
+      <span class="tc-icon">📈</span>
+      <div class="tc-title">Graph Plotter</div>
+      <div class="tc-desc">Plot up to 4 functions simultaneously with custom view window. Presets for common functions like x², sin(x), 1/x.</div>
+      <div class="tc-tags"><span class="tc-tag">Multi-Function</span><span class="tc-tag">Canvas</span></div>
+    </div>
+    <a href="tool-trig-explorer.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">∿</span>
+      <div class="tc-title">Trigonometry Explorer</div>
+      <div class="tc-desc">Interactive unit circle, trig graphs with amplitude/frequency sliders, triangle solver (SSS/SAS/ASA/SSA), identity verifier, and radian-degree converter.</div>
+      <div class="tc-tags"><span class="tc-tag">Unit Circle</span><span class="tc-tag">Triangle Solver</span><span class="tc-tag">6 Tabs</span></div>
+    </a>
+    <a href="tool-log-exp.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">logₓ</span>
+      <div class="tc-title">Log &amp; Exponent Explorer</div>
+      <div class="tc-desc">Compute logs and exponents, interactive graph with base slider, verify rules with your own numbers, solve equations, and practice challenges.</div>
+      <div class="tc-tags"><span class="tc-tag">Interactive Graph</span><span class="tc-tag">Rules Verifier</span><span class="tc-tag">Practice</span></div>
+    </a>
+    <a href="tool-area-volume.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">📐</span>
+      <div class="tc-title">Shape Calculator</div>
+      <div class="tc-desc">Compute area, perimeter, volume, and surface area for 21 shapes with live Canvas diagrams, LaTeX formulas, and shape comparison.</div>
+      <div class="tc-tags"><span class="tc-tag">11 2D Shapes</span><span class="tc-tag">10 3D Shapes</span><span class="tc-tag">Diagrams</span></div>
+    </a>
+    <a href="tool-set-theory.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">∩</span>
+      <div class="tc-title">Set Theory &amp; Venn</div>
+      <div class="tc-desc">Interactive Venn diagrams for 2-3 sets. Union, intersection, complement, De Morgan's laws verification, and arbitrary expression evaluator.</div>
+      <div class="tc-tags"><span class="tc-tag">Venn Diagrams</span><span class="tc-tag">De Morgan</span><span class="tc-tag">Expression Parser</span></div>
+    </a>
+  </div>
+
+  <div class="teach-section-label">📄 Generators</div>
+  <div class="teach-grid">
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('worksheet');scrollToPanel();">
+      <span class="tc-icon">📄</span>
+      <div class="tc-title">Worksheet Generator</div>
+      <div class="tc-desc">Select grade, topic, and difficulty — generate a beautifully formatted printable worksheet with answer key.</div>
+      <div class="tc-tags"><span class="tc-tag">Print Ready</span><span class="tc-tag">Answer Key</span><span class="tc-tag">Multi-Grade</span></div>
+    </div>
+  </div>
+
+  <!-- Tool Panels (hidden by default, shown when card clicked) -->
+  <div id="learn-tool-panels" style="display:none;">
+
+  <!-- Back button (shown at top of every open panel) -->
+  <button onclick="closeToolPanel()" style="background:none;border:1px solid var(--border);color:var(--cyan);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.85rem;margin-bottom:16px;display:flex;align-items:center;gap:6px;transition:all .2s;" onmouseover="this.style.borderColor='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)'">← Back to Learning Tools</button>
 
   <!-- ═══════════════════════════════════════════
        TOOL 1 – UNIT CONVERTER
   ═══════════════════════════════════════════ -->
-  <div class="tool-panel active" id="panel-unit">
+  <div class="tool-panel" id="panel-unit">
     <div class="tool-card">
       <div class="tool-title" style="color:var(--orange);">⇄ Unit Converter</div>
       <div class="tool-sub">Convert between length, mass, temperature, area, volume, speed, time, angle, and data units.</div>
@@ -919,6 +976,7 @@
       <div style="color:var(--muted);font-size:.85rem;line-height:1.7;" id="ws-grade-info-body"></div>
     </div>
   </div>
+  </div><!-- /learn-tool-panels -->
 
   </div><!-- /section-learn -->
 
@@ -1245,13 +1303,28 @@ function switchCategory(cat, btn) {
   btn.classList.add(cat === 'learn' ? 'active-learn' : 'active-teach');
 }
 
-function switchTool(id, btn) {
+function switchTool(id) {
+  // Hide the card grid, show the panels wrapper
+  document.getElementById('learn-tool-panels').style.display = 'block';
+  document.querySelectorAll('#section-learn .teach-section-label, #section-learn .teach-grid').forEach(el => el.style.display = 'none');
+  // Show the selected panel
   document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
-  btn.classList.add('active');
   if(id==='graph') setTimeout(plotGraph, 100);
   if(id==='stats') setTimeout(calcStats, 100);
+}
+
+function closeToolPanel() {
+  // Hide panels, show card grid
+  document.getElementById('learn-tool-panels').style.display = 'none';
+  document.querySelectorAll('#section-learn .teach-section-label, #section-learn .teach-grid').forEach(el => el.style.display = '');
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+}
+
+function scrollToPanel() {
+  setTimeout(() => {
+    document.getElementById('learn-tool-panels').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 50);
 }
 
 /* ─────────────────────────────────────────────
