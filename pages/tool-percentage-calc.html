@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Percentage Calculator | TutorDA</title>
+  <meta name="description" content="All-in-one percentage calculator: basic percentages, percentage change, increase/decrease, discount, tip, ratio and proportion with step-by-step working.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --muted:#94a3b8;--text:#e8e8ff;--r:14px;
+      --green:#22c55e;--red:#ef4444;--orange:#ff8c00;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+    .main-layout{display:flex;gap:20px;align-items:flex-start}
+    .main-content{flex:1;min-width:0}
+    .sidebar{width:300px;flex-shrink:0;position:sticky;top:20px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+
+    .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+    .nav-tab{padding:8px 18px;border-radius:8px;background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.85rem;transition:all .2s;font-family:'Poppins',sans-serif}
+    .nav-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .section-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:16px;
+      display:flex;align-items:center;gap:10px}
+    .section-title .icon{font-size:1.3rem}
+
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* Pills */
+    .pill-group{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+    .pill{padding:7px 16px;border-radius:20px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.82rem;transition:all .2s;font-family:'Poppins',sans-serif}
+    .pill:hover{border-color:var(--purple);color:var(--text)}
+    .pill.active{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.1)}
+
+    /* Form */
+    .field{margin-bottom:14px}
+    .field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+    .field input,.field select{width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s}
+    .field input:focus,.field select:focus{border-color:var(--cyan)}
+    .field select option{background:var(--card);color:var(--text)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row .field{flex:1;min-width:140px}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      background:var(--card);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 20px;font-family:'Poppins',sans-serif;
+      font-size:.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+    .btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;color:#fff;font-weight:600}
+    .btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn.sm{padding:6px 14px;font-size:.8rem}
+
+    /* Result */
+    .result-box{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:16px;display:none}
+    .result-box.show{display:block}
+    .result-value{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--cyan);margin-bottom:8px}
+    .result-label{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+
+    .steps{margin-top:14px;padding:14px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.12);border-radius:10px}
+    .steps h4{font-size:.82rem;color:var(--cyan);margin-bottom:8px;font-family:'Orbitron',sans-serif;letter-spacing:.05em}
+    .steps .step{font-family:var(--mono);font-size:.85rem;color:var(--text);margin-bottom:4px;padding-left:12px;border-left:2px solid var(--border)}
+    .steps .step:last-child{border-left-color:var(--cyan);color:var(--cyan);font-weight:600}
+
+    .formula-tag{display:inline-block;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:6px;
+      padding:4px 10px;font-family:var(--mono);font-size:.8rem;color:var(--purple);margin-bottom:12px}
+
+    /* Visual bars */
+    .vis-bar{height:28px;border-radius:8px;background:var(--card2);border:1px solid var(--border);overflow:hidden;margin:10px 0;position:relative}
+    .vis-bar-fill{height:100%;border-radius:8px;transition:width .4s ease;display:flex;align-items:center;padding:0 10px;
+      font-size:.75rem;font-weight:600;color:#fff;white-space:nowrap}
+    .vis-bar-label{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:.72rem;color:var(--muted)}
+
+    /* Comparison bars */
+    .compare-bars{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+    .compare-bar{display:flex;align-items:center;gap:10px}
+    .compare-bar .bar-label{width:50px;font-size:.75rem;color:var(--muted);text-align:right;flex-shrink:0}
+    .compare-bar .bar-track{flex:1;height:24px;background:var(--card2);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+    .compare-bar .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;
+      font-size:.72rem;font-weight:600;color:#fff;transition:width .4s}
+
+    /* Chart container */
+    .chart-wrap{max-width:200px;margin:12px auto}
+
+    /* Toggle */
+    .toggle-row{display:flex;gap:0;margin-bottom:16px}
+    .toggle-btn{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:.85rem;font-weight:500;
+      border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .2s}
+    .toggle-btn:first-child{border-radius:8px 0 0 8px}
+    .toggle-btn:last-child{border-radius:0 8px 8px 0}
+    .toggle-btn.active-inc{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+    .toggle-btn.active-dec{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
+
+    /* Tip quick buttons */
+    .tip-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+    .tip-pill{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card2);
+      color:var(--muted);cursor:pointer;font-size:.85rem;font-weight:500;transition:all .2s}
+    .tip-pill:hover{border-color:var(--gold);color:var(--gold)}
+    .tip-pill.active{border-color:var(--gold);color:var(--gold);background:rgba(250,204,21,.1)}
+
+    /* Price breakdown */
+    .breakdown-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.9rem}
+    .breakdown-row:last-child{border-bottom:none;font-weight:700;color:var(--cyan)}
+    .breakdown-row .label{color:var(--muted)}
+    .breakdown-row.strike .value{text-decoration:line-through;color:var(--red)}
+    .breakdown-row.save .value{color:var(--green)}
+
+    /* Sidebar */
+    .ref-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:16px}
+    .ref-table th{text-align:left;padding:6px 8px;font-size:.72rem;color:var(--cyan);border-bottom:1px solid var(--border);
+      font-family:'Orbitron',sans-serif;letter-spacing:.05em}
+    .ref-table td{padding:5px 8px;border-bottom:1px solid rgba(30,30,58,.5);font-family:var(--mono);color:var(--text)}
+    .ref-section{margin-bottom:20px}
+    .ref-section h3{font-size:.9rem;font-family:'Orbitron',sans-serif;color:var(--purple);margin-bottom:10px;
+      display:flex;align-items:center;gap:8px}
+    .ref-tip{font-size:.8rem;color:var(--muted);line-height:1.6;padding:8px 12px;
+      background:rgba(168,85,247,.06);border-left:2px solid var(--purple);border-radius:0 6px 6px 0;margin-bottom:8px}
+
+    /* Collapsible sidebar on mobile */
+    .sidebar-toggle{display:none;width:100%;padding:12px;background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.85rem;
+      cursor:pointer;margin-bottom:12px;text-align:center}
+
+    /* Checkbox */
+    .check-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:.85rem;color:var(--muted)}
+    .check-row input[type=checkbox]{accent-color:var(--cyan);width:16px;height:16px}
+
+    @media(max-width:900px){
+      .main-layout{flex-direction:column}
+      .sidebar{width:100%;position:static}
+      .sidebar-toggle{display:block}
+      .sidebar-content.collapsed{display:none}
+    }
+    @media(max-width:600px){
+      .nav-tabs{overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;padding-bottom:8px;
+        -webkit-overflow-scrolling:touch;scrollbar-width:none}
+      .nav-tabs::-webkit-scrollbar{display:none}
+      .nav-tab{flex-shrink:0}
+      .row{flex-direction:column}
+      .row .field{min-width:100%}
+      .hero{padding:40px 16px 20px}
+      .panel{padding:16px}
+      .pill-group{flex-wrap:wrap}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="eyebrow">Math Toolkit</div>
+    <h1>Percentage Calculator</h1>
+    <p>Every percentage operation in one place -- basic percentages, change, discounts, tips, ratios, and more with step-by-step working.</p>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-tab="basic">Basic %</div>
+    <div class="nav-tab" data-tab="change">% Change</div>
+    <div class="nav-tab" data-tab="incdec">Increase / Decrease</div>
+    <div class="nav-tab" data-tab="discount">Discount</div>
+    <div class="nav-tab" data-tab="tip">Tip</div>
+    <div class="nav-tab" data-tab="ratio">Ratio &amp; Proportion</div>
+  </div>
+
+  <div class="main-layout">
+    <div class="main-content">
+
+      <!-- TAB 1: Basic Percentage -->
+      <div class="tab-content active" id="tab-basic">
+        <div class="panel">
+          <div class="section-title"><span class="icon">%</span> Basic Percentage</div>
+          <div class="pill-group">
+            <div class="pill active" data-mode="whatIs">What is X% of Y?</div>
+            <div class="pill" data-mode="whatPct">X is what % of Y?</div>
+            <div class="pill" data-mode="whatTotal">X is Y% of what?</div>
+          </div>
+          <div class="formula-tag" id="basicFormula">Formula: (X / 100) &times; Y</div>
+          <div class="row">
+            <div class="field"><label id="basicLabel1">Percentage (X)</label><input type="number" id="basicA" placeholder="e.g. 25" step="any"></div>
+            <div class="field"><label id="basicLabel2">Number (Y)</label><input type="number" id="basicB" placeholder="e.g. 200" step="any"></div>
+          </div>
+          <div class="result-box" id="basicResult">
+            <div class="result-label">Result</div>
+            <div class="result-value" id="basicAnswer"></div>
+            <div class="chart-wrap"><canvas id="basicChart"></canvas></div>
+            <div class="steps" id="basicSteps"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Percentage Change -->
+      <div class="tab-content" id="tab-change">
+        <div class="panel">
+          <div class="section-title"><span class="icon">&#8710;</span> Percentage Change</div>
+          <div class="formula-tag">Formula: ((New - Old) / |Old|) &times; 100</div>
+          <div class="row">
+            <div class="field"><label>Original Value</label><input type="number" id="changeOld" placeholder="e.g. 80" step="any"></div>
+            <div class="field"><label>New Value</label><input type="number" id="changeNew" placeholder="e.g. 100" step="any"></div>
+          </div>
+          <div class="result-box" id="changeResult">
+            <div class="result-label">Percentage Change</div>
+            <div class="result-value" id="changeAnswer"></div>
+            <div id="changeDirection" style="font-size:.85rem;margin-bottom:8px"></div>
+            <div class="compare-bars" id="changeBars"></div>
+            <div class="steps" id="changeSteps"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Increase / Decrease -->
+      <div class="tab-content" id="tab-incdec">
+        <div class="panel">
+          <div class="section-title"><span class="icon">&#8597;</span> Percentage Increase / Decrease</div>
+          <div class="toggle-row">
+            <div class="toggle-btn active-inc" data-dir="inc">Increase</div>
+            <div class="toggle-btn" data-dir="dec">Decrease</div>
+          </div>
+          <div class="formula-tag" id="incDecFormula">Formula: Value &times; (1 + Pct/100)</div>
+          <div class="row">
+            <div class="field"><label>Value</label><input type="number" id="incVal" placeholder="e.g. 150" step="any"></div>
+            <div class="field"><label>Percentage</label><input type="number" id="incPct" placeholder="e.g. 20" step="any"></div>
+          </div>
+          <div class="result-box" id="incResult">
+            <div class="result-label" id="incResultLabel">After Increase</div>
+            <div class="result-value" id="incAnswer"></div>
+            <div class="vis-bar"><div class="vis-bar-fill" id="incBar" style="width:0;background:linear-gradient(90deg,var(--cyan),var(--green))"></div></div>
+            <div class="steps" id="incSteps"></div>
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+            <div class="section-title" style="font-size:.95rem"><span class="icon">&#8634;</span> Reverse: Find Original Value</div>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">If a value is the result after a percentage increase/decrease, what was the original?</p>
+            <div class="row">
+              <div class="field"><label>Final Value</label><input type="number" id="revVal" placeholder="e.g. 180" step="any"></div>
+              <div class="field"><label>Percentage Applied</label><input type="number" id="revPct" placeholder="e.g. 20" step="any"></div>
+            </div>
+            <div class="result-box" id="revResult">
+              <div class="result-label">Original Value</div>
+              <div class="result-value" id="revAnswer"></div>
+              <div class="steps" id="revSteps"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Discount Calculator -->
+      <div class="tab-content" id="tab-discount">
+        <div class="panel">
+          <div class="section-title"><span class="icon">&#127991;</span> Discount Calculator</div>
+          <div class="row">
+            <div class="field"><label>Original Price</label><input type="number" id="discPrice" placeholder="e.g. 500" step="any"></div>
+            <div class="field"><label>Discount %</label><input type="number" id="discPct" placeholder="e.g. 20" step="any"></div>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="discDouble"> <label for="discDouble">Add a second discount (stacked)</label>
+          </div>
+          <div class="field" id="discSecondWrap" style="display:none">
+            <label>Second Discount %</label>
+            <input type="number" id="discPct2" placeholder="e.g. 10" step="any">
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="discTaxCheck"> <label for="discTaxCheck">Add tax</label>
+          </div>
+          <div class="field" id="discTaxWrap" style="display:none">
+            <label>Tax %</label>
+            <input type="number" id="discTax" placeholder="e.g. 18" step="any">
+          </div>
+          <div class="result-box" id="discResult">
+            <div id="discBreakdown"></div>
+            <div id="discNote" style="margin-top:10px;font-size:.82rem;color:var(--gold);display:none"></div>
+            <div class="vis-bar" style="height:22px;margin-top:14px"><div class="vis-bar-fill" id="discBar" style="width:0;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
+            <div class="steps" id="discSteps"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: Tip Calculator -->
+      <div class="tab-content" id="tab-tip">
+        <div class="panel">
+          <div class="section-title"><span class="icon">&#127861;</span> Tip Calculator</div>
+          <div class="field"><label>Bill Amount</label><input type="number" id="tipBill" placeholder="e.g. 85.50" step="any"></div>
+          <label style="font-size:.78rem;color:var(--muted);margin-bottom:8px;display:block">Quick Tip %</label>
+          <div class="tip-pills">
+            <div class="tip-pill" data-tip="10">10%</div>
+            <div class="tip-pill" data-tip="15">15%</div>
+            <div class="tip-pill active" data-tip="18">18%</div>
+            <div class="tip-pill" data-tip="20">20%</div>
+            <div class="tip-pill" data-tip="25">25%</div>
+          </div>
+          <div class="row">
+            <div class="field"><label>Custom Tip %</label><input type="number" id="tipPct" placeholder="18" step="any" value="18"></div>
+            <div class="field"><label>Split Between</label><input type="number" id="tipSplit" placeholder="1" min="1" value="1" step="1"></div>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="tipRound"> <label for="tipRound">Round total up to nearest dollar</label>
+          </div>
+          <div class="result-box" id="tipResult">
+            <div id="tipBreakdown"></div>
+            <div class="steps" id="tipSteps"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: Ratio & Proportion -->
+      <div class="tab-content" id="tab-ratio">
+        <div class="panel">
+          <div class="section-title"><span class="icon">&#8758;</span> Ratio &amp; Proportion</div>
+          <div class="pill-group">
+            <div class="pill active" data-rmode="r2p">Ratio to %</div>
+            <div class="pill" data-rmode="p2r">% to Ratio</div>
+            <div class="pill" data-rmode="f2p">Fraction to %</div>
+            <div class="pill" data-rmode="prop">Proportion Solver</div>
+          </div>
+
+          <!-- Ratio to Percentage -->
+          <div class="ratio-panel" id="rp-r2p">
+            <div class="formula-tag">Ratio A:B => A/(A+B) &times; 100</div>
+            <div class="row">
+              <div class="field"><label>A</label><input type="number" id="ratA" placeholder="3" step="any"></div>
+              <div class="field"><label>B</label><input type="number" id="ratB" placeholder="5" step="any"></div>
+            </div>
+          </div>
+          <!-- Percentage to Ratio -->
+          <div class="ratio-panel" id="rp-p2r" style="display:none">
+            <div class="formula-tag">Percentage => simplify to ratio</div>
+            <div class="field"><label>Percentage</label><input type="number" id="pctToRat" placeholder="60" step="any"></div>
+          </div>
+          <!-- Fraction to Percentage -->
+          <div class="ratio-panel" id="rp-f2p" style="display:none">
+            <div class="formula-tag">Fraction => (Numerator / Denominator) &times; 100</div>
+            <div class="row">
+              <div class="field"><label>Numerator</label><input type="number" id="fracNum" placeholder="3" step="any"></div>
+              <div class="field"><label>Denominator</label><input type="number" id="fracDen" placeholder="8" step="any"></div>
+            </div>
+          </div>
+          <!-- Proportion Solver -->
+          <div class="ratio-panel" id="rp-prop" style="display:none">
+            <div class="formula-tag">A / B = C / D -- leave one blank to solve</div>
+            <div class="row">
+              <div class="field"><label>A</label><input type="number" id="propA" placeholder="?" step="any"></div>
+              <div class="field"><label>B</label><input type="number" id="propB" placeholder="?" step="any"></div>
+              <div class="field"><label>C</label><input type="number" id="propC" placeholder="?" step="any"></div>
+              <div class="field"><label>D</label><input type="number" id="propD" placeholder="?" step="any"></div>
+            </div>
+          </div>
+
+          <div class="result-box" id="ratioResult">
+            <div class="result-label">Result</div>
+            <div class="result-value" id="ratioAnswer"></div>
+            <div class="vis-bar"><div class="vis-bar-fill" id="ratioBar" style="width:0;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div>
+            <div class="steps" id="ratioSteps"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+
+    <!-- Sidebar: Quick Reference -->
+    <div class="sidebar">
+      <div class="sidebar-toggle" id="sidebarToggle">Quick Reference &#9660;</div>
+      <div class="sidebar-content" id="sidebarContent">
+        <div class="panel" style="padding:18px">
+          <div class="ref-section">
+            <h3>&#128218; Common Percentages</h3>
+            <table class="ref-table">
+              <thead><tr><th>Percent</th><th>Fraction</th><th>Decimal</th></tr></thead>
+              <tbody>
+                <tr><td>10%</td><td>1/10</td><td>0.1</td></tr>
+                <tr><td>20%</td><td>1/5</td><td>0.2</td></tr>
+                <tr><td>25%</td><td>1/4</td><td>0.25</td></tr>
+                <tr><td>33.3%</td><td>1/3</td><td>0.333</td></tr>
+                <tr><td>50%</td><td>1/2</td><td>0.5</td></tr>
+                <tr><td>66.7%</td><td>2/3</td><td>0.667</td></tr>
+                <tr><td>75%</td><td>3/4</td><td>0.75</td></tr>
+                <tr><td>100%</td><td>1/1</td><td>1.0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="ref-section">
+            <h3>&#9889; Quick Tricks</h3>
+            <div class="ref-tip">To find <b>10%</b>: divide by 10.</div>
+            <div class="ref-tip">To find <b>5%</b>: find 10%, then halve it.</div>
+            <div class="ref-tip">To find <b>15%</b>: find 10% + 5%.</div>
+            <div class="ref-tip">To find <b>25%</b>: divide by 4.</div>
+            <div class="ref-tip">To find <b>1%</b>: divide by 100.</div>
+            <div class="ref-tip"><b>Reverse %</b>: X% of Y = Y% of X. (e.g. 8% of 25 = 25% of 8 = 2)</div>
+          </div>
+          <div class="ref-section">
+            <h3>&#128200; Fraction Equivalents</h3>
+            <table class="ref-table">
+              <thead><tr><th>Fraction</th><th>Percentage</th></tr></thead>
+              <tbody>
+                <tr><td>1/8</td><td>12.5%</td></tr>
+                <tr><td>1/6</td><td>16.67%</td></tr>
+                <tr><td>1/5</td><td>20%</td></tr>
+                <tr><td>1/4</td><td>25%</td></tr>
+                <tr><td>1/3</td><td>33.33%</td></tr>
+                <tr><td>3/8</td><td>37.5%</td></tr>
+                <tr><td>2/5</td><td>40%</td></tr>
+                <tr><td>1/2</td><td>50%</td></tr>
+                <tr><td>3/5</td><td>60%</td></tr>
+                <tr><td>5/8</td><td>62.5%</td></tr>
+                <tr><td>2/3</td><td>66.67%</td></tr>
+                <tr><td>3/4</td><td>75%</td></tr>
+                <tr><td>4/5</td><td>80%</td></tr>
+                <tr><td>5/6</td><td>83.33%</td></tr>
+                <tr><td>7/8</td><td>87.5%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /main-layout -->
+</div><!-- /wrapper -->
+
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x1F51D;</div>
+
+<script>
+/* ── Header / Footer ── */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+/* ── Back to top ── */
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('backToTop');
+  if(b)b.style.display=window.scrollY>400?'flex':'none';
+});
+
+/* ── Helpers ── */
+const fmt=(n)=>{
+  if(n===undefined||n===null||isNaN(n))return'--';
+  return parseFloat(n.toFixed(8)).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+};
+const fmtCur=(n)=>{
+  if(isNaN(n))return'--';
+  return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+};
+const gcd=(a,b)=>{a=Math.abs(Math.round(a));b=Math.abs(Math.round(b));while(b){[a,b]=[b,a%b]}return a};
+
+/* ── Tab switching ── */
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ── Sidebar toggle (mobile) ── */
+document.getElementById('sidebarToggle').addEventListener('click',()=>{
+  const c=document.getElementById('sidebarContent');
+  c.classList.toggle('collapsed');
+  document.getElementById('sidebarToggle').innerHTML=c.classList.contains('collapsed')?'Quick Reference &#9654;':'Quick Reference &#9660;';
+});
+
+/* ============================================================
+   TAB 1: BASIC PERCENTAGE
+   ============================================================ */
+let basicMode='whatIs';
+let basicChart=null;
+
+document.querySelectorAll('#tab-basic .pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('#tab-basic .pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    basicMode=p.dataset.mode;
+    const l1=document.getElementById('basicLabel1');
+    const l2=document.getElementById('basicLabel2');
+    const f=document.getElementById('basicFormula');
+    if(basicMode==='whatIs'){l1.textContent='Percentage (X)';l2.textContent='Number (Y)';f.textContent='Formula: (X / 100) \u00d7 Y';}
+    else if(basicMode==='whatPct'){l1.textContent='Part (X)';l2.textContent='Total (Y)';f.textContent='Formula: (X / Y) \u00d7 100';}
+    else{l1.textContent='Part (X)';l2.textContent='Percentage (Y)';f.textContent='Formula: X / (Y / 100)';}
+    calcBasic();
+  });
+});
+
+function calcBasic(){
+  const a=parseFloat(document.getElementById('basicA').value);
+  const b=parseFloat(document.getElementById('basicB').value);
+  const box=document.getElementById('basicResult');
+  if(isNaN(a)||isNaN(b)){box.classList.remove('show');return;}
+  box.classList.add('show');
+  let result,stepsHtml,pctForChart;
+  if(basicMode==='whatIs'){
+    result=(a/100)*b;
+    pctForChart=Math.min(Math.max(a,0),100);
+    stepsHtml=`<div class="step">Start: ${fmt(a)}% of ${fmt(b)}</div>
+      <div class="step">Convert: ${fmt(a)}% = ${fmt(a)} / 100 = ${fmt(a/100)}</div>
+      <div class="step">Multiply: ${fmt(a/100)} &times; ${fmt(b)} = ${fmt(result)}</div>
+      <div class="step">Result: ${fmt(result)}</div>`;
+  } else if(basicMode==='whatPct'){
+    if(b===0){document.getElementById('basicAnswer').textContent='Cannot divide by 0';return;}
+    result=(a/b)*100;
+    pctForChart=Math.min(Math.max(result,0),100);
+    stepsHtml=`<div class="step">Start: ${fmt(a)} is what % of ${fmt(b)}?</div>
+      <div class="step">Divide: ${fmt(a)} / ${fmt(b)} = ${fmt(a/b)}</div>
+      <div class="step">Multiply by 100: ${fmt(a/b)} &times; 100 = ${fmt(result)}</div>
+      <div class="step">Result: ${fmt(result)}%</div>`;
+  } else {
+    if(b===0){document.getElementById('basicAnswer').textContent='Cannot divide by 0';return;}
+    result=a/(b/100);
+    pctForChart=Math.min(Math.max(b,0),100);
+    stepsHtml=`<div class="step">Start: ${fmt(a)} is ${fmt(b)}% of what?</div>
+      <div class="step">Convert: ${fmt(b)}% = ${fmt(b/100)}</div>
+      <div class="step">Divide: ${fmt(a)} / ${fmt(b/100)} = ${fmt(result)}</div>
+      <div class="step">Result: ${fmt(result)}</div>`;
+  }
+  document.getElementById('basicAnswer').textContent=basicMode==='whatPct'?fmt(result)+'%':fmt(result);
+  document.getElementById('basicSteps').innerHTML='<h4>Step-by-step</h4>'+stepsHtml;
+
+  // Pie chart
+  if(basicChart){basicChart.destroy();}
+  const ctx=document.getElementById('basicChart').getContext('2d');
+  basicChart=new Chart(ctx,{type:'doughnut',data:{
+    labels:['Percentage','Remainder'],
+    datasets:[{data:[pctForChart,100-pctForChart],backgroundColor:['#00e5ff','#1e1e3a'],borderWidth:0}]
+  },options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed+'%'}}},cutout:'65%'}});
+}
+document.getElementById('basicA').addEventListener('input',calcBasic);
+document.getElementById('basicB').addEventListener('input',calcBasic);
+
+/* ============================================================
+   TAB 2: PERCENTAGE CHANGE
+   ============================================================ */
+function calcChange(){
+  const o=parseFloat(document.getElementById('changeOld').value);
+  const n=parseFloat(document.getElementById('changeNew').value);
+  const box=document.getElementById('changeResult');
+  if(isNaN(o)||isNaN(n)){box.classList.remove('show');return;}
+  if(o===0){document.getElementById('changeAnswer').textContent='Cannot compute (old=0)';box.classList.add('show');return;}
+  box.classList.add('show');
+  const diff=n-o;
+  const pct=(diff/Math.abs(o))*100;
+  const isUp=diff>=0;
+  const col=isUp?'var(--green)':'var(--red)';
+  const arrow=isUp?'&#9650; Increase':'&#9660; Decrease';
+  document.getElementById('changeAnswer').innerHTML=`<span style="color:${col}">${isUp?'+':''}${fmt(pct)}%</span>`;
+  document.getElementById('changeDirection').innerHTML=`<span style="color:${col}">${arrow}</span> | Absolute change: ${fmt(Math.abs(diff))}`;
+
+  const maxVal=Math.max(Math.abs(o),Math.abs(n),1);
+  document.getElementById('changeBars').innerHTML=`
+    <div class="compare-bar"><span class="bar-label">Old</span><div class="bar-track"><div class="bar-fill" style="width:${(Math.abs(o)/maxVal)*100}%;background:var(--purple)">${fmt(o)}</div></div></div>
+    <div class="compare-bar"><span class="bar-label">New</span><div class="bar-track"><div class="bar-fill" style="width:${(Math.abs(n)/maxVal)*100}%;background:${isUp?'var(--green)':'var(--red)'}">${fmt(n)}</div></div></div>`;
+
+  document.getElementById('changeSteps').innerHTML=`<h4>Step-by-step</h4>
+    <div class="step">Difference: ${fmt(n)} - ${fmt(o)} = ${fmt(diff)}</div>
+    <div class="step">Divide by |original|: ${fmt(diff)} / ${fmt(Math.abs(o))} = ${fmt(diff/Math.abs(o))}</div>
+    <div class="step">Multiply by 100: ${fmt(diff/Math.abs(o))} &times; 100 = ${fmt(pct)}</div>
+    <div class="step">Result: ${isUp?'+':''}${fmt(pct)}% ${isUp?'increase':'decrease'}</div>`;
+}
+document.getElementById('changeOld').addEventListener('input',calcChange);
+document.getElementById('changeNew').addEventListener('input',calcChange);
+
+/* ============================================================
+   TAB 3: INCREASE / DECREASE
+   ============================================================ */
+let incDir='inc';
+document.querySelectorAll('#tab-incdec .toggle-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tab-incdec .toggle-btn').forEach(x=>{x.classList.remove('active-inc');x.classList.remove('active-dec')});
+    incDir=b.dataset.dir;
+    b.classList.add(incDir==='inc'?'active-inc':'active-dec');
+    document.getElementById('incDecFormula').textContent=incDir==='inc'
+      ?'Formula: Value \u00d7 (1 + Pct/100)'
+      :'Formula: Value \u00d7 (1 - Pct/100)';
+    document.getElementById('incResultLabel').textContent=incDir==='inc'?'After Increase':'After Decrease';
+    calcIncDec();
+  });
+});
+
+function calcIncDec(){
+  const v=parseFloat(document.getElementById('incVal').value);
+  const p=parseFloat(document.getElementById('incPct').value);
+  const box=document.getElementById('incResult');
+  if(isNaN(v)||isNaN(p)){box.classList.remove('show');return;}
+  box.classList.add('show');
+  const mult=incDir==='inc'?(1+p/100):(1-p/100);
+  const result=v*mult;
+  const col=incDir==='inc'?'var(--green)':'var(--red)';
+  document.getElementById('incAnswer').innerHTML=`<span style="color:${col}">${fmt(result)}</span>`;
+  const barPct=v!==0?Math.min((Math.abs(result)/Math.abs(v))*100,200):0;
+  const bar=document.getElementById('incBar');
+  bar.style.width=Math.min(barPct,100)+'%';
+  bar.style.background=incDir==='inc'?'linear-gradient(90deg,var(--cyan),var(--green))':'linear-gradient(90deg,var(--red),var(--orange))';
+  bar.textContent=fmt(result);
+
+  const sign=incDir==='inc'?'+':'-';
+  document.getElementById('incSteps').innerHTML=`<h4>Step-by-step</h4>
+    <div class="step">Start with ${fmt(v)}</div>
+    <div class="step">Multiplier: 1 ${sign} ${fmt(p)}/100 = ${fmt(mult)}</div>
+    <div class="step">${fmt(v)} &times; ${fmt(mult)} = ${fmt(result)}</div>
+    <div class="step">Result: ${fmt(result)}</div>`;
+}
+document.getElementById('incVal').addEventListener('input',calcIncDec);
+document.getElementById('incPct').addEventListener('input',calcIncDec);
+
+// Reverse
+function calcReverse(){
+  const v=parseFloat(document.getElementById('revVal').value);
+  const p=parseFloat(document.getElementById('revPct').value);
+  const box=document.getElementById('revResult');
+  if(isNaN(v)||isNaN(p)){box.classList.remove('show');return;}
+  const mult=incDir==='inc'?(1+p/100):(1-p/100);
+  if(mult===0){document.getElementById('revAnswer').textContent='Cannot compute';box.classList.add('show');return;}
+  box.classList.add('show');
+  const orig=v/mult;
+  const sign=incDir==='inc'?'+':'-';
+  document.getElementById('revAnswer').textContent=fmt(orig);
+  document.getElementById('revSteps').innerHTML=`<h4>Step-by-step</h4>
+    <div class="step">Final value: ${fmt(v)} after ${fmt(p)}% ${incDir==='inc'?'increase':'decrease'}</div>
+    <div class="step">Multiplier used: 1 ${sign} ${fmt(p)}/100 = ${fmt(mult)}</div>
+    <div class="step">Original = ${fmt(v)} / ${fmt(mult)} = ${fmt(orig)}</div>
+    <div class="step">Result: ${fmt(orig)}</div>`;
+}
+document.getElementById('revVal').addEventListener('input',calcReverse);
+document.getElementById('revPct').addEventListener('input',calcReverse);
+
+/* ============================================================
+   TAB 4: DISCOUNT CALCULATOR
+   ============================================================ */
+document.getElementById('discDouble').addEventListener('change',function(){
+  document.getElementById('discSecondWrap').style.display=this.checked?'block':'none';
+  if(!this.checked)document.getElementById('discPct2').value='';
+  calcDiscount();
+});
+document.getElementById('discTaxCheck').addEventListener('change',function(){
+  document.getElementById('discTaxWrap').style.display=this.checked?'block':'none';
+  if(!this.checked)document.getElementById('discTax').value='';
+  calcDiscount();
+});
+
+function calcDiscount(){
+  const price=parseFloat(document.getElementById('discPrice').value);
+  const d1=parseFloat(document.getElementById('discPct').value);
+  const box=document.getElementById('discResult');
+  if(isNaN(price)||isNaN(d1)){box.classList.remove('show');return;}
+  box.classList.add('show');
+
+  const hasD2=document.getElementById('discDouble').checked;
+  const d2=parseFloat(document.getElementById('discPct2').value);
+  const hasTax=document.getElementById('discTaxCheck').checked;
+  const tax=parseFloat(document.getElementById('discTax').value);
+
+  let disc1Amt=price*(d1/100);
+  let afterD1=price-disc1Amt;
+  let disc2Amt=0,afterD2=afterD1;
+  let stepsHtml=`<div class="step">Original price: ${fmtCur(price)}</div>
+    <div class="step">Discount 1: ${fmt(d1)}% of ${fmtCur(price)} = ${fmtCur(disc1Amt)}</div>
+    <div class="step">After discount 1: ${fmtCur(afterD1)}</div>`;
+
+  let breakdown=`<div class="breakdown-row strike"><span class="label">Original Price</span><span class="value">${fmtCur(price)}</span></div>
+    <div class="breakdown-row save"><span class="label">Discount (${fmt(d1)}%)</span><span class="value">-${fmtCur(disc1Amt)}</span></div>`;
+
+  if(hasD2&&!isNaN(d2)){
+    disc2Amt=afterD1*(d2/100);
+    afterD2=afterD1-disc2Amt;
+    stepsHtml+=`<div class="step">Discount 2: ${fmt(d2)}% of ${fmtCur(afterD1)} = ${fmtCur(disc2Amt)}</div>
+      <div class="step">After discount 2: ${fmtCur(afterD2)}</div>`;
+    breakdown+=`<div class="breakdown-row save"><span class="label">2nd Discount (${fmt(d2)}%)</span><span class="value">-${fmtCur(disc2Amt)}</span></div>`;
+  }
+
+  let taxAmt=0,finalPrice=afterD2;
+  if(hasTax&&!isNaN(tax)){
+    taxAmt=afterD2*(tax/100);
+    finalPrice=afterD2+taxAmt;
+    stepsHtml+=`<div class="step">Tax: ${fmt(tax)}% of ${fmtCur(afterD2)} = ${fmtCur(taxAmt)}</div>`;
+    breakdown+=`<div class="breakdown-row"><span class="label">Subtotal</span><span class="value">${fmtCur(afterD2)}</span></div>`;
+    breakdown+=`<div class="breakdown-row"><span class="label">Tax (${fmt(tax)}%)</span><span class="value">+${fmtCur(taxAmt)}</span></div>`;
+  }
+
+  stepsHtml+=`<div class="step">Final price: ${fmtCur(finalPrice)}</div>`;
+  breakdown+=`<div class="breakdown-row"><span class="label">Final Price</span><span class="value">${fmtCur(finalPrice)}</span></div>`;
+  const totalSaved=price-finalPrice+taxAmt;
+  breakdown+=`<div class="breakdown-row save"><span class="label">Total Saved</span><span class="value">${fmtCur(totalSaved)}</span></div>`;
+
+  document.getElementById('discBreakdown').innerHTML=breakdown;
+  document.getElementById('discSteps').innerHTML='<h4>Step-by-step</h4>'+stepsHtml;
+
+  // Double discount note
+  const note=document.getElementById('discNote');
+  if(hasD2&&!isNaN(d2)){
+    const combined=d1+d2;
+    const naiveSaving=price*(combined/100);
+    const actualSaving=disc1Amt+disc2Amt;
+    note.style.display='block';
+    note.innerHTML=`<strong>Why ${fmt(d1)}% + ${fmt(d2)}% &#8800; ${fmt(combined)}%:</strong> A naive ${fmt(combined)}% discount would save ${fmtCur(naiveSaving)}, but stacked discounts actually save ${fmtCur(actualSaving)}. The second discount applies to the already-reduced price, not the original.`;
+  } else {
+    note.style.display='none';
+  }
+
+  const barPct=price>0?((finalPrice/price)*100):0;
+  const bar=document.getElementById('discBar');
+  bar.style.width=Math.min(barPct,100)+'%';
+  bar.textContent='You pay: '+fmtCur(finalPrice);
+}
+['discPrice','discPct','discPct2','discTax'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',calcDiscount);
+});
+
+/* ============================================================
+   TAB 5: TIP CALCULATOR
+   ============================================================ */
+document.querySelectorAll('.tip-pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.tip-pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    document.getElementById('tipPct').value=p.dataset.tip;
+    calcTip();
+  });
+});
+document.getElementById('tipPct').addEventListener('input',function(){
+  document.querySelectorAll('.tip-pill').forEach(x=>{
+    x.classList.toggle('active',x.dataset.tip===this.value);
+  });
+  calcTip();
+});
+
+function calcTip(){
+  const bill=parseFloat(document.getElementById('tipBill').value);
+  const pct=parseFloat(document.getElementById('tipPct').value);
+  const split=parseInt(document.getElementById('tipSplit').value)||1;
+  const doRound=document.getElementById('tipRound').checked;
+  const box=document.getElementById('tipResult');
+  if(isNaN(bill)||isNaN(pct)){box.classList.remove('show');return;}
+  box.classList.add('show');
+
+  let tipAmt=bill*(pct/100);
+  let total=bill+tipAmt;
+  let stepsHtml=`<div class="step">Bill: ${fmtCur(bill)}</div>
+    <div class="step">Tip: ${fmt(pct)}% of ${fmtCur(bill)} = ${fmtCur(tipAmt)}</div>
+    <div class="step">Total: ${fmtCur(bill)} + ${fmtCur(tipAmt)} = ${fmtCur(total)}</div>`;
+
+  if(doRound){
+    const rounded=Math.ceil(total);
+    tipAmt=rounded-bill;
+    stepsHtml+=`<div class="step">Rounded up: ${fmtCur(total)} &rarr; ${fmtCur(rounded)}</div>`;
+    total=rounded;
+  }
+
+  let perPerson=total/split;
+  if(split>1) stepsHtml+=`<div class="step">Per person: ${fmtCur(total)} / ${split} = ${fmtCur(perPerson)}</div>`;
+  stepsHtml+=`<div class="step">Final: ${fmtCur(total)}${split>1?' ('+fmtCur(perPerson)+' each)':''}</div>`;
+
+  let breakdown=`<div class="breakdown-row"><span class="label">Bill Amount</span><span class="value">${fmtCur(bill)}</span></div>
+    <div class="breakdown-row save"><span class="label">Tip (${fmt(pct)}%)</span><span class="value">+${fmtCur(tipAmt)}</span></div>
+    <div class="breakdown-row"><span class="label">Total</span><span class="value">${fmtCur(total)}</span></div>`;
+  if(split>1){
+    breakdown+=`<div class="breakdown-row"><span class="label">Per Person (${split})</span><span class="value">${fmtCur(perPerson)}</span></div>`;
+  }
+  document.getElementById('tipBreakdown').innerHTML=breakdown;
+  document.getElementById('tipSteps').innerHTML='<h4>Step-by-step</h4>'+stepsHtml;
+}
+['tipBill','tipSplit'].forEach(id=>document.getElementById(id).addEventListener('input',calcTip));
+document.getElementById('tipRound').addEventListener('change',calcTip);
+
+/* ============================================================
+   TAB 6: RATIO & PROPORTION
+   ============================================================ */
+let ratioMode='r2p';
+document.querySelectorAll('#tab-ratio .pill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('#tab-ratio .pill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');
+    ratioMode=p.dataset.rmode;
+    document.querySelectorAll('.ratio-panel').forEach(x=>x.style.display='none');
+    document.getElementById('rp-'+ratioMode).style.display='block';
+    calcRatio();
+  });
+});
+
+function calcRatio(){
+  const box=document.getElementById('ratioResult');
+  const ans=document.getElementById('ratioAnswer');
+  const steps=document.getElementById('ratioSteps');
+  const bar=document.getElementById('ratioBar');
+
+  if(ratioMode==='r2p'){
+    const a=parseFloat(document.getElementById('ratA').value);
+    const b=parseFloat(document.getElementById('ratB').value);
+    if(isNaN(a)||isNaN(b)){box.classList.remove('show');return;}
+    if(a+b===0){ans.textContent='Sum cannot be 0';box.classList.add('show');return;}
+    box.classList.add('show');
+    const pctA=(a/(a+b))*100;
+    const pctB=(b/(a+b))*100;
+    ans.textContent=`${fmt(a)}:${fmt(b)} = ${fmt(pctA)}% : ${fmt(pctB)}%`;
+    bar.style.width=Math.min(pctA,100)+'%';
+    bar.textContent=fmt(pctA)+'%';
+    steps.innerHTML=`<h4>Step-by-step</h4>
+      <div class="step">Total parts: ${fmt(a)} + ${fmt(b)} = ${fmt(a+b)}</div>
+      <div class="step">A%: ${fmt(a)} / ${fmt(a+b)} &times; 100 = ${fmt(pctA)}%</div>
+      <div class="step">B%: ${fmt(b)} / ${fmt(a+b)} &times; 100 = ${fmt(pctB)}%</div>
+      <div class="step">Result: ${fmt(pctA)}% : ${fmt(pctB)}%</div>`;
+  } else if(ratioMode==='p2r'){
+    const p=parseFloat(document.getElementById('pctToRat').value);
+    if(isNaN(p)){box.classList.remove('show');return;}
+    box.classList.add('show');
+    const remainder=100-p;
+    // Simplify
+    const scale=1000;
+    const a=Math.round(p*scale),b=Math.round(remainder*scale);
+    const g=gcd(a,b)||1;
+    ans.textContent=`${fmt(p)}% = ${a/g} : ${b/g}`;
+    bar.style.width=Math.min(Math.max(p,0),100)+'%';
+    bar.textContent=fmt(p)+'%';
+    steps.innerHTML=`<h4>Step-by-step</h4>
+      <div class="step">${fmt(p)}% means ${fmt(p)} out of 100</div>
+      <div class="step">Remainder: 100 - ${fmt(p)} = ${fmt(remainder)}</div>
+      <div class="step">Ratio: ${fmt(p)} : ${fmt(remainder)}</div>
+      <div class="step">Simplified: ${a/g} : ${b/g}</div>`;
+  } else if(ratioMode==='f2p'){
+    const n=parseFloat(document.getElementById('fracNum').value);
+    const d=parseFloat(document.getElementById('fracDen').value);
+    if(isNaN(n)||isNaN(d)){box.classList.remove('show');return;}
+    if(d===0){ans.textContent='Cannot divide by 0';box.classList.add('show');return;}
+    box.classList.add('show');
+    const pct=(n/d)*100;
+    ans.textContent=`${fmt(n)}/${fmt(d)} = ${fmt(pct)}%`;
+    bar.style.width=Math.min(Math.max(pct,0),100)+'%';
+    bar.textContent=fmt(pct)+'%';
+    steps.innerHTML=`<h4>Step-by-step</h4>
+      <div class="step">Fraction: ${fmt(n)} / ${fmt(d)}</div>
+      <div class="step">Divide: ${fmt(n)} / ${fmt(d)} = ${fmt(n/d)}</div>
+      <div class="step">Multiply by 100: ${fmt(n/d)} &times; 100 = ${fmt(pct)}</div>
+      <div class="step">Result: ${fmt(pct)}%</div>`;
+  } else if(ratioMode==='prop'){
+    const vals=['propA','propB','propC','propD'].map(id=>{
+      const v=document.getElementById(id).value.trim();
+      return v===''?null:parseFloat(v);
+    });
+    const blanks=vals.map((v,i)=>v===null||isNaN(v)?i:-1).filter(i=>i>=0);
+    if(blanks.length!==1){
+      box.classList.add('show');
+      ans.textContent=blanks.length===0?'All filled -- leave one blank':'Leave exactly one blank';
+      steps.innerHTML='';
+      bar.style.width='0%';bar.textContent='';
+      return;
+    }
+    const idx=blanks[0];
+    const [a,b,c,d]=vals;
+    let result;
+    const labels=['A','B','C','D'];
+    // A/B = C/D => missing = cross multiply
+    if(idx===0) result=(b*c)/d;
+    else if(idx===1) result=(a*d)/c;
+    else if(idx===2) result=(a*d)/b;  // wait: A/B = C/D => C = A*D/B
+    else result=(b*c)/a;
+
+    // Check for division by zero
+    if(!isFinite(result)){ans.textContent='Cannot solve (division by zero)';box.classList.add('show');steps.innerHTML='';return;}
+
+    box.classList.add('show');
+    const rv=[...vals];rv[idx]=result;
+    ans.textContent=`${labels[idx]} = ${fmt(result)}`;
+    bar.style.width='0%';bar.textContent='';
+    steps.innerHTML=`<h4>Step-by-step</h4>
+      <div class="step">Proportion: ${fmt(rv[0])} / ${fmt(rv[1])} = ${fmt(rv[2])} / ${fmt(rv[3])}</div>
+      <div class="step">Cross multiply: ${fmt(rv[0])} &times; ${fmt(rv[3])} = ${fmt(rv[1])} &times; ${fmt(rv[2])}</div>
+      <div class="step">${labels[idx]} = ${fmt(result)}</div>`;
+  }
+}
+['ratA','ratB','pctToRat','fracNum','fracDen','propA','propB','propC','propD'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',calcRatio);
+});
+
+</script>
+</body>
+</html>

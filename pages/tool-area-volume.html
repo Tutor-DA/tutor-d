@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shape Calculator – Area, Volume &amp; More | TutorDA</title>
+  <meta name="description" content="Compute area, perimeter, volume, and surface area for 2D & 3D shapes with live canvas diagrams, LaTeX formulas, and step-by-step solutions.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},startup:{typeset:true}};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  <style>
+    :root{
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --muted:#94a3b8;--text:#e8e8ff;--r:14px;
+      --green:#22c55e;--red:#ef4444;--orange:#ff8c00;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+
+    /* Tabs */
+    .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+    .nav-tab{padding:10px 22px;border-radius:8px;background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.88rem;transition:all .2s;font-family:'Poppins',sans-serif;font-weight:500}
+    .nav-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    /* Unit selector */
+    .unit-bar{display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-bottom:18px;flex-wrap:wrap}
+    .unit-bar label{font-size:.82rem;color:var(--muted);font-weight:500}
+    .unit-bar select{padding:6px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;
+      color:var(--text);font-family:var(--mono);font-size:.85rem;outline:none;cursor:pointer}
+    .unit-bar select:focus{border-color:var(--cyan)}
+
+    /* Shape grid */
+    .shape-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:24px}
+    .shape-btn{padding:14px 8px;border-radius:10px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.82rem;text-align:center;transition:all .2s;font-family:'Poppins',sans-serif}
+    .shape-btn:hover{border-color:var(--purple);color:var(--text);transform:translateY(-2px)}
+    .shape-btn.active{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.1)}
+    .shape-btn .shape-icon{font-size:1.6rem;display:block;margin-bottom:4px}
+
+    /* Calculator area */
+    .calc-area{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    .input-panel{display:flex;flex-direction:column;gap:14px}
+    .diagram-panel{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .diagram-panel canvas{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;max-width:100%}
+
+    .field{margin-bottom:0}
+    .field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px;font-weight:500}
+    .field input{width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s}
+    .field input:focus{border-color:var(--cyan)}
+
+    /* Results */
+    .results-panel{margin-top:20px}
+    .result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+    .result-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+    .result-card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .result-card .value{font-family:var(--mono);font-size:1.3rem;font-weight:600;color:var(--cyan)}
+
+    .formula-box{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:10px;
+      padding:16px 20px;margin-bottom:14px;overflow-x:auto}
+    .formula-box .formula-title{font-size:.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-weight:600}
+
+    .steps-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px 20px}
+    .steps-box .steps-title{font-size:.82rem;color:var(--gold);margin-bottom:10px;font-weight:600}
+    .steps-box .step{font-family:var(--mono);font-size:.85rem;color:var(--text);line-height:1.7;margin-bottom:2px}
+
+    /* Comparison tab */
+    .compare-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .compare-col{min-width:0}
+    .compare-col h3{font-family:'Orbitron',sans-serif;font-size:.95rem;margin-bottom:12px;color:var(--purple)}
+    .chart-container{max-width:600px;margin:20px auto 0;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+
+    /* responsive */
+    @media(max-width:768px){
+      .calc-area{grid-template-columns:1fr}
+      .compare-layout{grid-template-columns:1fr}
+      .shape-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+      .result-grid{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:480px){
+      .result-grid{grid-template-columns:1fr}
+      .nav-tab{padding:8px 14px;font-size:.8rem}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="eyebrow">Interactive Math Tool</div>
+    <h1>Shape Calculator</h1>
+    <p>Compute area, perimeter, volume, and surface area with live diagrams, LaTeX formulas, and step-by-step solutions.</p>
+  </div>
+
+  <!-- Unit Bar -->
+  <div class="unit-bar">
+    <label>Unit:</label>
+    <select id="unitSelect">
+      <option value="cm">cm</option>
+      <option value="m">m</option>
+      <option value="km">km</option>
+      <option value="in">in</option>
+      <option value="ft">ft</option>
+      <option value="yd">yd</option>
+    </select>
+  </div>
+
+  <!-- Main Tabs -->
+  <div class="nav-tabs" id="mainTabs">
+    <div class="nav-tab active" data-tab="tab2d">2D Shapes</div>
+    <div class="nav-tab" data-tab="tab3d">3D Shapes</div>
+    <div class="nav-tab" data-tab="tabCompare">Shape Comparison</div>
+  </div>
+
+  <!-- ============ TAB: 2D ============ -->
+  <div class="tab-content active" id="tab2d">
+    <div class="panel">
+      <div class="shape-grid" id="shapes2d">
+        <div class="shape-btn active" data-shape="circle"><span class="shape-icon">&#9711;</span>Circle</div>
+        <div class="shape-btn" data-shape="rectangle"><span class="shape-icon">&#9645;</span>Rectangle</div>
+        <div class="shape-btn" data-shape="square"><span class="shape-icon">&#9632;</span>Square</div>
+        <div class="shape-btn" data-shape="triangle"><span class="shape-icon">&#9651;</span>Triangle</div>
+        <div class="shape-btn" data-shape="trapezoid"><span class="shape-icon">&#9186;</span>Trapezoid</div>
+        <div class="shape-btn" data-shape="parallelogram"><span class="shape-icon">&#9645;</span>Parallelogram</div>
+        <div class="shape-btn" data-shape="rhombus"><span class="shape-icon">&#9670;</span>Rhombus</div>
+        <div class="shape-btn" data-shape="ellipse"><span class="shape-icon">&#11044;</span>Ellipse</div>
+        <div class="shape-btn" data-shape="polygon"><span class="shape-icon">&#11039;</span>Reg. Polygon</div>
+        <div class="shape-btn" data-shape="sector"><span class="shape-icon">&#9684;</span>Sector</div>
+        <div class="shape-btn" data-shape="annulus"><span class="shape-icon">&#9678;</span>Annulus</div>
+      </div>
+
+      <div class="calc-area">
+        <div class="input-panel" id="inputs2d"></div>
+        <div class="diagram-panel">
+          <canvas id="canvas2d" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="results-panel" id="results2d">
+        <div class="result-grid" id="resultCards2d"></div>
+        <div class="formula-box" id="formula2d"></div>
+        <div class="steps-box" id="steps2d"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: 3D ============ -->
+  <div class="tab-content" id="tab3d">
+    <div class="panel">
+      <div class="shape-grid" id="shapes3d">
+        <div class="shape-btn active" data-shape="sphere"><span class="shape-icon">&#9899;</span>Sphere</div>
+        <div class="shape-btn" data-shape="cube"><span class="shape-icon">&#9633;</span>Cube</div>
+        <div class="shape-btn" data-shape="cuboid"><span class="shape-icon">&#9645;</span>Cuboid</div>
+        <div class="shape-btn" data-shape="cylinder"><span class="shape-icon">&#9673;</span>Cylinder</div>
+        <div class="shape-btn" data-shape="cone"><span class="shape-icon">&#9651;</span>Cone</div>
+        <div class="shape-btn" data-shape="pyramid"><span class="shape-icon">&#9650;</span>Sq. Pyramid</div>
+        <div class="shape-btn" data-shape="hemisphere"><span class="shape-icon">&#9681;</span>Hemisphere</div>
+        <div class="shape-btn" data-shape="torus"><span class="shape-icon">&#9711;</span>Torus</div>
+        <div class="shape-btn" data-shape="triprism"><span class="shape-icon">&#9651;</span>Tri. Prism</div>
+        <div class="shape-btn" data-shape="frustum"><span class="shape-icon">&#9186;</span>Frustum</div>
+      </div>
+
+      <div class="calc-area">
+        <div class="input-panel" id="inputs3d"></div>
+        <div class="diagram-panel">
+          <canvas id="canvas3d" width="300" height="300"></canvas>
+        </div>
+      </div>
+
+      <div class="results-panel" id="results3d">
+        <div class="result-grid" id="resultCards3d"></div>
+        <div class="formula-box" id="formula3d"></div>
+        <div class="steps-box" id="steps3d"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: COMPARE ============ -->
+  <div class="tab-content" id="tabCompare">
+    <div class="panel">
+      <div class="compare-layout">
+        <div class="compare-col">
+          <h3>Shape A</h3>
+          <select id="cmpSelA" class="field" style="width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:.9rem;margin-bottom:12px"></select>
+          <div id="cmpInputsA"></div>
+          <canvas id="cmpCanvasA" width="260" height="260" style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;max-width:100%;margin-top:10px"></canvas>
+          <div class="result-grid" id="cmpResultsA" style="margin-top:12px"></div>
+        </div>
+        <div class="compare-col">
+          <h3>Shape B</h3>
+          <select id="cmpSelB" class="field" style="width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:.9rem;margin-bottom:12px"></select>
+          <div id="cmpInputsB"></div>
+          <canvas id="cmpCanvasB" width="260" height="260" style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;max-width:100%;margin-top:10px"></canvas>
+          <div class="result-grid" id="cmpResultsB" style="margin-top:12px"></div>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="compareChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ===== GLOBALS ===== */
+const U=()=>document.getElementById('unitSelect').value;
+const u2=()=>{const u=U();return u+'\u00B2';};
+const u3=()=>{const u=U();return u+'\u00B3';};
+const PI=Math.PI;
+const r4=v=>Math.round(v*1e6)/1e6;
+
+/* ===== TAB SWITCHING ===== */
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+/* ===== SHAPE DEFINITIONS ===== */
+
+/* --- 2D --- */
+const shapes2d = {
+  circle: {
+    name:'Circle',
+    inputs:[{id:'radius',label:'Radius',def:5}],
+    calc(v){
+      const r=v.radius, a=PI*r*r, c=2*PI*r;
+      return {results:[{label:'Area',value:r4(a),unit:u2()},{label:'Circumference',value:r4(c),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\pi r^2 \\qquad C = 2\\pi r$$`,
+        steps:[`r = ${r} ${U()}`,`A = π × ${r}² = π × ${r*r} = ${r4(a)} ${u2()}`,`C = 2π × ${r} = ${r4(c)} ${U()}`]};
+    },
+    draw(ctx,v,w,h){
+      const r=Math.min(w,h)*0.35, cx=w/2, cy=h/2;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,2*PI);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.setLineDash([4,4]);ctx.stroke();ctx.setLineDash([]);
+      drawLabel(ctx,`r=${v.radius}`,cx+r/2,cy-10);
+    }
+  },
+  rectangle: {
+    name:'Rectangle',
+    inputs:[{id:'length',label:'Length',def:8},{id:'width',label:'Width',def:5}],
+    calc(v){
+      const l=v.length,w=v.width,a=l*w,p=2*(l+w),d=Math.sqrt(l*l+w*w);
+      return {results:[{label:'Area',value:r4(a),unit:u2()},{label:'Perimeter',value:r4(p),unit:U()},{label:'Diagonal',value:r4(d),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = l \\times w \\qquad P = 2(l+w) \\qquad d = \\sqrt{l^2+w^2}$$`,
+        steps:[`l = ${l}, w = ${w} ${U()}`,`A = ${l} × ${w} = ${r4(a)} ${u2()}`,`P = 2(${l}+${w}) = ${r4(p)} ${U()}`,`d = √(${l}²+${w}²) = √${r4(l*l+w*w)} = ${r4(d)} ${U()}`]};
+    },
+    draw(ctx,v,W,H){
+      const s=Math.min(W,H)*0.7, ratio=v.length/Math.max(v.length,v.width);
+      const rw=s*ratio, rh=s*(v.width/Math.max(v.length,v.width));
+      const x=(W-rw)/2, y=(H-rh)/2;
+      ctx.strokeRect(x,y,rw,rh);
+      drawLabel(ctx,`l=${v.length}`,x+rw/2,y+rh+18);
+      drawLabel(ctx,`w=${v.width}`,x-24,y+rh/2);
+    }
+  },
+  square: {
+    name:'Square',
+    inputs:[{id:'side',label:'Side',def:6}],
+    calc(v){
+      const s=v.side,a=s*s,p=4*s,d=s*Math.sqrt(2);
+      return {results:[{label:'Area',value:r4(a),unit:u2()},{label:'Perimeter',value:r4(p),unit:U()},{label:'Diagonal',value:r4(d),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = s^2 \\qquad P = 4s \\qquad d = s\\sqrt{2}$$`,
+        steps:[`s = ${s} ${U()}`,`A = ${s}² = ${r4(a)} ${u2()}`,`P = 4 × ${s} = ${r4(p)} ${U()}`,`d = ${s}√2 = ${r4(d)} ${U()}`]};
+    },
+    draw(ctx,v,W,H){
+      const sz=Math.min(W,H)*0.6, x=(W-sz)/2, y=(H-sz)/2;
+      ctx.strokeRect(x,y,sz,sz);
+      drawLabel(ctx,`s=${v.side}`,x+sz/2,y+sz+18);
+    }
+  },
+  triangle: {
+    name:'Triangle',
+    inputs:[{id:'base',label:'Base',def:8},{id:'height',label:'Height',def:6},{id:'sideA',label:'Side a (optional)',def:''},{id:'sideB',label:'Side b (optional)',def:''},{id:'sideC',label:'Side c (optional)',def:''},{id:'angle',label:'Angle C° (optional)',def:''}],
+    calc(v){
+      const b=v.base,h=v.height;
+      let results=[], steps=[], formula='<div class="formula-title">Formulas</div>';
+      // basic b*h/2
+      if(b&&h){
+        const a=0.5*b*h;
+        results.push({label:'Area (b×h/2)',value:r4(a),unit:u2()});
+        formula+=`$$A = \\tfrac{1}{2}bh$$`;
+        steps.push(`A = ½ × ${b} × ${h} = ${r4(a)} ${u2()}`);
+      }
+      // Heron's
+      const sa=parseFloat(v.sideA),sb=parseFloat(v.sideB),sc=parseFloat(v.sideC);
+      if(sa&&sb&&sc){
+        const s=(sa+sb+sc)/2, area=Math.sqrt(s*(s-sa)*(s-sb)*(s-sc));
+        results.push({label:"Area (Heron's)",value:r4(area),unit:u2()});
+        results.push({label:'Perimeter',value:r4(sa+sb+sc),unit:U()});
+        formula+=`$$A = \\sqrt{s(s-a)(s-b)(s-c)},\\; s=\\tfrac{a+b+c}{2}$$`;
+        steps.push(`s = (${sa}+${sb}+${sc})/2 = ${r4(s)}`);
+        steps.push(`A = √(${r4(s)}×${r4(s-sa)}×${r4(s-sb)}×${r4(s-sc)}) = ${r4(area)} ${u2()}`);
+      }
+      // ½ab sinC
+      const ang=parseFloat(v.angle);
+      if(sa&&sb&&ang){
+        const rad=ang*PI/180, area=0.5*sa*sb*Math.sin(rad);
+        results.push({label:'Area (½ab sinC)',value:r4(area),unit:u2()});
+        formula+=`$$A = \\tfrac{1}{2}ab\\sin C$$`;
+        steps.push(`A = ½ × ${sa} × ${sb} × sin(${ang}°) = ${r4(area)} ${u2()}`);
+      }
+      return {results,formula,steps};
+    },
+    draw(ctx,v,W,H){
+      const b=Math.min(W,H)*0.7, h=Math.min(W,H)*0.6;
+      const x0=(W-b)/2, y0=H/2+h/2;
+      ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0+b,y0);ctx.lineTo(x0+b/2,y0-h);ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`b=${v.base}`,x0+b/2,y0+18);
+      ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x0+b/2,y0);ctx.lineTo(x0+b/2,y0-h);ctx.stroke();ctx.setLineDash([]);
+      drawLabel(ctx,`h=${v.height}`,x0+b/2+8,y0-h/2);
+    }
+  },
+  trapezoid: {
+    name:'Trapezoid',
+    inputs:[{id:'a',label:'Parallel side a (top)',def:5},{id:'b',label:'Parallel side b (bottom)',def:9},{id:'height',label:'Height',def:4}],
+    calc(v){
+      const a=v.a,b=v.b,h=v.height,area=0.5*(a+b)*h;
+      return {results:[{label:'Area',value:r4(area),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\tfrac{1}{2}(a+b)h$$`,
+        steps:[`a = ${a}, b = ${b}, h = ${h} ${U()}`,`A = ½ × (${a}+${b}) × ${h} = ½ × ${a+b} × ${h} = ${r4(area)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){
+      const bw=Math.min(W,H)*0.7, ratio=v.a/v.b, tw=bw*ratio, ht=Math.min(W,H)*0.5;
+      const bx=(W-bw)/2, by=H/2+ht/2, tx=(W-tw)/2, ty=by-ht;
+      ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(tx+tw,ty);ctx.lineTo(bx+bw,by);ctx.lineTo(bx,by);ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`a=${v.a}`,W/2,ty-8);
+      drawLabel(ctx,`b=${v.b}`,W/2,by+18);
+      ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(tx+tw/2,by);ctx.lineTo(tx+tw/2,ty);ctx.stroke();ctx.setLineDash([]);
+      drawLabel(ctx,`h=${v.height}`,tx+tw/2+10,H/2);
+    }
+  },
+  parallelogram: {
+    name:'Parallelogram',
+    inputs:[{id:'base',label:'Base',def:8},{id:'height',label:'Height',def:5}],
+    calc(v){
+      const b=v.base,h=v.height,a=b*h;
+      return {results:[{label:'Area',value:r4(a),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = b \\times h$$`,
+        steps:[`b = ${b}, h = ${h}`,`A = ${b} × ${h} = ${r4(a)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){
+      const bw=Math.min(W,H)*0.6, ht=Math.min(W,H)*0.4, off=30;
+      const x=(W-bw)/2, y=(H-ht)/2;
+      ctx.beginPath();ctx.moveTo(x+off,y);ctx.lineTo(x+bw+off,y);ctx.lineTo(x+bw,y+ht);ctx.lineTo(x,y+ht);ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`b=${v.base}`,x+bw/2,y+ht+18);
+      ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x+off,y);ctx.lineTo(x+off,y+ht);ctx.stroke();ctx.setLineDash([]);
+      drawLabel(ctx,`h=${v.height}`,x+off+10,y+ht/2);
+    }
+  },
+  rhombus: {
+    name:'Rhombus',
+    inputs:[{id:'d1',label:'Diagonal d₁',def:10},{id:'d2',label:'Diagonal d₂',def:8}],
+    calc(v){
+      const d1=v.d1,d2=v.d2,a=0.5*d1*d2,side=Math.sqrt((d1/2)**2+(d2/2)**2),p=4*side;
+      return {results:[{label:'Area',value:r4(a),unit:u2()},{label:'Side',value:r4(side),unit:U()},{label:'Perimeter',value:r4(p),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\tfrac{1}{2}d_1 d_2$$`,
+        steps:[`d₁ = ${d1}, d₂ = ${d2}`,`A = ½ × ${d1} × ${d2} = ${r4(a)} ${u2()}`,`side = √((${d1}/2)²+(${d2}/2)²) = ${r4(side)} ${U()}`]};
+    },
+    draw(ctx,v,W,H){
+      const d1=Math.min(W,H)*0.7, d2=Math.min(W,H)*0.5, cx=W/2, cy=H/2;
+      ctx.beginPath();ctx.moveTo(cx,cy-d2/2);ctx.lineTo(cx+d1/2,cy);ctx.lineTo(cx,cy+d2/2);ctx.lineTo(cx-d1/2,cy);ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`d₁=${v.d1}`,cx,cy+d2/2+16);
+      drawLabel(ctx,`d₂=${v.d2}`,cx+d1/2+10,cy);
+    }
+  },
+  ellipse: {
+    name:'Ellipse',
+    inputs:[{id:'a',label:'Semi-major axis a',def:7},{id:'b',label:'Semi-minor axis b',def:4}],
+    calc(v){
+      const a=v.a,b=v.b,area=PI*a*b,approxP=PI*(3*(a+b)-Math.sqrt((3*a+b)*(a+3*b)));
+      return {results:[{label:'Area',value:r4(area),unit:u2()},{label:'Perimeter (approx)',value:r4(approxP),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\pi a b$$`,
+        steps:[`a = ${a}, b = ${b}`,`A = π × ${a} × ${b} = ${r4(area)} ${u2()}`,`P ≈ π(3(a+b)−√((3a+b)(a+3b))) = ${r4(approxP)} ${U()}`]};
+    },
+    draw(ctx,v,W,H){
+      const a=Math.min(W,H)*0.4, b=Math.min(W,H)*0.25, cx=W/2, cy=H/2;
+      ctx.beginPath();ctx.ellipse(cx,cy,a,b,0,0,2*PI);ctx.stroke();
+      ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+a,cy);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-b);ctx.stroke();ctx.setLineDash([]);
+      drawLabel(ctx,`a=${v.a}`,cx+a/2,cy+14);
+      drawLabel(ctx,`b=${v.b}`,cx+8,cy-b/2);
+    }
+  },
+  polygon: {
+    name:'Regular Polygon',
+    inputs:[{id:'n',label:'Number of sides',def:6},{id:'side',label:'Side length',def:5}],
+    calc(v){
+      const n=v.n,s=v.side,p=n*s,angle=(n-2)*180/n;
+      const area=(n*s*s)/(4*Math.tan(PI/n));
+      return {results:[{label:'Area',value:r4(area),unit:u2()},{label:'Perimeter',value:r4(p),unit:U()},{label:'Interior Angle',value:r4(angle),unit:'°'}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\frac{ns^2}{4\\tan(\\pi/n)} \\qquad \\theta = \\frac{(n-2)\\times180}{n}$$`,
+        steps:[`n = ${n}, s = ${s}`,`A = ${n}×${s}²/(4 tan(π/${n})) = ${r4(area)} ${u2()}`,`P = ${n}×${s} = ${p} ${U()}`,`Interior angle = (${n}-2)×180/${n} = ${r4(angle)}°`]};
+    },
+    draw(ctx,v,W,H){
+      const n=Math.max(3,Math.round(v.n)),r=Math.min(W,H)*0.38, cx=W/2, cy=H/2;
+      ctx.beginPath();
+      for(let i=0;i<=n;i++){const a=-PI/2+2*PI*i/n;ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));}
+      ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`n=${n}, s=${v.side}`,cx,cy+r+18);
+    }
+  },
+  sector: {
+    name:'Sector',
+    inputs:[{id:'radius',label:'Radius',def:6},{id:'angle',label:'Angle (degrees)',def:90}],
+    calc(v){
+      const r=v.radius,deg=v.angle,rad=deg*PI/180, area=0.5*r*r*rad, arc=r*rad;
+      return {results:[{label:'Area',value:r4(area),unit:u2()},{label:'Arc Length',value:r4(arc),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\tfrac{1}{2}r^2\\theta \\qquad L = r\\theta$$`,
+        steps:[`r = ${r}, θ = ${deg}° = ${r4(rad)} rad`,`A = ½ × ${r}² × ${r4(rad)} = ${r4(area)} ${u2()}`,`L = ${r} × ${r4(rad)} = ${r4(arc)} ${U()}`]};
+    },
+    draw(ctx,v,W,H){
+      const r=Math.min(W,H)*0.38, cx=W/2, cy=H/2, rad=v.angle*PI/180;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,-rad/2,rad/2);ctx.closePath();ctx.stroke();
+      drawLabel(ctx,`r=${v.radius}`,cx+r/2+4,cy-10);
+      drawLabel(ctx,`${v.angle}°`,cx+20,cy+4);
+    }
+  },
+  annulus: {
+    name:'Annulus',
+    inputs:[{id:'R',label:'Outer radius R',def:8},{id:'r',label:'Inner radius r',def:4}],
+    calc(v){
+      const R=v.R,r=v.r,area=PI*(R*R-r*r);
+      return {results:[{label:'Area',value:r4(area),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$A = \\pi(R^2 - r^2)$$`,
+        steps:[`R = ${R}, r = ${r}`,`A = π(${R}²−${r}²) = π×${R*R-r*r} = ${r4(area)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){
+      const cx=W/2,cy=H/2,s=Math.min(W,H)*0.38,ratio=v.r/v.R;
+      ctx.beginPath();ctx.arc(cx,cy,s,0,2*PI);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,cy,s*ratio,0,2*PI);ctx.stroke();
+      drawLabel(ctx,`R=${v.R}`,cx+s/2+10,cy-s/2);
+      drawLabel(ctx,`r=${v.r}`,cx+s*ratio/2+8,cy+10);
+    }
+  }
+};
+
+/* --- 3D --- */
+const shapes3d = {
+  sphere: {
+    name:'Sphere',
+    inputs:[{id:'radius',label:'Radius',def:5}],
+    calc(v){
+      const r=v.radius,vol=(4/3)*PI*r**3,sa=4*PI*r*r;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{4}{3}\\pi r^3 \\qquad SA = 4\\pi r^2$$`,
+        steps:[`r = ${r}`,`V = 4/3 × π × ${r}³ = ${r4(vol)} ${u3()}`,`SA = 4π × ${r}² = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dSphere(ctx,W,H,v);}
+  },
+  cube: {
+    name:'Cube',
+    inputs:[{id:'side',label:'Side',def:5}],
+    calc(v){
+      const s=v.side,vol=s**3,sa=6*s*s;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = s^3 \\qquad SA = 6s^2$$`,
+        steps:[`s = ${s}`,`V = ${s}³ = ${r4(vol)} ${u3()}`,`SA = 6 × ${s}² = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dCuboid(ctx,W,H,v.side,v.side,v.side);}
+  },
+  cuboid: {
+    name:'Cuboid',
+    inputs:[{id:'l',label:'Length',def:8},{id:'w',label:'Width',def:5},{id:'h',label:'Height',def:4}],
+    calc(v){
+      const l=v.l,w=v.w,h=v.h,vol=l*w*h,sa=2*(l*w+w*h+h*l);
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = lwh \\qquad SA = 2(lw+wh+hl)$$`,
+        steps:[`l=${l}, w=${w}, h=${h}`,`V = ${l}×${w}×${h} = ${r4(vol)} ${u3()}`,`SA = 2(${l}×${w}+${w}×${h}+${h}×${l}) = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dCuboid(ctx,W,H,v.l,v.w,v.h);}
+  },
+  cylinder: {
+    name:'Cylinder',
+    inputs:[{id:'radius',label:'Radius',def:4},{id:'height',label:'Height',def:8}],
+    calc(v){
+      const r=v.radius,h=v.height,vol=PI*r*r*h,sa=2*PI*r*(r+h);
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\pi r^2 h \\qquad SA = 2\\pi r(r+h)$$`,
+        steps:[`r=${r}, h=${h}`,`V = π×${r}²×${h} = ${r4(vol)} ${u3()}`,`SA = 2π×${r}(${r}+${h}) = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dCylinder(ctx,W,H,v);}
+  },
+  cone: {
+    name:'Cone',
+    inputs:[{id:'radius',label:'Radius',def:4},{id:'height',label:'Height',def:9}],
+    calc(v){
+      const r=v.radius,h=v.height,l=Math.sqrt(r*r+h*h),vol=(1/3)*PI*r*r*h,sa=PI*r*(r+l);
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()},{label:'Slant Height',value:r4(l),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{1}{3}\\pi r^2 h \\qquad SA = \\pi r(r+l)$$`,
+        steps:[`r=${r}, h=${h}`,`l = √(${r}²+${h}²) = ${r4(l)}`,`V = ⅓π×${r}²×${h} = ${r4(vol)} ${u3()}`,`SA = π×${r}(${r}+${r4(l)}) = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dCone(ctx,W,H,v);}
+  },
+  pyramid: {
+    name:'Square Pyramid',
+    inputs:[{id:'base',label:'Base side',def:6},{id:'height',label:'Height',def:8}],
+    calc(v){
+      const b=v.base,h=v.height,l=Math.sqrt(h*h+(b/2)**2),vol=(1/3)*b*b*h,sa=b*b+2*b*l;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()},{label:'Slant Height',value:r4(l),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{1}{3}b^2 h \\qquad SA = b^2 + 2bl$$`,
+        steps:[`b=${b}, h=${h}`,`l = √(${h}²+(${b}/2)²) = ${r4(l)}`,`V = ⅓×${b}²×${h} = ${r4(vol)} ${u3()}`,`SA = ${b}²+2×${b}×${r4(l)} = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dPyramid(ctx,W,H,v);}
+  },
+  hemisphere: {
+    name:'Hemisphere',
+    inputs:[{id:'radius',label:'Radius',def:5}],
+    calc(v){
+      const r=v.radius,vol=(2/3)*PI*r**3,sa=3*PI*r*r;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Total SA',value:r4(sa),unit:u2()},{label:'Curved SA',value:r4(2*PI*r*r),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{2}{3}\\pi r^3 \\qquad SA = 3\\pi r^2$$`,
+        steps:[`r=${r}`,`V = ⅔π×${r}³ = ${r4(vol)} ${u3()}`,`SA = 3π×${r}² = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dHemisphere(ctx,W,H,v);}
+  },
+  torus: {
+    name:'Torus',
+    inputs:[{id:'R',label:'Major radius R',def:8},{id:'r',label:'Tube radius r',def:3}],
+    calc(v){
+      const R=v.R,r=v.r,vol=2*PI*PI*R*r*r,sa=4*PI*PI*R*r;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = 2\\pi^2 R r^2 \\qquad SA = 4\\pi^2 Rr$$`,
+        steps:[`R=${R}, r=${r}`,`V = 2π²×${R}×${r}² = ${r4(vol)} ${u3()}`,`SA = 4π²×${R}×${r} = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dTorus(ctx,W,H,v);}
+  },
+  triprism: {
+    name:'Triangular Prism',
+    inputs:[{id:'base',label:'Triangle base',def:6},{id:'height',label:'Triangle height',def:4},{id:'length',label:'Prism length',def:10}],
+    calc(v){
+      const b=v.base,h=v.height,l=v.length,triArea=0.5*b*h,vol=triArea*l;
+      const hyp=Math.sqrt((b/2)**2+h*h),sa=2*triArea+b*l+2*hyp*l;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Surface Area',value:r4(sa),unit:u2()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{1}{2}bh \\times l$$`,
+        steps:[`b=${b}, h=${h}, l=${l}`,`Triangle area = ½×${b}×${h} = ${r4(triArea)}`,`V = ${r4(triArea)}×${l} = ${r4(vol)} ${u3()}`]};
+    },
+    draw(ctx,v,W,H){draw3dTriPrism(ctx,W,H,v);}
+  },
+  frustum: {
+    name:'Frustum',
+    inputs:[{id:'R',label:'Bottom radius R',def:6},{id:'r',label:'Top radius r',def:3},{id:'height',label:'Height',def:8}],
+    calc(v){
+      const R=v.R,r=v.r,h=v.height,vol=(PI*h/3)*(R*R+R*r+r*r);
+      const l=Math.sqrt(h*h+(R-r)**2),sa=PI*(R+r)*l+PI*R*R+PI*r*r;
+      return {results:[{label:'Volume',value:r4(vol),unit:u3()},{label:'Total SA',value:r4(sa),unit:u2()},{label:'Slant Height',value:r4(l),unit:U()}],
+        formula:`<div class="formula-title">Formulas</div>$$V = \\tfrac{\\pi h}{3}(R^2+Rr+r^2)$$`,
+        steps:[`R=${R}, r=${r}, h=${h}`,`l = √(${h}²+(${R}-${r})²) = ${r4(l)}`,`V = πh/3×(${R}²+${R}×${r}+${r}²) = ${r4(vol)} ${u3()}`,`SA = π(${R}+${r})×${r4(l)}+π${R}²+π${r}² = ${r4(sa)} ${u2()}`]};
+    },
+    draw(ctx,v,W,H){draw3dFrustum(ctx,W,H,v);}
+  }
+};
+
+/* ===== CANVAS HELPERS ===== */
+function setupCtx(ctx,w,h){
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#00e5ff';
+  ctx.lineWidth=2;
+  ctx.font='12px JetBrains Mono, monospace';
+  ctx.fillStyle='#e8e8ff';
+  ctx.textAlign='center';
+}
+function drawLabel(ctx,text,x,y){
+  ctx.fillStyle='#facc15';ctx.fillText(text,x,y);ctx.fillStyle='#e8e8ff';
+}
+
+/* 3D drawing helpers */
+function iso(x,y,z){return {x:x*0.7-z*0.7, y:-x*0.4-z*0.4+y};}
+
+function draw3dCuboid(ctx,W,H,l,w,h){
+  setupCtx(ctx,W,H);
+  const s=Math.min(W,H)*0.22/Math.max(l,w,h);
+  const sl=l*s,sw=w*s,sh=h*s;
+  const cx=W/2,cy=H/2+sh*0.2;
+  const pts=[
+    iso(-sl/2,-sh,sw/2),iso(sl/2,-sh,sw/2),iso(sl/2,-sh,-sw/2),iso(-sl/2,-sh,-sw/2),
+    iso(-sl/2,0,sw/2),iso(sl/2,0,sw/2),iso(sl/2,0,-sw/2),iso(-sl/2,0,-sw/2)
+  ];
+  const faces=[[0,1,5,4],[1,2,6,5],[0,1,2,3]];
+  ctx.strokeStyle='#00e5ff';
+  faces.forEach(f=>{ctx.beginPath();f.forEach((p,i)=>{i===0?ctx.moveTo(cx+pts[p].x,cy+pts[p].y):ctx.lineTo(cx+pts[p].x,cy+pts[p].y);});ctx.closePath();ctx.stroke();});
+  // hidden edges dashed
+  ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(0,229,255,0.3)';
+  [[3,7],[7,4],[7,6]].forEach(e=>{ctx.beginPath();ctx.moveTo(cx+pts[e[0]].x,cy+pts[e[0]].y);ctx.lineTo(cx+pts[e[1]].x,cy+pts[e[1]].y);ctx.stroke();});
+  ctx.setLineDash([]);
+  drawLabel(ctx,`${l}`,cx+pts[5].x+10,cy+pts[5].y-5);
+}
+
+function draw3dSphere(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const r=Math.min(W,H)*0.35, cx=W/2, cy=H/2;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,2*PI);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(cx,cy,r,r*0.3,0,0,2*PI);ctx.strokeStyle='rgba(0,229,255,0.4)';ctx.stroke();
+  ctx.strokeStyle='#00e5ff';
+  ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();ctx.setLineDash([]);
+  drawLabel(ctx,`r=${v.radius}`,cx+r/2,cy-10);
+}
+
+function draw3dCylinder(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const rr=Math.min(W,H)*0.25, hh=Math.min(W,H)*0.4, cx=W/2, topY=H/2-hh/2, botY=H/2+hh/2;
+  ctx.beginPath();ctx.ellipse(cx,topY,rr,rr*0.3,0,0,2*PI);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(cx,botY,rr,rr*0.3,0,PI,2*PI);ctx.stroke();
+  ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(0,229,255,0.3)';ctx.beginPath();ctx.ellipse(cx,botY,rr,rr*0.3,0,0,PI);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='#00e5ff';
+  ctx.beginPath();ctx.moveTo(cx-rr,topY);ctx.lineTo(cx-rr,botY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+rr,topY);ctx.lineTo(cx+rr,botY);ctx.stroke();
+  drawLabel(ctx,`r=${v.radius}`,cx+rr/2+5,topY-10);
+  drawLabel(ctx,`h=${v.height}`,cx+rr+14,H/2);
+}
+
+function draw3dCone(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const rr=Math.min(W,H)*0.28, hh=Math.min(W,H)*0.5, cx=W/2, botY=H/2+hh/3, topY=botY-hh;
+  ctx.beginPath();ctx.ellipse(cx,botY,rr,rr*0.3,0,PI,2*PI);ctx.stroke();
+  ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(0,229,255,0.3)';ctx.beginPath();ctx.ellipse(cx,botY,rr,rr*0.3,0,0,PI);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='#00e5ff';
+  ctx.beginPath();ctx.moveTo(cx-rr,botY);ctx.lineTo(cx,topY);ctx.lineTo(cx+rr,botY);ctx.stroke();
+  ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,topY);ctx.lineTo(cx,botY);ctx.stroke();ctx.setLineDash([]);
+  drawLabel(ctx,`r=${v.radius}`,cx+rr/2,botY+16);
+  drawLabel(ctx,`h=${v.height}`,cx+8,topY+hh/2);
+}
+
+function draw3dPyramid(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const s=Math.min(W,H)*0.25, hh=Math.min(W,H)*0.45, cx=W/2, botY=H/2+hh/3;
+  const pts=[iso(-s,-0,s),iso(s,0,s),iso(s,0,-s),iso(-s,0,-s)];
+  const apex={x:0,y:-hh};
+  ctx.beginPath();[0,1,2].forEach((i,idx)=>{idx===0?ctx.moveTo(cx+pts[i].x,botY+pts[i].y):ctx.lineTo(cx+pts[i].x,botY+pts[i].y);});ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+pts[2].x,botY+pts[2].y);ctx.lineTo(cx+pts[3].x,botY+pts[3].y);ctx.lineTo(cx+pts[0].x,botY+pts[0].y);ctx.stroke();
+  [0,1,2,3].forEach(i=>{ctx.beginPath();ctx.moveTo(cx+pts[i].x,botY+pts[i].y);ctx.lineTo(cx+apex.x,botY+apex.y);ctx.stroke();});
+  ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,botY);ctx.lineTo(cx,botY-hh);ctx.stroke();ctx.setLineDash([]);
+  drawLabel(ctx,`b=${v.base}`,cx,botY+20);
+  drawLabel(ctx,`h=${v.height}`,cx+10,botY-hh/2);
+}
+
+function draw3dHemisphere(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const r=Math.min(W,H)*0.35, cx=W/2, cy=H/2+r*0.15;
+  ctx.beginPath();ctx.arc(cx,cy,r,PI,2*PI);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(cx,cy,r,r*0.3,0,0,2*PI);ctx.stroke();
+  ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r,cy);ctx.stroke();ctx.setLineDash([]);
+  drawLabel(ctx,`r=${v.radius}`,cx+r/2,cy-10);
+}
+
+function draw3dTorus(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const cx=W/2,cy=H/2,R=Math.min(W,H)*0.28,r=Math.min(W,H)*0.1;
+  // outer ellipse
+  ctx.beginPath();ctx.ellipse(cx,cy,R+r,(R+r)*0.35,0,0,2*PI);ctx.stroke();
+  // inner ellipse
+  ctx.beginPath();ctx.ellipse(cx,cy,R-r,(R-r)*0.35,0,0,2*PI);ctx.stroke();
+  // top curve
+  ctx.strokeStyle='rgba(0,229,255,0.4)';
+  ctx.beginPath();ctx.ellipse(cx,cy-R*0.2,r,r*0.8,0,PI,2*PI);ctx.stroke();
+  drawLabel(ctx,`R=${v.R}`,cx+R/2,cy+R*0.35+18);
+  drawLabel(ctx,`r=${v.r}`,cx+R+r+8,cy);
+}
+
+function draw3dTriPrism(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const s=Math.min(W,H)*0.18, cx=W/2, cy=H/2;
+  // front triangle
+  const ft=[{x:-s,y:s},{x:s,y:s},{x:0,y:-s}];
+  const off=s*1.2;// depth offset
+  ctx.beginPath();ft.forEach((p,i)=>i===0?ctx.moveTo(cx+p.x-off*0.3,cy+p.y-off*0.2):ctx.lineTo(cx+p.x-off*0.3,cy+p.y-off*0.2));ctx.closePath();ctx.stroke();
+  // back triangle
+  ctx.beginPath();ft.forEach((p,i)=>i===0?ctx.moveTo(cx+p.x+off*0.3,cy+p.y+off*0.2):ctx.lineTo(cx+p.x+off*0.3,cy+p.y+off*0.2));ctx.closePath();ctx.stroke();
+  // connecting edges
+  ft.forEach(p=>{ctx.beginPath();ctx.moveTo(cx+p.x-off*0.3,cy+p.y-off*0.2);ctx.lineTo(cx+p.x+off*0.3,cy+p.y+off*0.2);ctx.stroke();});
+  drawLabel(ctx,`b=${v.base}`,cx,cy+s+20);
+}
+
+function draw3dFrustum(ctx,W,H,v){
+  setupCtx(ctx,W,H);
+  const Rr=Math.min(W,H)*0.3, ratio=v.r/v.R, rr=Rr*ratio, hh=Math.min(W,H)*0.4;
+  const cx=W/2, botY=H/2+hh/3, topY=botY-hh;
+  ctx.beginPath();ctx.ellipse(cx,botY,Rr,Rr*0.25,0,PI,2*PI);ctx.stroke();
+  ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(0,229,255,0.3)';ctx.beginPath();ctx.ellipse(cx,botY,Rr,Rr*0.25,0,0,PI);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='#00e5ff';
+  ctx.beginPath();ctx.ellipse(cx,topY,rr,rr*0.25,0,0,2*PI);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx-Rr,botY);ctx.lineTo(cx-rr,topY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+Rr,botY);ctx.lineTo(cx+rr,topY);ctx.stroke();
+  drawLabel(ctx,`R=${v.R}`,cx+Rr/2,botY+16);
+  drawLabel(ctx,`r=${v.r}`,cx+rr/2,topY-10);
+  drawLabel(ctx,`h=${v.height}`,cx+Rr+10,H/2);
+}
+
+/* ===== ENGINE ===== */
+function buildInputs(container, shapeDef, onChange){
+  container.innerHTML='';
+  shapeDef.inputs.forEach(inp=>{
+    const div=document.createElement('div');div.className='field';
+    div.innerHTML=`<label>${inp.label}</label><input type="number" step="any" id="inp_${inp.id}" value="${inp.def}" placeholder="${inp.label}">`;
+    container.appendChild(div);
+    div.querySelector('input').addEventListener('input', onChange);
+  });
+}
+
+function getValues(shapeDef){
+  const v={};
+  shapeDef.inputs.forEach(inp=>{
+    const el=document.getElementById('inp_'+inp.id);
+    v[inp.id]=el?parseFloat(el.value)||0:0;
+  });
+  return v;
+}
+
+function renderResults(resultCards, formulaEl, stepsEl, data){
+  resultCards.innerHTML=data.results.map(r=>`<div class="result-card"><div class="label">${r.label}</div><div class="value">${r.value} ${r.unit||''}</div></div>`).join('');
+  formulaEl.innerHTML=data.formula;
+  stepsEl.innerHTML=`<div class="steps-title">Step-by-step</div>`+data.steps.map(s=>`<div class="step">${s}</div>`).join('');
+  if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise([formulaEl]);}
+}
+
+/* ===== 2D CONTROLLER ===== */
+let current2d='circle';
+function update2d(){
+  const def=shapes2d[current2d];
+  const v=getValues(def);
+  const canvas=document.getElementById('canvas2d');
+  const ctx=canvas.getContext('2d');
+  setupCtx(ctx,canvas.width,canvas.height);
+  def.draw(ctx,v,canvas.width,canvas.height);
+  const data=def.calc(v);
+  renderResults(document.getElementById('resultCards2d'),document.getElementById('formula2d'),document.getElementById('steps2d'),data);
+}
+function select2d(shape){
+  current2d=shape;
+  document.querySelectorAll('#shapes2d .shape-btn').forEach(b=>b.classList.toggle('active',b.dataset.shape===shape));
+  buildInputs(document.getElementById('inputs2d'),shapes2d[shape],update2d);
+  update2d();
+}
+document.querySelectorAll('#shapes2d .shape-btn').forEach(b=>b.addEventListener('click',()=>select2d(b.dataset.shape)));
+
+/* ===== 3D CONTROLLER ===== */
+let current3d='sphere';
+function update3d(){
+  const def=shapes3d[current3d];
+  const v=getValues(def);
+  const canvas=document.getElementById('canvas3d');
+  const ctx=canvas.getContext('2d');
+  setupCtx(ctx,canvas.width,canvas.height);
+  def.draw(ctx,v,canvas.width,canvas.height);
+  const data=def.calc(v);
+  renderResults(document.getElementById('resultCards3d'),document.getElementById('formula3d'),document.getElementById('steps3d'),data);
+}
+function select3d(shape){
+  current3d=shape;
+  document.querySelectorAll('#shapes3d .shape-btn').forEach(b=>b.classList.toggle('active',b.dataset.shape===shape));
+  buildInputs(document.getElementById('inputs3d'),shapes3d[shape],update3d);
+  update3d();
+}
+document.querySelectorAll('#shapes3d .shape-btn').forEach(b=>b.addEventListener('click',()=>select3d(b.dataset.shape)));
+
+/* ===== UNIT CHANGE ===== */
+document.getElementById('unitSelect').addEventListener('change',()=>{
+  if(document.getElementById('tab2d').classList.contains('active'))update2d();
+  if(document.getElementById('tab3d').classList.contains('active'))update3d();
+  updateComparison();
+});
+
+/* ===== COMPARISON TAB ===== */
+const allShapes={...shapes2d,...shapes3d};
+const shapeKeys=Object.keys(allShapes);
+function populateCompareSelects(){
+  const optHtml=shapeKeys.map(k=>`<option value="${k}">${allShapes[k].name}</option>`).join('');
+  document.getElementById('cmpSelA').innerHTML=optHtml;
+  document.getElementById('cmpSelB').innerHTML=optHtml;
+  document.getElementById('cmpSelB').selectedIndex=1;
+}
+populateCompareSelects();
+
+let cmpChart=null;
+
+function buildCmpInputs(container, shapeKey, prefix, onChange){
+  const def=allShapes[shapeKey];
+  container.innerHTML='';
+  def.inputs.forEach(inp=>{
+    const div=document.createElement('div');div.className='field';div.style.marginBottom='10px';
+    div.innerHTML=`<label>${inp.label}</label><input type="number" step="any" id="${prefix}_${inp.id}" value="${inp.def}">`;
+    container.appendChild(div);
+    div.querySelector('input').addEventListener('input', onChange);
+  });
+}
+
+function getCmpValues(shapeKey, prefix){
+  const def=allShapes[shapeKey];
+  const v={};
+  def.inputs.forEach(inp=>{
+    const el=document.getElementById(prefix+'_'+inp.id);
+    v[inp.id]=el?parseFloat(el.value)||0:0;
+  });
+  return v;
+}
+
+function updateComparison(){
+  const keyA=document.getElementById('cmpSelA').value;
+  const keyB=document.getElementById('cmpSelB').value;
+  const defA=allShapes[keyA], defB=allShapes[keyB];
+  const vA=getCmpValues(keyA,'cmpA'), vB=getCmpValues(keyB,'cmpB');
+
+  // draw
+  ['A','B'].forEach(side=>{
+    const key=side==='A'?keyA:keyB, def=side==='A'?defA:defB, v=side==='A'?vA:vB;
+    const canvas=document.getElementById('cmpCanvas'+side);
+    const ctx=canvas.getContext('2d');
+    setupCtx(ctx,canvas.width,canvas.height);
+    def.draw(ctx,v,canvas.width,canvas.height);
+  });
+
+  const dataA=defA.calc(vA), dataB=defB.calc(vB);
+  document.getElementById('cmpResultsA').innerHTML=dataA.results.map(r=>`<div class="result-card"><div class="label">${r.label}</div><div class="value">${r.value} ${r.unit||''}</div></div>`).join('');
+  document.getElementById('cmpResultsB').innerHTML=dataB.results.map(r=>`<div class="result-card"><div class="label">${r.label}</div><div class="value">${r.value} ${r.unit||''}</div></div>`).join('');
+
+  // build chart
+  const labelsA=dataA.results.map(r=>r.label), labelsB=dataB.results.map(r=>r.label);
+  const allLabels=[...new Set([...labelsA,...labelsB])];
+  const valsA=allLabels.map(l=>{const f=dataA.results.find(r=>r.label===l);return f?f.value:0;});
+  const valsB=allLabels.map(l=>{const f=dataB.results.find(r=>r.label===l);return f?f.value:0;});
+
+  if(cmpChart)cmpChart.destroy();
+  cmpChart=new Chart(document.getElementById('compareChart'),{
+    type:'bar',
+    data:{labels:allLabels,datasets:[
+      {label:defA.name,data:valsA,backgroundColor:'rgba(0,229,255,0.6)',borderColor:'#00e5ff',borderWidth:1},
+      {label:defB.name,data:valsB,backgroundColor:'rgba(168,85,247,0.6)',borderColor:'#a855f7',borderWidth:1}
+    ]},
+    options:{responsive:true,plugins:{legend:{labels:{color:'#e8e8ff'}}},scales:{
+      x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(30,30,58,0.5)'}},
+      y:{ticks:{color:'#94a3b8'},grid:{color:'rgba(30,30,58,0.5)'}}
+    }}
+  });
+}
+
+document.getElementById('cmpSelA').addEventListener('change',()=>{buildCmpInputs(document.getElementById('cmpInputsA'),document.getElementById('cmpSelA').value,'cmpA',updateComparison);updateComparison();});
+document.getElementById('cmpSelB').addEventListener('change',()=>{buildCmpInputs(document.getElementById('cmpInputsB'),document.getElementById('cmpSelB').value,'cmpB',updateComparison);updateComparison();});
+
+/* ===== INIT ===== */
+select2d('circle');
+select3d('sphere');
+buildCmpInputs(document.getElementById('cmpInputsA'),document.getElementById('cmpSelA').value,'cmpA',updateComparison);
+buildCmpInputs(document.getElementById('cmpInputsB'),document.getElementById('cmpSelB').value,'cmpB',updateComparison);
+updateComparison();
+
+/* ===== HEADER / FOOTER ===== */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+/* Back to top */
+const btt=document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{btt.style.display=window.scrollY>400?'block':'none';});
+btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+btt.style.display='none';
+btt.style.cssText+='position:fixed;bottom:30px;right:30px;width:48px;height:48px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:none;cursor:pointer;font-size:1.4rem;text-align:center;line-height:48px;z-index:999;';
+</script>
+</body>
+</html>

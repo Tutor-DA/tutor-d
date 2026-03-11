@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Set Theory &amp; Venn Diagrams | TutorDA</title>
+  <meta name="description" content="Interactive Set Theory tool with Venn Diagrams — perform unions, intersections, complements, De Morgan's Laws, and evaluate arbitrary set expressions visually.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --card:#111125;--border:#1e1e3a;--muted:#94a3b8;--dark:#0d0d1a;
+      --text:#e8e8ff;--green:#22c55e;--red:#ef4444;--r:14px;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:
+        radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%);
+      animation:twinkle 6s ease-in-out infinite alternate}
+    @keyframes twinkle{0%{opacity:.6}100%{opacity:1}}
+
+    .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 20px 60px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .tab-nav{display:flex;gap:6px;overflow-x:auto;padding:8px 0 16px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+    .tab-nav::-webkit-scrollbar{height:4px}
+    .tab-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+    .tab-btn{
+      flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
+      background:var(--card);color:var(--muted);border:1px solid var(--border);
+      border-radius:10px;padding:10px 18px;font-size:.85rem;cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .25s;white-space:nowrap}
+    .tab-btn:hover{border-color:var(--purple);color:#fff}
+    .tab-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08);box-shadow:0 0 12px rgba(0,229,255,.15)}
+    .tab-btn .tab-icon{font-size:1.1rem}
+
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+    .panel h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:var(--cyan);margin-bottom:16px;letter-spacing:.05em}
+    .panel h3{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--purple);margin-bottom:10px}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      border:1px solid var(--border);border-radius:8px;padding:10px 18px;font-size:.85rem;
+      cursor:pointer;font-family:'Poppins',sans-serif;transition:all .2s;background:var(--dark);color:var(--text)}
+    .btn:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(0,229,255,.15)}
+    .btn.active,.btn.primary{background:rgba(0,229,255,.12);border-color:var(--cyan);color:var(--cyan)}
+    .btn.purple{border-color:var(--purple);color:var(--purple)}
+    .btn.purple:hover,.btn.purple.active{background:rgba(168,85,247,.12);box-shadow:0 0 8px rgba(168,85,247,.15)}
+    .btn.pink{border-color:var(--pink);color:var(--pink)}
+    .btn.pink:hover,.btn.pink.active{background:rgba(236,72,153,.12);box-shadow:0 0 8px rgba(236,72,153,.15)}
+    .btn.gold{border-color:var(--gold);color:var(--gold)}
+    .btn.gold:hover,.btn.gold.active{background:rgba(250,204,21,.12);box-shadow:0 0 8px rgba(250,204,21,.15)}
+
+    label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+    input[type="text"],textarea{
+      width:100%;background:var(--dark);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 14px;font-size:.9rem;font-family:var(--mono);
+      transition:border-color .2s}
+    input[type="text"]:focus,textarea:focus{outline:none;border-color:var(--cyan)}
+    textarea{resize:vertical;min-height:60px}
+
+    .input-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .input-row.three{grid-template-columns:1fr 1fr 1fr}
+    .input-full{margin-bottom:14px}
+    .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+
+    .result-box{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:14px;font-size:.9rem;line-height:1.7}
+    .result-box .label{color:var(--cyan);font-weight:600;margin-right:8px}
+    .result-box .val{color:var(--text);font-family:var(--mono)}
+    .result-box .step{color:var(--muted);font-size:.82rem;margin-top:6px;padding-left:12px;border-left:2px solid var(--border)}
+
+    .preset-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    .preset-btn{
+      background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.25);color:var(--purple);
+      border-radius:8px;padding:8px 14px;font-size:.78rem;cursor:pointer;
+      font-family:'Poppins',sans-serif;transition:all .2s}
+    .preset-btn:hover{background:rgba(168,85,247,.15);border-color:var(--purple)}
+
+    canvas#vennCanvas{display:block;margin:0 auto;border-radius:var(--r);cursor:crosshair;max-width:100%}
+    .canvas-wrap{background:var(--dark);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;margin-bottom:16px;overflow:hidden}
+
+    .demorgan-side{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+    .demorgan-side canvas{width:100%;border-radius:10px}
+    .dm-card{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+    .dm-card h4{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--pink);margin-bottom:10px}
+
+    .check-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .check-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:.78rem;font-weight:600}
+    .check-badge.yes{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .check-badge.no{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+
+    .power-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .power-item{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2);color:var(--gold);
+      padding:4px 10px;border-radius:6px;font-size:.78rem;font-family:var(--mono)}
+
+    .cart-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.82rem}
+    .cart-table th,.cart-table td{border:1px solid var(--border);padding:6px 10px;text-align:center}
+    .cart-table th{background:rgba(0,229,255,.08);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.75rem}
+
+    .expr-input-wrap{display:flex;gap:10px;margin-bottom:14px}
+    .expr-input-wrap input{flex:1}
+    .expr-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+    .expr-chip{background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:6px 12px;
+      font-size:.82rem;cursor:pointer;font-family:var(--mono);transition:all .2s}
+    .expr-chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    @media(max-width:768px){
+      .input-row,.input-row.three{grid-template-columns:1fr}
+      .demorgan-side{grid-template-columns:1fr}
+      .hero{padding:40px 16px 20px}
+      .wrapper{padding:0 12px 40px}
+      .panel{padding:16px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Set Theory &amp; Venn Diagrams</h1>
+    <p>Define sets, visualise Venn diagrams, compute operations, explore properties, verify De Morgan's Laws, and evaluate arbitrary set expressions.</p>
+  </section>
+
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="builder"><span class="tab-icon">{ }</span> Set Builder</button>
+    <button class="tab-btn" data-tab="venn"><span class="tab-icon">&#9711;</span> Venn Diagram</button>
+    <button class="tab-btn" data-tab="ops"><span class="tab-icon">&#8745;</span> Operations</button>
+    <button class="tab-btn" data-tab="props"><span class="tab-icon">&#8469;</span> Properties</button>
+    <button class="tab-btn" data-tab="demorgan"><span class="tab-icon">&#172;</span> De Morgan's Laws</button>
+    <button class="tab-btn" data-tab="expr"><span class="tab-icon">f(x)</span> Expression Evaluator</button>
+  </nav>
+
+  <!-- TAB 1: Set Builder -->
+  <div class="tab-panel active" id="tab-builder">
+    <div class="panel">
+      <h2>Define Your Sets</h2>
+      <div class="preset-grid">
+        <button class="preset-btn" data-preset="even3">Even &lt; 20 vs Multiples of 3 &lt; 20</button>
+        <button class="preset-btn" data-preset="vowels">Vowels vs Letters in MATHEMATICS</button>
+        <button class="preset-btn" data-preset="factors">Factors of 24 vs 36</button>
+        <button class="preset-btn" data-preset="primes">Primes &lt; 30 vs Odd &lt; 30</button>
+      </div>
+      <div class="input-row three">
+        <div><label>Set A (comma-separated)</label><input type="text" id="inputA" placeholder="1, 2, 3, 4"></div>
+        <div><label>Set B (comma-separated)</label><input type="text" id="inputB" placeholder="3, 4, 5, 6"></div>
+        <div><label>Set C (optional)</label><input type="text" id="inputC" placeholder="Leave empty for 2-set mode"></div>
+      </div>
+      <div class="input-full">
+        <label>Universal Set (auto-computed if empty)</label>
+        <input type="text" id="inputU" placeholder="Auto: union of all elements, or specify custom">
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="buildSets()">Build Sets</button>
+        <button class="btn" onclick="clearAll()">Clear All</button>
+      </div>
+      <div class="result-box" id="builderResult" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Venn Diagram -->
+  <div class="tab-panel" id="tab-venn">
+    <div class="panel">
+      <h2>Venn Diagram</h2>
+      <div class="canvas-wrap">
+        <canvas id="vennCanvas" width="700" height="500"></canvas>
+      </div>
+      <div class="result-box" id="vennInfo">Click on a region to see which elements it contains. Hover to highlight.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Operations -->
+  <div class="tab-panel" id="tab-ops">
+    <div class="panel">
+      <h2>Set Operations</h2>
+      <div class="btn-row" id="opsButtons">
+        <button class="btn" onclick="doOp('union')">A &#8746; B</button>
+        <button class="btn" onclick="doOp('intersect')">A &#8745; B</button>
+        <button class="btn" onclick="doOp('diffAB')">A &#8722; B</button>
+        <button class="btn" onclick="doOp('diffBA')">B &#8722; A</button>
+        <button class="btn" onclick="doOp('symdiff')">A &#916; B</button>
+        <button class="btn purple" onclick="doOp('compA')">A'</button>
+        <button class="btn purple" onclick="doOp('compB')">B'</button>
+      </div>
+      <div id="opsC" style="display:none" class="btn-row">
+        <button class="btn pink" onclick="doOp('unionAC')">A &#8746; C</button>
+        <button class="btn pink" onclick="doOp('intersectAC')">A &#8745; C</button>
+        <button class="btn pink" onclick="doOp('unionBC')">B &#8746; C</button>
+        <button class="btn pink" onclick="doOp('intersectBC')">B &#8745; C</button>
+        <button class="btn pink" onclick="doOp('unionABC')">A &#8746; B &#8746; C</button>
+        <button class="btn pink" onclick="doOp('intersectABC')">A &#8745; B &#8745; C</button>
+        <button class="btn purple" onclick="doOp('compC')">C'</button>
+      </div>
+      <div class="result-box" id="opsResult">Select an operation above after building your sets.</div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Properties -->
+  <div class="tab-panel" id="tab-props">
+    <div class="panel">
+      <h2>Set Properties</h2>
+      <div class="btn-row">
+        <button class="btn" onclick="showCardinality()">Cardinality</button>
+        <button class="btn purple" onclick="showInclExcl()">Inclusion-Exclusion</button>
+        <button class="btn pink" onclick="showSubsetEquality()">Subset / Equality / Disjoint</button>
+        <button class="btn gold" onclick="showPowerSet()">Power Set</button>
+        <button class="btn" onclick="showCartesian()">Cartesian Product</button>
+      </div>
+      <div class="result-box" id="propsResult">Click a property button after building your sets.</div>
+    </div>
+  </div>
+
+  <!-- TAB 5: De Morgan's Laws -->
+  <div class="tab-panel" id="tab-demorgan">
+    <div class="panel">
+      <h2>De Morgan's Laws</h2>
+      <div class="btn-row">
+        <button class="btn primary" onclick="demorganDemo(1)">Law 1: (A &#8746; B)' = A' &#8745; B'</button>
+        <button class="btn purple" onclick="demorganDemo(2)">Law 2: (A &#8745; B)' = A' &#8746; B'</button>
+      </div>
+      <div class="result-box" id="dmResult">Select a law to verify with your current sets.</div>
+      <div class="demorgan-side" id="dmSide" style="display:none">
+        <div class="dm-card">
+          <h4>Left-Hand Side</h4>
+          <canvas id="dmCanvasL" width="320" height="240"></canvas>
+          <div id="dmLHS" style="margin-top:8px;font-size:.85rem;color:var(--muted)"></div>
+        </div>
+        <div class="dm-card">
+          <h4>Right-Hand Side</h4>
+          <canvas id="dmCanvasR" width="320" height="240"></canvas>
+          <div id="dmRHS" style="margin-top:8px;font-size:.85rem;color:var(--muted)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: Expression Evaluator -->
+  <div class="tab-panel" id="tab-expr">
+    <div class="panel">
+      <h2>Expression Evaluator</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:14px">Type a set expression using A, B, C with operators: &#8746; (union, or <code>U</code>), &#8745; (intersection, or <code>^</code>), ' (complement), &#8722; (difference), &#916; (symmetric difference, or <code>%</code>). Use parentheses for grouping.</p>
+      <div class="expr-chips" id="exprChips">
+        <span class="expr-chip" data-v="A">A</span>
+        <span class="expr-chip" data-v="B">B</span>
+        <span class="expr-chip" data-v="C">C</span>
+        <span class="expr-chip" data-v=" U ">&cup;</span>
+        <span class="expr-chip" data-v=" ^ ">&cap;</span>
+        <span class="expr-chip" data-v="'">'</span>
+        <span class="expr-chip" data-v=" - ">&minus;</span>
+        <span class="expr-chip" data-v=" % ">&Delta;</span>
+        <span class="expr-chip" data-v="(">(</span>
+        <span class="expr-chip" data-v=")">)</span>
+      </div>
+      <div class="expr-input-wrap">
+        <input type="text" id="exprInput" placeholder="e.g. (A U B) ^ C'">
+        <button class="btn primary" onclick="evalExpr()">Evaluate</button>
+      </div>
+      <div class="result-box" id="exprResult">Enter an expression and click Evaluate.</div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+let A=[], B=[], C=[], U=[], hasC=false;
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+    if(b.dataset.tab==='venn') drawVenn();
+  });
+});
+
+/* ============================================================
+   PRESETS
+   ============================================================ */
+const presets = {
+  even3: {a:'2,4,6,8,10,12,14,16,18',b:'3,6,9,12,15,18',c:'',u:''},
+  vowels: {a:'A,E,I,O,U',b:'M,A,T,H,E,I,C,S',c:'',u:'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z'},
+  factors: {a:'1,2,3,4,6,8,12,24',b:'1,2,3,4,6,9,12,18,36',c:'',u:''},
+  primes: {a:'2,3,5,7,11,13,17,19,23,29',b:'1,3,5,7,9,11,13,15,17,19,21,23,25,27,29',c:'',u:''}
+};
+document.querySelectorAll('.preset-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const p=presets[b.dataset.preset];
+    document.getElementById('inputA').value=p.a;
+    document.getElementById('inputB').value=p.b;
+    document.getElementById('inputC').value=p.c;
+    document.getElementById('inputU').value=p.u;
+    buildSets();
+  });
+});
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function parseSet(s){return s.trim()?[...new Set(s.split(',').map(x=>x.trim()).filter(x=>x))]:[]}
+function fmt(s){return s.length?'{ '+s.join(', ')+' }':'&empty;'}
+function setUnion(a,b){return [...new Set([...a,...b])]}
+function setIntersect(a,b){const bs=new Set(b);return a.filter(x=>bs.has(x))}
+function setDiff(a,b){const bs=new Set(b);return a.filter(x=>!bs.has(x))}
+function setSymDiff(a,b){return [...setDiff(a,b),...setDiff(b,a)]}
+function setComp(a,u){return setDiff(u,a)}
+function isSubset(a,b){const bs=new Set(b);return a.every(x=>bs.has(x))}
+function setsEqual(a,b){return a.length===b.length&&isSubset(a,b)}
+function isDisjoint(a,b){return setIntersect(a,b).length===0}
+
+/* ============================================================
+   BUILD SETS
+   ============================================================ */
+function buildSets(){
+  A=parseSet(document.getElementById('inputA').value);
+  B=parseSet(document.getElementById('inputB').value);
+  C=parseSet(document.getElementById('inputC').value);
+  hasC=C.length>0;
+
+  const uInput=document.getElementById('inputU').value.trim();
+  if(uInput){U=parseSet(uInput);U=setUnion(U,setUnion(A,setUnion(B,C)));}
+  else{U=setUnion(A,setUnion(B,C));}
+
+  document.getElementById('opsC').style.display=hasC?'flex':'none';
+
+  const r=document.getElementById('builderResult');
+  r.style.display='block';
+  r.innerHTML=`
+    <div><span class="label">A =</span><span class="val">${fmt(A)}</span> &nbsp; |A| = ${A.length}</div>
+    <div><span class="label">B =</span><span class="val">${fmt(B)}</span> &nbsp; |B| = ${B.length}</div>
+    ${hasC?`<div><span class="label">C =</span><span class="val">${fmt(C)}</span> &nbsp; |C| = ${C.length}</div>`:''}
+    <div><span class="label">U =</span><span class="val">${fmt(U)}</span> &nbsp; |U| = ${U.length}</div>
+    <div style="margin-top:8px;color:var(--green);font-size:.82rem">Sets built successfully. Switch to other tabs to explore.</div>`;
+  drawVenn();
+}
+function clearAll(){
+  A=[];B=[];C=[];U=[];hasC=false;
+  ['inputA','inputB','inputC','inputU'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('builderResult').style.display='none';
+}
+
+/* ============================================================
+   VENN DIAGRAM (Canvas)
+   ============================================================ */
+let hoveredRegion=null, selectedRegion=null;
+const canvas=document.getElementById('vennCanvas');
+const ctx=canvas.getContext('2d');
+
+function getCircles(){
+  const w=canvas.width, h=canvas.height;
+  const r=hasC?120:140;
+  if(!hasC){
+    return [
+      {x:w/2-80, y:h/2, r, label:'A', color:'rgba(0,229,255,0.25)', stroke:'#00e5ff'},
+      {x:w/2+80, y:h/2, r, label:'B', color:'rgba(168,85,247,0.25)', stroke:'#a855f7'}
+    ];
+  }
+  return [
+    {x:w/2-70, y:h/2-40, r:110, label:'A', color:'rgba(0,229,255,0.22)', stroke:'#00e5ff'},
+    {x:w/2+70, y:h/2-40, r:110, label:'B', color:'rgba(168,85,247,0.22)', stroke:'#a855f7'},
+    {x:w/2,    y:h/2+50, r:110, label:'C', color:'rgba(236,72,153,0.22)', stroke:'#ec4899'}
+  ];
+}
+
+function pointInCircle(px,py,c){return Math.hypot(px-c.x,py-c.y)<=c.r}
+
+function getRegion(px,py){
+  const circles=getCircles();
+  const inA=pointInCircle(px,py,circles[0]);
+  const inB=pointInCircle(px,py,circles[1]);
+  const inC=hasC?pointInCircle(px,py,circles[2]):false;
+  if(hasC){
+    if(inA&&inB&&inC) return 'ABC';
+    if(inA&&inB) return 'AB';
+    if(inA&&inC) return 'AC';
+    if(inB&&inC) return 'BC';
+    if(inA) return 'A_only';
+    if(inB) return 'B_only';
+    if(inC) return 'C_only';
+  } else {
+    if(inA&&inB) return 'AB';
+    if(inA) return 'A_only';
+    if(inB) return 'B_only';
+  }
+  return 'outside';
+}
+
+function getRegionElements(region){
+  const sA=new Set(A), sB=new Set(B), sC=new Set(C);
+  return U.filter(e=>{
+    const inA=sA.has(e), inB=sB.has(e), inC=sC.has(e);
+    switch(region){
+      case 'A_only': return hasC?(inA&&!inB&&!inC):(inA&&!inB);
+      case 'B_only': return hasC?(inB&&!inA&&!inC):(inB&&!inA);
+      case 'C_only': return inC&&!inA&&!inB;
+      case 'AB': return hasC?(inA&&inB&&!inC):(inA&&inB);
+      case 'AC': return inA&&inC&&!inB;
+      case 'BC': return inB&&inC&&!inA;
+      case 'ABC': return inA&&inB&&inC;
+      case 'outside': return hasC?(!inA&&!inB&&!inC):(!inA&&!inB);
+    }
+  });
+}
+
+function regionLabel(r){
+  const map={A_only:'A only',B_only:'B only',C_only:'C only',AB:'A ∩ B',AC:'A ∩ C',BC:'B ∩ C',ABC:'A ∩ B ∩ C',outside:'Outside (U only)'};
+  return map[r]||r;
+}
+
+function drawVenn(highlightRegions=null,highlightColor=null){
+  const w=canvas.width, h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  // Background rect (Universal set)
+  ctx.fillStyle='#0a0a18';
+  ctx.strokeStyle='#2a2a4a';
+  ctx.lineWidth=2;
+  ctx.beginPath();ctx.roundRect(10,10,w-20,h-20,12);ctx.fill();ctx.stroke();
+
+  // U label
+  ctx.font='bold 14px Orbitron, sans-serif';
+  ctx.fillStyle='#94a3b8';
+  ctx.fillText('U',24,34);
+
+  const circles=getCircles();
+
+  // Highlight regions if requested
+  if(highlightRegions){
+    // Determine all points to test
+    for(let px=10;px<w-10;px+=3){
+      for(let py=10;py<h-10;py+=3){
+        const rg=getRegion(px,py);
+        if(highlightRegions.includes(rg)){
+          ctx.fillStyle=highlightColor||'rgba(0,229,255,0.18)';
+          ctx.fillRect(px,py,3,3);
+        }
+      }
+    }
+  }
+
+  // Hover highlight
+  if(hoveredRegion && hoveredRegion!=='outside' && !highlightRegions){
+    for(let px=10;px<w-10;px+=3){
+      for(let py=10;py<h-10;py+=3){
+        if(getRegion(px,py)===hoveredRegion){
+          ctx.fillStyle='rgba(255,255,255,0.07)';
+          ctx.fillRect(px,py,3,3);
+        }
+      }
+    }
+  }
+
+  // Draw circles
+  circles.forEach(c=>{
+    ctx.beginPath();
+    ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    ctx.fillStyle=c.color;
+    ctx.fill();
+    ctx.strokeStyle=c.stroke;
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+
+  // Labels
+  ctx.font='bold 16px Orbitron, sans-serif';
+  if(!hasC){
+    ctx.fillStyle='#00e5ff';ctx.fillText('A',circles[0].x-circles[0].r+15,circles[0].y-circles[0].r+25);
+    ctx.fillStyle='#a855f7';ctx.fillText('B',circles[1].x+circles[1].r-25,circles[1].y-circles[1].r+25);
+  } else {
+    ctx.fillStyle='#00e5ff';ctx.fillText('A',circles[0].x-circles[0].r+8,circles[0].y-circles[0].r+22);
+    ctx.fillStyle='#a855f7';ctx.fillText('B',circles[1].x+circles[1].r-22,circles[1].y-circles[1].r+22);
+    ctx.fillStyle='#ec4899';ctx.fillText('C',circles[2].x-8,circles[2].y+circles[2].r-8);
+  }
+
+  // Place elements in regions
+  ctx.font='12px JetBrains Mono, monospace';
+  const regions = hasC?['A_only','B_only','C_only','AB','AC','BC','ABC','outside']:['A_only','B_only','AB','outside'];
+  const regionCenters = getRegionCenters();
+
+  regions.forEach(rg=>{
+    const elems=getRegionElements(rg);
+    if(!elems.length) return;
+    const center=regionCenters[rg];
+    if(!center) return;
+    const cols=Math.ceil(Math.sqrt(elems.length));
+    elems.forEach((e,i)=>{
+      const row=Math.floor(i/cols);
+      const col=i%cols;
+      const x=center.x+(col-(cols-1)/2)*32;
+      const y=center.y+(row-Math.floor(elems.length/cols)/2)*18;
+      ctx.fillStyle=rg==='outside'?'#94a3b8':'#e8e8ff';
+      ctx.fillText(String(e),x-ctx.measureText(String(e)).width/2,y);
+    });
+  });
+}
+
+function getRegionCenters(){
+  const w=canvas.width, h=canvas.height;
+  if(!hasC){
+    return {
+      A_only:{x:w/2-140,y:h/2},
+      B_only:{x:w/2+140,y:h/2},
+      AB:{x:w/2,y:h/2},
+      outside:{x:w-70,y:h-30}
+    };
+  }
+  return {
+    A_only:{x:w/2-120,y:h/2-80},
+    B_only:{x:w/2+120,y:h/2-80},
+    C_only:{x:w/2,y:h/2+110},
+    AB:{x:w/2,y:h/2-60},
+    AC:{x:w/2-55,y:h/2+30},
+    BC:{x:w/2+55,y:h/2+30},
+    ABC:{x:w/2,y:h/2},
+    outside:{x:w-70,y:h-30}
+  };
+}
+
+canvas.addEventListener('mousemove',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+  const px=(e.clientX-rect.left)*scaleX, py=(e.clientY-rect.top)*scaleY;
+  const rg=getRegion(px,py);
+  if(rg!==hoveredRegion){hoveredRegion=rg;drawVenn();}
+});
+canvas.addEventListener('mouseleave',()=>{hoveredRegion=null;drawVenn();});
+canvas.addEventListener('click',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+  const px=(e.clientX-rect.left)*scaleX, py=(e.clientY-rect.top)*scaleY;
+  const rg=getRegion(px,py);
+  selectedRegion=rg;
+  const elems=getRegionElements(rg);
+  document.getElementById('vennInfo').innerHTML=`
+    <span class="label">${regionLabel(rg)}:</span><span class="val">${fmt(elems)}</span>
+    &nbsp; (${elems.length} element${elems.length!==1?'s':''})`;
+});
+
+/* ============================================================
+   OPERATIONS
+   ============================================================ */
+function doOp(op){
+  if(!A.length&&!B.length){alert('Please build sets first.');return;}
+  let result=[], name='', latex='', steps=[];
+  const highlightRegions=[];
+
+  switch(op){
+    case 'union':
+      result=setUnion(A,B); name='A &cup; B'; latex='A \\cup B';
+      steps=['Take all elements in A','Add any elements in B not already included'];
+      if(!hasC) highlightRegions.push('A_only','B_only','AB');
+      else highlightRegions.push('A_only','B_only','AB','AC','BC','ABC');
+      break;
+    case 'intersect':
+      result=setIntersect(A,B); name='A &cap; B'; latex='A \\cap B';
+      steps=['Keep only elements found in both A and B'];
+      highlightRegions.push(hasC?'AB':'AB'); if(hasC) highlightRegions.push('ABC');
+      break;
+    case 'diffAB':
+      result=setDiff(A,B); name='A &minus; B'; latex='A \\setminus B';
+      steps=['Take elements of A','Remove any that also appear in B'];
+      highlightRegions.push('A_only'); if(hasC) highlightRegions.push('AC');
+      break;
+    case 'diffBA':
+      result=setDiff(B,A); name='B &minus; A'; latex='B \\setminus A';
+      steps=['Take elements of B','Remove any that also appear in A'];
+      highlightRegions.push('B_only'); if(hasC) highlightRegions.push('BC');
+      break;
+    case 'symdiff':
+      result=setSymDiff(A,B); name='A &Delta; B'; latex='A \\triangle B';
+      steps=['Elements in A but not B, plus elements in B but not A','Equivalently: (A &cup; B) &minus; (A &cap; B)'];
+      highlightRegions.push('A_only','B_only'); if(hasC) highlightRegions.push('AC','BC');
+      break;
+    case 'compA':
+      result=setComp(A,U); name="A'"; latex="A'";
+      steps=["Take all elements in U","Remove elements that are in A"];
+      highlightRegions.push('B_only','outside'); if(hasC) highlightRegions.push('BC','C_only');
+      break;
+    case 'compB':
+      result=setComp(B,U); name="B'"; latex="B'";
+      steps=["Take all elements in U","Remove elements that are in B"];
+      highlightRegions.push('A_only','outside'); if(hasC) highlightRegions.push('AC','C_only');
+      break;
+    case 'compC':
+      result=setComp(C,U); name="C'"; latex="C'";
+      steps=["Take all elements in U","Remove elements that are in C"];
+      highlightRegions.push('A_only','B_only','AB','outside');
+      break;
+    case 'unionAC':
+      result=setUnion(A,C); name='A &cup; C'; latex='A \\cup C';
+      steps=['Take all elements in A','Add elements in C'];
+      highlightRegions.push('A_only','C_only','AB','AC','BC','ABC');
+      break;
+    case 'intersectAC':
+      result=setIntersect(A,C); name='A &cap; C'; latex='A \\cap C';
+      steps=['Keep only elements in both A and C'];
+      highlightRegions.push('AC','ABC');
+      break;
+    case 'unionBC':
+      result=setUnion(B,C); name='B &cup; C'; latex='B \\cup C';
+      steps=['Take all elements in B','Add elements in C'];
+      highlightRegions.push('B_only','C_only','AB','AC','BC','ABC');
+      break;
+    case 'intersectBC':
+      result=setIntersect(B,C); name='B &cap; C'; latex='B \\cap C';
+      steps=['Keep only elements in both B and C'];
+      highlightRegions.push('BC','ABC');
+      break;
+    case 'unionABC':
+      result=setUnion(A,setUnion(B,C)); name='A &cup; B &cup; C'; latex='A \\cup B \\cup C';
+      steps=['Combine all elements from A, B, and C'];
+      highlightRegions.push('A_only','B_only','C_only','AB','AC','BC','ABC');
+      break;
+    case 'intersectABC':
+      result=setIntersect(A,setIntersect(B,C)); name='A &cap; B &cap; C'; latex='A \\cap B \\cap C';
+      steps=['Keep only elements found in all three sets'];
+      highlightRegions.push('ABC');
+      break;
+  }
+
+  const r=document.getElementById('opsResult');
+  r.innerHTML=`
+    <div><span class="label">Operation:</span> ${name}</div>
+    <div style="margin:6px 0">\\( ${latex} = ${result.length?'\\{'+result.join(', ')+'\\}':'\\emptyset'} \\)</div>
+    <div><span class="label">Result:</span><span class="val">${fmt(result)}</span></div>
+    <div><span class="label">Cardinality:</span> |${name}| = ${result.length}</div>
+    <div class="step">${steps.map((s,i)=>`<div>Step ${i+1}: ${s}</div>`).join('')}</div>`;
+  if(window.MathJax) MathJax.typesetPromise([r]);
+
+  drawVenn(highlightRegions,'rgba(0,229,255,0.22)');
+}
+
+/* ============================================================
+   PROPERTIES
+   ============================================================ */
+function showCardinality(){
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  let html=`
+    <div><span class="label">|A|</span> = ${A.length}</div>
+    <div><span class="label">|B|</span> = ${B.length}</div>
+    ${hasC?`<div><span class="label">|C|</span> = ${C.length}</div>`:''}
+    <div><span class="label">|U|</span> = ${U.length}</div>
+    <div><span class="label">|A &cup; B|</span> = ${setUnion(A,B).length}</div>
+    <div><span class="label">|A &cap; B|</span> = ${setIntersect(A,B).length}</div>`;
+  document.getElementById('propsResult').innerHTML=html;
+}
+
+function showInclExcl(){
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  const ab=setIntersect(A,B).length;
+  const unionAB=setUnion(A,B).length;
+  let html=`<div style="margin-bottom:8px"><b>Inclusion-Exclusion Principle</b></div>`;
+  if(!hasC){
+    html+=`<div>\\( |A \\cup B| = |A| + |B| - |A \\cap B| \\)</div>
+    <div style="margin-top:6px">\\( ${unionAB} = ${A.length} + ${B.length} - ${ab} = ${A.length+B.length-ab} \\)</div>
+    <div class="step">${unionAB===A.length+B.length-ab?
+      '<span style="color:var(--green)">Verified: both sides equal '+unionAB+'</span>':
+      '<span style="color:var(--red)">Mismatch!</span>'}</div>`;
+  } else {
+    const ac=setIntersect(A,C).length, bc=setIntersect(B,C).length;
+    const abc=setIntersect(A,setIntersect(B,C)).length;
+    const unionAll=setUnion(A,setUnion(B,C)).length;
+    const calc=A.length+B.length+C.length-ab-ac-bc+abc;
+    html+=`<div>\\( |A \\cup B \\cup C| = |A|+|B|+|C|-|A\\cap B|-|A\\cap C|-|B\\cap C|+|A\\cap B\\cap C| \\)</div>
+    <div style="margin-top:6px">\\( ${unionAll} = ${A.length}+${B.length}+${C.length}-${ab}-${ac}-${bc}+${abc} = ${calc} \\)</div>
+    <div class="step">${unionAll===calc?
+      '<span style="color:var(--green)">Verified: both sides equal '+unionAll+'</span>':
+      '<span style="color:var(--red)">Mismatch!</span>'}</div>`;
+  }
+  const r=document.getElementById('propsResult');
+  r.innerHTML=html;
+  if(window.MathJax) MathJax.typesetPromise([r]);
+}
+
+function showSubsetEquality(){
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  const pairs=hasC?[['A','B',A,B],['A','C',A,C],['B','C',B,C],['B','A',B,A]]:[['A','B',A,B],['B','A',B,A]];
+  let html='';
+  pairs.forEach(([n1,n2,s1,s2])=>{
+    const sub=isSubset(s1,s2);
+    html+=`<div class="check-row"><span class="check-badge ${sub?'yes':'no'}">${sub?'YES':'NO'}</span> ${n1} &sube; ${n2}</div>`;
+  });
+  html+=`<div class="check-row"><span class="check-badge ${setsEqual(A,B)?'yes':'no'}">${setsEqual(A,B)?'YES':'NO'}</span> A = B</div>`;
+  if(hasC) html+=`<div class="check-row"><span class="check-badge ${setsEqual(A,C)?'yes':'no'}">${setsEqual(A,C)?'YES':'NO'}</span> A = C</div>`;
+  html+=`<div class="check-row"><span class="check-badge ${isDisjoint(A,B)?'yes':'no'}">${isDisjoint(A,B)?'YES':'NO'}</span> A and B are disjoint</div>`;
+  if(hasC) html+=`<div class="check-row"><span class="check-badge ${isDisjoint(A,C)?'yes':'no'}">${isDisjoint(A,C)?'YES':'NO'}</span> A and C are disjoint</div>`;
+  document.getElementById('propsResult').innerHTML=html;
+}
+
+function showPowerSet(){
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  if(A.length>10){document.getElementById('propsResult').innerHTML='<span style="color:var(--red)">Set A is too large for power set (max 10 elements).</span>';return;}
+  const ps=powerSet(A);
+  let html=`<div><span class="label">Power set of A</span> &mdash; |P(A)| = 2<sup>${A.length}</sup> = ${ps.length}</div>
+    <div class="power-grid">${ps.map(s=>`<span class="power-item">${s.length?'{'+s.join(',')+'}':'&empty;'}</span>`).join('')}</div>`;
+  if(B.length<=10){
+    const psb=powerSet(B);
+    html+=`<div style="margin-top:14px"><span class="label">Power set of B</span> &mdash; |P(B)| = 2<sup>${B.length}</sup> = ${psb.length}</div>
+      <div class="power-grid">${psb.map(s=>`<span class="power-item">${s.length?'{'+s.join(',')+'}':'&empty;'}</span>`).join('')}</div>`;
+  }
+  document.getElementById('propsResult').innerHTML=html;
+}
+function powerSet(arr){
+  const result=[[]];
+  for(const el of arr){const len=result.length;for(let i=0;i<len;i++) result.push([...result[i],el]);}
+  return result;
+}
+
+function showCartesian(){
+  if(!A.length||!B.length){alert('Build sets first with both A and B.');return;}
+  if(A.length*B.length>100){document.getElementById('propsResult').innerHTML='<span style="color:var(--red)">Cartesian product too large to display (max 100 pairs).</span>';return;}
+  let html=`<div><span class="label">A &times; B</span> &mdash; |A &times; B| = ${A.length} &times; ${B.length} = ${A.length*B.length}</div>
+    <table class="cart-table"><tr><th>A &times; B</th>${B.map(b=>`<th>${b}</th>`).join('')}</tr>`;
+  A.forEach(a=>{
+    html+=`<tr><th>${a}</th>${B.map(b=>`<td>(${a}, ${b})</td>`).join('')}</tr>`;
+  });
+  html+='</table>';
+  document.getElementById('propsResult').innerHTML=html;
+}
+
+/* ============================================================
+   DE MORGAN'S LAWS
+   ============================================================ */
+function demorganDemo(law){
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  let lhs,rhs,lhsName,rhsName,lhsLatex,rhsLatex;
+  if(law===1){
+    lhs=setComp(setUnion(A,B),U);
+    rhs=setIntersect(setComp(A,U),setComp(B,U));
+    lhsName="(A &cup; B)'"; rhsName="A' &cap; B'";
+    lhsLatex="(A \\cup B)'"; rhsLatex="A' \\cap B'";
+  } else {
+    lhs=setComp(setIntersect(A,B),U);
+    rhs=setUnion(setComp(A,U),setComp(B,U));
+    lhsName="(A &cap; B)'"; rhsName="A' &cup; B'";
+    lhsLatex="(A \\cap B)'"; rhsLatex="A' \\cup B'";
+  }
+
+  const match=setsEqual(lhs.sort(),rhs.sort());
+  const r=document.getElementById('dmResult');
+  r.innerHTML=`
+    <div style="margin-bottom:8px"><b>De Morgan's Law ${law}</b></div>
+    <div>\\( ${lhsLatex} = ${rhsLatex} \\)</div>
+    <div style="margin-top:8px"><span class="label">LHS ${lhsName} =</span><span class="val">${fmt(lhs)}</span></div>
+    <div><span class="label">RHS ${rhsName} =</span><span class="val">${fmt(rhs)}</span></div>
+    <div class="step"><span style="color:${match?'var(--green)':'var(--red)'}">
+      ${match?'Verified: Both sides are equal!':'Mismatch detected.'}</span></div>`;
+  if(window.MathJax) MathJax.typesetPromise([r]);
+
+  // Draw side-by-side
+  document.getElementById('dmSide').style.display='grid';
+  document.getElementById('dmLHS').textContent=lhsName+' = '+fmt(lhs).replace(/&empty;/,'{}');
+  document.getElementById('dmRHS').textContent=rhsName+' = '+fmt(rhs).replace(/&empty;/,'{}');
+
+  drawDMCanvas('dmCanvasL',lhs,law===1?'LHS: complement of union':'LHS: complement of intersection');
+  drawDMCanvas('dmCanvasR',rhs,law===1?'RHS: intersection of complements':'RHS: union of complements');
+}
+
+function drawDMCanvas(id,highlightElems,title){
+  const c=document.getElementById(id);
+  const ct=c.getContext('2d');
+  const w=c.width,h=c.height;
+  ct.clearRect(0,0,w,h);
+  ct.fillStyle='#0a0a18';ct.strokeStyle='#2a2a4a';ct.lineWidth=1;
+  ct.beginPath();ct.roundRect(2,2,w-4,h-4,8);ct.fill();ct.stroke();
+
+  const r=70;
+  const c1={x:w/2-35,y:h/2,r};
+  const c2={x:w/2+35,y:h/2,r};
+  const hSet=new Set(highlightElems.map(String));
+
+  // Highlight region pixel by pixel
+  for(let px=2;px<w-2;px+=2){
+    for(let py=2;py<h-2;py+=2){
+      const inA=Math.hypot(px-c1.x,py-c1.y)<=c1.r;
+      const inB=Math.hypot(px-c2.x,py-c2.y)<=c2.r;
+      // Determine what elements are in this region
+      let regionElems=[];
+      if(inA&&inB) regionElems=getRegionElements('AB');
+      else if(inA) regionElems=getRegionElements('A_only');
+      else if(inB) regionElems=getRegionElements('B_only');
+      else regionElems=getRegionElements('outside');
+      // Check if any elem in this region is in highlight set
+      if(regionElems.some(e=>hSet.has(String(e)))){
+        ct.fillStyle='rgba(0,229,255,0.2)';
+        ct.fillRect(px,py,2,2);
+      }
+    }
+  }
+
+  // Circles
+  [c1,c2].forEach((ci,i)=>{
+    ct.beginPath();ct.arc(ci.x,ci.y,ci.r,0,Math.PI*2);
+    ct.fillStyle=i===0?'rgba(0,229,255,0.15)':'rgba(168,85,247,0.15)';
+    ct.fill();
+    ct.strokeStyle=i===0?'#00e5ff':'#a855f7';ct.lineWidth=1.5;ct.stroke();
+  });
+
+  ct.font='bold 11px Orbitron';
+  ct.fillStyle='#00e5ff';ct.fillText('A',c1.x-r+8,c1.y-r+16);
+  ct.fillStyle='#a855f7';ct.fillText('B',c2.x+r-18,c2.y-r+16);
+  ct.fillStyle='#94a3b8';ct.font='10px Poppins';ct.fillText('U',8,16);
+}
+
+/* ============================================================
+   EXPRESSION EVALUATOR
+   ============================================================ */
+document.querySelectorAll('.expr-chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    const inp=document.getElementById('exprInput');
+    inp.value+=c.dataset.v;
+    inp.focus();
+  });
+});
+
+function evalExpr(){
+  const raw=document.getElementById('exprInput').value.trim();
+  if(!raw){alert('Enter an expression.');return;}
+  if(!A.length&&!B.length){alert('Build sets first.');return;}
+  try{
+    const result=parseAndEval(raw);
+    const r=document.getElementById('exprResult');
+    r.innerHTML=`
+      <div><span class="label">Expression:</span> ${raw}</div>
+      <div><span class="label">Result:</span><span class="val">${fmt(result)}</span></div>
+      <div><span class="label">Cardinality:</span> ${result.length}</div>`;
+
+    // Highlight on Venn
+    const resultSet=new Set(result.map(String));
+    const allRegions=hasC?['A_only','B_only','C_only','AB','AC','BC','ABC','outside']:['A_only','B_only','AB','outside'];
+    const hlRegions=allRegions.filter(rg=>{
+      const elems=getRegionElements(rg);
+      return elems.length>0 && elems.every(e=>resultSet.has(String(e)));
+    });
+    // Also partially highlight: highlight individual matching regions
+    const partialHighlight=[];
+    allRegions.forEach(rg=>{
+      const elems=getRegionElements(rg);
+      if(elems.some(e=>resultSet.has(String(e)))) partialHighlight.push(rg);
+    });
+    drawVenn(partialHighlight,'rgba(250,204,21,0.22)');
+  } catch(e){
+    document.getElementById('exprResult').innerHTML=`<span style="color:var(--red)">Error: ${e.message}</span>`;
+  }
+}
+
+/* Simple recursive-descent parser for set expressions */
+function parseAndEval(expr){
+  // Normalize operators
+  let s=expr.replace(/∪/g,'U').replace(/∩/g,'^').replace(/∆/g,'%').replace(/−/g,'-')
+           .replace(/\\cup/g,'U').replace(/\\cap/g,'^').replace(/'/g,"'");
+  let pos=0;
+
+  function peek(){while(pos<s.length&&s[pos]===' ')pos++; return pos<s.length?s[pos]:null;}
+  function consume(ch){while(pos<s.length&&s[pos]===' ')pos++; if(s[pos]===ch){pos++;return ch;} throw new Error(`Expected '${ch}' at position ${pos}`);}
+
+  function parseExpr(){
+    let left=parseDiff();
+    while(true){
+      const c=peek();
+      if(c==='U'){pos++;left=setUnion(left,parseDiff());}
+      else if(c==='%'){pos++;left=setSymDiff(left,parseDiff());}
+      else break;
+    }
+    return left;
+  }
+
+  function parseDiff(){
+    let left=parseIntersect();
+    while(peek()==='-'){pos++;left=setDiff(left,parseIntersect());}
+    return left;
+  }
+
+  function parseIntersect(){
+    let left=parseComplement();
+    while(peek()==='^'){pos++;left=setIntersect(left,parseComplement());}
+    return left;
+  }
+
+  function parseComplement(){
+    let val=parseAtom();
+    while(pos<s.length&&s[pos]==="'"){pos++;val=setComp(val,U);}
+    return val;
+  }
+
+  function parseAtom(){
+    const c=peek();
+    if(c==='('){consume('(');const v=parseExpr();consume(')');return v;}
+    if(c==='A'){pos++;return [...A];}
+    if(c==='B'){pos++;return [...B];}
+    if(c==='C'){pos++;return [...C];}
+    throw new Error(`Unexpected character '${c}' at position ${pos}`);
+  }
+
+  const result=parseExpr();
+  if(pos<s.length){while(pos<s.length&&s[pos]===' ')pos++; if(pos<s.length) throw new Error(`Unexpected character '${s[pos]}' at position ${pos}`);}
+  return [...new Set(result)];
+}
+
+/* ============================================================
+   HEADER / FOOTER / BACK-TO-TOP
+   ============================================================ */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+const btt=document.getElementById('backToTop');
+if(btt){
+  window.addEventListener('scroll',()=>{btt.style.display=window.scrollY>400?'flex':'none';});
+  btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  btt.style.display='none';
+  btt.style.position='fixed';btt.style.bottom='24px';btt.style.right='24px';
+  btt.style.width='44px';btt.style.height='44px';btt.style.borderRadius='50%';
+  btt.style.background='var(--card)';btt.style.border='1px solid var(--border)';
+  btt.style.alignItems='center';btt.style.justifyContent='center';
+  btt.style.cursor='pointer';btt.style.zIndex='999';btt.style.fontSize='1.2rem';
+}
+</script>
+</body>
+</html>

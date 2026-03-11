@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trigonometry Explorer | TutorDA</title>
+  <meta name="description" content="Interactive unit circle, trig graphs, triangle solver, identity verifier, radian-degree converter, and trig calculator — all in one tool.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --muted:#94a3b8;--text:#e8e8ff;--r:14px;
+      --green:#22c55e;--red:#ef4444;--orange:#ff8c00;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:580px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+
+    .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+    .nav-tab{padding:8px 18px;border-radius:8px;background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.85rem;transition:all .2s;font-family:'Poppins',sans-serif}
+    .nav-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .section-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:16px;
+      display:flex;align-items:center;gap:10px}
+    .section-title .icon{font-size:1.3rem}
+
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      background:var(--card);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 20px;font-family:'Poppins',sans-serif;
+      font-size:.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+    .btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;color:#fff;font-weight:600}
+    .btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn.sm{padding:6px 14px;font-size:.8rem}
+
+    canvas{border-radius:var(--r);background:rgba(0,0,0,.3);display:block}
+
+    /* ── Form Controls ── */
+    label.ctrl{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+    label.ctrl span{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+    input[type=range]{-webkit-appearance:none;width:100%;height:6px;background:var(--border);border-radius:3px;outline:none}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--cyan);border-radius:50%;cursor:pointer}
+    input[type=number],input[type=text],select{width:100%;padding:8px 12px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:.9rem;outline:none;transition:border-color .2s}
+    input[type=number]:focus,input[type=text]:focus,select:focus{border-color:var(--cyan)}
+    select option{background:var(--card);color:var(--text)}
+
+    .val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+    .val-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center}
+    .val-box .label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+    .val-box .value{font-family:var(--mono);font-size:1rem;font-weight:600}
+
+    .row{display:flex;gap:16px;flex-wrap:wrap}
+    .row .col{flex:1;min-width:280px}
+    .row .col-fixed{width:340px;flex:none}
+
+    .angle-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:12px}
+    .angle-table th,.angle-table td{padding:6px 10px;text-align:center;border:1px solid var(--border)}
+    .angle-table th{background:var(--card2);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:.08em}
+    .angle-table td{font-family:var(--mono);color:var(--text);font-size:.78rem}
+    .angle-table tr:hover td{background:rgba(0,229,255,.04)}
+
+    .snap-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+    .snap-btn{padding:4px 10px;border-radius:6px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.75rem;font-family:var(--mono);transition:all .2s}
+    .snap-btn:hover,.snap-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .quad-signs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px}
+    .quad-box{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.78rem;text-align:center}
+    .quad-box .qname{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--gold);letter-spacing:.08em}
+
+    .slider-row{display:flex;gap:16px;align-items:center;margin-bottom:10px}
+    .slider-row label{min-width:130px}
+    .slider-row input[type=range]{flex:1}
+    .slider-row .slider-val{font-family:var(--mono);font-size:.85rem;color:var(--cyan);min-width:60px;text-align:right}
+
+    .toggle-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+    .toggle-btn{padding:6px 14px;border-radius:8px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.82rem;font-family:var(--mono);transition:all .2s}
+    .toggle-btn:hover,.toggle-btn.active{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.08)}
+
+    .step-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px;
+      font-size:.88rem;line-height:1.7;overflow-x:auto}
+    .step-box .step-num{display:inline-block;background:var(--cyan);color:#000;font-weight:700;border-radius:50%;
+      width:22px;height:22px;text-align:center;line-height:22px;font-size:.72rem;margin-right:8px}
+
+    .identity-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+    .identity-card .id-name{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--gold);letter-spacing:.06em;margin-bottom:8px}
+    .identity-card .id-formula{font-size:1rem;margin-bottom:8px;overflow-x:auto}
+    .identity-card .id-verify{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:.82rem;font-family:var(--mono)}
+    .id-match{color:var(--green);font-weight:600}
+    .id-mismatch{color:var(--red);font-weight:600}
+
+    .cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+    .cat-tab{padding:5px 12px;border-radius:6px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.78rem;transition:all .2s}
+    .cat-tab:hover,.cat-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(250,204,21,.06)}
+
+    .gauge-wrap{display:flex;justify-content:center;margin:16px 0}
+    .dms-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
+    .dms-row .field{flex:1;min-width:80px}
+    .dms-row label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:4px}
+
+    .tri-input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+    .tri-input-grid .field label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+
+    .mode-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+    .info-tag{display:inline-block;padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:600;margin-right:6px}
+    .info-tag.cyan{background:rgba(0,229,255,.12);color:var(--cyan)}
+    .info-tag.purple{background:rgba(168,85,247,.12);color:var(--purple)}
+    .info-tag.pink{background:rgba(236,72,153,.12);color:var(--pink)}
+    .info-tag.gold{background:rgba(250,204,21,.12);color:var(--gold)}
+
+    @media(max-width:700px){
+      .row{flex-direction:column}
+      .row .col-fixed{width:100%}
+      .slider-row{flex-direction:column;align-items:stretch;gap:6px}
+      .slider-row label{min-width:unset}
+      .nav-tabs{gap:4px}
+      .nav-tab{padding:6px 12px;font-size:.78rem}
+      .panel{padding:16px}
+      .val-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <div class="hero">
+    <div class="eyebrow">Interactive Math Tool</div>
+    <h1>Trigonometry Explorer</h1>
+    <p>Unit circle, graphs, triangle solver, identities, conversions, and a full trig calculator -- all in one place.</p>
+  </div>
+
+  <div class="nav-tabs" id="mainTabs">
+    <button class="nav-tab active" data-tab="unit-circle">Unit Circle</button>
+    <button class="nav-tab" data-tab="trig-graphs">Trig Graphs</button>
+    <button class="nav-tab" data-tab="triangle-solver">Triangle Solver</button>
+    <button class="nav-tab" data-tab="identity-verifier">Identity Verifier</button>
+    <button class="nav-tab" data-tab="rad-deg">Radian / Degree</button>
+    <button class="nav-tab" data-tab="trig-calc">Trig Calculator</button>
+  </div>
+
+  <!-- ═══════════════════ TAB 1: UNIT CIRCLE ═══════════════════ -->
+  <div class="tab-content active" id="tab-unit-circle">
+    <div class="row">
+      <div class="col">
+        <div class="panel" style="padding:12px">
+          <canvas id="ucCanvas" width="520" height="520" style="width:100%;max-width:520px;margin:0 auto;cursor:crosshair"></canvas>
+        </div>
+        <div class="snap-btns">
+          <span style="font-size:.72rem;color:var(--muted);margin-right:4px">Snap:</span>
+        </div>
+      </div>
+      <div class="col-fixed">
+        <div class="panel">
+          <div class="section-title"><span class="icon">📐</span> Values at &theta;</div>
+          <div class="val-grid" id="ucValues"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">🧭</span> Quadrant Signs</div>
+          <div class="quad-signs" id="ucQuadSigns">
+            <div class="quad-box"><div class="qname">Q I (0 - 90)</div>All positive</div>
+            <div class="quad-box"><div class="qname">Q II (90 - 180)</div>sin, csc +</div>
+            <div class="quad-box"><div class="qname">Q III (180 - 270)</div>tan, cot +</div>
+            <div class="quad-box"><div class="qname">Q IV (270 - 360)</div>cos, sec +</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">📋</span> Special Angles</div>
+          <div style="overflow-x:auto">
+            <table class="angle-table" id="specialTable">
+              <thead><tr><th>&theta;</th><th>sin</th><th>cos</th><th>tan</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TAB 2: TRIG GRAPHS ═══════════════════ -->
+  <div class="tab-content" id="tab-trig-graphs">
+    <div class="row">
+      <div class="col">
+        <div class="panel" style="padding:12px">
+          <canvas id="graphCanvas" width="700" height="400" style="width:100%;cursor:crosshair"></canvas>
+        </div>
+        <div class="panel">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem">
+            <span class="info-tag cyan" id="graphAmp">Amplitude: 1</span>
+            <span class="info-tag purple" id="graphPeriod">Period: 2&pi;</span>
+            <span class="info-tag pink" id="graphPhase">Phase Shift: 0</span>
+            <span class="info-tag gold" id="graphVShift">Vertical Shift: 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-fixed">
+        <div class="panel">
+          <div class="section-title"><span class="icon">🎛️</span> Parameters</div>
+          <div class="toggle-row" id="funcSelect">
+            <button class="toggle-btn active" data-fn="sin">sin</button>
+            <button class="toggle-btn" data-fn="cos">cos</button>
+            <button class="toggle-btn" data-fn="tan">tan</button>
+            <button class="toggle-btn" data-fn="csc">csc</button>
+            <button class="toggle-btn" data-fn="sec">sec</button>
+            <button class="toggle-btn" data-fn="cot">cot</button>
+          </div>
+          <div class="slider-row"><label class="ctrl"><span>A (Amplitude)</span></label><input type="range" id="slA" min="-5" max="5" step="0.1" value="1"><span class="slider-val" id="valA">1</span></div>
+          <div class="slider-row"><label class="ctrl"><span>B (Frequency)</span></label><input type="range" id="slB" min="0.1" max="5" step="0.1" value="1"><span class="slider-val" id="valB">1</span></div>
+          <div class="slider-row"><label class="ctrl"><span>C (Phase)</span></label><input type="range" id="slC" min="-6.2832" max="6.2832" step="0.01" value="0"><span class="slider-val" id="valC">0</span></div>
+          <div class="slider-row"><label class="ctrl"><span>D (Vertical Shift)</span></label><input type="range" id="slD" min="-5" max="5" step="0.1" value="0"><span class="slider-val" id="valD">0</span></div>
+          <div style="margin-top:12px">
+            <label style="font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="compare2" style="accent-color:var(--pink)"> Compare second function
+            </label>
+          </div>
+          <div id="compare2Controls" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div class="toggle-row" id="funcSelect2">
+              <button class="toggle-btn active" data-fn="cos">cos</button>
+              <button class="toggle-btn" data-fn="sin">sin</button>
+              <button class="toggle-btn" data-fn="tan">tan</button>
+            </div>
+            <div class="slider-row"><label class="ctrl"><span>A2</span></label><input type="range" id="slA2" min="-5" max="5" step="0.1" value="1"><span class="slider-val" id="valA2">1</span></div>
+            <div class="slider-row"><label class="ctrl"><span>B2</span></label><input type="range" id="slB2" min="0.1" max="5" step="0.1" value="1"><span class="slider-val" id="valB2">1</span></div>
+            <div class="slider-row"><label class="ctrl"><span>C2</span></label><input type="range" id="slC2" min="-6.2832" max="6.2832" step="0.01" value="0"><span class="slider-val" id="valC2">0</span></div>
+            <div class="slider-row"><label class="ctrl"><span>D2</span></label><input type="range" id="slD2" min="-5" max="5" step="0.1" value="0"><span class="slider-val" id="valD2">0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TAB 3: TRIANGLE SOLVER ═══════════════════ -->
+  <div class="tab-content" id="tab-triangle-solver">
+    <div class="panel">
+      <div class="section-title"><span class="icon">📐</span> Select Known Values</div>
+      <div class="mode-select" id="triMode">
+        <button class="btn sm active" data-mode="SSS">SSS</button>
+        <button class="btn sm" data-mode="SAS">SAS</button>
+        <button class="btn sm" data-mode="ASA">ASA</button>
+        <button class="btn sm" data-mode="AAS">AAS</button>
+        <button class="btn sm" data-mode="SSA">SSA</button>
+      </div>
+      <div class="tri-input-grid" id="triInputs"></div>
+      <button class="btn primary" id="triSolveBtn">Solve Triangle</button>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="panel" style="padding:12px">
+          <canvas id="triCanvas" width="500" height="400" style="width:100%;max-width:500px;margin:0 auto"></canvas>
+        </div>
+      </div>
+      <div class="col">
+        <div class="panel">
+          <div class="section-title"><span class="icon">📊</span> Solution</div>
+          <div id="triSolution" style="font-size:.88rem;line-height:1.7;font-family:var(--mono)">
+            <span style="color:var(--muted)">Enter values and click Solve.</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">📝</span> Steps</div>
+          <div class="step-box" id="triSteps">
+            <span style="color:var(--muted)">Solution steps will appear here.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TAB 4: IDENTITY VERIFIER ═══════════════════ -->
+  <div class="tab-content" id="tab-identity-verifier">
+    <div class="panel">
+      <div class="section-title"><span class="icon">🔍</span> Identity Verifier</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+        <div style="flex:1;min-width:160px">
+          <label class="ctrl"><span>Angle &theta; (degrees)</span>
+            <input type="number" id="idAngle" value="30" step="1">
+          </label>
+        </div>
+        <button class="btn primary" id="idVerifyBtn">Verify All</button>
+        <button class="btn" id="idRandomBtn">Random Angle</button>
+      </div>
+      <div class="cat-tabs" id="idCatTabs">
+        <button class="cat-tab active" data-cat="pythagorean">Pythagorean</button>
+        <button class="cat-tab" data-cat="double">Double Angle</button>
+        <button class="cat-tab" data-cat="half">Half Angle</button>
+        <button class="cat-tab" data-cat="sum">Sum/Difference</button>
+        <button class="cat-tab" data-cat="reciprocal">Reciprocal</button>
+        <button class="cat-tab" data-cat="cofunction">Cofunction</button>
+      </div>
+      <div id="idCards"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TAB 5: RADIAN / DEGREE ═══════════════════ -->
+  <div class="tab-content" id="tab-rad-deg">
+    <div class="row">
+      <div class="col">
+        <div class="panel">
+          <div class="section-title"><span class="icon">🔄</span> Radian &harr; Degree Converter</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+            <div style="flex:1;min-width:160px">
+              <label class="ctrl"><span>Degrees</span>
+                <input type="number" id="rdDeg" value="30" step="any">
+              </label>
+            </div>
+            <div style="flex:1;min-width:160px">
+              <label class="ctrl"><span>Radians</span>
+                <input type="text" id="rdRad" value="" placeholder="e.g. pi/6">
+              </label>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+            <button class="btn sm primary" id="rdDegToRad">Deg &rarr; Rad</button>
+            <button class="btn sm primary" id="rdRadToDeg">Rad &rarr; Deg</button>
+          </div>
+          <div id="rdResult" class="val-grid"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">📐</span> DMS Conversion</div>
+          <div class="dms-row">
+            <div class="field"><label>Degrees</label><input type="number" id="dmsD" value="30"></div>
+            <div class="field"><label>Minutes</label><input type="number" id="dmsM" value="0"></div>
+            <div class="field"><label>Seconds</label><input type="number" id="dmsS" value="0"></div>
+            <button class="btn sm" id="dmsConvert" style="margin-bottom:0">Convert</button>
+          </div>
+          <div id="dmsResult" style="margin-top:12px;font-family:var(--mono);font-size:.88rem;color:var(--text)"></div>
+        </div>
+      </div>
+      <div class="col-fixed">
+        <div class="panel" style="padding:12px">
+          <canvas id="gaugeCanvas" width="300" height="300" style="width:100%;max-width:300px;margin:0 auto"></canvas>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">📋</span> Common Angles</div>
+          <div style="overflow-x:auto">
+            <table class="angle-table">
+              <thead><tr><th>Degrees</th><th>Radians</th><th>Exact</th></tr></thead>
+              <tbody>
+                <tr><td>0</td><td>0</td><td>0</td></tr>
+                <tr><td>30</td><td>0.5236</td><td>&pi;/6</td></tr>
+                <tr><td>45</td><td>0.7854</td><td>&pi;/4</td></tr>
+                <tr><td>60</td><td>1.0472</td><td>&pi;/3</td></tr>
+                <tr><td>90</td><td>1.5708</td><td>&pi;/2</td></tr>
+                <tr><td>120</td><td>2.0944</td><td>2&pi;/3</td></tr>
+                <tr><td>135</td><td>2.3562</td><td>3&pi;/4</td></tr>
+                <tr><td>150</td><td>2.6180</td><td>5&pi;/6</td></tr>
+                <tr><td>180</td><td>3.1416</td><td>&pi;</td></tr>
+                <tr><td>210</td><td>3.6652</td><td>7&pi;/6</td></tr>
+                <tr><td>225</td><td>3.9270</td><td>5&pi;/4</td></tr>
+                <tr><td>240</td><td>4.1888</td><td>4&pi;/3</td></tr>
+                <tr><td>270</td><td>4.7124</td><td>3&pi;/2</td></tr>
+                <tr><td>300</td><td>5.2360</td><td>5&pi;/3</td></tr>
+                <tr><td>315</td><td>5.4978</td><td>7&pi;/4</td></tr>
+                <tr><td>330</td><td>5.7596</td><td>11&pi;/6</td></tr>
+                <tr><td>360</td><td>6.2832</td><td>2&pi;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ TAB 6: TRIG CALCULATOR ═══════════════════ -->
+  <div class="tab-content" id="tab-trig-calc">
+    <div class="row">
+      <div class="col">
+        <div class="panel">
+          <div class="section-title"><span class="icon">🧮</span> Trig Calculator</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+            <div style="flex:1;min-width:160px">
+              <label class="ctrl"><span>Angle</span>
+                <input type="number" id="tcAngle" value="30" step="any">
+              </label>
+            </div>
+            <div>
+              <div class="toggle-row" style="margin-bottom:0">
+                <button class="toggle-btn active" id="tcDeg" data-unit="deg">Degrees</button>
+                <button class="toggle-btn" id="tcRad" data-unit="rad">Radians</button>
+              </div>
+            </div>
+            <button class="btn primary" id="tcCalcBtn">Calculate</button>
+          </div>
+          <div class="val-grid" id="tcValues"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">🔄</span> Inverse Trig</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+            <div style="flex:1;min-width:120px">
+              <label class="ctrl"><span>Value</span>
+                <input type="number" id="tcInvVal" value="0.5" step="any">
+              </label>
+            </div>
+            <div style="min-width:100px">
+              <label class="ctrl"><span>Function</span>
+                <select id="tcInvFn">
+                  <option value="asin">arcsin</option>
+                  <option value="acos">arccos</option>
+                  <option value="atan">arctan</option>
+                </select>
+              </label>
+            </div>
+            <button class="btn sm primary" id="tcInvBtn">Compute</button>
+          </div>
+          <div id="tcInvResult" style="font-family:var(--mono);font-size:.88rem;color:var(--text)"></div>
+        </div>
+        <div class="panel">
+          <div class="section-title"><span class="icon">📋</span> Exact Values (Standard Angles)</div>
+          <div style="overflow-x:auto">
+            <table class="angle-table" id="exactTable">
+              <thead><tr><th>&theta;</th><th>sin</th><th>cos</th><th>tan</th><th>csc</th><th>sec</th><th>cot</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-fixed">
+        <div class="panel" style="padding:12px">
+          <canvas id="rtCanvas" width="340" height="300" style="width:100%;max-width:340px;margin:0 auto"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   TRIGONOMETRY EXPLORER - Full interactive tool
+   ═══════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── Header / Footer ── */
+fetch('../components/header.html').then(r=>r.text()).then(h=>{document.getElementById('header-container').innerHTML=h});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>{document.getElementById('footer-container').innerHTML=h});
+
+/* ── Tab switching ── */
+document.getElementById('mainTabs').addEventListener('click',function(e){
+  var t=e.target.closest('.nav-tab'); if(!t)return;
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  t.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='trig-graphs') drawGraph();
+  if(t.dataset.tab==='rad-deg') drawGauge();
+  if(t.dataset.tab==='trig-calc') calcTrig();
+});
+
+/* ── Helpers ── */
+var PI=Math.PI, TAU=2*PI;
+function deg2rad(d){return d*PI/180}
+function rad2deg(r){return r*180/PI}
+function fmt(v,d){d=d||4;return isFinite(v)?parseFloat(v.toFixed(d)):'undef'}
+function clampCanvas(c){var r=c.getBoundingClientRect();return{w:c.width,h:c.height,sx:c.width/r.width,sy:c.height/r.height}}
+
+/* ══════════════════════════════════════════
+   TAB 1: UNIT CIRCLE
+   ══════════════════════════════════════════ */
+var ucAngle=PI/6;
+var ucCanvas=document.getElementById('ucCanvas');
+var ucCtx=ucCanvas.getContext('2d');
+var ucDragging=false;
+
+// Special angles
+var specialAngles=[0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
+var specialRad=specialAngles.map(function(d){return{deg:d,rad:d*PI/180}});
+
+// Exact values table
+var exactVals={
+  0:{s:'0',c:'1',t:'0'},30:{s:'1/2',c:'\u221A3/2',t:'1/\u221A3'},
+  45:{s:'\u221A2/2',c:'\u221A2/2',t:'1'},60:{s:'\u221A3/2',c:'1/2',t:'\u221A3'},
+  90:{s:'1',c:'0',t:'undef'},120:{s:'\u221A3/2',c:'-1/2',t:'-\u221A3'},
+  135:{s:'\u221A2/2',c:'-\u221A2/2',t:'-1'},150:{s:'1/2',c:'-\u221A3/2',t:'-1/\u221A3'},
+  180:{s:'0',c:'-1',t:'0'},210:{s:'-1/2',c:'-\u221A3/2',t:'1/\u221A3'},
+  225:{s:'-\u221A2/2',c:'-\u221A2/2',t:'1'},240:{s:'-\u221A3/2',c:'-1/2',t:'\u221A3'},
+  270:{s:'-1',c:'0',t:'undef'},300:{s:'-\u221A3/2',c:'1/2',t:'-\u221A3'},
+  315:{s:'-\u221A2/2',c:'\u221A2/2',t:'-1'},330:{s:'-1/2',c:'\u221A3/2',t:'-1/\u221A3'},
+  360:{s:'0',c:'1',t:'0'}
+};
+
+// Build special angles table
+(function(){
+  var tb=document.querySelector('#specialTable tbody');
+  [0,30,45,60,90,120,135,150,180,270,360].forEach(function(d){
+    var v=exactVals[d];
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+d+'&deg;</td><td>'+v.s+'</td><td>'+v.c+'</td><td>'+v.t+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+
+// Snap buttons
+(function(){
+  var wrap=document.querySelector('.snap-btns');
+  [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330].forEach(function(d){
+    var b=document.createElement('button');
+    b.className='snap-btn';
+    b.textContent=d+'°';
+    b.addEventListener('click',function(){ucAngle=deg2rad(d);drawUC()});
+    wrap.appendChild(b);
+  });
+})();
+
+function drawUC(){
+  var c=ucCanvas,ctx=ucCtx,w=c.width,h=c.height;
+  var cx=w/2,cy=h/2,R=Math.min(w,h)*0.38;
+  ctx.clearRect(0,0,w,h);
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,0);ctx.lineTo(cx,h);ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='12px Poppins';ctx.textAlign='center';
+  ctx.fillText('0',cx+R+14,cy+4);ctx.fillText('\u03C0',cx-R-14,cy+4);
+  ctx.fillText('\u03C0/2',cx,cy-R-8);ctx.fillText('3\u03C0/2',cx,cy+R+16);
+
+  // Circle
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.stroke();
+
+  // Special angle dots
+  specialRad.forEach(function(sa){
+    if(sa.deg===360)return;
+    var x=cx+R*Math.cos(sa.rad),y=cy-R*Math.sin(sa.rad);
+    ctx.fillStyle='rgba(255,255,255,.15)';
+    ctx.beginPath();ctx.arc(x,y,3,0,TAU);ctx.fill();
+  });
+
+  var a=ucAngle;
+  var px=cx+R*Math.cos(a),py=cy-R*Math.sin(a);
+  var sinV=Math.sin(a),cosV=Math.cos(a);
+  var tanV=Math.tan(a);
+
+  // Reference triangle fill
+  ctx.fillStyle='rgba(0,229,255,.04)';
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,cy);ctx.lineTo(px,py);ctx.closePath();ctx.fill();
+
+  // cos line (horizontal - purple)
+  ctx.strokeStyle='#a855f7';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,cy);ctx.stroke();
+  // Label
+  ctx.fillStyle='#a855f7';ctx.font='bold 11px JetBrains Mono';ctx.textAlign='center';
+  ctx.fillText('cos',((cx+px)/2),cy+(sinV>=0?16:-8));
+
+  // sin line (vertical - cyan)
+  ctx.strokeStyle='#00e5ff';ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(px,cy);ctx.lineTo(px,py);ctx.stroke();
+  ctx.fillStyle='#00e5ff';ctx.font='bold 11px JetBrains Mono';ctx.textAlign='left';
+  ctx.fillText('sin',px+(cosV>=0?6:-30),(cy+py)/2);
+
+  // tan line (pink)
+  if(Math.abs(cosV)>0.001){
+    var tanLen=R*tanV;
+    var ty=cy-tanLen;
+    // Clamp
+    var clampedTY=Math.max(-20,Math.min(h+20,ty));
+    ctx.strokeStyle='#ec4899';ctx.lineWidth=2;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(cx+R,cy);ctx.lineTo(cx+R,clampedTY);ctx.stroke();
+    ctx.setLineDash([]);
+    // tangent label
+    ctx.fillStyle='#ec4899';ctx.font='bold 11px JetBrains Mono';
+    ctx.fillText('tan',cx+R+8,(cy+clampedTY)/2);
+  }
+
+  // Radius line
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,py);ctx.stroke();
+
+  // Angle arc
+  ctx.strokeStyle='var(--gold)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(cx,cy,30,0,-a,true);ctx.stroke();
+  // Angle label
+  var aDeg=rad2deg(a);while(aDeg<0)aDeg+=360;
+  ctx.fillStyle='#facc15';ctx.font='bold 11px JetBrains Mono';ctx.textAlign='center';
+  var la=a/2;
+  ctx.fillText(fmt(aDeg,1)+'°',cx+45*Math.cos(-la),cy+45*Math.sin(-la)+4);
+
+  // Draggable point
+  ctx.fillStyle='#fff';ctx.shadowColor='#00e5ff';ctx.shadowBlur=12;
+  ctx.beginPath();ctx.arc(px,py,7,0,TAU);ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Update values
+  updateUCValues(a);
+}
+
+function updateUCValues(a){
+  var s=Math.sin(a),c=Math.cos(a);
+  var vals=[
+    {label:'sin \u03B8',value:fmt(s),color:'var(--cyan)'},
+    {label:'cos \u03B8',value:fmt(c),color:'var(--purple)'},
+    {label:'tan \u03B8',value:fmt(Math.tan(a)),color:'var(--pink)'},
+    {label:'csc \u03B8',value:fmt(1/s),color:'var(--gold)'},
+    {label:'sec \u03B8',value:fmt(1/c),color:'var(--green)'},
+    {label:'cot \u03B8',value:fmt(c/s),color:'var(--orange)'}
+  ];
+  var el=document.getElementById('ucValues');
+  el.innerHTML=vals.map(function(v){
+    return '<div class="val-box"><div class="label">'+v.label+'</div><div class="value" style="color:'+v.color+'">'+v.value+'</div></div>';
+  }).join('');
+  // Add angle
+  var aDeg=rad2deg(a);while(aDeg<0)aDeg+=360;
+  el.innerHTML='<div class="val-box" style="grid-column:1/-1"><div class="label">\u03B8</div><div class="value">'+fmt(aDeg,2)+'° = '+fmt(a,4)+' rad</div></div>'+el.innerHTML;
+}
+
+// Mouse/touch interaction
+function ucPointerPos(e){
+  var rect=ucCanvas.getBoundingClientRect();
+  var scaleX=ucCanvas.width/rect.width,scaleY=ucCanvas.height/rect.height;
+  var t=e.touches?e.touches[0]:e;
+  return{x:(t.clientX-rect.left)*scaleX,y:(t.clientY-rect.top)*scaleY};
+}
+function ucUpdateAngle(e){
+  var p=ucPointerPos(e);
+  var cx=ucCanvas.width/2,cy=ucCanvas.height/2;
+  var a=Math.atan2(-(p.y-cy),p.x-cx);
+  if(a<0)a+=TAU;
+  ucAngle=a;
+  drawUC();
+}
+ucCanvas.addEventListener('mousedown',function(e){ucDragging=true;ucUpdateAngle(e)});
+ucCanvas.addEventListener('mousemove',function(e){if(ucDragging)ucUpdateAngle(e)});
+document.addEventListener('mouseup',function(){ucDragging=false});
+ucCanvas.addEventListener('touchstart',function(e){e.preventDefault();ucDragging=true;ucUpdateAngle(e)},{passive:false});
+ucCanvas.addEventListener('touchmove',function(e){e.preventDefault();if(ucDragging)ucUpdateAngle(e)},{passive:false});
+ucCanvas.addEventListener('touchend',function(){ucDragging=false});
+
+drawUC();
+
+/* ══════════════════════════════════════════
+   TAB 2: TRIG GRAPHS
+   ══════════════════════════════════════════ */
+var graphCanvas=document.getElementById('graphCanvas');
+var graphCtx=graphCanvas.getContext('2d');
+var graphFn='sin', graphFn2='cos';
+
+function trigFn(name,x){
+  switch(name){
+    case 'sin':return Math.sin(x);case 'cos':return Math.cos(x);case 'tan':return Math.tan(x);
+    case 'csc':var s=Math.sin(x);return Math.abs(s)<1e-9?NaN:1/s;
+    case 'sec':var c=Math.cos(x);return Math.abs(c)<1e-9?NaN:1/c;
+    case 'cot':var t=Math.tan(x);return Math.abs(t)<1e-9?NaN:1/t;
+  }
+}
+
+document.getElementById('funcSelect').addEventListener('click',function(e){
+  var b=e.target.closest('.toggle-btn');if(!b)return;
+  this.querySelectorAll('.toggle-btn').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');graphFn=b.dataset.fn;drawGraph();
+});
+document.getElementById('funcSelect2').addEventListener('click',function(e){
+  var b=e.target.closest('.toggle-btn');if(!b)return;
+  this.querySelectorAll('.toggle-btn').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');graphFn2=b.dataset.fn;drawGraph();
+});
+
+['slA','slB','slC','slD','slA2','slB2','slC2','slD2'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('input',function(){
+    var vid=id.replace('sl','val');
+    document.getElementById(vid).textContent=parseFloat(this.value).toFixed(id==='slC'||id==='slC2'?2:1);
+    drawGraph();
+  });
+});
+
+document.getElementById('compare2').addEventListener('change',function(){
+  document.getElementById('compare2Controls').style.display=this.checked?'block':'none';
+  drawGraph();
+});
+
+function drawGraph(){
+  var c=graphCanvas,ctx=graphCtx,w=c.width,h=c.height;
+  var A=parseFloat(document.getElementById('slA').value);
+  var B=parseFloat(document.getElementById('slB').value);
+  var C=parseFloat(document.getElementById('slC').value);
+  var D=parseFloat(document.getElementById('slD').value);
+  ctx.clearRect(0,0,w,h);
+
+  var xMin=-TAU,xMax=TAU,yMin=-6,yMax=6;
+  var xRange=xMax-xMin,yRange=yMax-yMin;
+  function toX(v){return(v-xMin)/xRange*w}
+  function toY(v){return h-(v-yMin)/yRange*h}
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;
+  for(var gx=-6;gx<=6;gx++){var px=toX(gx);ctx.beginPath();ctx.moveTo(px,0);ctx.lineTo(px,h);ctx.stroke()}
+  for(var gy=-5;gy<=5;gy++){var py=toY(gy);ctx.beginPath();ctx.moveTo(0,py);ctx.lineTo(w,py);ctx.stroke()}
+
+  // Axes
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,toY(0));ctx.lineTo(w,toY(0));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(toX(0),0);ctx.lineTo(toX(0),h);ctx.stroke();
+
+  // Labels
+  ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='10px JetBrains Mono';ctx.textAlign='center';
+  [-2,-1,1,2].forEach(function(n){
+    ctx.fillText(n+'\u03C0',toX(n*PI),toY(0)+14);
+  });
+  ctx.textAlign='right';
+  for(var ly=-5;ly<=5;ly++){if(ly===0)continue;ctx.fillText(ly,toX(0)-6,toY(ly)+4)}
+
+  // Plot function
+  function plotFn(fn,A,B,C,D,color){
+    ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
+    var started=false;
+    for(var i=0;i<w;i++){
+      var x=xMin+i/w*xRange;
+      var y=A*trigFn(fn,B*x+C)+D;
+      if(!isFinite(y)||Math.abs(y)>50){started=false;continue}
+      var py=toY(y);
+      if(!started){ctx.moveTo(i,py);started=true}else{ctx.lineTo(i,py)}
+    }
+    ctx.stroke();
+  }
+
+  plotFn(graphFn,A,B,C,D,'#00e5ff');
+
+  // Key points (max, min, zeros) for primary
+  if(graphFn==='sin'||graphFn==='cos'){
+    var period=TAU/B;
+    var phaseShift=-C/B;
+    // Mark a few key points
+    ctx.fillStyle='rgba(0,229,255,.8)';
+    for(var kx=xMin;kx<=xMax;kx+=period/4){
+      var x=kx+phaseShift;
+      if(x<xMin||x>xMax)continue;
+      var y=A*trigFn(graphFn,B*x+C)+D;
+      if(isFinite(y)){
+        ctx.beginPath();ctx.arc(toX(x),toY(y),4,0,TAU);ctx.fill();
+      }
+    }
+  }
+
+  // Compare
+  if(document.getElementById('compare2').checked){
+    var A2=parseFloat(document.getElementById('slA2').value);
+    var B2=parseFloat(document.getElementById('slB2').value);
+    var C2=parseFloat(document.getElementById('slC2').value);
+    var D2=parseFloat(document.getElementById('slD2').value);
+    plotFn(graphFn2,A2,B2,C2,D2,'#ec4899');
+  }
+
+  // Info tags
+  document.getElementById('graphAmp').textContent='Amplitude: '+Math.abs(A).toFixed(1);
+  document.getElementById('graphPeriod').textContent='Period: '+(TAU/B).toFixed(3);
+  document.getElementById('graphPhase').textContent='Phase Shift: '+(-C/B).toFixed(3);
+  document.getElementById('graphVShift').textContent='Vertical Shift: '+D.toFixed(1);
+}
+drawGraph();
+
+/* ══════════════════════════════════════════
+   TAB 3: TRIANGLE SOLVER
+   ══════════════════════════════════════════ */
+var triMode='SSS';
+var triModeFields={
+  SSS:['a','b','c'],
+  SAS:['a','C','b'],
+  ASA:['A','c','B'],
+  AAS:['A','B','a'],
+  SSA:['a','b','A']
+};
+
+document.getElementById('triMode').addEventListener('click',function(e){
+  var b=e.target.closest('.btn');if(!b)return;
+  this.querySelectorAll('.btn').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');
+  triMode=b.dataset.mode;
+  buildTriInputs();
+});
+
+function buildTriInputs(){
+  var fields=triModeFields[triMode];
+  var el=document.getElementById('triInputs');
+  el.innerHTML=fields.map(function(f){
+    var isAngle=f===f.toUpperCase();
+    return '<div class="field"><label>'+f+(isAngle?' (degrees)':'')+'</label><input type="number" id="tri_'+f+'" step="any" placeholder="'+(isAngle?'angle':'side')+'"></div>';
+  }).join('');
+}
+buildTriInputs();
+
+document.getElementById('triSolveBtn').addEventListener('click',solveTriangle);
+
+function solveTriangle(){
+  var fields=triModeFields[triMode];
+  var vals={};
+  var valid=true;
+  fields.forEach(function(f){
+    var v=parseFloat(document.getElementById('tri_'+f).value);
+    if(isNaN(v)||v<=0){valid=false}
+    vals[f]=v;
+  });
+  if(!valid){
+    document.getElementById('triSolution').innerHTML='<span style="color:var(--red)">Please enter all positive values.</span>';
+    return;
+  }
+
+  var a,b,c,A,B,C;
+  var steps=[];
+  var solutions=[];
+
+  try{
+    switch(triMode){
+      case 'SSS':
+        a=vals.a;b=vals.b;c=vals.c;
+        if(a+b<=c||a+c<=b||b+c<=a){throw'Invalid triangle: sides do not satisfy triangle inequality.';}
+        A=Math.acos((b*b+c*c-a*a)/(2*b*c));
+        B=Math.acos((a*a+c*c-b*b)/(2*a*c));
+        C=PI-A-B;
+        steps.push('Using Law of Cosines: cos(A) = (b\u00B2 + c\u00B2 - a\u00B2) / (2bc)');
+        steps.push('A = arccos(('+(b*b).toFixed(2)+' + '+(c*c).toFixed(2)+' - '+(a*a).toFixed(2)+') / '+(2*b*c).toFixed(2)+') = '+fmt(rad2deg(A),2)+'°');
+        steps.push('Similarly B = '+fmt(rad2deg(B),2)+'°');
+        steps.push('C = 180° - A - B = '+fmt(rad2deg(C),2)+'°');
+        solutions.push({a:a,b:b,c:c,A:A,B:B,C:C});
+        break;
+
+      case 'SAS':
+        a=vals.a;b=vals.b;C=deg2rad(vals.C);
+        c=Math.sqrt(a*a+b*b-2*a*b*Math.cos(C));
+        A=Math.acos((b*b+c*c-a*a)/(2*b*c));
+        B=PI-A-C;
+        steps.push('Using Law of Cosines: c\u00B2 = a\u00B2 + b\u00B2 - 2ab\u00B7cos(C)');
+        steps.push('c = \u221A('+(a*a).toFixed(2)+' + '+(b*b).toFixed(2)+' - '+(2*a*b*Math.cos(C)).toFixed(2)+') = '+fmt(c,4));
+        steps.push('A = arccos(...) = '+fmt(rad2deg(A),2)+'°');
+        steps.push('B = 180° - A - C = '+fmt(rad2deg(B),2)+'°');
+        solutions.push({a:a,b:b,c:c,A:A,B:B,C:C});
+        break;
+
+      case 'ASA':
+        A=deg2rad(vals.A);B=deg2rad(vals.B);c=vals.c;
+        C=PI-A-B;
+        if(C<=0)throw'Angles must sum to less than 180°.';
+        a=c*Math.sin(A)/Math.sin(C);
+        b=c*Math.sin(B)/Math.sin(C);
+        steps.push('C = 180° - A - B = '+fmt(rad2deg(C),2)+'°');
+        steps.push('Using Law of Sines: a/sin(A) = c/sin(C)');
+        steps.push('a = '+fmt(c,4)+' \u00D7 sin('+fmt(rad2deg(A),2)+'°) / sin('+fmt(rad2deg(C),2)+'°) = '+fmt(a,4));
+        steps.push('b = '+fmt(b,4));
+        solutions.push({a:a,b:b,c:c,A:A,B:B,C:C});
+        break;
+
+      case 'AAS':
+        A=deg2rad(vals.A);B=deg2rad(vals.B);a=vals.a;
+        C=PI-A-B;
+        if(C<=0)throw'Angles must sum to less than 180°.';
+        b=a*Math.sin(B)/Math.sin(A);
+        c=a*Math.sin(C)/Math.sin(A);
+        steps.push('C = 180° - A - B = '+fmt(rad2deg(C),2)+'°');
+        steps.push('Using Law of Sines: b = a\u00B7sin(B)/sin(A) = '+fmt(b,4));
+        steps.push('c = a\u00B7sin(C)/sin(A) = '+fmt(c,4));
+        solutions.push({a:a,b:b,c:c,A:A,B:B,C:C});
+        break;
+
+      case 'SSA':
+        a=vals.a;b=vals.b;A=deg2rad(vals.A);
+        var sinB=b*Math.sin(A)/a;
+        if(Math.abs(sinB)>1)throw'No valid triangle exists with these values.';
+        steps.push('Using Law of Sines: sin(B) = b\u00B7sin(A)/a = '+fmt(sinB,4));
+        var B1=Math.asin(sinB);
+        var B2=PI-B1;
+        // Solution 1
+        var C1=PI-A-B1;
+        if(C1>0){
+          var c1=a*Math.sin(C1)/Math.sin(A);
+          steps.push('Solution 1: B = '+fmt(rad2deg(B1),2)+'°, C = '+fmt(rad2deg(C1),2)+'°, c = '+fmt(c1,4));
+          solutions.push({a:a,b:b,c:c1,A:A,B:B1,C:C1});
+        }
+        // Solution 2 (ambiguous case)
+        var C2p=PI-A-B2;
+        if(C2p>0&&Math.abs(B2-B1)>1e-9){
+          var c2=a*Math.sin(C2p)/Math.sin(A);
+          steps.push('Solution 2 (ambiguous): B = '+fmt(rad2deg(B2),2)+'°, C = '+fmt(rad2deg(C2p),2)+'°, c = '+fmt(c2,4));
+          solutions.push({a:a,b:b,c:c2,A:A,B:B2,C:C2p});
+        }
+        if(solutions.length===0)throw'No valid triangle.';
+        if(solutions.length===2)steps.push('SSA ambiguous case: two valid triangles found!');
+        break;
+    }
+  }catch(err){
+    document.getElementById('triSolution').innerHTML='<span style="color:var(--red)">'+err+'</span>';
+    document.getElementById('triSteps').innerHTML='<span style="color:var(--red)">'+err+'</span>';
+    return;
+  }
+
+  // Display solutions
+  var html='';
+  solutions.forEach(function(sol,idx){
+    if(solutions.length>1)html+='<div style="color:var(--gold);font-weight:600;margin-bottom:6px">Solution '+(idx+1)+'</div>';
+    var area=0.5*sol.b*sol.c*Math.sin(sol.A);
+    var s2=(sol.a+sol.b+sol.c)/2;
+    var areaH=Math.sqrt(s2*(s2-sol.a)*(s2-sol.b)*(s2-sol.c));
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+    html+='<div>a = '+fmt(sol.a,4)+'</div><div>A = '+fmt(rad2deg(sol.A),2)+'°</div>';
+    html+='<div>b = '+fmt(sol.b,4)+'</div><div>B = '+fmt(rad2deg(sol.B),2)+'°</div>';
+    html+='<div>c = '+fmt(sol.c,4)+'</div><div>C = '+fmt(rad2deg(sol.C),2)+'°</div>';
+    html+='</div>';
+    html+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">';
+    html+='<span class="info-tag cyan">Area (sin) = '+fmt(area,4)+'</span>';
+    html+='<span class="info-tag purple">Area (Heron) = '+fmt(areaH,4)+'</span>';
+    html+='</div>';
+    if(idx<solutions.length-1)html+='<hr style="border-color:var(--border);margin:12px 0">';
+  });
+  document.getElementById('triSolution').innerHTML=html;
+
+  // Steps
+  document.getElementById('triSteps').innerHTML=steps.map(function(s,i){
+    return '<div><span class="step-num">'+(i+1)+'</span>'+s+'</div>';
+  }).join('');
+
+  // Draw first solution
+  drawTriangle(solutions[0]);
+}
+
+function drawTriangle(sol){
+  var c=document.getElementById('triCanvas'),ctx=c.getContext('2d'),w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var pad=60;
+  // Place triangle: A at origin, B along x-axis at distance c, C computed
+  var Ax=0,Ay=0;
+  var Bx=sol.c,By=0;
+  var Cx=sol.b*Math.cos(sol.A),Cy=-sol.b*Math.sin(sol.A);
+
+  // Scale to fit
+  var pts=[[Ax,Ay],[Bx,By],[Cx,Cy]];
+  var minX=Math.min(Ax,Bx,Cx),maxX=Math.max(Ax,Bx,Cx);
+  var minY=Math.min(Ay,By,Cy),maxY=Math.max(Ay,By,Cy);
+  var rangeX=maxX-minX||1,rangeY=maxY-minY||1;
+  var scale=Math.min((w-2*pad)/rangeX,(h-2*pad)/rangeY);
+  var offX=pad+(w-2*pad-rangeX*scale)/2-minX*scale;
+  var offY=pad+(h-2*pad-rangeY*scale)/2-minY*scale;
+
+  function tx(x,y){return[x*scale+offX,y*scale+offY]}
+
+  var pA=tx(Ax,Ay),pB=tx(Bx,By),pC=tx(Cx,Cy);
+
+  // Fill
+  ctx.fillStyle='rgba(0,229,255,.06)';
+  ctx.beginPath();ctx.moveTo(pA[0],pA[1]);ctx.lineTo(pB[0],pB[1]);ctx.lineTo(pC[0],pC[1]);ctx.closePath();ctx.fill();
+
+  // Sides
+  ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pA[0],pA[1]);ctx.lineTo(pB[0],pB[1]);ctx.lineTo(pC[0],pC[1]);ctx.closePath();ctx.stroke();
+
+  // Labels
+  ctx.font='bold 13px JetBrains Mono';ctx.textAlign='center';
+  // Side a (B to C)
+  ctx.fillStyle='#00e5ff';
+  ctx.fillText('a='+fmt(sol.a,2),(pB[0]+pC[0])/2+12,(pB[1]+pC[1])/2);
+  // Side b (A to C)
+  ctx.fillStyle='#a855f7';
+  ctx.fillText('b='+fmt(sol.b,2),(pA[0]+pC[0])/2-12,(pA[1]+pC[1])/2);
+  // Side c (A to B)
+  ctx.fillStyle='#ec4899';
+  ctx.fillText('c='+fmt(sol.c,2),(pA[0]+pB[0])/2,(pA[1]+pB[1])/2+20);
+
+  // Angle labels
+  ctx.font='11px JetBrains Mono';
+  ctx.fillStyle='#facc15';
+  ctx.fillText('A='+fmt(rad2deg(sol.A),1)+'°',pA[0]-8,pA[1]-12);
+  ctx.fillText('B='+fmt(rad2deg(sol.B),1)+'°',pB[0]+8,pB[1]-12);
+  ctx.fillText('C='+fmt(rad2deg(sol.C),1)+'°',pC[0],pC[1]-12);
+}
+
+/* ══════════════════════════════════════════
+   TAB 4: IDENTITY VERIFIER
+   ══════════════════════════════════════════ */
+var identities={
+  pythagorean:[
+    {name:'sin\u00B2 + cos\u00B2 = 1',latex:'\\sin^2\\theta + \\cos^2\\theta = 1',
+     lhs:function(t){return Math.sin(t)**2+Math.cos(t)**2},rhs:function(){return 1}},
+    {name:'1 + tan\u00B2 = sec\u00B2',latex:'1 + \\tan^2\\theta = \\sec^2\\theta',
+     lhs:function(t){return 1+Math.tan(t)**2},rhs:function(t){return 1/Math.cos(t)**2}},
+    {name:'1 + cot\u00B2 = csc\u00B2',latex:'1 + \\cot^2\\theta = \\csc^2\\theta',
+     lhs:function(t){var s=Math.sin(t);return 1+(Math.cos(t)/s)**2},rhs:function(t){return 1/Math.sin(t)**2}}
+  ],
+  double:[
+    {name:'sin(2\u03B8) = 2sin\u03B8cos\u03B8',latex:'\\sin(2\\theta) = 2\\sin\\theta\\cos\\theta',
+     lhs:function(t){return Math.sin(2*t)},rhs:function(t){return 2*Math.sin(t)*Math.cos(t)}},
+    {name:'cos(2\u03B8) = cos\u00B2\u03B8 - sin\u00B2\u03B8',latex:'\\cos(2\\theta) = \\cos^2\\theta - \\sin^2\\theta',
+     lhs:function(t){return Math.cos(2*t)},rhs:function(t){return Math.cos(t)**2-Math.sin(t)**2}},
+    {name:'cos(2\u03B8) = 2cos\u00B2\u03B8 - 1',latex:'\\cos(2\\theta) = 2\\cos^2\\theta - 1',
+     lhs:function(t){return Math.cos(2*t)},rhs:function(t){return 2*Math.cos(t)**2-1}},
+    {name:'tan(2\u03B8) = 2tan\u03B8/(1-tan\u00B2\u03B8)',latex:'\\tan(2\\theta) = \\frac{2\\tan\\theta}{1 - \\tan^2\\theta}',
+     lhs:function(t){return Math.tan(2*t)},rhs:function(t){return 2*Math.tan(t)/(1-Math.tan(t)**2)}}
+  ],
+  half:[
+    {name:'sin(\u03B8/2) = \u00B1\u221A((1-cos\u03B8)/2)',latex:'\\sin\\frac{\\theta}{2} = \\pm\\sqrt{\\frac{1 - \\cos\\theta}{2}}',
+     lhs:function(t){return Math.sin(t/2)},rhs:function(t){var v=Math.sqrt((1-Math.cos(t))/2);return Math.sin(t/2)>=0?v:-v}},
+    {name:'cos(\u03B8/2) = \u00B1\u221A((1+cos\u03B8)/2)',latex:'\\cos\\frac{\\theta}{2} = \\pm\\sqrt{\\frac{1 + \\cos\\theta}{2}}',
+     lhs:function(t){return Math.cos(t/2)},rhs:function(t){var v=Math.sqrt((1+Math.cos(t))/2);return Math.cos(t/2)>=0?v:-v}}
+  ],
+  sum:[
+    {name:'sin(A+B) = sinAcosB + cosAsinB',latex:'\\sin(A+B) = \\sin A\\cos B + \\cos A\\sin B',
+     lhs:function(t){return Math.sin(t+PI/6)},rhs:function(t){return Math.sin(t)*Math.cos(PI/6)+Math.cos(t)*Math.sin(PI/6)},
+     note:'(B = \u03C0/6)'},
+    {name:'cos(A-B) = cosAcosB + sinAsinB',latex:'\\cos(A-B) = \\cos A\\cos B + \\sin A\\sin B',
+     lhs:function(t){return Math.cos(t-PI/4)},rhs:function(t){return Math.cos(t)*Math.cos(PI/4)+Math.sin(t)*Math.sin(PI/4)},
+     note:'(B = \u03C0/4)'}
+  ],
+  reciprocal:[
+    {name:'csc\u03B8 = 1/sin\u03B8',latex:'\\csc\\theta = \\frac{1}{\\sin\\theta}',
+     lhs:function(t){return 1/Math.sin(t)},rhs:function(t){return 1/Math.sin(t)}},
+    {name:'sec\u03B8 = 1/cos\u03B8',latex:'\\sec\\theta = \\frac{1}{\\cos\\theta}',
+     lhs:function(t){return 1/Math.cos(t)},rhs:function(t){return 1/Math.cos(t)}},
+    {name:'cot\u03B8 = 1/tan\u03B8',latex:'\\cot\\theta = \\frac{1}{\\tan\\theta}',
+     lhs:function(t){return 1/Math.tan(t)},rhs:function(t){return Math.cos(t)/Math.sin(t)}}
+  ],
+  cofunction:[
+    {name:'sin\u03B8 = cos(90\u00B0-\u03B8)',latex:'\\sin\\theta = \\cos(90° - \\theta)',
+     lhs:function(t){return Math.sin(t)},rhs:function(t){return Math.cos(PI/2-t)}},
+    {name:'tan\u03B8 = cot(90\u00B0-\u03B8)',latex:'\\tan\\theta = \\cot(90° - \\theta)',
+     lhs:function(t){return Math.tan(t)},rhs:function(t){return 1/Math.tan(PI/2-t)}},
+    {name:'sec\u03B8 = csc(90\u00B0-\u03B8)',latex:'\\sec\\theta = \\csc(90° - \\theta)',
+     lhs:function(t){return 1/Math.cos(t)},rhs:function(t){return 1/Math.sin(PI/2-t)}}
+  ]
+};
+
+var idCat='pythagorean';
+
+document.getElementById('idCatTabs').addEventListener('click',function(e){
+  var b=e.target.closest('.cat-tab');if(!b)return;
+  this.querySelectorAll('.cat-tab').forEach(function(x){x.classList.remove('active')});
+  b.classList.add('active');idCat=b.dataset.cat;
+  verifyIdentities();
+});
+
+document.getElementById('idVerifyBtn').addEventListener('click',verifyIdentities);
+document.getElementById('idRandomBtn').addEventListener('click',function(){
+  document.getElementById('idAngle').value=Math.floor(Math.random()*350+1);
+  verifyIdentities();
+});
+
+function verifyIdentities(){
+  var theta=deg2rad(parseFloat(document.getElementById('idAngle').value)||30);
+  var list=identities[idCat]||[];
+  var el=document.getElementById('idCards');
+  el.innerHTML=list.map(function(id){
+    var l,r;
+    try{l=id.lhs(theta);r=id.rhs(theta)}catch(e){l=NaN;r=NaN}
+    var match=isFinite(l)&&isFinite(r)&&Math.abs(l-r)<1e-8;
+    var matchClass=match?'id-match':'id-mismatch';
+    var matchText=match?'MATCH':'MISMATCH';
+    return '<div class="identity-card"><div class="id-name">'+id.name+(id.note?' <span style="color:var(--muted);font-family:Poppins">'+id.note+'</span>':'')+'</div>'+
+      '<div class="id-formula">\\('+id.latex+'\\)</div>'+
+      '<div class="id-verify">LHS = '+fmt(l,8)+' &nbsp; RHS = '+fmt(r,8)+' &nbsp; <span class="'+matchClass+'">'+matchText+'</span></div></div>';
+  }).join('');
+  if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise([el]);
+}
+verifyIdentities();
+
+/* ══════════════════════════════════════════
+   TAB 5: RADIAN / DEGREE CONVERTER
+   ══════════════════════════════════════════ */
+var gaugeCanvas=document.getElementById('gaugeCanvas');
+var gaugeCtx=gaugeCanvas.getContext('2d');
+
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a}
+
+function degToExactRad(deg){
+  // Return exact fraction of pi
+  var n=deg,d=180;
+  var g=gcd(Math.round(n),Math.round(d));
+  n=Math.round(n/g);d=Math.round(d/g);
+  if(n===0)return '0';
+  var s='';
+  if(n<0){s='-';n=-n}
+  if(d===1)return s+(n===1?'\u03C0':n+'\u03C0');
+  return s+(n===1?'':n)+'\u03C0/'+d;
+}
+
+document.getElementById('rdDegToRad').addEventListener('click',function(){
+  var deg=parseFloat(document.getElementById('rdDeg').value);
+  if(isNaN(deg))return;
+  var rad=deg2rad(deg);
+  var exact=degToExactRad(deg);
+  document.getElementById('rdRad').value=exact;
+  document.getElementById('rdResult').innerHTML=
+    '<div class="val-box"><div class="label">Decimal</div><div class="value" style="color:var(--cyan)">'+fmt(rad,6)+' rad</div></div>'+
+    '<div class="val-box"><div class="label">Exact</div><div class="value" style="color:var(--gold)">'+exact+'</div></div>';
+  drawGauge(deg);
+});
+
+document.getElementById('rdRadToDeg').addEventListener('click',function(){
+  var raw=document.getElementById('rdRad').value.trim().replace(/\s/g,'');
+  var rad;
+  // Parse expressions like pi/6, 2pi/3, etc.
+  if(raw.match(/^-?[0-9]*\.?[0-9]*$/)){
+    rad=parseFloat(raw);
+  }else{
+    var expr=raw.replace(/pi/gi,String(PI)).replace(/\u03C0/g,String(PI));
+    try{rad=Function('"use strict";return ('+expr+')')()}catch(e){rad=NaN}
+  }
+  if(isNaN(rad))return;
+  var deg=rad2deg(rad);
+  document.getElementById('rdDeg').value=fmt(deg,6);
+  document.getElementById('rdResult').innerHTML=
+    '<div class="val-box"><div class="label">Degrees</div><div class="value" style="color:var(--cyan)">'+fmt(deg,6)+'°</div></div>'+
+    '<div class="val-box"><div class="label">Radians</div><div class="value" style="color:var(--gold)">'+fmt(rad,6)+'</div></div>';
+  drawGauge(deg);
+});
+
+// DMS
+document.getElementById('dmsConvert').addEventListener('click',function(){
+  var d=parseFloat(document.getElementById('dmsD').value)||0;
+  var m=parseFloat(document.getElementById('dmsM').value)||0;
+  var s=parseFloat(document.getElementById('dmsS').value)||0;
+  var decimal=d+m/60+s/3600;
+  var rad=deg2rad(decimal);
+  // Also reverse: decimal to DMS
+  var dd=Math.floor(Math.abs(decimal));
+  var mm=Math.floor((Math.abs(decimal)-dd)*60);
+  var ss=((Math.abs(decimal)-dd)*60-mm)*60;
+  var sign=decimal<0?'-':'';
+  document.getElementById('dmsResult').innerHTML=
+    'Decimal: '+fmt(decimal,6)+'° = '+fmt(rad,6)+' rad<br>'+
+    'DMS: '+sign+dd+'° '+mm+'\' '+fmt(ss,2)+'"';
+  drawGauge(decimal);
+});
+
+function drawGauge(deg){
+  if(deg===undefined)deg=parseFloat(document.getElementById('rdDeg').value)||0;
+  var c=gaugeCanvas,ctx=gaugeCtx,w=c.width,h=c.height;
+  var cx=w/2,cy=h/2,R=w*0.38;
+  ctx.clearRect(0,0,w,h);
+
+  // Circle
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.stroke();
+
+  // Angle arc
+  var a=deg2rad(deg);
+  ctx.strokeStyle='#00e5ff';ctx.lineWidth=4;
+  ctx.beginPath();ctx.arc(cx,cy,R,-0,-a,a>0);ctx.stroke();
+
+  // Needle
+  var nx=cx+R*Math.cos(-a),ny=cy+R*Math.sin(-a);
+  ctx.strokeStyle='#facc15';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);ctx.stroke();
+
+  // Dot
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(nx,ny,5,0,TAU);ctx.fill();
+
+  // Center label
+  ctx.fillStyle='#fff';ctx.font='bold 16px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(fmt(deg,2)+'°',cx,cy);
+  ctx.font='11px JetBrains Mono';ctx.fillStyle='var(--muted)';
+  ctx.fillText(fmt(a,4)+' rad',cx,cy+20);
+}
+drawGauge();
+
+/* ══════════════════════════════════════════
+   TAB 6: TRIG CALCULATOR
+   ══════════════════════════════════════════ */
+var tcUnit='deg';
+document.querySelectorAll('#tcDeg,#tcRad').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.getElementById('tcDeg').classList.toggle('active',this.dataset.unit==='deg');
+    document.getElementById('tcRad').classList.toggle('active',this.dataset.unit==='rad');
+    tcUnit=this.dataset.unit;
+  });
+});
+
+document.getElementById('tcCalcBtn').addEventListener('click',calcTrig);
+
+function calcTrig(){
+  var v=parseFloat(document.getElementById('tcAngle').value)||0;
+  var rad=tcUnit==='deg'?deg2rad(v):v;
+  var deg=tcUnit==='deg'?v:rad2deg(v);
+
+  var s=Math.sin(rad),c=Math.cos(rad),t=Math.tan(rad);
+  var vals=[
+    {label:'sin',value:fmt(s,8),color:'var(--cyan)'},
+    {label:'cos',value:fmt(c,8),color:'var(--purple)'},
+    {label:'tan',value:fmt(t,8),color:'var(--pink)'},
+    {label:'csc',value:fmt(1/s,8),color:'var(--gold)'},
+    {label:'sec',value:fmt(1/c,8),color:'var(--green)'},
+    {label:'cot',value:fmt(c/s,8),color:'var(--orange)'}
+  ];
+
+  // Check exact values
+  var degN=((deg%360)+360)%360;
+  var ev=exactVals[Math.round(degN)];
+
+  var el=document.getElementById('tcValues');
+  el.innerHTML=vals.map(function(vl){
+    return '<div class="val-box"><div class="label">'+vl.label+'</div><div class="value" style="color:'+vl.color+'">'+vl.value+'</div></div>';
+  }).join('');
+
+  if(ev){
+    el.innerHTML+='<div class="val-box" style="grid-column:1/-1;border-color:var(--gold)"><div class="label">Exact Values</div><div class="value" style="font-size:.85rem">sin='+ev.s+' &nbsp; cos='+ev.c+' &nbsp; tan='+ev.t+'</div></div>';
+  }
+
+  drawRightTriangle(rad,deg);
+}
+
+function drawRightTriangle(rad,deg){
+  var c=document.getElementById('rtCanvas'),ctx=c.getContext('2d'),w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var pad=50;
+  // Normalize angle
+  var a=Math.abs(rad)%(PI/2);if(a<0.01)a=PI/6;
+  var hyp=Math.min(w,h)-2*pad;
+  var adj=hyp*Math.cos(a),opp=hyp*Math.sin(a);
+
+  var x0=pad,y0=h-pad;
+
+  // Fill
+  ctx.fillStyle='rgba(0,229,255,.05)';
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0+adj,y0);ctx.lineTo(x0+adj,y0-opp);ctx.closePath();ctx.fill();
+
+  // Sides
+  ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0+adj,y0);ctx.lineTo(x0+adj,y0-opp);ctx.closePath();ctx.stroke();
+
+  // Right angle marker
+  var m=12;
+  ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(x0+adj-m,y0);ctx.lineTo(x0+adj-m,y0-m);ctx.lineTo(x0+adj,y0-m);ctx.stroke();
+
+  // Labels
+  ctx.font='bold 12px JetBrains Mono';ctx.textAlign='center';
+  ctx.fillStyle='#00e5ff';ctx.fillText('opp',x0+adj+24,(y0+y0-opp)/2);
+  ctx.fillStyle='#a855f7';ctx.fillText('adj',(x0+x0+adj)/2,y0+18);
+  ctx.fillStyle='#ec4899';ctx.fillText('hyp',(x0+x0+adj)/2-16,(y0+y0-opp)/2-10);
+
+  // Angle
+  ctx.strokeStyle='#facc15';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(x0,y0,24,0,-a,true);ctx.stroke();
+  ctx.fillStyle='#facc15';ctx.font='11px JetBrains Mono';
+  ctx.fillText(fmt(rad2deg(a),1)+'°',x0+38,y0-8);
+}
+
+calcTrig();
+
+// Inverse trig
+document.getElementById('tcInvBtn').addEventListener('click',function(){
+  var val=parseFloat(document.getElementById('tcInvVal').value);
+  var fn=document.getElementById('tcInvFn').value;
+  var result;
+  try{result=Math[fn](val)}catch(e){result=NaN}
+  if(isNaN(result)){
+    document.getElementById('tcInvResult').innerHTML='<span style="color:var(--red)">Value out of domain.</span>';
+    return;
+  }
+  var deg=rad2deg(result);
+  document.getElementById('tcInvResult').innerHTML=
+    fn+'('+val+') = '+fmt(result,6)+' rad = '+fmt(deg,4)+'°';
+});
+
+// Exact values table
+(function(){
+  var tb=document.querySelector('#exactTable tbody');
+  var angles=[0,30,45,60,90,120,135,150,180,270,360];
+  var exactFull={
+    0:{s:'0',c:'1',t:'0',csc:'undef',sec:'1',cot:'undef'},
+    30:{s:'1/2',c:'\u221A3/2',t:'\u221A3/3',csc:'2',sec:'2\u221A3/3',cot:'\u221A3'},
+    45:{s:'\u221A2/2',c:'\u221A2/2',t:'1',csc:'\u221A2',sec:'\u221A2',cot:'1'},
+    60:{s:'\u221A3/2',c:'1/2',t:'\u221A3',csc:'2\u221A3/3',sec:'2',cot:'\u221A3/3'},
+    90:{s:'1',c:'0',t:'undef',csc:'1',sec:'undef',cot:'0'},
+    120:{s:'\u221A3/2',c:'-1/2',t:'-\u221A3',csc:'2\u221A3/3',sec:'-2',cot:'-\u221A3/3'},
+    135:{s:'\u221A2/2',c:'-\u221A2/2',t:'-1',csc:'\u221A2',sec:'-\u221A2',cot:'-1'},
+    150:{s:'1/2',c:'-\u221A3/2',t:'-\u221A3/3',csc:'2',sec:'-2\u221A3/3',cot:'-\u221A3'},
+    180:{s:'0',c:'-1',t:'0',csc:'undef',sec:'-1',cot:'undef'},
+    270:{s:'-1',c:'0',t:'undef',csc:'-1',sec:'undef',cot:'0'},
+    360:{s:'0',c:'1',t:'0',csc:'undef',sec:'1',cot:'undef'}
+  };
+  angles.forEach(function(d){
+    var v=exactFull[d];
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+d+'°</td><td>'+v.s+'</td><td>'+v.c+'</td><td>'+v.t+'</td><td>'+v.csc+'</td><td>'+v.sec+'</td><td>'+v.cot+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+
+/* ── Back to top ── */
+var btt=document.getElementById('backToTop');
+if(btt){
+  window.addEventListener('scroll',function(){btt.style.display=window.scrollY>300?'block':'none'},{passive:true});
+  btt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  btt.style.display='none';
+  btt.style.cssText+='position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:none;cursor:pointer;font-size:1.2rem;line-height:44px;text-align:center;z-index:100;';
+}
+
+})();
+</script>
+</body>
+</html>

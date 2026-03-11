@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Number Theory Toolkit | TutorDA</title>
+  <meta name="description" content="Explore number theory: prime factorization with animated factor trees, GCD & LCM with Euclidean algorithm, divisibility tests, Sieve of Eratosthenes, modular arithmetic, and number properties.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --muted:#94a3b8;--text:#e8e8ff;--r:14px;
+      --green:#22c55e;--red:#ef4444;--orange:#ff8c00;
+      --mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 20px 60px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      background:var(--card);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:10px 20px;font-family:'Poppins',sans-serif;
+      font-size:.88rem;cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+    .btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;color:#fff;font-weight:600}
+    .btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn.sm{padding:6px 14px;font-size:.8rem}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+
+    .nav-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;justify-content:center}
+    .nav-tab{padding:8px 18px;border-radius:8px;background:var(--card);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-size:.85rem;transition:all .2s;font-family:'Poppins',sans-serif}
+    .nav-tab:hover{border-color:var(--cyan);color:var(--text)}
+    .nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+
+    .section-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:16px;
+      display:flex;align-items:center;gap:10px}
+    .section-title .icon{font-size:1.3rem}
+
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    label.lbl{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+    input.inp,select.inp{width:100%;padding:10px 14px;background:var(--card2);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:var(--mono);font-size:1rem;outline:none;transition:border-color .2s}
+    input.inp:focus,select.inp:focus{border-color:var(--cyan)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .row .field{flex:1;min-width:160px}
+
+    .badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:600}
+    .badge-cyan{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+    .badge-purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+    .badge-green{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .badge-red{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+    .badge-gold{background:rgba(250,204,21,.15);color:var(--gold);border:1px solid rgba(250,204,21,.3)}
+    .badge-pink{background:rgba(236,72,153,.15);color:var(--pink);border:1px solid rgba(236,72,153,.3)}
+
+    .result-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;
+      font-family:var(--mono);font-size:.95rem;line-height:1.7;overflow-x:auto}
+    .result-box .hl{color:var(--cyan);font-weight:700}
+    .result-box .hl-purple{color:var(--purple);font-weight:700}
+    .result-box .hl-gold{color:var(--gold);font-weight:700}
+    .result-box .hl-green{color:var(--green);font-weight:700}
+    .result-box .hl-red{color:var(--red);font-weight:700}
+
+    .step{padding:8px 14px;border-left:3px solid var(--cyan);margin:8px 0;background:rgba(0,229,255,.04);border-radius:0 8px 8px 0;font-size:.9rem}
+    .step.final{border-left-color:var(--gold);background:rgba(250,204,21,.06)}
+
+    /* Factor tree canvas */
+    #factorTreeCanvas{width:100%;border-radius:10px;background:var(--card2);border:1px solid var(--border)}
+
+    /* Divisors grid */
+    .divisors-grid{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+    .divisors-grid span{background:var(--card2);border:1px solid var(--border);border-radius:6px;
+      padding:4px 10px;font-family:var(--mono);font-size:.82rem}
+
+    /* Sieve grid */
+    .sieve-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:3px;margin:16px 0}
+    .sieve-cell{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:6px;
+      font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--card2);border:1px solid var(--border);
+      color:var(--text);transition:all .3s}
+    .sieve-cell.crossed{opacity:.35;text-decoration:line-through;color:var(--muted)}
+    .sieve-cell.cross-2{background:rgba(239,68,68,.2);border-color:var(--red)}
+    .sieve-cell.cross-3{background:rgba(255,140,0,.2);border-color:var(--orange)}
+    .sieve-cell.cross-5{background:rgba(250,204,21,.2);border-color:var(--gold)}
+    .sieve-cell.cross-7{background:rgba(236,72,153,.2);border-color:var(--pink)}
+    .sieve-cell.cross-other{background:rgba(168,85,247,.2);border-color:var(--purple)}
+    .sieve-cell.prime-found{background:rgba(0,229,255,.2);border-color:var(--cyan);color:var(--cyan);font-weight:700}
+    .sieve-cell.one{opacity:.3}
+
+    /* Divisibility table */
+    .div-table{width:100%;border-collapse:collapse}
+    .div-table th,.div-table td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:.88rem}
+    .div-table th{color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+    .div-table tr:hover{background:rgba(0,229,255,.03)}
+    .div-pass{color:var(--green);font-weight:700}
+    .div-fail{color:var(--red);font-weight:700}
+
+    /* Clock vis */
+    #clockCanvas{border-radius:50%;border:1px solid var(--border)}
+
+    /* Venn diagram */
+    #vennCanvas{width:100%;border-radius:10px;background:var(--card2);border:1px solid var(--border)}
+
+    /* Properties cards */
+    .prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:16px 0}
+    .prop-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+    .prop-card .prop-label{font-size:.75rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    .prop-card .prop-value{font-family:var(--mono);font-size:1rem;font-weight:600}
+
+    /* Two col layout */
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:700px){.two-col{grid-template-columns:1fr}}
+
+    .speed-row{display:flex;align-items:center;gap:12px;margin:12px 0;flex-wrap:wrap}
+    .speed-row label{font-size:.82rem;color:var(--muted)}
+    .speed-row input[type=range]{flex:1;min-width:120px;accent-color:var(--cyan)}
+
+    #backToTop{position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;
+      background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+      cursor:pointer;font-size:1.2rem;z-index:99;opacity:0;transition:opacity .3s}
+    #backToTop.show{opacity:1}
+
+    @media(max-width:600px){
+      .panel{padding:16px 12px}
+      .nav-tab{padding:6px 12px;font-size:.78rem}
+      .sieve-grid{grid-template-columns:repeat(auto-fill,minmax(32px,1fr))}
+      .sieve-cell{font-size:.62rem}
+      .div-table td,.div-table th{padding:8px 6px;font-size:.78rem}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="wrapper">
+
+  <div class="hero">
+    <div class="eyebrow">Interactive Math Tool</div>
+    <h1>Number Theory Toolkit</h1>
+    <p>Explore prime factorization, GCD & LCM, divisibility rules, the Sieve of Eratosthenes, modular arithmetic, and number properties -- all with step-by-step explanations and visualizations.</p>
+  </div>
+
+  <div class="nav-tabs" id="mainTabs">
+    <button class="nav-tab active" data-tab="primeFactors">Prime Factorization</button>
+    <button class="nav-tab" data-tab="gcdlcm">GCD & LCM</button>
+    <button class="nav-tab" data-tab="divisibility">Divisibility</button>
+    <button class="nav-tab" data-tab="sieve">Sieve</button>
+    <button class="nav-tab" data-tab="modular">Modular Arithmetic</button>
+    <button class="nav-tab" data-tab="properties">Number Properties</button>
+  </div>
+
+  <!-- ═══════════════ TAB 1: PRIME FACTORIZATION ═══════════════ -->
+  <div class="tab-content active" id="tab-primeFactors">
+    <div class="panel">
+      <div class="section-title"><span class="icon">🌳</span> Prime Factorization</div>
+      <div class="row">
+        <div class="field">
+          <label class="lbl">Enter a positive integer (up to 10,000,000)</label>
+          <input class="inp" type="number" id="pfInput" min="2" max="10000000" value="360" placeholder="e.g. 360">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn primary" onclick="runPrimeFactorization()">Factorize</button>
+        </div>
+      </div>
+      <div id="pfBadge" style="margin-bottom:12px"></div>
+      <div id="pfResult" class="result-box" style="display:none"></div>
+      <canvas id="factorTreeCanvas" height="350"></canvas>
+      <div id="pfDivisors" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB 2: GCD & LCM ═══════════════ -->
+  <div class="tab-content" id="tab-gcdlcm">
+    <div class="panel">
+      <div class="section-title"><span class="icon">🔗</span> GCD & LCM Calculator</div>
+      <div class="row">
+        <div class="field"><label class="lbl">Number A</label><input class="inp" type="number" id="gcdA" value="48" min="1"></div>
+        <div class="field"><label class="lbl">Number B</label><input class="inp" type="number" id="gcdB" value="36" min="1"></div>
+        <div class="field"><label class="lbl">Number C (optional)</label><input class="inp" type="number" id="gcdC" placeholder="optional" min="1"></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn primary" onclick="runGcdLcm()">Compute</button></div>
+      </div>
+      <div id="gcdResult"></div>
+      <div class="two-col" id="gcdMethods" style="display:none">
+        <div>
+          <h3 style="font-family:'Orbitron',sans-serif;font-size:.95rem;margin-bottom:10px;color:var(--cyan)">Euclidean Algorithm</h3>
+          <div id="euclidSteps"></div>
+        </div>
+        <div>
+          <h3 style="font-family:'Orbitron',sans-serif;font-size:.95rem;margin-bottom:10px;color:var(--purple)">Prime Factorization Method</h3>
+          <div id="pfMethodSteps"></div>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <canvas id="vennCanvas" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB 3: DIVISIBILITY ═══════════════ -->
+  <div class="tab-content" id="tab-divisibility">
+    <div class="panel">
+      <div class="section-title"><span class="icon">✅</span> Divisibility Tests</div>
+      <div class="row">
+        <div class="field"><label class="lbl">Enter a number</label><input class="inp" type="number" id="divInput" value="2520" min="1"></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn primary" onclick="runDivisibility()">Test</button></div>
+      </div>
+      <div id="divResult" style="overflow-x:auto"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB 4: SIEVE ═══════════════ -->
+  <div class="tab-content" id="tab-sieve">
+    <div class="panel">
+      <div class="section-title"><span class="icon">🔍</span> Sieve of Eratosthenes</div>
+      <div class="row">
+        <div class="field"><label class="lbl">Range (up to 500)</label><input class="inp" type="number" id="sieveMax" value="200" min="10" max="500"></div>
+        <div style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn primary" id="sieveRunBtn" onclick="runSieve()">Auto Play</button>
+          <button class="btn" id="sieveStepBtn" onclick="sieveStep()">Step</button>
+          <button class="btn" onclick="resetSieve()">Reset</button>
+        </div>
+      </div>
+      <div class="speed-row">
+        <label>Speed:</label>
+        <input type="range" id="sieveSpeed" min="1" max="10" value="5">
+        <span id="sieveSpeedLabel" style="font-size:.82rem;color:var(--cyan)">Medium</span>
+      </div>
+      <div id="sieveInfo" style="margin-bottom:8px;font-size:.88rem;color:var(--muted)"></div>
+      <div class="sieve-grid" id="sieveGrid"></div>
+      <div id="sieveResult" style="margin-top:12px"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB 5: MODULAR ARITHMETIC ═══════════════ -->
+  <div class="tab-content" id="tab-modular">
+    <div class="panel">
+      <div class="section-title"><span class="icon">🔄</span> Modular Arithmetic</div>
+      <div class="row">
+        <div class="field">
+          <label class="lbl">Operation</label>
+          <select class="inp" id="modOp" onchange="updateModInputs()">
+            <option value="mod">a mod n</option>
+            <option value="add">(a + b) mod n</option>
+            <option value="mul">(a &times; b) mod n</option>
+            <option value="exp">a^b mod n</option>
+            <option value="cong">a &equiv; b (mod n)?</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" id="modInputs">
+        <div class="field"><label class="lbl">a</label><input class="inp" type="number" id="modA" value="17"></div>
+        <div class="field" id="modBField"><label class="lbl">b</label><input class="inp" type="number" id="modB" value="5"></div>
+        <div class="field"><label class="lbl">n (modulus)</label><input class="inp" type="number" id="modN" value="12" min="1"></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn primary" onclick="runModular()">Compute</button></div>
+      </div>
+      <div id="modResult"></div>
+      <div style="text-align:center;margin-top:16px">
+        <canvas id="clockCanvas" width="280" height="280"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TAB 6: NUMBER PROPERTIES ═══════════════ -->
+  <div class="tab-content" id="tab-properties">
+    <div class="panel">
+      <div class="section-title"><span class="icon">📊</span> Number Properties</div>
+      <div class="row">
+        <div class="field"><label class="lbl">Enter a number</label><input class="inp" type="number" id="propInput" value="28" min="1"></div>
+        <div style="display:flex;align-items:flex-end"><button class="btn primary" onclick="runProperties()">Analyze</button></div>
+      </div>
+      <div class="prop-grid" id="propGrid"></div>
+      <div id="propDivisors"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#x1F51D;</div>
+<div id="footer-container"></div>
+
+<script>
+// ─── Header / Footer / BackToTop ───
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+window.addEventListener('scroll',()=>{
+  const b=document.getElementById('backToTop');
+  if(b) b.classList.toggle('show',window.scrollY>400);
+});
+
+// ─── Tab Navigation ───
+document.querySelectorAll('.nav-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ═══════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════
+function primeFactors(n){
+  const f={};
+  let d=2;
+  while(d*d<=n){while(n%d===0){f[d]=(f[d]||0)+1;n/=d}d++}
+  if(n>1) f[n]=(f[n]||0)+1;
+  return f;
+}
+function isPrime(n){
+  if(n<2)return false;if(n<4)return true;if(n%2===0||n%3===0)return false;
+  for(let i=5;i*i<=n;i+=6)if(n%i===0||n%(i+2)===0)return false;
+  return true;
+}
+function getDivisors(n){
+  const d=[];for(let i=1;i*i<=n;i++){if(n%i===0){d.push(i);if(i!==n/i)d.push(n/i)}}
+  return d.sort((a,b)=>a-b);
+}
+function gcd(a,b){while(b){[a,b]=[b,a%b]}return a}
+function lcm(a,b){return(a/gcd(a,b))*b}
+function formatFactors(f){
+  return Object.entries(f).map(([p,e])=>e>1?`${p}<sup>${e}</sup>`:p).join(' &times; ');
+}
+
+// ═══════════════════════════════════════════════
+// TAB 1: PRIME FACTORIZATION
+// ═══════════════════════════════════════════════
+function runPrimeFactorization(){
+  const n=parseInt(document.getElementById('pfInput').value);
+  if(!n||n<2||n>10000000){alert('Enter a number between 2 and 10,000,000');return}
+
+  // Badge
+  const bDiv=document.getElementById('pfBadge');
+  bDiv.innerHTML=isPrime(n)
+    ?'<span class="badge badge-cyan">Prime</span>'
+    :'<span class="badge badge-purple">Composite</span>';
+
+  // Factorization
+  const f=primeFactors(n);
+  const rDiv=document.getElementById('pfResult');
+  rDiv.style.display='block';
+
+  const totalDiv=Object.values(f).reduce((a,e)=>a*(e+1),1);
+  rDiv.innerHTML=`<span class="hl">${n}</span> = ${formatFactors(f)}<br>
+    <span style="color:var(--muted);font-size:.85rem">Number of divisors: ${Object.entries(f).map(([,e])=>`(${e}+1)`).join(' &times; ')} = <span class="hl-gold">${totalDiv}</span></span>`;
+
+  // Divisors
+  const divs=getDivisors(n);
+  const dDiv=document.getElementById('pfDivisors');
+  if(divs.length<=200){
+    dDiv.innerHTML='<div style="font-size:.85rem;color:var(--muted);margin-bottom:6px">All '+divs.length+' divisors:</div><div class="divisors-grid">'+
+      divs.map(d=>`<span>${d}</span>`).join('')+'</div>';
+  } else {
+    dDiv.innerHTML='<div style="font-size:.85rem;color:var(--muted)">'+divs.length+' divisors (too many to list)</div>';
+  }
+
+  // Animate factor tree
+  drawFactorTree(n,f);
+}
+
+function drawFactorTree(n,factors){
+  const canvas=document.getElementById('factorTreeCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+
+  // Build tree structure
+  const nodes=[];
+  function buildTree(val,x,y,level,spread){
+    const node={val,x,y,level,prime:isPrime(val),children:[]};
+    nodes.push(node);
+    if(!isPrime(val)&&val>1){
+      let d=2;
+      while(val%d!==0)d++;
+      const other=val/d;
+      const childY=y+60;
+      const s=Math.max(spread*0.55,30);
+      const left={val:d,x:x-s,y:childY,level:level+1,prime:isPrime(d),children:[]};
+      const right=buildTree(other,x+s,childY,level+1,s);
+      nodes.push(left);
+      node.children=[left,right];
+    }
+    return node;
+  }
+
+  // Calculate needed height
+  let maxLevel=0;
+  const tempNodes=[];
+  function countLevels(val,lv){tempNodes.push(lv);if(lv>maxLevel)maxLevel=lv;if(!isPrime(val)&&val>1){let d=2;while(val%d!==0)d++;countLevels(val/d,lv+1)}}
+  countLevels(n,0);
+  const neededH=Math.max(200,(maxLevel+1)*60+80);
+  canvas.height=neededH;
+
+  const w=canvas.clientWidth;
+  canvas.width=w*dpr;
+  canvas.height=neededH*dpr;
+  canvas.style.height=neededH+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  nodes.length=0;
+  const root=buildTree(n,w/2,35,0,Math.min(w/3,200));
+
+  // Animate by level
+  let currentLevel=0;
+  const maxLv=nodes.reduce((m,nd)=>Math.max(m,nd.level),0);
+
+  function draw(showUpToLevel){
+    ctx.clearRect(0,0,w,neededH);
+    // Draw lines first
+    nodes.forEach(nd=>{
+      if(nd.level>showUpToLevel)return;
+      nd.children.forEach(ch=>{
+        if(ch.level>showUpToLevel)return;
+        ctx.beginPath();ctx.moveTo(nd.x,nd.y+14);ctx.lineTo(ch.x,ch.y-14);
+        ctx.strokeStyle='rgba(148,163,184,0.3)';ctx.lineWidth=1.5;ctx.stroke();
+      });
+    });
+    // Draw nodes
+    nodes.forEach(nd=>{
+      if(nd.level>showUpToLevel)return;
+      const r=nd.prime?16:18;
+      ctx.beginPath();ctx.arc(nd.x,nd.y,r,0,Math.PI*2);
+      if(nd.prime){
+        ctx.fillStyle='rgba(0,229,255,0.15)';ctx.fill();
+        ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.stroke();
+      } else {
+        ctx.fillStyle='rgba(168,85,247,0.1)';ctx.fill();
+        ctx.strokeStyle='rgba(168,85,247,0.4)';ctx.lineWidth=1.5;ctx.stroke();
+      }
+      ctx.fillStyle=nd.prime?'#00e5ff':'#e8e8ff';
+      ctx.font='600 '+(nd.val>9999?'9':'11')+'px JetBrains Mono, monospace';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(nd.val,nd.x,nd.y);
+    });
+  }
+
+  let lv=0;
+  draw(0);
+  const timer=setInterval(()=>{
+    lv++;
+    draw(lv);
+    if(lv>=maxLv)clearInterval(timer);
+  },400);
+}
+
+// ═══════════════════════════════════════════════
+// TAB 2: GCD & LCM
+// ═══════════════════════════════════════════════
+function runGcdLcm(){
+  const a=parseInt(document.getElementById('gcdA').value);
+  const b=parseInt(document.getElementById('gcdB').value);
+  const cVal=document.getElementById('gcdC').value;
+  const c=cVal?parseInt(cVal):null;
+  if(!a||!b||a<1||b<1){alert('Enter valid positive integers');return}
+
+  let g,l;
+  if(c&&c>0){
+    g=gcd(gcd(a,b),c);
+    l=lcm(lcm(a,b),c);
+  } else {
+    g=gcd(a,b);
+    l=lcm(a,b);
+  }
+
+  document.getElementById('gcdResult').innerHTML=
+    `<div class="result-box"><span class="hl">GCD</span>(${c?a+', '+b+', '+c:a+', '+b}) = <span class="hl-gold">${g}</span>&emsp;&emsp;
+    <span class="hl-purple">LCM</span>(${c?a+', '+b+', '+c:a+', '+b}) = <span class="hl-gold">${l}</span></div>`;
+
+  document.getElementById('gcdMethods').style.display='grid';
+
+  // Euclidean steps (for a,b)
+  let stepsHtml='';
+  let x=a,y=b;
+  while(y!==0){
+    const q=Math.floor(x/y),r=x%y;
+    const isFinal=r===0;
+    stepsHtml+=`<div class="step${isFinal?' final':''}">${x} = ${y} &times; ${q} + <span class="${isFinal?'hl-gold':'hl'}">${r}</span></div>`;
+    x=y;y=r;
+  }
+  stepsHtml+=`<div class="step final">GCD = <span class="hl-gold">${x}</span></div>`;
+  if(c&&c>0){
+    stepsHtml+=`<div style="margin:10px 0;font-size:.85rem;color:var(--muted)">Then GCD(${x}, ${c}):</div>`;
+    let x2=x,y2=c;
+    while(y2!==0){const q=Math.floor(x2/y2),r=x2%y2;const f=r===0;
+      stepsHtml+=`<div class="step${f?' final':''}">${x2} = ${y2} &times; ${q} + <span class="${f?'hl-gold':'hl'}">${r}</span></div>`;
+      x2=y2;y2=r;}
+    stepsHtml+=`<div class="step final">GCD = <span class="hl-gold">${x2}</span></div>`;
+  }
+  document.getElementById('euclidSteps').innerHTML=stepsHtml;
+
+  // Prime factorization method
+  const fa=primeFactors(a),fb=primeFactors(b);
+  let fc=c?primeFactors(c):{};
+  let pfHtml=`<div class="step">${a} = ${formatFactors(fa)}</div>`;
+  pfHtml+=`<div class="step">${b} = ${formatFactors(fb)}</div>`;
+  if(c) pfHtml+=`<div class="step">${c} = ${formatFactors(fc)}</div>`;
+
+  const allPrimes=[...new Set([...Object.keys(fa),...Object.keys(fb),...Object.keys(fc)])].map(Number).sort((a,b)=>a-b);
+  let gcdParts=[],lcmParts=[];
+  allPrimes.forEach(p=>{
+    const ea=fa[p]||0,eb=fb[p]||0,ec=c?(fc[p]||0):Infinity;
+    const minE=c?Math.min(ea,eb,ec):Math.min(ea,eb);
+    const maxE=c?Math.max(ea,eb,ec):Math.max(ea,eb);
+    if(minE>0) gcdParts.push(minE>1?`${p}<sup>${minE}</sup>`:String(p));
+    if(maxE>0) lcmParts.push(maxE>1?`${p}<sup>${maxE}</sup>`:String(p));
+  });
+  pfHtml+=`<div class="step final">GCD = min exponents = ${gcdParts.length?gcdParts.join(' &times; '):'1'} = <span class="hl-gold">${g}</span></div>`;
+  pfHtml+=`<div class="step final">LCM = max exponents = ${lcmParts.join(' &times; ')} = <span class="hl-gold">${l}</span></div>`;
+  document.getElementById('pfMethodSteps').innerHTML=pfHtml;
+
+  // Venn diagram
+  drawVenn(fa,fb,a,b,g);
+}
+
+function drawVenn(fa,fb,a,b,g){
+  const canvas=document.getElementById('vennCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=canvas.clientWidth;const h=300;
+  canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.height=h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const cx1=w/2-80,cx2=w/2+80,cy=h/2,r=110;
+
+  // Circle A
+  ctx.beginPath();ctx.arc(cx1,cy,r,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,229,255,0.08)';ctx.fill();
+  ctx.strokeStyle='rgba(0,229,255,0.4)';ctx.lineWidth=2;ctx.stroke();
+
+  // Circle B
+  ctx.beginPath();ctx.arc(cx2,cy,r,0,Math.PI*2);
+  ctx.fillStyle='rgba(168,85,247,0.08)';ctx.fill();
+  ctx.strokeStyle='rgba(168,85,247,0.4)';ctx.lineWidth=2;ctx.stroke();
+
+  ctx.font='600 13px JetBrains Mono, monospace';ctx.textAlign='center';
+
+  // Find shared & unique primes
+  const allP=[...new Set([...Object.keys(fa),...Object.keys(fb)])].map(Number).sort((a,b)=>a-b);
+  const onlyA=[],shared=[],onlyB=[];
+  allP.forEach(p=>{
+    const ea=fa[p]||0,eb=fb[p]||0;
+    const minE=Math.min(ea,eb),maxA=ea-minE,maxB=eb-minE;
+    if(maxA>0) onlyA.push(maxA>1?p+'^'+maxA:String(p));
+    if(minE>0) shared.push(minE>1?p+'^'+minE:String(p));
+    if(maxB>0) onlyB.push(maxB>1?p+'^'+maxB:String(p));
+  });
+
+  ctx.fillStyle='#00e5ff';
+  ctx.fillText(a,cx1-50,cy-r-14);
+  onlyA.forEach((t,i)=>ctx.fillText(t,cx1-50,cy-20+i*22));
+
+  ctx.fillStyle='#facc15';
+  shared.forEach((t,i)=>ctx.fillText(t,w/2,cy-20+i*22));
+  ctx.font='500 11px Poppins, sans-serif';
+  ctx.fillText('GCD = '+g,w/2,cy+60);
+
+  ctx.font='600 13px JetBrains Mono, monospace';
+  ctx.fillStyle='#a855f7';
+  ctx.fillText(b,cx2+50,cy-r-14);
+  onlyB.forEach((t,i)=>ctx.fillText(t,cx2+50,cy-20+i*22));
+}
+
+// ═══════════════════════════════════════════════
+// TAB 3: DIVISIBILITY
+// ═══════════════════════════════════════════════
+function runDivisibility(){
+  const n=parseInt(document.getElementById('divInput').value);
+  if(!n||n<1){alert('Enter a valid positive integer');return}
+  const digits=String(n).split('').map(Number);
+  const digitSum=digits.reduce((a,b)=>a+b,0);
+  const last=digits[digits.length-1];
+  const last2=n%100;
+  const last3=n%1000;
+  const altSum=digits.reduce((a,d,i)=>a+(i%2===0?d:-d),0);
+
+  const tests=[
+    {d:2,rule:'Last digit is even',work:`Last digit = ${last}, ${last%2===0?'even':'odd'}`,pass:n%2===0},
+    {d:3,rule:'Sum of digits divisible by 3',work:`${digits.join(' + ')} = ${digitSum}, ${digitSum} &div; 3 = ${(digitSum/3).toFixed(2)}`,pass:n%3===0},
+    {d:4,rule:'Last two digits divisible by 4',work:`Last two digits = ${String(last2).padStart(2,'0')}, ${last2} &div; 4 = ${(last2/4).toFixed(2)}`,pass:n%4===0},
+    {d:5,rule:'Last digit is 0 or 5',work:`Last digit = ${last}`,pass:n%5===0},
+    {d:6,rule:'Divisible by both 2 and 3',work:`Div by 2? ${n%2===0?'Yes':'No'}. Div by 3? ${n%3===0?'Yes':'No'}`,pass:n%6===0},
+    {d:7,rule:'Double last digit, subtract from rest',work:divBy7Work(n),pass:n%7===0},
+    {d:8,rule:'Last three digits divisible by 8',work:`Last three digits = ${last3}, ${last3} &div; 8 = ${(last3/8).toFixed(2)}`,pass:n%8===0},
+    {d:9,rule:'Sum of digits divisible by 9',work:`${digits.join(' + ')} = ${digitSum}, ${digitSum} &div; 9 = ${(digitSum/9).toFixed(2)}`,pass:n%9===0},
+    {d:10,rule:'Last digit is 0',work:`Last digit = ${last}`,pass:n%10===0},
+    {d:11,rule:'Alternating sum of digits divisible by 11',work:`${digits.map((d,i)=>(i%2===0?'+':'-')+d).join(' ')} = ${altSum}, ${altSum} &div; 11 = ${(altSum/11).toFixed(2)}`,pass:n%11===0},
+    {d:12,rule:'Divisible by both 3 and 4',work:`Div by 3? ${n%3===0?'Yes':'No'}. Div by 4? ${n%4===0?'Yes':'No'}`,pass:n%12===0},
+  ];
+
+  let html='<table class="div-table"><thead><tr><th>Divisor</th><th>Rule</th><th>Working</th><th>Result</th></tr></thead><tbody>';
+  tests.forEach(t=>{
+    html+=`<tr><td style="font-family:var(--mono);font-weight:700">${t.d}</td><td>${t.rule}</td>
+      <td style="font-size:.82rem">${t.work}</td>
+      <td class="${t.pass?'div-pass':'div-fail'}">${t.pass?'&#10003; Divisible':'&#10007; No'}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('divResult').innerHTML=html;
+}
+
+function divBy7Work(n){
+  let s=String(n);
+  if(s.length<=2) return `${n} &div; 7 = ${(n/7).toFixed(2)}`;
+  const last=parseInt(s[s.length-1]);
+  const rest=parseInt(s.slice(0,-1));
+  const result=rest-2*last;
+  return `${rest} - 2&times;${last} = ${result}, check: ${Math.abs(result)} ${result%7===0?'is':'is not'} divisible by 7`;
+}
+
+// ═══════════════════════════════════════════════
+// TAB 4: SIEVE OF ERATOSTHENES
+// ═══════════════════════════════════════════════
+let sieveState=null;
+
+function resetSieve(){
+  if(sieveState&&sieveState.timer) clearInterval(sieveState.timer);
+  sieveState=null;
+  document.getElementById('sieveGrid').innerHTML='';
+  document.getElementById('sieveResult').innerHTML='';
+  document.getElementById('sieveInfo').innerHTML='';
+  document.getElementById('sieveRunBtn').textContent='Auto Play';
+}
+
+function initSieve(){
+  const max=Math.min(500,Math.max(10,parseInt(document.getElementById('sieveMax').value)||200));
+  const grid=document.getElementById('sieveGrid');
+  let html='';
+  for(let i=1;i<=max;i++){
+    html+=`<div class="sieve-cell${i===1?' one':''}" id="sc${i}">${i}</div>`;
+  }
+  grid.innerHTML=html;
+
+  const composites=new Array(max+1).fill(false);
+  composites[1]=true;
+
+  // Collect primes to sieve
+  const sievePrimes=[];
+  for(let p=2;p*p<=max;p++){
+    if(!composites[p]){sievePrimes.push(p);for(let m=p*p;m<=max;m+=p)composites[m]=true;}
+  }
+
+  // Reset composites for animation
+  const comp2=new Array(max+1).fill(false);
+  comp2[1]=true;
+
+  sieveState={max,composites:comp2,primeIdx:0,sievePrimes,multIdx:0,done:false,timer:null,
+    currentPrime:sievePrimes.length?sievePrimes[0]:null,currentMult:sievePrimes.length?sievePrimes[0]*sievePrimes[0]:null};
+}
+
+function sieveStep(){
+  if(!sieveState) initSieve();
+  const s=sieveState;
+  if(s.done){finalizeSieve();return}
+
+  if(s.primeIdx>=s.sievePrimes.length){s.done=true;finalizeSieve();return}
+
+  const p=s.sievePrimes[s.primeIdx];
+  const start=p*p;
+  const colorClass=p===2?'cross-2':p===3?'cross-3':p===5?'cross-5':p===7?'cross-7':'cross-other';
+
+  // Cross out all multiples of current prime
+  for(let m=start;m<=s.max;m+=p){
+    if(!s.composites[m]){
+      s.composites[m]=true;
+      const el=document.getElementById('sc'+m);
+      if(el){el.classList.add('crossed',colorClass)}
+    }
+  }
+
+  document.getElementById('sieveInfo').innerHTML=`Crossing out multiples of <span style="color:var(--cyan);font-weight:700">${p}</span> (starting from ${p}&sup2; = ${start})`;
+
+  s.primeIdx++;
+  if(s.primeIdx>=s.sievePrimes.length){s.done=true;setTimeout(()=>finalizeSieve(),300)}
+}
+
+function runSieve(){
+  if(sieveState&&sieveState.timer){
+    clearInterval(sieveState.timer);sieveState.timer=null;
+    document.getElementById('sieveRunBtn').textContent='Auto Play';return;
+  }
+  if(!sieveState) initSieve();
+  if(sieveState.done){finalizeSieve();return}
+
+  const speedVal=parseInt(document.getElementById('sieveSpeed').value);
+  const delay=Math.max(50,600-speedVal*55);
+
+  document.getElementById('sieveRunBtn').textContent='Pause';
+  sieveState.timer=setInterval(()=>{
+    if(sieveState.done){
+      clearInterval(sieveState.timer);sieveState.timer=null;
+      document.getElementById('sieveRunBtn').textContent='Auto Play';
+      return;
+    }
+    sieveStep();
+  },delay);
+}
+
+function finalizeSieve(){
+  const s=sieveState;if(!s)return;
+  const primes=[];
+  for(let i=2;i<=s.max;i++){
+    if(!s.composites[i]){
+      primes.push(i);
+      const el=document.getElementById('sc'+i);
+      if(el)el.classList.add('prime-found');
+    }
+  }
+  document.getElementById('sieveInfo').innerHTML=`<span style="color:var(--cyan);font-weight:700">Sieve complete!</span> Found <span style="color:var(--gold);font-weight:700">${primes.length}</span> primes up to ${s.max}.`;
+  document.getElementById('sieveResult').innerHTML=
+    `<div class="result-box" style="font-size:.82rem;max-height:200px;overflow-y:auto"><span class="hl">${primes.length} primes:</span> ${primes.join(', ')}</div>`;
+
+  if(sieveState.timer){clearInterval(sieveState.timer);sieveState.timer=null}
+  document.getElementById('sieveRunBtn').textContent='Auto Play';
+}
+
+document.getElementById('sieveSpeed').addEventListener('input',function(){
+  const v=parseInt(this.value);
+  const labels=['','Very Slow','Slow','Slow','Med-Slow','Medium','Med-Fast','Fast','Fast','Very Fast','Instant'];
+  document.getElementById('sieveSpeedLabel').textContent=labels[v]||'Medium';
+  if(sieveState&&sieveState.timer){
+    clearInterval(sieveState.timer);sieveState.timer=null;
+    runSieve();
+  }
+});
+
+// ═══════════════════════════════════════════════
+// TAB 5: MODULAR ARITHMETIC
+// ═══════════════════════════════════════════════
+function updateModInputs(){
+  const op=document.getElementById('modOp').value;
+  const bField=document.getElementById('modBField');
+  bField.style.display=(op==='mod')?'none':'block';
+}
+updateModInputs();
+
+function modPow(base,exp,mod){
+  // Fast modular exponentiation
+  let result=1n;
+  base=BigInt(base)%BigInt(mod);
+  exp=BigInt(exp);
+  const m=BigInt(mod);
+  if(base===0n) return 0;
+  while(exp>0n){
+    if(exp%2n===1n) result=(result*base)%m;
+    exp=exp/2n;
+    base=(base*base)%m;
+  }
+  return Number(result);
+}
+
+function runModular(){
+  const op=document.getElementById('modOp').value;
+  const a=parseInt(document.getElementById('modA').value);
+  const bv=parseInt(document.getElementById('modB').value);
+  const n=parseInt(document.getElementById('modN').value);
+  if(isNaN(a)||isNaN(n)||n<1){alert('Enter valid values');return}
+
+  let result,stepsHtml='';
+  switch(op){
+    case 'mod':
+      result=((a%n)+n)%n;
+      stepsHtml=`<div class="step">${a} &div; ${n} = ${Math.floor(a/n)} remainder <span class="hl-gold">${result}</span></div>
+        <div class="step final">${a} mod ${n} = <span class="hl-gold">${result}</span></div>`;
+      break;
+    case 'add':
+      if(isNaN(bv)){alert('Enter value for b');return}
+      result=((a%n+bv%n)%n+n)%n;
+      stepsHtml=`<div class="step">${a} mod ${n} = ${((a%n)+n)%n}</div>
+        <div class="step">${bv} mod ${n} = ${((bv%n)+n)%n}</div>
+        <div class="step">(${((a%n)+n)%n} + ${((bv%n)+n)%n}) mod ${n} = <span class="hl-gold">${result}</span></div>
+        <div class="step final">(${a} + ${bv}) mod ${n} = <span class="hl-gold">${result}</span></div>`;
+      break;
+    case 'mul':
+      if(isNaN(bv)){alert('Enter value for b');return}
+      result=(((a%n)*(bv%n))%n+n)%n;
+      stepsHtml=`<div class="step">${a} mod ${n} = ${((a%n)+n)%n}</div>
+        <div class="step">${bv} mod ${n} = ${((bv%n)+n)%n}</div>
+        <div class="step">(${((a%n)+n)%n} &times; ${((bv%n)+n)%n}) mod ${n} = <span class="hl-gold">${result}</span></div>
+        <div class="step final">(${a} &times; ${bv}) mod ${n} = <span class="hl-gold">${result}</span></div>`;
+      break;
+    case 'exp':
+      if(isNaN(bv)||bv<0){alert('Enter a non-negative exponent');return}
+      result=modPow(a,bv,n);
+      // Show binary expansion steps
+      stepsHtml=`<div class="step">Computing ${a}<sup>${bv}</sup> mod ${n} using fast exponentiation:</div>`;
+      let base=((a%n)+n)%n,exp=bv,res=1,stepN=0;
+      const binRep=bv.toString(2);
+      stepsHtml+=`<div class="step">${bv} in binary = ${binRep}</div>`;
+      let b2=base,e2=bv,r2=1;
+      while(e2>0){
+        if(e2%2===1){r2=(r2*b2)%n;stepsHtml+=`<div class="step">bit=1: result = ${r2} (multiply by ${b2})</div>`}
+        else{stepsHtml+=`<div class="step">bit=0: square only</div>`}
+        e2=Math.floor(e2/2);if(e2>0)b2=(b2*b2)%n;
+      }
+      stepsHtml+=`<div class="step final">${a}<sup>${bv}</sup> mod ${n} = <span class="hl-gold">${result}</span></div>`;
+      break;
+    case 'cong':
+      if(isNaN(bv)){alert('Enter value for b');return}
+      const ra=((a%n)+n)%n,rb=((bv%n)+n)%n;
+      const isCong=ra===rb;
+      stepsHtml=`<div class="step">${a} mod ${n} = ${ra}</div>
+        <div class="step">${bv} mod ${n} = ${rb}</div>
+        <div class="step final">${a} ${isCong?'&equiv;':'&nequiv;'} ${bv} (mod ${n}) &mdash; <span class="${isCong?'hl-green':'hl-red'}">${isCong?'TRUE':'FALSE'}</span></div>`;
+      result=ra;
+      break;
+  }
+
+  document.getElementById('modResult').innerHTML=stepsHtml;
+  drawClock(n,typeof result==='number'?result:0);
+}
+
+function drawClock(n,highlight){
+  const canvas=document.getElementById('clockCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const size=280;
+  canvas.width=size*dpr;canvas.height=size*dpr;
+  canvas.style.width=size+'px';canvas.style.height=size+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,size,size);
+
+  const cx=size/2,cy=size/2,r=110;
+  const displayN=Math.min(n,60); // limit display
+
+  // Circle
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(148,163,184,0.3)';ctx.lineWidth=2;ctx.stroke();
+
+  // Numbers
+  for(let i=0;i<displayN;i++){
+    const angle=(i/displayN)*Math.PI*2-Math.PI/2;
+    const x=cx+Math.cos(angle)*(r-22);
+    const y=cy+Math.sin(angle)*(r-22);
+
+    if(i===highlight){
+      ctx.beginPath();ctx.arc(x,y,14,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,229,255,0.2)';ctx.fill();
+      ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.stroke();
+    }
+
+    // Tick mark
+    const tx1=cx+Math.cos(angle)*(r-4);
+    const ty1=cy+Math.sin(angle)*(r-4);
+    const tx2=cx+Math.cos(angle)*r;
+    const ty2=cy+Math.sin(angle)*r;
+    ctx.beginPath();ctx.moveTo(tx1,ty1);ctx.lineTo(tx2,ty2);
+    ctx.strokeStyle='rgba(148,163,184,0.4)';ctx.lineWidth=1;ctx.stroke();
+
+    ctx.fillStyle=i===highlight?'#00e5ff':'#e8e8ff';
+    ctx.font=(i===highlight?'700':'500')+' '+(displayN>30?'9':'11')+'px JetBrains Mono, monospace';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(i,x,y);
+  }
+
+  // Center label
+  ctx.fillStyle='var(--muted)';ctx.font='500 11px Poppins, sans-serif';
+  ctx.fillStyle='#94a3b8';ctx.textAlign='center';
+  ctx.fillText('mod '+n,cx,cy);
+}
+
+// ═══════════════════════════════════════════════
+// TAB 6: NUMBER PROPERTIES
+// ═══════════════════════════════════════════════
+function isFibonacci(n){
+  const check=x=>{ const s=Math.sqrt(x); return s===Math.floor(s) };
+  return check(5*n*n+4)||check(5*n*n-4);
+}
+
+function isPalindrome(n){const s=String(n);return s===s.split('').reverse().join('')}
+
+function digitalRoot(n){while(n>=10){n=String(n).split('').reduce((a,d)=>a+Number(d),0)}return n}
+
+function runProperties(){
+  const n=parseInt(document.getElementById('propInput').value);
+  if(!n||n<1){alert('Enter a valid positive integer');return}
+
+  const divs=getDivisors(n);
+  const properDivSum=divs.filter(d=>d<n).reduce((a,b)=>a+b,0);
+  const sqrt=Math.sqrt(n);const cbrt=Math.cbrt(n);
+  const digits=String(n).split('').map(Number);
+  const digitSum=digits.reduce((a,b)=>a+b,0);
+
+  const props=[
+    {label:'Even / Odd', value:n%2===0?'Even':'Odd', badge:n%2===0?'badge-cyan':'badge-purple'},
+    {label:'Primality', value:isPrime(n)?'Prime':'Composite', badge:isPrime(n)?'badge-cyan':'badge-purple'},
+    {label:'Perfect Square', value:sqrt===Math.floor(sqrt)?'Yes ('+Math.floor(sqrt)+'\u00B2)':'No', badge:sqrt===Math.floor(sqrt)?'badge-green':'badge-red'},
+    {label:'Perfect Cube', value:Math.round(cbrt)**3===n?'Yes ('+Math.round(cbrt)+'\u00B3)':'No', badge:Math.round(cbrt)**3===n?'badge-green':'badge-red'},
+    {label:'Fibonacci Number', value:isFibonacci(n)?'Yes':'No', badge:isFibonacci(n)?'badge-gold':'badge-red'},
+    {label:'Palindrome', value:isPalindrome(n)?'Yes':'No', badge:isPalindrome(n)?'badge-gold':'badge-red'},
+    {label:'Perfect Number', value:properDivSum===n?'Yes':'No', badge:properDivSum===n?'badge-gold':'badge-red'},
+    {label:'Abundant / Deficient', value:properDivSum>n?'Abundant (sum='+properDivSum+')':properDivSum<n?'Deficient (sum='+properDivSum+')':'Perfect', badge:properDivSum>n?'badge-pink':properDivSum===n?'badge-gold':'badge-cyan'},
+    {label:'Sum of Digits', value:String(digitSum), badge:'badge-cyan'},
+    {label:'Digital Root', value:String(digitalRoot(n)), badge:'badge-purple'},
+    {label:'Number of Divisors', value:String(divs.length), badge:'badge-cyan'},
+    {label:'Binary', value:n.toString(2), badge:'badge-green'},
+    {label:'Octal', value:n.toString(8), badge:'badge-gold'},
+    {label:'Hexadecimal', value:n.toString(16).toUpperCase(), badge:'badge-pink'},
+  ];
+
+  let html='';
+  props.forEach(p=>{
+    html+=`<div class="prop-card"><div class="prop-label">${p.label}</div>
+      <div class="prop-value"><span class="badge ${p.badge}">${p.value}</span></div></div>`;
+  });
+  document.getElementById('propGrid').innerHTML=html;
+
+  // Factorization line
+  let factLine='';
+  if(n>1){
+    const f=primeFactors(n);
+    factLine=`<div class="result-box" style="margin-top:12px"><span class="hl">${n}</span> = ${formatFactors(f)}</div>`;
+  }
+
+  // Divisors
+  if(divs.length<=200){
+    document.getElementById('propDivisors').innerHTML=factLine+
+      '<div style="font-size:.85rem;color:var(--muted);margin:10px 0 6px">All '+divs.length+' divisors:</div><div class="divisors-grid">'+
+      divs.map(d=>`<span>${d}</span>`).join('')+'</div>';
+  } else {
+    document.getElementById('propDivisors').innerHTML=factLine+
+      '<div style="font-size:.85rem;color:var(--muted);margin-top:10px">'+divs.length+' divisors (too many to list)</div>';
+  }
+}
+
+// Run defaults on load
+window.addEventListener('DOMContentLoaded',()=>{
+  runPrimeFactorization();
+});
+</script>
+</body>
+</html>
