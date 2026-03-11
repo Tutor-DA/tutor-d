@@ -365,6 +365,67 @@
     .diff-pill.medium.active,.diff-pill.medium:hover{border-color:var(--gold);color:var(--gold);background:rgba(255,215,0,.08)}
     .diff-pill.hard.active,.diff-pill.hard:hover{border-color:#f87171;color:#f87171;background:rgba(248,113,113,.08)}
 
+    /* ── Category Toggle (Learning / Teaching) ── */
+    .category-toggle{display:flex;justify-content:center;gap:0;margin-bottom:28px;
+      background:var(--card);border:1.5px solid var(--border);border-radius:999px;
+      padding:4px;max-width:420px;margin-left:auto;margin-right:auto}
+    .cat-toggle-btn{flex:1;padding:12px 24px;border:none;border-radius:999px;
+      font-family:'Poppins',sans-serif;font-weight:700;font-size:.88rem;
+      cursor:pointer;transition:all .25s;background:transparent;color:var(--muted);
+      display:flex;align-items:center;justify-content:center;gap:8px}
+    .cat-toggle-btn:hover{color:var(--text)}
+    .cat-toggle-btn.active-learn{background:linear-gradient(135deg,var(--cyan),var(--blue));
+      color:#fff;box-shadow:0 0 18px rgba(6,182,212,.35)}
+    .cat-toggle-btn.active-teach{background:linear-gradient(135deg,var(--purple),var(--pink));
+      color:#fff;box-shadow:0 0 18px rgba(168,85,247,.35)}
+    .category-section{display:none}
+    .category-section.active{display:block;animation:fadeUp .35s ease}
+
+    /* ════════════════════════════════════════════
+       TEACHING TOOLS
+    ════════════════════════════════════════════ */
+    .teach-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+    @media(max-width:600px){.teach-grid{grid-template-columns:1fr}}
+
+    .teach-card{
+      background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);
+      padding:24px;transition:all .25s;cursor:default;position:relative;overflow:hidden
+    }
+    .teach-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+      background:linear-gradient(90deg,var(--purple),var(--pink));opacity:0;transition:opacity .25s}
+    .teach-card:hover{border-color:rgba(168,85,247,.4);transform:translateY(-2px);
+      box-shadow:0 8px 30px rgba(168,85,247,.12)}
+    .teach-card:hover::before{opacity:1}
+
+    .teach-card .tc-icon{font-size:1.8rem;margin-bottom:12px;display:block}
+    .teach-card .tc-title{font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:700;
+      color:var(--purple);margin-bottom:6px}
+    .teach-card .tc-desc{color:var(--muted);font-size:.82rem;line-height:1.6;margin-bottom:12px}
+    .teach-card .tc-tags{display:flex;flex-wrap:wrap;gap:6px}
+    .teach-card .tc-tag{
+      font-size:.68rem;font-weight:600;padding:3px 10px;border-radius:999px;
+      background:rgba(168,85,247,.1);color:#c084fc;border:1px solid rgba(168,85,247,.2)
+    }
+    .teach-card .tc-tag.ai{background:rgba(236,72,153,.1);color:#f472b6;border-color:rgba(236,72,153,.2)}
+    .teach-card .tc-tag.live{background:rgba(34,197,94,.1);color:#4ade80;border-color:rgba(34,197,94,.2)}
+
+    .teach-section-label{
+      font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;
+      color:var(--purple);letter-spacing:.16em;text-transform:uppercase;
+      margin-bottom:16px;display:flex;align-items:center;gap:10px
+    }
+    .teach-section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.3),transparent)}
+
+    .teach-status{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:.7rem;font-weight:600;padding:4px 10px;border-radius:999px;
+      position:absolute;top:14px;right:14px
+    }
+    .teach-status.coming{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.2)}
+    .teach-status.coming::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);
+      animation:statusPulse 1.5s ease-in-out infinite}
+    @keyframes statusPulse{0%,100%{opacity:1}50%{opacity:.3}}
+
     /* ── Toast ─────────────────────────────────── */
     #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
       background:var(--card);border:1px solid var(--cyan);border-radius:10px;
@@ -384,8 +445,23 @@
   <div class="hero">
     <div class="eyebrow">🛠️ TutorDA Utility Tools</div>
     <h1>Math Tools Hub</h1>
-    <p>Five powerful calculators in one place — convert units, plot graphs, crunch statistics, and work with matrices. Also, the worksheet creator for generating practice problems and printable worksheets.</p>
+    <p>Powerful learning tools for students and AI-powered teaching tools for educators — all in one place.</p>
   </div>
+
+  <!-- Category Toggle -->
+  <div class="category-toggle">
+    <button class="cat-toggle-btn active-learn" onclick="switchCategory('learn',this)">
+      <span>📐</span> Learning Tools
+    </button>
+    <button class="cat-toggle-btn" onclick="switchCategory('teach',this)">
+      <span>🧠</span> Teaching Tools
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LEARNING TOOLS SECTION
+  ═══════════════════════════════════════════════ -->
+  <div class="category-section active" id="section-learn">
 
   <!-- Tool Tabs -->
   <div class="tool-tabs">
@@ -823,6 +899,99 @@
     </div>
   </div>
 
+  </div><!-- /section-learn -->
+
+  <!-- ═══════════════════════════════════════════════
+       TEACHING TOOLS SECTION
+  ═══════════════════════════════════════════════ -->
+  <div class="category-section" id="section-teach">
+
+    <!-- AI-Powered Tools -->
+    <div class="teach-section-label">🤖 AI-Powered Tools</div>
+    <div class="teach-grid">
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">💬</span>
+        <div class="tc-title">AI Math Tutor Chat</div>
+        <div class="tc-desc">Claude-powered chat assistant that guides students through problems step-by-step with hints, encouragement, and Socratic questioning — without revealing the full answer.</div>
+        <div class="tc-tags">
+          <span class="tc-tag ai">Claude API</span>
+          <span class="tc-tag">Step-by-Step</span>
+          <span class="tc-tag">Adaptive</span>
+        </div>
+      </div>
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">💡</span>
+        <div class="tc-title">Auto Hint Generator</div>
+        <div class="tc-desc">Paste any math problem and get progressive hints — from gentle nudges to detailed guidance. Perfect for teachers who want to scaffold learning without giving away the solution.</div>
+        <div class="tc-tags">
+          <span class="tc-tag ai">AI-Generated</span>
+          <span class="tc-tag">Progressive Hints</span>
+          <span class="tc-tag">Scaffolded</span>
+        </div>
+      </div>
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">📸</span>
+        <div class="tc-title">Photo-to-Solution</div>
+        <div class="tc-desc">Upload a photo of a handwritten math problem and receive a full step-by-step solution walkthrough. Supports arithmetic, algebra, calculus, and more.</div>
+        <div class="tc-tags">
+          <span class="tc-tag ai">Vision AI</span>
+          <span class="tc-tag">Handwriting OCR</span>
+          <span class="tc-tag">Walkthrough</span>
+        </div>
+      </div>
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">🎓</span>
+        <div class="tc-title">Concept Explainer</div>
+        <div class="tc-desc">Enter any math topic and choose your level — "Explain like I'm 12" or "Explain like I'm a university student." Get clear, tailored explanations with examples.</div>
+        <div class="tc-tags">
+          <span class="tc-tag ai">Claude API</span>
+          <span class="tc-tag">Multi-Level</span>
+          <span class="tc-tag">Visual Examples</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Collaboration & Engagement -->
+    <div class="teach-section-label">🤝 Collaboration &amp; Engagement</div>
+    <div class="teach-grid">
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">🖊️</span>
+        <div class="tc-title">Virtual Whiteboard</div>
+        <div class="tc-desc">Shared drawing canvas for live tutoring sessions. Teachers and students can draw, annotate, and solve problems together in real time with built-in math symbols.</div>
+        <div class="tc-tags">
+          <span class="tc-tag live">Real-Time</span>
+          <span class="tc-tag">Shared Canvas</span>
+          <span class="tc-tag">Math Symbols</span>
+        </div>
+      </div>
+
+      <div class="teach-card">
+        <span class="teach-status coming">Coming Soon</span>
+        <span class="tc-icon">⚔️</span>
+        <div class="tc-title">Peer Challenge System</div>
+        <div class="tc-desc">Students challenge each other to solve math problems within a time limit. Earn points, climb leaderboards, and build a competitive learning community.</div>
+        <div class="tc-tags">
+          <span class="tc-tag live">Multiplayer</span>
+          <span class="tc-tag">Gamified</span>
+          <span class="tc-tag">Leaderboard</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /section-teach -->
+
 </div><!-- /wrapper -->
 
 <div id="toast">Copied!</div>
@@ -833,6 +1002,18 @@
 /* ─────────────────────────────────────────────
    NAVIGATION
 ──────────────────────────────────────────── */
+/* ─────────────────────────────────────────────
+   CATEGORY TOGGLE (Learning / Teaching)
+──────────────────────────────────────────── */
+function switchCategory(cat, btn) {
+  document.querySelectorAll('.category-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cat-toggle-btn').forEach(b => {
+    b.classList.remove('active-learn','active-teach');
+  });
+  document.getElementById('section-' + cat).classList.add('active');
+  btn.classList.add(cat === 'learn' ? 'active-learn' : 'active-teach');
+}
+
 function switchTool(id, btn) {
   document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
