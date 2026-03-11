@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Integral Calculator | TutorDA</title>
+  <meta name="description" content="Compute symbolic integrals with step-by-step methods. Supports power rule, trig, exponential, u-substitution, integration by parts, and more.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+
+  <style>
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --dark:    #0d0d1a;
+      --card:    #111125;
+      --card2:   #1a1a35;
+      --border:  #1e1e3a;
+      --text:    #e8e8ff;
+      --muted:   #94a3b8;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* Starfield */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* Layout */
+    .wrapper{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 20px 60px}
+
+    /* Hero */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* Cards */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+    .card h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;margin-bottom:16px;color:var(--cyan)}
+
+    /* Input Section */
+    .input-row{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+    .func-input{
+      flex:1;min-width:200px;padding:14px 18px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;
+      outline:none;transition:border-color .2s;
+    }
+    .func-input:focus{border-color:var(--purple)}
+    .func-input::placeholder{color:#555}
+
+    .bounds-row{display:flex;gap:12px;margin-top:12px;align-items:center;flex-wrap:wrap}
+    .bound-input{
+      width:100px;padding:12px 14px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem;
+      outline:none;transition:border-color .2s;
+    }
+    .bound-input:focus{border-color:var(--purple)}
+
+    /* Toggle */
+    .toggle-wrap{display:flex;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-top:12px;width:fit-content}
+    .toggle-btn{
+      padding:10px 20px;background:var(--dark);color:var(--muted);border:none;cursor:pointer;
+      font-family:'Poppins',sans-serif;font-size:.85rem;transition:all .2s;
+    }
+    .toggle-btn.active{background:var(--purple);color:#fff}
+
+    /* Preview */
+    .preview-box{
+      margin-top:16px;padding:18px 24px;background:var(--dark);border:1px solid var(--border);
+      border-radius:10px;text-align:center;min-height:56px;font-size:1.3rem;
+    }
+
+    /* Integrate button */
+    .btn-integrate{
+      margin-top:16px;padding:14px 40px;border:none;border-radius:10px;cursor:pointer;
+      background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;
+      font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;
+      letter-spacing:.05em;transition:transform .15s,box-shadow .2s;
+    }
+    .btn-integrate:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(168,85,247,.4)}
+
+    /* Quick examples */
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chip{
+      padding:7px 14px;border-radius:20px;border:1px solid var(--border);
+      background:var(--dark);color:var(--muted);font-size:.8rem;cursor:pointer;
+      font-family:'JetBrains Mono',monospace;transition:all .2s;white-space:nowrap;
+    }
+    .chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    /* Main grid */
+    .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+    /* Steps */
+    .step-card{
+      background:var(--card2);border:1px solid var(--border);border-radius:12px;
+      padding:18px;margin-bottom:14px;
+      animation:slideIn .4s ease forwards;opacity:0;transform:translateY(16px);
+    }
+    @keyframes slideIn{to{opacity:1;transform:translateY(0)}}
+    .step-card .badge{
+      display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;
+      font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;
+    }
+    .badge-power{background:rgba(0,229,255,.15);color:var(--cyan)}
+    .badge-trig{background:rgba(236,72,153,.15);color:var(--pink)}
+    .badge-exp{background:rgba(250,204,21,.15);color:var(--gold)}
+    .badge-log{background:rgba(34,197,94,.15);color:var(--green)}
+    .badge-parts{background:rgba(168,85,247,.15);color:var(--purple)}
+    .badge-usub{background:rgba(249,115,22,.15);color:#f97316}
+    .badge-sum{background:rgba(148,163,184,.15);color:var(--muted)}
+    .badge-const{background:rgba(148,163,184,.15);color:var(--muted)}
+    .badge-invtrig{background:rgba(56,189,248,.15);color:#38bdf8}
+    .step-formula{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+    .step-application{font-size:.95rem;margin-bottom:6px}
+    .step-result{font-size:1rem;font-weight:600;color:var(--cyan)}
+    .step-detail{font-size:.85rem;color:var(--muted);margin-bottom:6px;font-style:italic}
+
+    /* Final result */
+    .final-result{
+      background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(0,229,255,.08));
+      border:1px solid var(--purple);border-radius:var(--r);padding:24px;text-align:center;
+      margin-top:12px;
+    }
+    .final-result .result-label{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--purple);margin-bottom:10px;letter-spacing:.1em}
+    .final-result .result-expr{font-size:1.4rem;margin-bottom:8px}
+    .final-result .result-numeric{font-size:1.1rem;color:var(--gold);margin-top:8px}
+
+    /* Step toggle */
+    .step-toggle{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-bottom:14px;width:fit-content}
+    .step-toggle button{
+      padding:8px 16px;background:var(--dark);color:var(--muted);border:none;cursor:pointer;
+      font-size:.8rem;font-family:'Poppins',sans-serif;transition:all .2s;
+    }
+    .step-toggle button.active{background:var(--purple);color:#fff}
+
+    /* Graph */
+    #graph-container{width:100%;min-height:400px;border-radius:var(--r);overflow:hidden}
+
+    /* Definite eval */
+    .definite-eval{
+      background:var(--card2);border:1px solid var(--border);border-radius:12px;
+      padding:18px;margin-top:14px;text-align:center;
+    }
+    .definite-eval .eval-title{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--gold);letter-spacing:.1em;margin-bottom:10px}
+
+    /* Reference section */
+    .ref-section{margin-top:30px}
+    .ref-toggle{
+      width:100%;padding:16px 24px;background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);color:var(--text);font-family:'Orbitron',sans-serif;font-size:1rem;
+      cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .2s;
+    }
+    .ref-toggle:hover{border-color:var(--cyan)}
+    .ref-toggle .arrow{transition:transform .3s}
+    .ref-toggle.open .arrow{transform:rotate(180deg)}
+    .ref-body{
+      display:none;background:var(--card);border:1px solid var(--border);border-top:none;
+      border-radius:0 0 var(--r) var(--r);padding:24px;
+    }
+    .ref-body.open{display:block}
+    .ref-table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    .ref-table th{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);color:var(--cyan);font-size:.85rem;font-family:'Orbitron',sans-serif}
+    .ref-table td{padding:10px 14px;border-bottom:1px solid rgba(30,30,58,.5);font-size:.9rem;vertical-align:top}
+    .ref-table td:first-child{font-family:'JetBrains Mono',monospace;color:var(--gold);white-space:nowrap}
+    .ref-cat{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--purple);margin:18px 0 10px;letter-spacing:.05em}
+
+    /* History sidebar */
+    .history-toggle{
+      position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:100;
+      writing-mode:vertical-rl;padding:14px 8px;background:var(--card);border:1px solid var(--border);
+      border-right:none;border-radius:var(--r) 0 0 var(--r);color:var(--muted);cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:.1em;transition:color .2s;
+    }
+    .history-toggle:hover{color:var(--cyan)}
+    .history-panel{
+      position:fixed;right:-320px;top:0;width:320px;height:100vh;z-index:200;
+      background:var(--card);border-left:1px solid var(--border);padding:20px;
+      overflow-y:auto;transition:right .3s ease;
+    }
+    .history-panel.open{right:0}
+    .history-panel h3{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+    .history-panel .close-hist{background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer}
+    .hist-item{
+      padding:12px;background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      margin-bottom:10px;cursor:pointer;transition:border-color .2s;font-size:.85rem;
+    }
+    .hist-item:hover{border-color:var(--cyan)}
+    .hist-item .hist-expr{font-family:'JetBrains Mono',monospace;color:var(--text);margin-bottom:4px}
+    .hist-item .hist-result{color:var(--muted);font-size:.78rem}
+    .hist-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none;
+    }
+    .hist-overlay.open{display:block}
+
+    /* Error */
+    .error-box{background:rgba(239,68,68,.1);border:1px solid var(--red);border-radius:10px;padding:16px;color:var(--red);text-align:center;margin-top:14px}
+
+    /* Hidden */
+    .hidden{display:none!important}
+
+    /* Responsive */
+    @media(max-width:860px){
+      .main-grid{grid-template-columns:1fr}
+      .input-row{flex-direction:column}
+      .history-toggle{display:none}
+    }
+    @media(max-width:520px){
+      .hero{padding:40px 16px 20px}
+      .card{padding:16px}
+      .bounds-row{flex-direction:column;align-items:stretch}
+      .bound-input{width:100%}
+      .chips{gap:6px}
+      .chip{font-size:.72rem;padding:5px 10px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">Math Tool</div>
+    <h1>Integral Calculator</h1>
+    <p>Compute symbolic integrals with step-by-step methods. Supports power rule, trigonometric, exponential, u-substitution, integration by parts, and more.</p>
+  </div>
+
+  <!-- Input -->
+  <div class="card">
+    <h2>Enter Integrand</h2>
+    <div class="input-row">
+      <input type="text" id="funcInput" class="func-input" placeholder="e.g. x^3 + 2*x" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="toggle-wrap">
+      <button class="toggle-btn active" id="btnIndef" onclick="setMode('indefinite')">Indefinite &int;f(x)dx</button>
+      <button class="toggle-btn" id="btnDef" onclick="setMode('definite')">Definite &int;<sub>a</sub><sup>b</sup>f(x)dx</button>
+    </div>
+    <div class="bounds-row hidden" id="boundsRow">
+      <label style="color:var(--muted);font-size:.85rem">Lower a =</label>
+      <input type="text" id="boundA" class="bound-input" placeholder="0" value="0">
+      <label style="color:var(--muted);font-size:.85rem">Upper b =</label>
+      <input type="text" id="boundB" class="bound-input" placeholder="1" value="1">
+    </div>
+    <div class="preview-box" id="preview">\(\displaystyle \int f(x)\,dx\)</div>
+    <button class="btn-integrate" onclick="doIntegrate()">Integrate</button>
+  </div>
+
+  <!-- Quick Examples -->
+  <div class="card">
+    <h2>Quick Examples</h2>
+    <div class="chips" id="chipContainer"></div>
+  </div>
+
+  <!-- Results Grid -->
+  <div class="main-grid" id="resultsArea" style="display:none">
+    <!-- Steps Column -->
+    <div>
+      <div class="card">
+        <h2>Step-by-Step Solution</h2>
+        <div class="step-toggle">
+          <button class="active" id="btnShowAll" onclick="setStepMode('all')">Show All</button>
+          <button id="btnStepBy" onclick="setStepMode('step')">Step by Step</button>
+        </div>
+        <div id="stepsContainer"></div>
+        <div id="nextStepWrap" class="hidden" style="text-align:center;margin-top:12px">
+          <button class="btn-integrate" style="padding:10px 28px;font-size:.85rem" onclick="showNextStep()">Next Step &rarr;</button>
+        </div>
+        <div class="final-result hidden" id="finalResult">
+          <div class="result-label">ANTIDERIVATIVE</div>
+          <div class="result-expr" id="finalExpr"></div>
+        </div>
+        <div class="definite-eval hidden" id="definiteEval">
+          <div class="eval-title">DEFINITE INTEGRAL EVALUATION</div>
+          <div id="evalContent"></div>
+        </div>
+        <div class="error-box hidden" id="errorBox"></div>
+      </div>
+    </div>
+    <!-- Graph Column -->
+    <div>
+      <div class="card">
+        <h2>Graph</h2>
+        <div id="graph-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference -->
+  <div class="ref-section">
+    <button class="ref-toggle" id="refToggle" onclick="toggleRef()">
+      <span>Integration Rules Reference</span>
+      <span class="arrow">&#9660;</span>
+    </button>
+    <div class="ref-body" id="refBody"></div>
+  </div>
+</div>
+
+<!-- History -->
+<div class="history-toggle" onclick="openHistory()">HISTORY</div>
+<div class="hist-overlay" id="histOverlay" onclick="closeHistory()"></div>
+<div class="history-panel" id="histPanel">
+  <h3>History <button class="close-hist" onclick="closeHistory()">&times;</button></h3>
+  <div id="histList"></div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ====================================================================
+   INTEGRAL CALCULATOR - TutorDA
+   ==================================================================== */
+
+// ─── Quick examples ────────────────────────────────────────────────
+const EXAMPLES = [
+  {label:'x^3 + 2*x', expr:'x^3 + 2*x'},
+  {label:'1/x', expr:'1/x'},
+  {label:'sin(x)', expr:'sin(x)'},
+  {label:'e^(2*x)', expr:'e^(2*x)'},
+  {label:'cos(3*x)', expr:'cos(3*x)'},
+  {label:'x*e^x', expr:'x*e^x'},
+  {label:'x^2*sin(x)', expr:'x^2*sin(x)'},
+  {label:'1/(x^2+1)', expr:'1/(x^2+1)'},
+  {label:'sqrt(x)', expr:'sqrt(x)'},
+  {label:'sec(x)^2', expr:'sec(x)^2'},
+  {label:'1/sqrt(1-x^2)', expr:'1/sqrt(1-x^2)'},
+  {label:'(2*x+1)/(x^2+x+1)', expr:'(2*x+1)/(x^2+x+1)'},
+];
+
+const chipC = document.getElementById('chipContainer');
+EXAMPLES.forEach(ex => {
+  const c = document.createElement('div');
+  c.className = 'chip';
+  c.textContent = ex.label;
+  c.onclick = () => { document.getElementById('funcInput').value = ex.expr; updatePreview(); };
+  chipC.appendChild(c);
+});
+
+// ─── Mode toggle ───────────────────────────────────────────────────
+let mode = 'indefinite';
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnIndef').classList.toggle('active', m==='indefinite');
+  document.getElementById('btnDef').classList.toggle('active', m==='definite');
+  document.getElementById('boundsRow').classList.toggle('hidden', m==='indefinite');
+  updatePreview();
+}
+
+// ─── Preview ───────────────────────────────────────────────────────
+const funcInput = document.getElementById('funcInput');
+funcInput.addEventListener('input', updatePreview);
+document.getElementById('boundA').addEventListener('input', updatePreview);
+document.getElementById('boundB').addEventListener('input', updatePreview);
+
+function updatePreview() {
+  const f = funcInput.value.trim() || 'f(x)';
+  const latex = exprToLatex(f);
+  let tex;
+  if (mode === 'definite') {
+    const a = document.getElementById('boundA').value.trim() || 'a';
+    const b = document.getElementById('boundB').value.trim() || 'b';
+    tex = `\\displaystyle \\int_{${a}}^{${b}} ${latex}\\,dx`;
+  } else {
+    tex = `\\displaystyle \\int ${latex}\\,dx`;
+  }
+  const el = document.getElementById('preview');
+  el.innerHTML = `\\(${tex}\\)`;
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]);
+}
+
+// ─── Expr to LaTeX (display only) ─────────────────────────────────
+function exprToLatex(s) {
+  let t = s;
+  t = t.replace(/sqrt\(([^)]+)\)/g, '\\sqrt{$1}');
+  t = t.replace(/ln\(([^)]+)\)/g, '\\ln($1)');
+  t = t.replace(/log\(([^)]+)\)/g, '\\log($1)');
+  t = t.replace(/sin\(/g, '\\sin(');
+  t = t.replace(/cos\(/g, '\\cos(');
+  t = t.replace(/tan\(/g, '\\tan(');
+  t = t.replace(/sec\(/g, '\\sec(');
+  t = t.replace(/csc\(/g, '\\csc(');
+  t = t.replace(/cot\(/g, '\\cot(');
+  t = t.replace(/arctan\(/g, '\\arctan(');
+  t = t.replace(/arcsin\(/g, '\\arcsin(');
+  t = t.replace(/arccos\(/g, '\\arccos(');
+  t = t.replace(/e\^/g, 'e^');
+  t = t.replace(/\^(\w)/g, '^{$1}');
+  t = t.replace(/\^(\([^)]+\))/g, '^{$1}');
+  t = t.replace(/\*/g, '\\cdot ');
+  t = t.replace(/pi/g, '\\pi');
+  return t;
+}
+
+/* ====================================================================
+   TOKENIZER & PARSER
+   ==================================================================== */
+
+// Token types
+const T = {NUM:'NUM',VAR:'VAR',OP:'OP',FN:'FN',LPAR:'(',RPAR:')',COMMA:','};
+
+function tokenize(s) {
+  const tokens = [];
+  let i = 0;
+  s = s.replace(/\s+/g, '');
+  while (i < s.length) {
+    const c = s[i];
+    if ('0123456789.'.includes(c)) {
+      let n = '';
+      while (i < s.length && '0123456789.'.includes(s[i])) n += s[i++];
+      tokens.push({type:T.NUM, value:parseFloat(n)});
+    } else if (c === '(') { tokens.push({type:T.LPAR}); i++; }
+    else if (c === ')') { tokens.push({type:T.RPAR}); i++; }
+    else if (c === ',') { tokens.push({type:T.COMMA}); i++; }
+    else if ('+-*/^'.includes(c)) { tokens.push({type:T.OP, value:c}); i++; }
+    else if (/[a-zA-Z_]/.test(c)) {
+      let id = '';
+      while (i < s.length && /[a-zA-Z0-9_]/.test(s[i])) id += s[i++];
+      const fns = ['sin','cos','tan','sec','csc','cot','sqrt','ln','log','exp','arctan','arcsin','arccos','abs'];
+      if (fns.includes(id)) tokens.push({type:T.FN, value:id});
+      else if (id === 'pi') tokens.push({type:T.NUM, value:Math.PI});
+      else if (id === 'e' && (i >= s.length || s[i] !== '^' || tokens.length === 0 || true)) {
+        // If 'e' followed by '^', treat as euler number
+        if (i < s.length && s[i] === '^') {
+          tokens.push({type:T.NUM, value:Math.E});
+        } else {
+          tokens.push({type:T.NUM, value:Math.E});
+        }
+      }
+      else tokens.push({type:T.VAR, value:id});
+    } else { i++; }
+  }
+  // Handle implicit multiplication: NUM VAR, NUM (, ) NUM, VAR (, ) VAR, NUM FN, etc
+  const out = [];
+  for (let j = 0; j < tokens.length; j++) {
+    out.push(tokens[j]);
+    if (j + 1 < tokens.length) {
+      const a = tokens[j], b = tokens[j+1];
+      const needMul = (
+        (a.type===T.NUM && (b.type===T.VAR||b.type===T.FN||b.type===T.LPAR||b.type===T.NUM)) ||
+        (a.type===T.VAR && (b.type===T.NUM||b.type===T.VAR||b.type===T.FN||b.type===T.LPAR)) ||
+        (a.type===T.RPAR && (b.type===T.NUM||b.type===T.VAR||b.type===T.FN||b.type===T.LPAR))
+      );
+      if (needMul) out.push({type:T.OP, value:'*'});
+    }
+  }
+  return out;
+}
+
+// AST node constructors
+function Num(v) { return {type:'num', value:v}; }
+function Var(n) { return {type:'var', name:n||'x'}; }
+function BinOp(op, l, r) { return {type:'binop', op, left:l, right:r}; }
+function UnaryMinus(e) { return {type:'unary', op:'-', arg:e}; }
+function FnCall(name, arg) { return {type:'fn', name, arg}; }
+
+function parse(tokens) {
+  let pos = 0;
+  function peek() { return pos < tokens.length ? tokens[pos] : null; }
+  function consume(type, value) {
+    const t = tokens[pos++];
+    return t;
+  }
+
+  function parseExpr() { return parseAdd(); }
+
+  function parseAdd() {
+    let left = parseMul();
+    while (peek() && peek().type === T.OP && (peek().value === '+' || peek().value === '-')) {
+      const op = consume().value;
+      const right = parseMul();
+      left = BinOp(op, left, right);
+    }
+    return left;
+  }
+
+  function parseMul() {
+    let left = parsePow();
+    while (peek() && peek().type === T.OP && (peek().value === '*' || peek().value === '/')) {
+      const op = consume().value;
+      const right = parsePow();
+      left = BinOp(op, left, right);
+    }
+    return left;
+  }
+
+  function parsePow() {
+    let left = parseUnary();
+    if (peek() && peek().type === T.OP && peek().value === '^') {
+      consume();
+      const right = parsePow(); // right-associative
+      left = BinOp('^', left, right);
+    }
+    return left;
+  }
+
+  function parseUnary() {
+    if (peek() && peek().type === T.OP && peek().value === '-') {
+      consume();
+      const a = parseUnary();
+      return BinOp('*', Num(-1), a);
+    }
+    if (peek() && peek().type === T.OP && peek().value === '+') {
+      consume();
+      return parseUnary();
+    }
+    return parseAtom();
+  }
+
+  function parseAtom() {
+    const t = peek();
+    if (!t) return Num(0);
+    if (t.type === T.NUM) { consume(); return Num(t.value); }
+    if (t.type === T.VAR) { consume(); return Var(t.value); }
+    if (t.type === T.FN) {
+      consume();
+      if (peek() && peek().type === T.LPAR) {
+        consume();
+        const arg = parseExpr();
+        if (peek() && peek().type === T.RPAR) consume();
+        return FnCall(t.value, arg);
+      }
+      return FnCall(t.value, Var('x'));
+    }
+    if (t.type === T.LPAR) {
+      consume();
+      const e = parseExpr();
+      if (peek() && peek().type === T.RPAR) consume();
+      return e;
+    }
+    consume();
+    return Num(0);
+  }
+
+  const result = parseExpr();
+  return result;
+}
+
+function parseExpr(s) {
+  return parse(tokenize(s));
+}
+
+/* ====================================================================
+   AST UTILITIES
+   ==================================================================== */
+
+function isConst(node) {
+  if (node.type === 'num') return true;
+  if (node.type === 'var') return false;
+  if (node.type === 'binop') return isConst(node.left) && isConst(node.right);
+  if (node.type === 'fn') return isConst(node.arg);
+  if (node.type === 'unary') return isConst(node.arg);
+  return false;
+}
+
+function isVar(node, name) {
+  return node.type === 'var' && (name === undefined || node.name === name);
+}
+
+function evalNode(node, x) {
+  if (node.type === 'num') return node.value;
+  if (node.type === 'var') return x;
+  if (node.type === 'unary') return -evalNode(node.arg, x);
+  if (node.type === 'binop') {
+    const l = evalNode(node.left, x), r = evalNode(node.right, x);
+    switch(node.op) {
+      case '+': return l + r;
+      case '-': return l - r;
+      case '*': return l * r;
+      case '/': return r === 0 ? NaN : l / r;
+      case '^': return Math.pow(l, r);
+    }
+  }
+  if (node.type === 'fn') {
+    const a = evalNode(node.arg, x);
+    switch(node.name) {
+      case 'sin': return Math.sin(a);
+      case 'cos': return Math.cos(a);
+      case 'tan': return Math.tan(a);
+      case 'sec': return 1/Math.cos(a);
+      case 'csc': return 1/Math.sin(a);
+      case 'cot': return Math.cos(a)/Math.sin(a);
+      case 'sqrt': return Math.sqrt(a);
+      case 'ln': case 'log': return Math.log(a);
+      case 'exp': return Math.exp(a);
+      case 'arctan': return Math.atan(a);
+      case 'arcsin': return Math.asin(a);
+      case 'arccos': return Math.acos(a);
+      case 'abs': return Math.abs(a);
+    }
+  }
+  return NaN;
+}
+
+function nodeToString(node) {
+  if (node.type === 'num') {
+    if (node.value === Math.PI) return 'pi';
+    if (node.value === Math.E) return 'e';
+    if (Number.isInteger(node.value)) return String(node.value);
+    return node.value.toFixed(6).replace(/\.?0+$/, '');
+  }
+  if (node.type === 'var') return node.name;
+  if (node.type === 'unary') return `(-${nodeToString(node.arg)})`;
+  if (node.type === 'fn') return `${node.name}(${nodeToString(node.arg)})`;
+  if (node.type === 'binop') {
+    const l = nodeToString(node.left), r = nodeToString(node.right);
+    if (node.op === '^') return `(${l})^(${r})`;
+    if (node.op === '*') return `${l}*${r}`;
+    if (node.op === '/') return `(${l})/(${r})`;
+    return `${l} ${node.op} ${r}`;
+  }
+  return '?';
+}
+
+function nodeToLatex(node) {
+  if (node.type === 'num') {
+    if (node.value === Math.PI) return '\\pi';
+    if (node.value === Math.E) return 'e';
+    if (node.value < 0) return `(${formatNum(node.value)})`;
+    return formatNum(node.value);
+  }
+  if (node.type === 'var') return node.name;
+  if (node.type === 'unary') return `(-${nodeToLatex(node.arg)})`;
+  if (node.type === 'fn') {
+    const fnMap = {sin:'\\sin',cos:'\\cos',tan:'\\tan',sec:'\\sec',csc:'\\csc',cot:'\\cot',
+      sqrt:'\\sqrt',ln:'\\ln',log:'\\log',exp:'\\exp',arctan:'\\arctan',arcsin:'\\arcsin',arccos:'\\arccos',abs:'|'};
+    if (node.name === 'sqrt') return `\\sqrt{${nodeToLatex(node.arg)}}`;
+    if (node.name === 'abs') return `\\left|${nodeToLatex(node.arg)}\\right|`;
+    return `${fnMap[node.name]||node.name}\\!\\left(${nodeToLatex(node.arg)}\\right)`;
+  }
+  if (node.type === 'binop') {
+    const l = nodeToLatex(node.left), r = nodeToLatex(node.right);
+    if (node.op === '+') return `${l} + ${r}`;
+    if (node.op === '-') return `${l} - ${r}`;
+    if (node.op === '*') {
+      // smart multiplication display
+      const lp = needsParensMul(node.left) ? `(${l})` : l;
+      const rp = needsParensMul(node.right) ? `(${r})` : r;
+      // omit dot between number and variable/function
+      if ((node.left.type==='num'||isConst(node.left)) && !isConst(node.right)) return `${lp}${rp}`;
+      return `${lp} \\cdot ${rp}`;
+    }
+    if (node.op === '/') return `\\frac{${l}}{${r}}`;
+    if (node.op === '^') {
+      const base = (node.left.type==='binop'||node.left.type==='unary') ? `\\left(${l}\\right)` : l;
+      return `${base}^{${r}}`;
+    }
+  }
+  return '?';
+}
+
+function needsParensMul(n) {
+  return n.type === 'binop' && (n.op === '+' || n.op === '-');
+}
+
+function formatNum(v) {
+  if (Number.isInteger(v)) return String(v);
+  const s = v.toFixed(6).replace(/\.?0+$/, '');
+  return s;
+}
+
+function nodesEqual(a, b) {
+  if (a.type !== b.type) return false;
+  if (a.type === 'num') return Math.abs(a.value - b.value) < 1e-12;
+  if (a.type === 'var') return a.name === b.name;
+  if (a.type === 'fn') return a.name === b.name && nodesEqual(a.arg, b.arg);
+  if (a.type === 'binop') return a.op === b.op && nodesEqual(a.left, b.left) && nodesEqual(a.right, b.right);
+  return false;
+}
+
+/* ====================================================================
+   LINEAR ARG EXTRACTION
+   If node is of form (a*x + b) return {a, b}. For just x, {1, 0}.
+   ==================================================================== */
+function getLinearArg(node) {
+  if (node.type === 'var' && node.name === 'x') return {a:1, b:0};
+  if (node.type === 'binop' && node.op === '*') {
+    if (isConst(node.left) && isVar(node.right, 'x')) return {a:evalNode(node.left, 0), b:0};
+    if (isConst(node.right) && isVar(node.left, 'x')) return {a:evalNode(node.right, 0), b:0};
+  }
+  if (node.type === 'binop' && (node.op === '+' || node.op === '-')) {
+    const ll = getLinearArg(node.left);
+    if (ll && isConst(node.right)) {
+      const bv = evalNode(node.right, 0);
+      return {a:ll.a, b:ll.b + (node.op==='+' ? bv : -bv)};
+    }
+    if (isConst(node.left)) {
+      const rr = getLinearArg(node.right);
+      if (rr && node.op === '+') return {a:rr.a, b:rr.b + evalNode(node.left, 0)};
+    }
+  }
+  return null;
+}
+
+/* ====================================================================
+   SYMBOLIC INTEGRATION ENGINE
+   ==================================================================== */
+
+function integrate(node) {
+  const steps = [];
+
+  function addStep(method, badge, formula, application, detail, resultNode) {
+    steps.push({method, badge, formula, application, detail, resultLatex: nodeToLatex(resultNode), resultNode});
+  }
+
+  function integ(node) {
+    // 1. Constant
+    if (isConst(node)) {
+      const c = evalNode(node, 0);
+      const result = BinOp('*', Num(c), Var('x'));
+      addStep('Constant', 'const', '\\int a\\,dx = ax + C', `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(result)}`, null, result);
+      return result;
+    }
+
+    // 2. Just x → x²/2
+    if (isVar(node, 'x')) {
+      const result = BinOp('/', BinOp('^', Var('x'), Num(2)), Num(2));
+      addStep('Power Rule', 'power', '\\int x\\,dx = \\frac{x^2}{2} + C', `\\int x\\,dx = \\frac{x^2}{2}`, null, result);
+      return result;
+    }
+
+    // 3. Sum/Difference: f + g or f - g
+    if (node.type === 'binop' && (node.op === '+' || node.op === '-')) {
+      if (!isConst(node.left) || !isConst(node.right)) {
+        // Check it's not something like 1/(x^2+1) which is a fraction
+        addStep('Sum/Difference Rule', 'sum',
+          `\\int (f ${node.op} g)\\,dx = \\int f\\,dx ${node.op} \\int g\\,dx`,
+          `\\text{Split: } \\int ${nodeToLatex(node)}\\,dx`, null, node);
+        const L = integ(node.left);
+        const R = integ(node.right);
+        return BinOp(node.op, L, R);
+      }
+    }
+
+    // 4. Constant multiple: c * f(x)
+    if (node.type === 'binop' && node.op === '*') {
+      if (isConst(node.left) && !isConst(node.right)) {
+        const c = evalNode(node.left, 0);
+        addStep('Constant Multiple', 'const', '\\int c \\cdot f(x)\\,dx = c \\int f(x)\\,dx',
+          `\\text{Factor out } ${formatNum(c)}`, null, node);
+        const inner = integ(node.right);
+        return BinOp('*', Num(c), inner);
+      }
+      if (isConst(node.right) && !isConst(node.left)) {
+        const c = evalNode(node.right, 0);
+        addStep('Constant Multiple', 'const', '\\int c \\cdot f(x)\\,dx = c \\int f(x)\\,dx',
+          `\\text{Factor out } ${formatNum(c)}`, null, node);
+        const inner = integ(node.left);
+        return BinOp('*', Num(c), inner);
+      }
+    }
+
+    // 5. Power rule: x^n
+    if (node.type === 'binop' && node.op === '^' && isVar(node.left, 'x') && isConst(node.right)) {
+      const n = evalNode(node.right, 0);
+      if (Math.abs(n + 1) < 1e-12) {
+        // x^(-1) = 1/x → ln|x|
+        const result = FnCall('ln', FnCall('abs', Var('x')));
+        addStep('Logarithmic Rule', 'log', '\\int x^{-1}\\,dx = \\ln|x| + C',
+          `\\int ${nodeToLatex(node)}\\,dx = \\ln|x|`, null, result);
+        return result;
+      }
+      const newExp = n + 1;
+      const result = BinOp('/', BinOp('^', Var('x'), Num(newExp)), Num(newExp));
+      addStep('Power Rule', 'power', '\\int x^n\\,dx = \\frac{x^{n+1}}{n+1} + C',
+        `n = ${formatNum(n)}: \\int x^{${formatNum(n)}}\\,dx = \\frac{x^{${formatNum(newExp)}}}{${formatNum(newExp)}}`,
+        null, result);
+      return result;
+    }
+
+    // 5b. sqrt(x) = x^(1/2)
+    if (node.type === 'fn' && node.name === 'sqrt' && isVar(node.arg, 'x')) {
+      const result = BinOp('/', BinOp('^', Var('x'), BinOp('/', Num(3), Num(2))), BinOp('/', Num(3), Num(2)));
+      addStep('Power Rule', 'power', '\\int \\sqrt{x}\\,dx = \\int x^{1/2}\\,dx = \\frac{x^{3/2}}{3/2} + C',
+        `= \\frac{2}{3}x^{3/2}`, null, BinOp('*', BinOp('/', Num(2), Num(3)), BinOp('^', Var('x'), BinOp('/', Num(3), Num(2)))));
+      return BinOp('*', BinOp('/', Num(2), Num(3)), BinOp('^', Var('x'), BinOp('/', Num(3), Num(2))));
+    }
+
+    // 5c. sqrt(linear)
+    if (node.type === 'fn' && node.name === 'sqrt') {
+      const lin = getLinearArg(node.arg);
+      if (lin) {
+        const res = BinOp('*', BinOp('/', Num(2), BinOp('*', Num(3), Num(lin.a))),
+          BinOp('^', node.arg, BinOp('/', Num(3), Num(2))));
+        addStep('Power + Chain Rule', 'power',
+          `\\int \\sqrt{ax+b}\\,dx = \\frac{2}{3a}(ax+b)^{3/2} + C`,
+          `a=${formatNum(lin.a)}: = \\frac{2}{${formatNum(3*lin.a)}}(${nodeToLatex(node.arg)})^{3/2}`,
+          null, res);
+        return res;
+      }
+    }
+
+    // 6. 1/x → ln|x|
+    if (node.type === 'binop' && node.op === '/' && isConst(node.left) && isVar(node.right, 'x')) {
+      const c = evalNode(node.left, 0);
+      const result = BinOp('*', Num(c), FnCall('ln', FnCall('abs', Var('x'))));
+      addStep('Logarithmic Rule', 'log', '\\int \\frac{1}{x}\\,dx = \\ln|x| + C',
+        `\\int \\frac{${formatNum(c)}}{x}\\,dx = ${formatNum(c)}\\ln|x|`, null, result);
+      return result;
+    }
+
+    // 7. Trig functions with linear args
+    const trigRules = {
+      'sin': {result: (arg) => BinOp('*', Num(-1), FnCall('cos', arg)), latex:'\\int \\sin(u)\\,du = -\\cos(u) + C', sign:-1, fn:'cos'},
+      'cos': {result: (arg) => FnCall('sin', arg), latex:'\\int \\cos(u)\\,du = \\sin(u) + C', sign:1, fn:'sin'},
+    };
+
+    if (node.type === 'fn' && trigRules[node.name]) {
+      const rule = trigRules[node.name];
+      const lin = getLinearArg(node.arg);
+      if (lin) {
+        const rawResult = rule.result(node.arg);
+        const finalResult = lin.a === 1 ? rawResult : BinOp('*', Num(1/lin.a), rawResult);
+        const detail = lin.a !== 1 ? `\\text{Chain rule: divide by } a = ${formatNum(lin.a)}` : null;
+        addStep('Trigonometric', 'trig', rule.latex,
+          `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(finalResult)}`,
+          detail, finalResult);
+        return finalResult;
+      }
+    }
+
+    // sec^2(x) – handle sec(x)^2 parsed as fn^pow
+    if (node.type === 'binop' && node.op === '^' && node.type === 'binop') {
+      if (node.left.type === 'fn' && node.left.name === 'sec' && isConst(node.right) && evalNode(node.right, 0) === 2) {
+        const lin = getLinearArg(node.left.arg);
+        if (lin) {
+          const res = lin.a === 1 ? FnCall('tan', node.left.arg) : BinOp('*', Num(1/lin.a), FnCall('tan', node.left.arg));
+          const detail = lin.a !== 1 ? `\\text{Chain rule: divide by } a = ${formatNum(lin.a)}` : null;
+          addStep('Trigonometric', 'trig', '\\int \\sec^2(u)\\,du = \\tan(u) + C',
+            `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, detail, res);
+          return res;
+        }
+      }
+      // csc^2
+      if (node.left.type === 'fn' && node.left.name === 'csc' && isConst(node.right) && evalNode(node.right, 0) === 2) {
+        const lin = getLinearArg(node.left.arg);
+        if (lin) {
+          const res = lin.a === 1 ? BinOp('*', Num(-1), FnCall('cot', node.left.arg)) : BinOp('*', Num(-1/lin.a), FnCall('cot', node.left.arg));
+          addStep('Trigonometric', 'trig', '\\int \\csc^2(u)\\,du = -\\cot(u) + C',
+            `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+          return res;
+        }
+      }
+    }
+
+    // sec(x)*tan(x)
+    if (node.type === 'binop' && node.op === '*') {
+      if (isSecTan(node)) {
+        const arg = getSecTanArg(node);
+        const lin = getLinearArg(arg);
+        if (lin) {
+          const res = lin.a === 1 ? FnCall('sec', arg) : BinOp('*', Num(1/lin.a), FnCall('sec', arg));
+          addStep('Trigonometric', 'trig', '\\int \\sec(u)\\tan(u)\\,du = \\sec(u) + C',
+            `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+          return res;
+        }
+      }
+      if (isCscCot(node)) {
+        const arg = getCscCotArg(node);
+        const lin = getLinearArg(arg);
+        if (lin) {
+          const res = lin.a === 1 ? BinOp('*', Num(-1), FnCall('csc', arg)) : BinOp('*', Num(-1/lin.a), FnCall('csc', arg));
+          addStep('Trigonometric', 'trig', '\\int \\csc(u)\\cot(u)\\,du = -\\csc(u) + C',
+            `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+          return res;
+        }
+      }
+    }
+
+    // 8. e^x or e^(ax+b)
+    if (node.type === 'binop' && node.op === '^' && node.left.type === 'num' && Math.abs(node.left.value - Math.E) < 1e-10) {
+      const lin = getLinearArg(node.right);
+      if (lin) {
+        const res = lin.a === 1 ? node : BinOp('/', node, Num(lin.a));
+        const detail = lin.a !== 1 ? `\\text{Chain rule: divide by } a = ${formatNum(lin.a)}` : null;
+        addStep('Exponential', 'exp', '\\int e^{ax+b}\\,dx = \\frac{1}{a}e^{ax+b} + C',
+          `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, detail, res);
+        return res;
+      }
+    }
+
+    // exp(ax+b)
+    if (node.type === 'fn' && node.name === 'exp') {
+      const lin = getLinearArg(node.arg);
+      if (lin) {
+        const eForm = BinOp('^', Num(Math.E), node.arg);
+        const res = lin.a === 1 ? eForm : BinOp('/', eForm, Num(lin.a));
+        addStep('Exponential', 'exp', '\\int e^{ax+b}\\,dx = \\frac{1}{a}e^{ax+b} + C',
+          `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+        return res;
+      }
+    }
+
+    // a^x
+    if (node.type === 'binop' && node.op === '^' && isConst(node.left) && isVar(node.right, 'x')) {
+      const a = evalNode(node.left, 0);
+      if (a > 0 && Math.abs(a - Math.E) > 1e-10) {
+        const res = BinOp('/', node, FnCall('ln', Num(a)));
+        addStep('Exponential', 'exp', '\\int a^x\\,dx = \\frac{a^x}{\\ln a} + C',
+          `a = ${formatNum(a)}: \\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+        return res;
+      }
+    }
+
+    // 9. ln(x)
+    if (node.type === 'fn' && (node.name === 'ln' || node.name === 'log') && isVar(node.arg, 'x')) {
+      const res = BinOp('-', BinOp('*', Var('x'), FnCall('ln', Var('x'))), Var('x'));
+      addStep('Integration by Parts', 'parts',
+        '\\int \\ln(x)\\,dx = x\\ln(x) - x + C',
+        `\\text{Let } u = \\ln(x),\\; dv = dx`,
+        `du = \\frac{1}{x}dx,\\; v = x`, res);
+      return res;
+    }
+
+    // 10. 1/(x² + 1) → arctan(x) and variants 1/(x² + a²)
+    {
+      const invTrig = matchInverseTrig(node);
+      if (invTrig) return invTrig;
+    }
+
+    // 11. 1/sqrt(1-x²) → arcsin(x)
+    {
+      const arcsinMatch = matchArcsin(node);
+      if (arcsinMatch) return arcsinMatch;
+    }
+
+    // 12. (2x+1)/(x²+x+1) → ln|x²+x+1| substitution pattern
+    {
+      const usubDiv = matchUSub(node);
+      if (usubDiv) return usubDiv;
+    }
+
+    // 13. Integration by parts patterns
+    {
+      const partsResult = matchByParts(node);
+      if (partsResult) return partsResult;
+    }
+
+    // 14. Divisions that are sums
+    if (node.type === 'binop' && node.op === '/') {
+      if (node.left.type === 'binop' && (node.left.op === '+' || node.left.op === '-')) {
+        addStep('Split Fraction', 'sum', `\\int \\frac{f+g}{h}\\,dx = \\int \\frac{f}{h}\\,dx + \\int \\frac{g}{h}\\,dx`,
+          `\\text{Split } ${nodeToLatex(node)}`, null, node);
+        const L = integ(BinOp('/', node.left.left, node.right));
+        const R = integ(BinOp('/', node.left.right, node.right));
+        return BinOp(node.left.op, L, R);
+      }
+    }
+
+    // Fallback
+    throw new Error(`Cannot integrate: ${nodeToString(node)}`);
+  }
+
+  // Helper: detect sec(x)*tan(x) pattern
+  function isSecTan(node) {
+    if (node.type !== 'binop' || node.op !== '*') return false;
+    const l = node.left, r = node.right;
+    return (l.type==='fn' && l.name==='sec' && r.type==='fn' && r.name==='tan') ||
+           (l.type==='fn' && l.name==='tan' && r.type==='fn' && r.name==='sec');
+  }
+  function getSecTanArg(node) {
+    const l = node.left;
+    return l.type==='fn' && l.name==='sec' ? l.arg : node.right.arg;
+  }
+  function isCscCot(node) {
+    if (node.type !== 'binop' || node.op !== '*') return false;
+    const l = node.left, r = node.right;
+    return (l.type==='fn' && l.name==='csc' && r.type==='fn' && r.name==='cot') ||
+           (l.type==='fn' && l.name==='cot' && r.type==='fn' && r.name==='csc');
+  }
+  function getCscCotArg(node) {
+    const l = node.left;
+    return l.type==='fn' && l.name==='csc' ? l.arg : node.right.arg;
+  }
+
+  // Match 1/(x²+1) and similar
+  function matchInverseTrig(node) {
+    if (node.type === 'binop' && node.op === '/') {
+      if (isConst(node.left)) {
+        const c = evalNode(node.left, 0);
+        const den = node.right;
+        // x² + a²
+        if (den.type === 'binop' && den.op === '+') {
+          const xSq = getXSquared(den.left);
+          const constPart = isConst(den.right) ? evalNode(den.right, 0) : null;
+          if (xSq !== null && constPart !== null && constPart > 0) {
+            const a = Math.sqrt(constPart);
+            const res = BinOp('*', Num(c/a), FnCall('arctan', BinOp('/', Var('x'), Num(a))));
+            const simplified = constPart === 1 ? BinOp('*', Num(c), FnCall('arctan', Var('x')))  : res;
+            addStep('Inverse Trig', 'invtrig',
+              '\\int \\frac{1}{x^2+a^2}\\,dx = \\frac{1}{a}\\arctan\\!\\left(\\frac{x}{a}\\right) + C',
+              `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(simplified)}`, null, simplified);
+            return simplified;
+          }
+          // try swapped
+          const xSq2 = getXSquared(den.right);
+          const constPart2 = isConst(den.left) ? evalNode(den.left, 0) : null;
+          if (xSq2 !== null && constPart2 !== null && constPart2 > 0) {
+            const a = Math.sqrt(constPart2);
+            const simplified = constPart2 === 1 ? BinOp('*', Num(c), FnCall('arctan', Var('x')))
+              : BinOp('*', Num(c/a), FnCall('arctan', BinOp('/', Var('x'), Num(a))));
+            addStep('Inverse Trig', 'invtrig',
+              '\\int \\frac{1}{x^2+a^2}\\,dx = \\frac{1}{a}\\arctan\\!\\left(\\frac{x}{a}\\right) + C',
+              `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(simplified)}`, null, simplified);
+            return simplified;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function getXSquared(node) {
+    if (node.type === 'binop' && node.op === '^' && isVar(node.left, 'x') && isConst(node.right) && evalNode(node.right,0) === 2) return 1;
+    if (node.type === 'binop' && node.op === '*') {
+      if (isConst(node.left)) {
+        const inner = getXSquared(node.right);
+        if (inner !== null) return evalNode(node.left, 0) * inner;
+      }
+    }
+    return null;
+  }
+
+  // Match 1/sqrt(1-x²)
+  function matchArcsin(node) {
+    if (node.type === 'binop' && node.op === '/') {
+      if (isConst(node.left)) {
+        const c = evalNode(node.left, 0);
+        const den = node.right;
+        // sqrt(1 - x²)
+        if (den.type === 'fn' && den.name === 'sqrt') {
+          const inner = den.arg;
+          if (inner.type === 'binop' && inner.op === '-') {
+            if (isConst(inner.left) && getXSquared(inner.right) !== null) {
+              const a2 = evalNode(inner.left, 0);
+              if (a2 === 1) {
+                const res = BinOp('*', Num(c), FnCall('arcsin', Var('x')));
+                addStep('Inverse Trig', 'invtrig',
+                  '\\int \\frac{1}{\\sqrt{1-x^2}}\\,dx = \\arcsin(x) + C',
+                  `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+                return res;
+              }
+              const a = Math.sqrt(a2);
+              const res = BinOp('*', Num(c), FnCall('arcsin', BinOp('/', Var('x'), Num(a))));
+              addStep('Inverse Trig', 'invtrig',
+                `\\int \\frac{1}{\\sqrt{a^2-x^2}}\\,dx = \\arcsin\\!\\left(\\frac{x}{a}\\right) + C`,
+                `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`, null, res);
+              return res;
+            }
+          }
+        }
+      }
+    }
+    // Also match as power: (1-x^2)^(-1/2) etc. — likely from parsing 1/sqrt(1-x^2)
+    return null;
+  }
+
+  // Match u-substitution: f'(x)/f(x) type or similar
+  function matchUSub(node) {
+    if (node.type === 'binop' && node.op === '/') {
+      const num = node.left;
+      const den = node.right;
+      // Polynomial den: try if numerator is derivative of denominator
+      if (!isConst(den) && !isConst(num)) {
+        // Numerical check: is num = c * d/dx(den)?
+        const testPoints = [0.5, 1.2, 2.1];
+        let ratios = [];
+        let valid = true;
+        for (const xv of testPoints) {
+          const numVal = evalNode(num, xv);
+          const denDeriv = (evalNode(den, xv + 0.0001) - evalNode(den, xv - 0.0001)) / 0.0002;
+          if (Math.abs(denDeriv) < 1e-10) { valid = false; break; }
+          ratios.push(numVal / denDeriv);
+        }
+        if (valid && ratios.length === 3) {
+          const avg = ratios[0];
+          if (Math.abs(ratios[1] - avg) < 0.01 && Math.abs(ratios[2] - avg) < 0.01) {
+            const c = avg;
+            const res = BinOp('*', Num(c), FnCall('ln', FnCall('abs', den)));
+            addStep('U-Substitution', 'usub',
+              `\\int \\frac{f'(x)}{f(x)}\\,dx = \\ln|f(x)| + C`,
+              `\\int ${nodeToLatex(node)}\\,dx = ${nodeToLatex(res)}`,
+              `\\text{Let } u = ${nodeToLatex(den)},\\; du = ${nodeToLatex(num)}\\,dx \\cdot \\frac{1}{${formatNum(c)}}`,
+              res);
+            return res;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // Integration by parts
+  function matchByParts(node) {
+    if (node.type !== 'binop' || node.op !== '*') return null;
+    const l = node.left, r = node.right;
+
+    // x * e^x
+    if (isVar(l, 'x') && isExpX(r)) {
+      const res = BinOp('-', BinOp('*', Var('x'), r), r);
+      addStep('Integration by Parts', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = ${nodeToLatex(r)}\\,dx`,
+        `du = dx,\\; v = ${nodeToLatex(r)}`, res);
+      return res;
+    }
+    if (isVar(r, 'x') && isExpX(l)) {
+      const res = BinOp('-', BinOp('*', Var('x'), l), l);
+      addStep('Integration by Parts', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = ${nodeToLatex(l)}\\,dx`,
+        `du = dx,\\; v = ${nodeToLatex(l)}`, res);
+      return res;
+    }
+
+    // x * sin(x) → -x*cos(x) + sin(x)
+    if (isVar(l, 'x') && r.type === 'fn' && r.name === 'sin' && isVar(r.arg, 'x')) {
+      const res = BinOp('+', BinOp('*', Num(-1), BinOp('*', Var('x'), FnCall('cos', Var('x')))), FnCall('sin', Var('x')));
+      addStep('Integration by Parts', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = \\sin(x)\\,dx`,
+        `du = dx,\\; v = -\\cos(x)`, res);
+      return res;
+    }
+    if (isVar(r, 'x') && l.type === 'fn' && l.name === 'sin' && isVar(l.arg, 'x')) {
+      const res = BinOp('+', BinOp('*', Num(-1), BinOp('*', Var('x'), FnCall('cos', Var('x')))), FnCall('sin', Var('x')));
+      addStep('Integration by Parts', 'parts', '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = \\sin(x)\\,dx`, `du = dx,\\; v = -\\cos(x)`, res);
+      return res;
+    }
+
+    // x * cos(x) → x*sin(x) + cos(x)
+    if (isVar(l, 'x') && r.type === 'fn' && r.name === 'cos' && isVar(r.arg, 'x')) {
+      const res = BinOp('+', BinOp('*', Var('x'), FnCall('sin', Var('x'))), FnCall('cos', Var('x')));
+      addStep('Integration by Parts', 'parts', '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = \\cos(x)\\,dx`, `du = dx,\\; v = \\sin(x)`, res);
+      return res;
+    }
+    if (isVar(r, 'x') && l.type === 'fn' && l.name === 'cos' && isVar(l.arg, 'x')) {
+      const res = BinOp('+', BinOp('*', Var('x'), FnCall('sin', Var('x'))), FnCall('cos', Var('x')));
+      addStep('Integration by Parts', 'parts', '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = x,\\; dv = \\cos(x)\\,dx`, `du = dx,\\; v = \\sin(x)`, res);
+      return res;
+    }
+
+    // x² * e^x → x²e^x - 2xe^x + 2e^x (tabular)
+    if (isXPow(l, 2) && isExpX(r)) {
+      const ex = r;
+      const res = BinOp('+', BinOp('-', BinOp('*', BinOp('^', Var('x'), Num(2)), ex),
+        BinOp('*', Num(2), BinOp('*', Var('x'), ex))), BinOp('*', Num(2), ex));
+      addStep('Integration by Parts (Tabular)', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du \\text{ (applied twice)}',
+        `\\text{Let } u = x^2,\\; dv = ${nodeToLatex(ex)}\\,dx`,
+        `\\text{Apply by parts twice (tabular method)}`, res);
+      return res;
+    }
+    if (isXPow(r, 2) && isExpX(l)) {
+      const ex = l;
+      const res = BinOp('+', BinOp('-', BinOp('*', BinOp('^', Var('x'), Num(2)), ex),
+        BinOp('*', Num(2), BinOp('*', Var('x'), ex))), BinOp('*', Num(2), ex));
+      addStep('Integration by Parts (Tabular)', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du \\text{ (applied twice)}',
+        `\\text{Let } u = x^2,\\; dv = ${nodeToLatex(ex)}\\,dx`,
+        `\\text{Apply by parts twice (tabular method)}`, res);
+      return res;
+    }
+
+    // x² * sin(x) → -x²cos(x) + 2x*sin(x) + 2cos(x)
+    if (isXPow(l, 2) && r.type === 'fn' && r.name === 'sin' && isVar(r.arg, 'x')) {
+      const res = BinOp('+', BinOp('+',
+        BinOp('*', Num(-1), BinOp('*', BinOp('^', Var('x'), Num(2)), FnCall('cos', Var('x')))),
+        BinOp('*', Num(2), BinOp('*', Var('x'), FnCall('sin', Var('x'))))),
+        BinOp('*', Num(2), FnCall('cos', Var('x'))));
+      addStep('Integration by Parts (Tabular)', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du \\text{ (applied twice)}',
+        `\\text{Let } u = x^2,\\; dv = \\sin(x)\\,dx`,
+        `\\text{Apply by parts twice: }`, res);
+      return res;
+    }
+    if (isXPow(r, 2) && l.type === 'fn' && l.name === 'sin' && isVar(l.arg, 'x')) {
+      return matchByParts(BinOp('*', r, l));
+    }
+
+    // x * ln(x)
+    if (isVar(l, 'x') && r.type === 'fn' && (r.name === 'ln' || r.name === 'log') && isVar(r.arg, 'x')) {
+      const res = BinOp('-', BinOp('*', BinOp('/', BinOp('^', Var('x'), Num(2)), Num(2)), FnCall('ln', Var('x'))),
+        BinOp('/', BinOp('^', Var('x'), Num(2)), Num(4)));
+      addStep('Integration by Parts', 'parts',
+        '\\int u\\,dv = uv - \\int v\\,du',
+        `\\text{Let } u = \\ln(x),\\; dv = x\\,dx`,
+        `du = \\frac{1}{x}dx,\\; v = \\frac{x^2}{2}`, res);
+      return res;
+    }
+    if (isVar(r, 'x') && l.type === 'fn' && (l.name === 'ln' || l.name === 'log') && isVar(l.arg, 'x')) {
+      return matchByParts(BinOp('*', r, l));
+    }
+
+    return null;
+  }
+
+  function isExpX(node) {
+    if (node.type === 'binop' && node.op === '^' && node.left.type === 'num' && Math.abs(node.left.value - Math.E) < 1e-10) {
+      if (isVar(node.right, 'x')) return true;
+      const lin = getLinearArg(node.right);
+      if (lin) return true;
+    }
+    if (node.type === 'fn' && node.name === 'exp') return true;
+    return false;
+  }
+
+  function isXPow(node, n) {
+    if (node.type === 'binop' && node.op === '^' && isVar(node.left, 'x') && isConst(node.right) && Math.abs(evalNode(node.right,0) - n) < 1e-12) return true;
+    if (n === 1 && isVar(node, 'x')) return true;
+    return false;
+  }
+
+  const resultNode = integ(node);
+  return {steps, resultNode};
+}
+
+
+/* ====================================================================
+   UI LOGIC
+   ==================================================================== */
+
+let allSteps = [];
+let currentStep = 0;
+let stepMode = 'all';
+
+function setStepMode(m) {
+  stepMode = m;
+  document.getElementById('btnShowAll').classList.toggle('active', m==='all');
+  document.getElementById('btnStepBy').classList.toggle('active', m==='step');
+  renderSteps();
+}
+
+function renderSteps() {
+  const container = document.getElementById('stepsContainer');
+  container.innerHTML = '';
+  const nswrap = document.getElementById('nextStepWrap');
+  if (stepMode === 'all') {
+    nswrap.classList.add('hidden');
+    allSteps.forEach((s, i) => {
+      container.appendChild(makeStepCard(s, i));
+    });
+  } else {
+    currentStep = 0;
+    if (allSteps.length > 0) container.appendChild(makeStepCard(allSteps[0], 0));
+    nswrap.classList.toggle('hidden', allSteps.length <= 1);
+  }
+  typeset(container);
+}
+
+function showNextStep() {
+  currentStep++;
+  const container = document.getElementById('stepsContainer');
+  if (currentStep < allSteps.length) {
+    container.appendChild(makeStepCard(allSteps[currentStep], currentStep));
+    typeset(container);
+  }
+  if (currentStep >= allSteps.length - 1) {
+    document.getElementById('nextStepWrap').classList.add('hidden');
+  }
+}
+
+function makeStepCard(s, i) {
+  const div = document.createElement('div');
+  div.className = 'step-card';
+  div.style.animationDelay = `${i * 0.1}s`;
+  const badgeClass = {
+    'Power Rule':'badge-power','Constant':'badge-const','Constant Multiple':'badge-const',
+    'Sum/Difference Rule':'badge-sum','Split Fraction':'badge-sum',
+    'Trigonometric':'badge-trig','Exponential':'badge-exp','Logarithmic Rule':'badge-log',
+    'Integration by Parts':'badge-parts','Integration by Parts (Tabular)':'badge-parts',
+    'Inverse Trig':'badge-invtrig','U-Substitution':'badge-usub',
+    'Power + Chain Rule':'badge-power',
+  }[s.method] || 'badge-const';
+
+  div.innerHTML = `
+    <span class="badge ${badgeClass}">${s.method}</span>
+    <div class="step-formula">\\(${s.formula}\\)</div>
+    <div class="step-application">\\(${s.application}\\)</div>
+    ${s.detail ? `<div class="step-detail">\\(${s.detail}\\)</div>` : ''}
+    <div class="step-result">\\(= ${s.resultLatex}\\)</div>
+  `;
+  return div;
+}
+
+function typeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]);
+}
+
+function doIntegrate() {
+  const expr = funcInput.value.trim();
+  if (!expr) return;
+
+  document.getElementById('resultsArea').style.display = '';
+  document.getElementById('errorBox').classList.add('hidden');
+  document.getElementById('finalResult').classList.add('hidden');
+  document.getElementById('definiteEval').classList.add('hidden');
+
+  try {
+    const ast = parseExpr(expr);
+    const {steps, resultNode} = integrate(ast);
+    allSteps = steps;
+
+    renderSteps();
+
+    // Final result
+    const finalEl = document.getElementById('finalResult');
+    finalEl.classList.remove('hidden');
+    const plusC = mode === 'indefinite' ? ' + C' : '';
+    document.getElementById('finalExpr').innerHTML = `\\(\\displaystyle ${nodeToLatex(resultNode)}${plusC}\\)`;
+    typeset(finalEl);
+
+    // Definite integral
+    if (mode === 'definite') {
+      const a = parseFloat(document.getElementById('boundA').value) || 0;
+      const b = parseFloat(document.getElementById('boundB').value) || 1;
+      const Fa = evalNode(resultNode, a);
+      const Fb = evalNode(resultNode, b);
+      const val = Fb - Fa;
+      const defEl = document.getElementById('definiteEval');
+      defEl.classList.remove('hidden');
+      document.getElementById('evalContent').innerHTML = `
+        <div style="font-size:1.1rem;margin-bottom:8px">\\(\\displaystyle \\left[${nodeToLatex(resultNode)}\\right]_{${a}}^{${b}}\\)</div>
+        <div style="margin-bottom:6px">\\(= F(${b}) - F(${a}) = ${formatNum(Fb)} - ${formatNum(Fa)}\\)</div>
+        <div style="font-size:1.3rem;font-weight:700;color:var(--gold)">\\(= ${formatNum(val)}\\)</div>
+        <div style="color:var(--muted);font-size:.85rem;margin-top:8px">This represents the signed area under \\(f(x)\\) from \\(x=${a}\\) to \\(x=${b}\\).</div>
+      `;
+      typeset(defEl);
+    }
+
+    // Graph
+    drawGraph(ast, resultNode);
+
+    // History
+    addHistory(expr, nodeToString(resultNode));
+
+  } catch(e) {
+    document.getElementById('errorBox').classList.remove('hidden');
+    document.getElementById('errorBox').textContent = 'Could not integrate: ' + e.message;
+    document.getElementById('stepsContainer').innerHTML = '';
+    document.getElementById('finalResult').classList.add('hidden');
+  }
+}
+
+/* ====================================================================
+   GRAPHING
+   ==================================================================== */
+function drawGraph(fNode, FNode) {
+  const isDef = mode === 'definite';
+  const a = isDef ? (parseFloat(document.getElementById('boundA').value) || 0) : -5;
+  const b = isDef ? (parseFloat(document.getElementById('boundB').value) || 1) : 5;
+  const xMin = isDef ? Math.min(a - 2, -5) : -10;
+  const xMax = isDef ? Math.max(b + 2, 5) : 10;
+  const N = 500;
+  const xs = [], ys = [], Ys = [];
+  for (let i = 0; i <= N; i++) {
+    const xv = xMin + (xMax - xMin) * i / N;
+    xs.push(xv);
+    const yv = evalNode(fNode, xv);
+    ys.push(isFinite(yv) ? yv : null);
+    const Yv = evalNode(FNode, xv);
+    Ys.push(isFinite(Yv) ? Yv : null);
+  }
+
+  const traces = [
+    {x:xs, y:ys, name:'f(x)', line:{color:'#00e5ff', width:2.5}, type:'scatter'},
+    {x:xs, y:Ys, name:'F(x)', line:{color:'#a855f7', width:2, dash:'dash'}, type:'scatter'},
+  ];
+
+  if (isDef) {
+    const ax = [], ay = [];
+    for (let i = 0; i <= 200; i++) {
+      const xv = a + (b - a) * i / 200;
+      ax.push(xv);
+      const yv = evalNode(fNode, xv);
+      ay.push(isFinite(yv) ? yv : 0);
+    }
+    traces.push({
+      x: [a, ...ax, b],
+      y: [0, ...ay, 0],
+      fill:'tozeroy', fillcolor:'rgba(0,229,255,0.15)',
+      line:{color:'rgba(0,229,255,0.3)', width:0},
+      name:'Area', type:'scatter', showlegend:true
+    });
+  }
+
+  const layout = {
+    paper_bgcolor:'#111125', plot_bgcolor:'#111125',
+    font:{color:'#e8e8ff', family:'Poppins'},
+    xaxis:{gridcolor:'#1e1e3a', zerolinecolor:'#2a2a4a', title:'x'},
+    yaxis:{gridcolor:'#1e1e3a', zerolinecolor:'#2a2a4a', title:'y'},
+    legend:{x:0, y:1.12, orientation:'h', font:{size:12}},
+    margin:{l:50, r:20, t:30, b:50},
+    hovermode:'x unified',
+  };
+
+  Plotly.newPlot('graph-container', traces, layout, {responsive:true, displayModeBar:false});
+}
+
+/* ====================================================================
+   HISTORY
+   ==================================================================== */
+function getHistory() {
+  try { return JSON.parse(sessionStorage.getItem('integralHistory') || '[]'); } catch { return []; }
+}
+function saveHistory(h) { sessionStorage.setItem('integralHistory', JSON.stringify(h)); }
+
+function addHistory(expr, result) {
+  let h = getHistory();
+  h.unshift({expr, result, time: new Date().toLocaleTimeString()});
+  if (h.length > 10) h = h.slice(0, 10);
+  saveHistory(h);
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('histList');
+  const h = getHistory();
+  if (!h.length) { list.innerHTML = '<p style="color:var(--muted);font-size:.85rem">No history yet.</p>'; return; }
+  list.innerHTML = h.map((item, i) => `
+    <div class="hist-item" onclick="loadHistory(${i})">
+      <div class="hist-expr">&int; ${escHtml(item.expr)} dx</div>
+      <div class="hist-result">= ${escHtml(item.result)} + C</div>
+      <div style="color:var(--muted);font-size:.7rem;margin-top:4px">${item.time}</div>
+    </div>
+  `).join('');
+}
+
+function loadHistory(i) {
+  const h = getHistory();
+  if (h[i]) {
+    funcInput.value = h[i].expr;
+    updatePreview();
+    closeHistory();
+    doIntegrate();
+  }
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function openHistory() {
+  document.getElementById('histPanel').classList.add('open');
+  document.getElementById('histOverlay').classList.add('open');
+  renderHistory();
+}
+function closeHistory() {
+  document.getElementById('histPanel').classList.remove('open');
+  document.getElementById('histOverlay').classList.remove('open');
+}
+
+/* ====================================================================
+   REFERENCE TABLE
+   ==================================================================== */
+function toggleRef() {
+  const btn = document.getElementById('refToggle');
+  const body = document.getElementById('refBody');
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+document.getElementById('refBody').innerHTML = `
+  <h4 class="ref-cat">Power Rule</h4>
+  <table class="ref-table">
+    <tr><th>Integral</th><th>Result</th></tr>
+    <tr><td>\\(\\int x^n\\,dx\\)</td><td>\\(\\frac{x^{n+1}}{n+1}+C\\quad(n\\neq-1)\\)</td></tr>
+    <tr><td>\\(\\int x^{-1}\\,dx\\)</td><td>\\(\\ln|x|+C\\)</td></tr>
+    <tr><td>\\(\\int \\sqrt{x}\\,dx\\)</td><td>\\(\\frac{2}{3}x^{3/2}+C\\)</td></tr>
+    <tr><td>\\(\\int 1\\,dx\\)</td><td>\\(x+C\\)</td></tr>
+  </table>
+
+  <h4 class="ref-cat">Exponential &amp; Logarithmic</h4>
+  <table class="ref-table">
+    <tr><th>Integral</th><th>Result</th></tr>
+    <tr><td>\\(\\int e^x\\,dx\\)</td><td>\\(e^x+C\\)</td></tr>
+    <tr><td>\\(\\int e^{ax}\\,dx\\)</td><td>\\(\\frac{1}{a}e^{ax}+C\\)</td></tr>
+    <tr><td>\\(\\int a^x\\,dx\\)</td><td>\\(\\frac{a^x}{\\ln a}+C\\)</td></tr>
+    <tr><td>\\(\\int \\ln(x)\\,dx\\)</td><td>\\(x\\ln(x)-x+C\\)</td></tr>
+  </table>
+
+  <h4 class="ref-cat">Trigonometric</h4>
+  <table class="ref-table">
+    <tr><th>Integral</th><th>Result</th></tr>
+    <tr><td>\\(\\int \\sin(x)\\,dx\\)</td><td>\\(-\\cos(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\cos(x)\\,dx\\)</td><td>\\(\\sin(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\sec^2(x)\\,dx\\)</td><td>\\(\\tan(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\csc^2(x)\\,dx\\)</td><td>\\(-\\cot(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\sec(x)\\tan(x)\\,dx\\)</td><td>\\(\\sec(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\csc(x)\\cot(x)\\,dx\\)</td><td>\\(-\\csc(x)+C\\)</td></tr>
+  </table>
+
+  <h4 class="ref-cat">Inverse Trigonometric</h4>
+  <table class="ref-table">
+    <tr><th>Integral</th><th>Result</th></tr>
+    <tr><td>\\(\\int \\frac{1}{x^2+1}\\,dx\\)</td><td>\\(\\arctan(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\frac{1}{\\sqrt{1-x^2}}\\,dx\\)</td><td>\\(\\arcsin(x)+C\\)</td></tr>
+    <tr><td>\\(\\int \\frac{1}{x^2+a^2}\\,dx\\)</td><td>\\(\\frac{1}{a}\\arctan\\!\\left(\\frac{x}{a}\\right)+C\\)</td></tr>
+  </table>
+
+  <h4 class="ref-cat">U-Substitution</h4>
+  <table class="ref-table">
+    <tr><th colspan="2">If \\(u = g(x)\\), then \\(\\int f(g(x))\\,g'(x)\\,dx = \\int f(u)\\,du\\)</th></tr>
+    <tr><td>\\(\\int f(ax+b)\\,dx\\)</td><td>\\(\\frac{1}{a}F(ax+b)+C\\)</td></tr>
+    <tr><td>\\(\\int \\frac{f'(x)}{f(x)}\\,dx\\)</td><td>\\(\\ln|f(x)|+C\\)</td></tr>
+  </table>
+
+  <h4 class="ref-cat">Integration by Parts</h4>
+  <table class="ref-table">
+    <tr><th colspan="2">\\(\\int u\\,dv = uv - \\int v\\,du\\)</th></tr>
+    <tr><td colspan="2" style="color:var(--muted)">LIATE rule for choosing u: <strong>L</strong>ogarithmic &rarr; <strong>I</strong>nverse trig &rarr; <strong>A</strong>lgebraic &rarr; <strong>T</strong>rig &rarr; <strong>E</strong>xponential</td></tr>
+    <tr><td>\\(\\int x\\,e^x\\,dx\\)</td><td>\\(x\\,e^x - e^x + C\\)</td></tr>
+    <tr><td>\\(\\int x\\sin(x)\\,dx\\)</td><td>\\(-x\\cos(x)+\\sin(x)+C\\)</td></tr>
+    <tr><td>\\(\\int x\\cos(x)\\,dx\\)</td><td>\\(x\\sin(x)+\\cos(x)+C\\)</td></tr>
+    <tr><td>\\(\\int x\\ln(x)\\,dx\\)</td><td>\\(\\frac{x^2}{2}\\ln(x)-\\frac{x^2}{4}+C\\)</td></tr>
+  </table>
+`;
+
+// Initial typeset for reference
+setTimeout(() => {
+  const refBody = document.getElementById('refBody');
+  typeset(refBody);
+}, 500);
+
+// Render initial history
+renderHistory();
+
+// Enter key to integrate
+funcInput.addEventListener('keydown', e => { if (e.key === 'Enter') doIntegrate(); });
+
+/* ====================================================================
+   HEADER / FOOTER INJECTION
+   ==================================================================== */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>

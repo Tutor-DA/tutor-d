@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complex Number Visualizer | TutorDA</title>
+  <meta name="description" content="Explore complex numbers on the Argand diagram — visualize operations, roots of unity, Euler's formula, and more with animated interactions.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]},svg:{fontCache:'global'}};</script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --card:#111125;--card2:#1a1a35;--border:#1e1e3a;--muted:#94a3b8;
+      --dark:#0d0d1a;--text:#e8e8ff;--green:#22c55e;--red:#ef4444;
+      --blue:#3b82f6;--r:14px;--mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh;overflow-x:hidden}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:0 16px 60px}
+
+    /* Hero */
+    .hero{text-align:center;padding:56px 24px 20px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* Layout */
+    .cn-main{display:flex;gap:14px;align-items:flex-start}
+    .cn-canvas-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+    .cn-sidebar{width:320px;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
+
+    /* Canvas */
+    .cn-canvas-wrap{position:relative;background:#08081a;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .cn-canvas-wrap canvas{display:block;width:100%;cursor:crosshair}
+
+    /* Panels */
+    .cn-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;overflow:hidden}
+    .cn-panel h3{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--cyan);margin-bottom:10px;letter-spacing:.08em}
+    .cn-panel label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:4px}
+
+    /* Inputs */
+    .cn-input{background:var(--dark);color:var(--text);border:1px solid var(--border);border-radius:8px;
+      padding:7px 10px;font-family:var(--mono);font-size:.82rem;width:100%;outline:none;transition:border-color .2s}
+    .cn-input:focus{border-color:var(--cyan)}
+    .cn-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .cn-row > *{flex:1}
+    .cn-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;
+      background:var(--dark);color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:7px 14px;font-family:'Poppins',sans-serif;
+      font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .cn-btn:hover{border-color:var(--cyan);color:#fff;background:var(--card2)}
+    .cn-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08);box-shadow:0 0 8px rgba(0,229,255,.25)}
+    .cn-btn.primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;border-color:transparent;font-weight:600}
+    .cn-btn.primary:hover{opacity:.9;color:#000}
+    .cn-btn.danger{border-color:var(--red);color:var(--red)}
+    .cn-btn.danger:hover{background:rgba(239,68,68,.15)}
+    .cn-btn.sm{padding:4px 10px;font-size:.72rem}
+    .cn-btn-group{display:flex;gap:4px;flex-wrap:wrap}
+
+    /* Number list */
+    .cn-num-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--dark);
+      border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:.78rem;cursor:pointer;transition:all .2s}
+    .cn-num-item:hover,.cn-num-item.selected{border-color:var(--cyan);background:var(--card2)}
+    .cn-num-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .cn-num-info{flex:1;min-width:0;overflow:hidden}
+    .cn-num-label{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--muted)}
+    .cn-num-val{font-family:var(--mono);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cn-num-del{width:22px;height:22px;border-radius:50%;background:transparent;border:1px solid var(--border);
+      color:var(--red);font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .cn-num-del:hover{background:rgba(239,68,68,.2);border-color:var(--red)}
+
+    /* Conversions */
+    .cn-conv-block{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+    .cn-conv-block .cn-conv-title{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--cyan);margin-bottom:6px}
+    .cn-conv-row{font-size:.82rem;margin-bottom:4px;overflow-x:auto}
+
+    /* Operations */
+    .cn-op-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+    .cn-op-select{background:var(--dark);color:var(--text);border:1px solid var(--border);border-radius:8px;
+      padding:7px 10px;font-family:'Poppins',sans-serif;font-size:.78rem;cursor:pointer;outline:none;flex:1}
+    .cn-op-select:focus{border-color:var(--cyan)}
+
+    /* Steps */
+    .cn-steps{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:8px;
+      font-size:.82rem;max-height:200px;overflow-y:auto}
+    .cn-steps .step{margin-bottom:6px;padding-left:8px;border-left:2px solid var(--purple)}
+
+    /* Special viz */
+    .cn-viz-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    .cn-slider-wrap{display:flex;align-items:center;gap:6px;flex:1;min-width:140px}
+    .cn-slider-wrap input[type=range]{flex:1;accent-color:var(--cyan)}
+    .cn-slider-val{font-family:var(--mono);font-size:.78rem;min-width:28px;text-align:center}
+
+    /* Reference */
+    .cn-ref-toggle{cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-family:'Orbitron',sans-serif;
+      font-size:.8rem;color:var(--cyan);transition:all .2s}
+    .cn-ref-toggle:hover{border-color:var(--cyan)}
+    .cn-ref-toggle .arrow{transition:transform .3s}
+    .cn-ref-body{background:var(--card);border:1px solid var(--border);border-top:none;
+      border-radius:0 0 var(--r) var(--r);padding:14px;display:none;font-size:.82rem;line-height:1.8}
+    .cn-ref-body.open{display:block}
+    .cn-ref-body .ref-item{margin-bottom:8px;padding:6px 10px;background:var(--dark);border-radius:8px}
+
+    /* Properties panel */
+    .cn-prop-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.82rem}
+    .cn-prop-label{color:var(--muted);min-width:80px;font-size:.72rem}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+    /* Back to top */
+    #backToTop{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;
+      background:var(--card);border:1px solid var(--border);color:var(--cyan);font-size:1.2rem;
+      display:none;align-items:center;justify-content:center;cursor:pointer;z-index:999;transition:all .2s}
+    #backToTop:hover{background:var(--cyan);color:var(--dark)}
+
+    /* Responsive */
+    @media(max-width:900px){
+      .cn-main{flex-direction:column}
+      .cn-sidebar{width:100%}
+    }
+    @media(max-width:600px){
+      .hero{padding:40px 16px 14px}
+      .cn-panel{padding:10px}
+      .cn-op-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Complex Number Visualizer</h1>
+    <p>Explore complex numbers on the Argand diagram. Plot, transform, and animate operations in the complex plane.</p>
+  </section>
+
+  <div class="cn-main">
+    <!-- ===== CANVAS COLUMN ===== -->
+    <div class="cn-canvas-col">
+      <div class="cn-canvas-wrap">
+        <canvas id="argandCanvas"></canvas>
+      </div>
+
+      <!-- Operations -->
+      <div class="cn-panel" id="opsPanel">
+        <h3>Operations</h3>
+        <div class="cn-op-row">
+          <select class="cn-op-select" id="opA"><option value="-1">z&#8321;</option></select>
+          <select class="cn-op-select" id="opType">
+            <option value="add">Addition (+)</option>
+            <option value="sub">Subtraction (&minus;)</option>
+            <option value="mul">Multiplication (&times;)</option>
+            <option value="div">Division (&divide;)</option>
+            <option value="pow">Power (z&#8319;)</option>
+            <option value="roots">Roots (&#8319;&radic;z)</option>
+          </select>
+          <select class="cn-op-select" id="opB"><option value="-1">z&#8322;</option></select>
+        </div>
+        <div class="cn-row" id="opNRow" style="display:none">
+          <label style="flex:none;width:auto">n =</label>
+          <input type="number" class="cn-input" id="opN" value="3" min="2" max="20" style="width:70px;flex:none">
+        </div>
+        <div class="cn-btn-group">
+          <button class="cn-btn primary" id="opCompute">Compute &amp; Animate</button>
+          <button class="cn-btn danger" id="opClear">Clear Result</button>
+        </div>
+        <div class="cn-steps" id="opSteps" style="display:none"></div>
+      </div>
+
+      <!-- Special Visualizations -->
+      <div class="cn-panel" id="vizPanel">
+        <h3>Special Visualizations</h3>
+        <div class="cn-btn-group" style="margin-bottom:10px">
+          <button class="cn-btn" data-viz="powers">Powers of z</button>
+          <button class="cn-btn" data-viz="unity">Roots of Unity</button>
+          <button class="cn-btn" data-viz="unit-circle">Unit Circle</button>
+          <button class="cn-btn" data-viz="euler">Euler's Formula</button>
+        </div>
+        <div id="vizControls" style="display:none">
+          <div class="cn-viz-controls" id="vizSliderRow">
+            <span id="vizLabel" style="font-size:.78rem;color:var(--muted)">n:</span>
+            <div class="cn-slider-wrap">
+              <input type="range" id="vizSlider" min="1" max="20" value="6">
+              <span class="cn-slider-val" id="vizSliderVal">6</span>
+            </div>
+          </div>
+          <div class="cn-btn-group">
+            <button class="cn-btn primary" id="vizGo">Animate</button>
+            <button class="cn-btn danger" id="vizStop">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Reference -->
+      <div>
+        <div class="cn-ref-toggle" id="refToggle">Quick Reference <span class="arrow">&#9660;</span></div>
+        <div class="cn-ref-body" id="refBody">
+          <div class="ref-item">Euler's formula: $e^{i\theta}=\cos\theta+i\sin\theta$</div>
+          <div class="ref-item">De Moivre's theorem: $(r e^{i\theta})^n = r^n e^{in\theta}$</div>
+          <div class="ref-item">Multiplication: $r_1 e^{i\theta_1}\cdot r_2 e^{i\theta_2}=r_1 r_2\, e^{i(\theta_1+\theta_2)}$</div>
+          <div class="ref-item">Division: $\dfrac{r_1 e^{i\theta_1}}{r_2 e^{i\theta_2}}=\dfrac{r_1}{r_2}\, e^{i(\theta_1-\theta_2)}$</div>
+          <div class="ref-item">nth roots: $z^{1/n}=r^{1/n} e^{i(\theta+2k\pi)/n},\; k=0,1,\ldots,n{-}1$</div>
+          <div class="ref-item">$i^2=-1,\quad i^3=-i,\quad i^4=1,\quad e^{i\pi}=-1$</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="cn-sidebar">
+      <!-- Input Panel -->
+      <div class="cn-panel">
+        <h3>Add Number</h3>
+        <div class="cn-btn-group" style="margin-bottom:10px">
+          <button class="cn-btn active" id="modeRect">Rectangular</button>
+          <button class="cn-btn" id="modePolar">Polar</button>
+        </div>
+        <div id="inputRect">
+          <div class="cn-row">
+            <div><label>Real (a)</label><input type="number" class="cn-input" id="inA" step="any" value="1"></div>
+            <div><label>Imaginary (b)</label><input type="number" class="cn-input" id="inB" step="any" value="1"></div>
+          </div>
+        </div>
+        <div id="inputPolar" style="display:none">
+          <div class="cn-row">
+            <div><label>Modulus (r)</label><input type="number" class="cn-input" id="inR" step="any" min="0" value="1"></div>
+            <div>
+              <label>Argument (&theta;)</label>
+              <input type="number" class="cn-input" id="inTheta" step="any" value="45">
+            </div>
+          </div>
+          <div class="cn-btn-group" style="margin-bottom:8px">
+            <button class="cn-btn sm active" id="angDeg">Degrees</button>
+            <button class="cn-btn sm" id="angRad">Radians</button>
+          </div>
+        </div>
+        <button class="cn-btn primary" id="addBtn" style="width:100%">Add to Plane</button>
+      </div>
+
+      <!-- Numbers List -->
+      <div class="cn-panel">
+        <h3>Numbers on Plane</h3>
+        <div id="numList"><p style="font-size:.78rem;color:var(--muted)">Click canvas or use inputs above to add numbers.</p></div>
+      </div>
+
+      <!-- Properties Panel -->
+      <div class="cn-panel" id="propsPanel" style="display:none">
+        <h3>Properties</h3>
+        <div id="propsContent"></div>
+      </div>
+
+      <!-- Conversions Display -->
+      <div class="cn-panel" id="convPanel" style="display:none">
+        <h3>Conversions</h3>
+        <div id="convContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="backToTop" title="Back to top">&#8679;</button>
+<div id="footer-container"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================================================================
+   STATE
+   ================================================================ */
+const COLORS = ['#00e5ff','#a855f7','#ec4899','#facc15','#22c55e'];
+const LABELS = ['z\u2081','z\u2082','z\u2083','z\u2084','z\u2085'];
+const MAX_NUMS = 5;
+
+let numbers = []; // {re, im, color, label}
+let selectedIdx = -1;
+let result = null; // {points:[], dashed:true}
+let vizState = null; // {type, data}
+
+// Canvas / view
+const canvas = document.getElementById('argandCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+let view = { x:0, y:0, scale:50 }; // scale = pixels per unit
+let isPanning = false, panStart = null;
+let isDragging = false, dragIdx = -1;
+
+// Input mode
+let inputMode = 'rect'; // 'rect' | 'polar'
+let angleUnit = 'deg'; // 'deg' | 'rad'
+
+// Animation
+let animId = null;
+
+/* ================================================================
+   CANVAS RESIZE
+   ================================================================ */
+function resize(){
+  const wrap = canvas.parentElement;
+  const w = wrap.clientWidth;
+  const h = Math.max(400, Math.min(w * 0.65, 600));
+  dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.height = h + 'px';
+  W = canvas.width; H = canvas.height;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  render();
+}
+
+/* ================================================================
+   COORDINATE TRANSFORMS
+   ================================================================ */
+function toScreen(re, im){
+  return [view.x + re * view.scale, view.y - im * view.scale];
+}
+function toComplex(sx, sy){
+  return [(sx - view.x) / view.scale, (view.y - sy) / view.scale];
+}
+
+/* ================================================================
+   RENDER
+   ================================================================ */
+function render(){
+  const w = W/dpr, h = H/dpr;
+  ctx.clearRect(0,0,w,h);
+
+  // Background
+  ctx.fillStyle = '#08081a';
+  ctx.fillRect(0,0,w,h);
+
+  drawGrid(w,h);
+  drawUnitCircleIfViz(w,h);
+  drawVizOverlays(w,h);
+  drawResultPoints(w,h);
+  drawNumbers(w,h);
+}
+
+function drawGrid(w,h){
+  // Determine grid spacing
+  let step = 1;
+  const minPx = 40;
+  if(view.scale < minPx/2) step = Math.pow(2, Math.ceil(Math.log2(minPx/view.scale)));
+  if(view.scale > minPx*3) step = 1/Math.pow(2, Math.floor(Math.log2(view.scale/minPx/3)));
+
+  ctx.strokeStyle = '#1a1a3a';
+  ctx.lineWidth = 0.5;
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.fillStyle = '#555';
+
+  // Vertical lines
+  const xMin = Math.floor(toComplex(0,0)[0]/step)*step;
+  const xMax = Math.ceil(toComplex(w,0)[0]/step)*step;
+  for(let x=xMin;x<=xMax;x+=step){
+    const sx = toScreen(x,0)[0];
+    if(sx<0||sx>w) continue;
+    ctx.beginPath(); ctx.moveTo(sx,0); ctx.lineTo(sx,h); ctx.stroke();
+    if(Math.abs(x)>1e-9){
+      ctx.fillText(Number(x.toFixed(4)),sx+3,view.y+14);
+    }
+  }
+  // Horizontal lines
+  const yMin = Math.floor(toComplex(0,h)[1]/step)*step;
+  const yMax = Math.ceil(toComplex(0,0)[1]/step)*step;
+  for(let y=yMin;y<=yMax;y+=step){
+    const sy = toScreen(0,y)[1];
+    if(sy<0||sy>h) continue;
+    ctx.beginPath(); ctx.moveTo(0,sy); ctx.lineTo(w,sy); ctx.stroke();
+    if(Math.abs(y)>1e-9){
+      ctx.fillText(Number(y.toFixed(4))+'i',view.x+5,sy-3);
+    }
+  }
+
+  // Axes
+  ctx.strokeStyle = '#3a3a6a';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0,view.y); ctx.lineTo(w,view.y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(view.x,0); ctx.lineTo(view.x,h); ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = '#888';
+  ctx.font = '12px Poppins, sans-serif';
+  ctx.fillText('Re', w-24, view.y-6);
+  ctx.fillText('Im', view.x+6, 16);
+
+  // Origin
+  ctx.fillStyle = '#666';
+  ctx.fillText('0', view.x+4, view.y+14);
+}
+
+function drawNumbers(w,h){
+  numbers.forEach((n,i) => {
+    const [sx,sy] = toScreen(n.re, n.im);
+    // Vector from origin
+    ctx.strokeStyle = n.color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.5;
+    ctx.beginPath(); ctx.moveTo(view.x,view.y); ctx.lineTo(sx,sy); ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Draw arrowhead
+    const dx=sx-view.x, dy=sy-view.y;
+    const len=Math.sqrt(dx*dx+dy*dy);
+    if(len>12){
+      const ax=dx/len, ay=dy/len;
+      ctx.fillStyle=n.color;
+      ctx.beginPath();
+      ctx.moveTo(sx,sy);
+      ctx.lineTo(sx-8*ax+4*ay, sy-8*ay-4*ax);
+      ctx.lineTo(sx-8*ax-4*ay, sy-8*ay+4*ax);
+      ctx.fill();
+    }
+
+    // Point
+    const r = i===selectedIdx ? 8 : 6;
+    ctx.fillStyle = n.color;
+    ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = i===selectedIdx ? 2 : 1;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = '#fff';
+    ctx.font = '12px Orbitron, sans-serif';
+    ctx.fillText(n.label, sx+10, sy-8);
+
+    // If selected draw modulus circle and argument arc
+    if(i === selectedIdx){
+      const mod = Math.sqrt(n.re*n.re + n.im*n.im);
+      const arg = Math.atan2(n.im, n.re);
+      // Modulus circle
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.25;
+      ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.arc(view.x, view.y, mod*view.scale, 0, Math.PI*2); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      // Argument arc
+      if(mod > 0.05){
+        const arcR = Math.min(30, mod*view.scale*0.4);
+        ctx.strokeStyle = var_gold();
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(view.x, view.y, arcR, -arg, 0, n.im>=0);
+        ctx.stroke();
+        // Degree label
+        const mid = -arg/2;
+        const lx = view.x + (arcR+12)*Math.cos(mid);
+        const ly = view.y + (arcR+12)*Math.sin(mid);
+        ctx.fillStyle = var_gold();
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillText(fmtAngle(arg), lx, ly);
+      }
+    }
+  });
+}
+
+function var_gold(){ return '#facc15'; }
+
+function drawResultPoints(){
+  if(!result || !result.points) return;
+  result.points.forEach(p => {
+    const [sx,sy] = toScreen(p.re, p.im);
+    // Dashed vector
+    ctx.strokeStyle = p.color || '#fff';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6,4]);
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath(); ctx.moveTo(view.x,view.y); ctx.lineTo(sx,sy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+    // Point
+    ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2);
+    ctx.strokeStyle = p.color || '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.15)'; ctx.fill();
+    // Label
+    ctx.fillStyle = p.color || '#fff';
+    ctx.font = '11px Orbitron, sans-serif';
+    ctx.fillText(p.label || 'w', sx+10, sy-8);
+  });
+  // Parallelogram lines for add/sub
+  if(result.parallelogram && result.parallelogram.length === 4){
+    const pts = result.parallelogram.map(p=>toScreen(p.re,p.im));
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    pts.forEach((p,i)=>{
+      if(i===0) ctx.moveTo(p[0],p[1]); else ctx.lineTo(p[0],p[1]);
+    });
+    ctx.closePath(); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+function drawUnitCircleIfViz(){
+  if(!vizState) return;
+  if(vizState.type==='unit-circle'||vizState.type==='euler'||vizState.type==='unity'){
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(view.x,view.y,view.scale,0,Math.PI*2); ctx.stroke();
+  }
+}
+
+function drawVizOverlays(){
+  if(!vizState || !vizState.data) return;
+  const pts = vizState.data;
+  pts.forEach((p,i) => {
+    const [sx,sy] = toScreen(p.re,p.im);
+    // Connect consecutive points
+    if(i>0 && vizState.type==='powers'){
+      const [px,py] = toScreen(pts[i-1].re, pts[i-1].im);
+      ctx.strokeStyle = 'rgba(168,85,247,0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke();
+    }
+    // For unity draw polygon
+    if(vizState.type==='unity' && i>0){
+      const [px,py] = toScreen(pts[i-1].re, pts[i-1].im);
+      ctx.strokeStyle = 'rgba(0,229,255,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke();
+    }
+    if(vizState.type==='unity' && i===pts.length-1 && pts.length>1){
+      const [fx,fy] = toScreen(pts[0].re, pts[0].im);
+      ctx.strokeStyle = 'rgba(0,229,255,0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(fx,fy); ctx.stroke();
+    }
+    // Point
+    ctx.fillStyle = p.color || '#a855f7';
+    ctx.beginPath(); ctx.arc(sx,sy,5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+    if(p.label){
+      ctx.fillStyle = '#fff'; ctx.font = '9px JetBrains Mono, monospace';
+      ctx.fillText(p.label, sx+8, sy-6);
+    }
+  });
+
+  // Euler trace
+  if(vizState.type==='euler' && vizState.theta != null){
+    const th = vizState.theta;
+    const [sx,sy] = toScreen(Math.cos(th), Math.sin(th));
+    // Trace arc
+    ctx.strokeStyle = var_gold();
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(view.x, view.y, view.scale, 0, -th, th>0); ctx.stroke();
+    // cos projection
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(sx,view.y); ctx.stroke();
+    // sin projection
+    ctx.strokeStyle = '#ec4899';
+    ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(view.x,sy); ctx.stroke();
+    ctx.setLineDash([]);
+    // Labels
+    ctx.fillStyle = '#00e5ff'; ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('cos\u03B8', (sx+view.x)/2, view.y+14);
+    ctx.fillStyle = '#ec4899';
+    ctx.fillText('sin\u03B8', view.x-38, (sy+view.y)/2);
+    // Point
+    ctx.fillStyle = var_gold();
+    ctx.beginPath(); ctx.arc(sx,sy,6,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.font='11px Orbitron, sans-serif';
+    ctx.fillText('e^{i\u03B8}', sx+10, sy-10);
+  }
+
+  // Unit circle animated trace
+  if(vizState.type==='unit-circle' && vizState.theta != null){
+    const th = vizState.theta;
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(view.x,view.y,view.scale,0,-th,true); ctx.stroke();
+    const [sx,sy] = toScreen(Math.cos(th),Math.sin(th));
+    ctx.fillStyle='#00e5ff';
+    ctx.beginPath(); ctx.arc(sx,sy,6,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+  }
+}
+
+/* ================================================================
+   MOUSE / TOUCH EVENTS
+   ================================================================ */
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return [(t.clientX - rect.left), (t.clientY - rect.top)];
+}
+
+function hitTest(sx,sy){
+  for(let i=numbers.length-1;i>=0;i--){
+    const [px,py] = toScreen(numbers[i].re, numbers[i].im);
+    if(Math.hypot(px-sx,py-sy) < 14) return i;
+  }
+  return -1;
+}
+
+canvas.addEventListener('mousedown', e => {
+  const [sx,sy] = getPos(e);
+  const hit = hitTest(sx,sy);
+  if(hit >= 0){
+    isDragging = true;
+    dragIdx = hit;
+    selectNumber(hit);
+    canvas.style.cursor = 'grabbing';
+  } else {
+    isPanning = true;
+    panStart = {x:sx-view.x, y:sy-view.y};
+    canvas.style.cursor = 'move';
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  const [sx,sy] = getPos(e);
+  if(isDragging && dragIdx >= 0){
+    const [re,im] = toComplex(sx,sy);
+    numbers[dragIdx].re = Math.round(re*100)/100;
+    numbers[dragIdx].im = Math.round(im*100)/100;
+    updateUI();
+    render();
+  } else if(isPanning && panStart){
+    view.x = sx - panStart.x;
+    view.y = sy - panStart.y;
+    render();
+  } else {
+    const hit = hitTest(sx,sy);
+    canvas.style.cursor = hit>=0 ? 'grab' : 'crosshair';
+  }
+});
+
+canvas.addEventListener('mouseup', e => {
+  isPanning = false; panStart = null;
+  isDragging = false; dragIdx = -1;
+  canvas.style.cursor = 'crosshair';
+});
+
+canvas.addEventListener('mouseleave', () => {
+  isPanning = false; panStart = null;
+  isDragging = false; dragIdx = -1;
+  canvas.style.cursor = 'crosshair';
+});
+
+canvas.addEventListener('dblclick', e => {
+  const [sx,sy] = getPos(e);
+  const hit = hitTest(sx,sy);
+  if(hit >= 0){
+    selectNumber(hit);
+  } else {
+    const [re,im] = toComplex(sx,sy);
+    addNumber(Math.round(re*100)/100, Math.round(im*100)/100);
+  }
+});
+
+// Scroll zoom
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const [sx,sy] = getPos(e);
+  const [re,im] = toComplex(sx,sy);
+  const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
+  view.scale *= factor;
+  view.scale = Math.max(5, Math.min(500, view.scale));
+  // Adjust pan so zoom centers on cursor
+  view.x = sx - re * view.scale;
+  view.y = sy + im * view.scale;
+  render();
+}, {passive:false});
+
+// Touch support
+let lastTouchDist = 0;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if(e.touches.length === 1){
+    const [sx,sy] = getPos(e);
+    const hit = hitTest(sx,sy);
+    if(hit >= 0){
+      isDragging = true;
+      dragIdx = hit;
+      selectNumber(hit);
+    } else {
+      isPanning = true;
+      panStart = {x:sx-view.x,y:sy-view.y};
+    }
+  } else if(e.touches.length === 2){
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastTouchDist = Math.hypot(dx,dy);
+  }
+}, {passive:false});
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if(e.touches.length === 1){
+    const [sx,sy] = getPos(e);
+    if(isDragging && dragIdx>=0){
+      const [re,im] = toComplex(sx,sy);
+      numbers[dragIdx].re = Math.round(re*100)/100;
+      numbers[dragIdx].im = Math.round(im*100)/100;
+      updateUI(); render();
+    } else if(isPanning && panStart){
+      view.x = sx - panStart.x;
+      view.y = sy - panStart.y;
+      render();
+    }
+  } else if(e.touches.length === 2){
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.hypot(dx,dy);
+    if(lastTouchDist>0){
+      const factor = dist/lastTouchDist;
+      view.scale = Math.max(5,Math.min(500,view.scale*factor));
+      render();
+    }
+    lastTouchDist = dist;
+  }
+}, {passive:false});
+
+canvas.addEventListener('touchend', e => {
+  if(e.touches.length < 2) lastTouchDist = 0;
+  if(e.touches.length === 0){
+    // If was not dragging and not panning much, treat as tap to add
+    if(!isDragging && isPanning && panStart){
+      // do nothing, was panning
+    }
+    isPanning = false; panStart = null;
+    isDragging = false; dragIdx = -1;
+  }
+});
+
+/* ================================================================
+   NUMBER MANAGEMENT
+   ================================================================ */
+function addNumber(re, im){
+  if(numbers.length >= MAX_NUMS) return;
+  const idx = numbers.length;
+  numbers.push({re, im, color: COLORS[idx], label: LABELS[idx]});
+  selectNumber(idx);
+  updateUI();
+  render();
+}
+
+function removeNumber(idx){
+  numbers.splice(idx, 1);
+  // Re-assign colors and labels
+  numbers.forEach((n,i) => { n.color = COLORS[i]; n.label = LABELS[i]; });
+  if(selectedIdx >= numbers.length) selectedIdx = numbers.length-1;
+  updateUI();
+  render();
+}
+
+function selectNumber(idx){
+  selectedIdx = idx;
+  updateUI();
+  render();
+}
+
+/* ================================================================
+   UI UPDATES
+   ================================================================ */
+function updateUI(){
+  updateNumList();
+  updateOpSelects();
+  updateProps();
+  updateConversions();
+}
+
+function updateNumList(){
+  const el = document.getElementById('numList');
+  if(numbers.length === 0){
+    el.innerHTML = '<p style="font-size:.78rem;color:var(--muted)">Click canvas or use inputs above to add numbers.</p>';
+    return;
+  }
+  el.innerHTML = numbers.map((n,i) => {
+    const sel = i===selectedIdx ? ' selected' : '';
+    return `<div class="cn-num-item${sel}" data-idx="${i}">
+      <div class="cn-num-dot" style="background:${n.color}"></div>
+      <div class="cn-num-info">
+        <div class="cn-num-label">${n.label}</div>
+        <div class="cn-num-val">${fmtRect(n.re,n.im)} &nbsp; | &nbsp; ${fmtPolar(n.re,n.im)}</div>
+      </div>
+      <button class="cn-num-del" data-del="${i}">&times;</button>
+    </div>`;
+  }).join('');
+
+  el.querySelectorAll('.cn-num-item').forEach(item => {
+    item.addEventListener('click', e => {
+      if(e.target.closest('.cn-num-del')) return;
+      selectNumber(parseInt(item.dataset.idx));
+    });
+  });
+  el.querySelectorAll('.cn-num-del').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      removeNumber(parseInt(btn.dataset.del));
+    });
+  });
+}
+
+function updateOpSelects(){
+  const opA = document.getElementById('opA');
+  const opB = document.getElementById('opB');
+  const selA = opA.value, selB = opB.value;
+  const opts = numbers.map((n,i) => `<option value="${i}">${n.label} (${fmtRect(n.re,n.im)})</option>`).join('');
+  opA.innerHTML = opts || '<option value="-1">--</option>';
+  opB.innerHTML = opts || '<option value="-1">--</option>';
+  if(numbers.length > 0){
+    opA.value = (parseInt(selA) < numbers.length) ? selA : '0';
+    if(numbers.length > 1) opB.value = (parseInt(selB) < numbers.length && selB !== opA.value) ? selB : (opA.value==='0'?'1':'0');
+    else opB.value = '0';
+  }
+}
+
+function updateProps(){
+  const panel = document.getElementById('propsPanel');
+  const content = document.getElementById('propsContent');
+  if(selectedIdx < 0 || selectedIdx >= numbers.length){
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = '';
+  const n = numbers[selectedIdx];
+  const mod = Math.sqrt(n.re*n.re + n.im*n.im);
+  const arg = Math.atan2(n.im, n.re);
+  content.innerHTML = `
+    <div class="cn-prop-row"><span class="cn-prop-label">Number</span><span style="color:${n.color};font-family:var(--mono)">${n.label} = ${fmtRect(n.re,n.im)}</span></div>
+    <div class="cn-prop-row"><span class="cn-prop-label">Modulus</span><span style="font-family:var(--mono)">|${n.label}| = ${mod.toFixed(4)}</span></div>
+    <div class="cn-prop-row"><span class="cn-prop-label">Argument</span><span style="font-family:var(--mono)">arg(${n.label}) = ${fmtAngle(arg)}</span></div>
+    <div class="cn-prop-row"><span class="cn-prop-label">Conjugate</span><span style="font-family:var(--mono)">${fmtRect(n.re,-n.im)}</span></div>
+    <div class="cn-prop-row"><span class="cn-prop-label">Quadrant</span><span>${getQuadrant(n.re,n.im)}</span></div>
+  `;
+}
+
+function updateConversions(){
+  const panel = document.getElementById('convPanel');
+  const content = document.getElementById('convContent');
+  if(numbers.length === 0){ panel.style.display='none'; return; }
+  panel.style.display = '';
+  content.innerHTML = numbers.map(n => {
+    const mod = Math.sqrt(n.re*n.re+n.im*n.im);
+    const arg = Math.atan2(n.im, n.re);
+    const degStr = (arg*180/Math.PI).toFixed(2)+'°';
+    const radStr = arg.toFixed(4)+' rad';
+    return `<div class="cn-conv-block">
+      <div class="cn-conv-title" style="color:${n.color}">${n.label}</div>
+      <div class="cn-conv-row">Rectangular: $${texRect(n.re,n.im)}$</div>
+      <div class="cn-conv-row">Polar: $${mod.toFixed(3)}(\\cos ${degStr} + i\\sin ${degStr})$</div>
+      <div class="cn-conv-row">Exponential: $${mod.toFixed(3)}\\,e^{i\\cdot ${radStr}}$</div>
+      <div class="cn-conv-row">Modulus: $|${n.label}|=\\sqrt{${n.re.toFixed(2)}^2+${n.im.toFixed(2)}^2}=${mod.toFixed(4)}$</div>
+      <div class="cn-conv-row">Argument: $\\arg(${n.label})=${degStr}=${radStr}$</div>
+      <div class="cn-conv-row">Conjugate: $\\overline{${n.label}}=${texRect(n.re,-n.im)}$</div>
+    </div>`;
+  }).join('');
+  if(window.MathJax && MathJax.typeset) MathJax.typeset();
+}
+
+/* ================================================================
+   FORMATTING HELPERS
+   ================================================================ */
+function fmtRect(re,im){
+  const rs = re.toFixed(2);
+  if(Math.abs(im)<1e-9) return rs;
+  const is = Math.abs(im).toFixed(2);
+  const sign = im >= 0 ? '+' : '-';
+  return `${rs} ${sign} ${is}i`;
+}
+function fmtPolar(re,im){
+  const mod = Math.sqrt(re*re+im*im);
+  const arg = Math.atan2(im,re);
+  return mod.toFixed(2)+'∠'+fmtAngle(arg);
+}
+function fmtAngle(rad){
+  return (rad*180/Math.PI).toFixed(1)+'°';
+}
+function texRect(re,im){
+  const rs = re.toFixed(2);
+  if(Math.abs(im)<1e-9) return rs;
+  const is = Math.abs(im).toFixed(2);
+  const sign = im >= 0 ? '+' : '-';
+  return `${rs}${sign}${is}i`;
+}
+function getQuadrant(re,im){
+  if(re>0&&im>0) return 'I';
+  if(re<0&&im>0) return 'II';
+  if(re<0&&im<0) return 'III';
+  if(re>0&&im<0) return 'IV';
+  return 'Axis';
+}
+
+/* ================================================================
+   INPUT MODE TOGGLE
+   ================================================================ */
+document.getElementById('modeRect').addEventListener('click', () => {
+  inputMode = 'rect';
+  document.getElementById('modeRect').classList.add('active');
+  document.getElementById('modePolar').classList.remove('active');
+  document.getElementById('inputRect').style.display = '';
+  document.getElementById('inputPolar').style.display = 'none';
+});
+document.getElementById('modePolar').addEventListener('click', () => {
+  inputMode = 'polar';
+  document.getElementById('modePolar').classList.add('active');
+  document.getElementById('modeRect').classList.remove('active');
+  document.getElementById('inputRect').style.display = 'none';
+  document.getElementById('inputPolar').style.display = '';
+});
+document.getElementById('angDeg').addEventListener('click', () => {
+  angleUnit = 'deg';
+  document.getElementById('angDeg').classList.add('active');
+  document.getElementById('angRad').classList.remove('active');
+});
+document.getElementById('angRad').addEventListener('click', () => {
+  angleUnit = 'rad';
+  document.getElementById('angRad').classList.add('active');
+  document.getElementById('angDeg').classList.remove('active');
+});
+
+/* ================================================================
+   ADD BUTTON
+   ================================================================ */
+document.getElementById('addBtn').addEventListener('click', () => {
+  if(numbers.length >= MAX_NUMS) return;
+  let re, im;
+  if(inputMode === 'rect'){
+    re = parseFloat(document.getElementById('inA').value) || 0;
+    im = parseFloat(document.getElementById('inB').value) || 0;
+  } else {
+    const r = parseFloat(document.getElementById('inR').value) || 0;
+    let th = parseFloat(document.getElementById('inTheta').value) || 0;
+    if(angleUnit === 'deg') th = th * Math.PI / 180;
+    re = r * Math.cos(th);
+    im = r * Math.sin(th);
+    re = Math.round(re*1e8)/1e8;
+    im = Math.round(im*1e8)/1e8;
+  }
+  addNumber(re, im);
+});
+
+/* ================================================================
+   OPERATIONS
+   ================================================================ */
+const opType = document.getElementById('opType');
+const opNRow = document.getElementById('opNRow');
+
+opType.addEventListener('change', () => {
+  const v = opType.value;
+  opNRow.style.display = (v==='pow'||v==='roots') ? '' : 'none';
+  document.getElementById('opB').style.display = (v==='pow'||v==='roots') ? 'none' : '';
+});
+
+document.getElementById('opCompute').addEventListener('click', () => {
+  const idxA = parseInt(document.getElementById('opA').value);
+  const idxB = parseInt(document.getElementById('opB').value);
+  const op = opType.value;
+  const n = parseInt(document.getElementById('opN').value) || 3;
+  if(idxA < 0 || idxA >= numbers.length) return;
+  if((op!=='pow'&&op!=='roots') && (idxB<0||idxB>=numbers.length)) return;
+
+  const za = numbers[idxA];
+  const zb = (op!=='pow'&&op!=='roots') ? numbers[idxB] : null;
+
+  let resPoints = [];
+  let steps = [];
+  let para = null;
+
+  if(op === 'add'){
+    const re = za.re+zb.re, im = za.im+zb.im;
+    resPoints = [{re,im,color:'#fff',label:za.label+'+'+zb.label}];
+    para = [{re:0,im:0}, {re:za.re,im:za.im}, {re,im}, {re:zb.re,im:zb.im}];
+    steps = [
+      `$(${texRect(za.re,za.im)})+(${texRect(zb.re,zb.im)})$`,
+      `$= (${za.re.toFixed(2)}+${zb.re.toFixed(2)}) + (${za.im.toFixed(2)}+${zb.im.toFixed(2)})i$`,
+      `$= ${texRect(re,im)}$`
+    ];
+    animateParallelogram(resPoints, para, steps);
+    return;
+  }
+  if(op === 'sub'){
+    const re = za.re-zb.re, im = za.im-zb.im;
+    resPoints = [{re,im,color:'#fff',label:za.label+'-'+zb.label}];
+    para = [{re:zb.re,im:zb.im},{re:za.re,im:za.im},{re,im},{re:0,im:0}];
+    steps = [
+      `$(${texRect(za.re,za.im)})-(${texRect(zb.re,zb.im)})$`,
+      `$= (${za.re.toFixed(2)}-${zb.re.toFixed(2)}) + (${za.im.toFixed(2)}-${zb.im.toFixed(2)})i$`,
+      `$= ${texRect(re,im)}$`
+    ];
+    animateParallelogram(resPoints, para, steps);
+    return;
+  }
+  if(op === 'mul'){
+    const r1 = Math.sqrt(za.re*za.re+za.im*za.im);
+    const t1 = Math.atan2(za.im,za.re);
+    const r2 = Math.sqrt(zb.re*zb.re+zb.im*zb.im);
+    const t2 = Math.atan2(zb.im,zb.re);
+    const rr = r1*r2, tt = t1+t2;
+    const re = rr*Math.cos(tt), im = rr*Math.sin(tt);
+    resPoints = [{re,im,color:'#fff',label:za.label+'·'+zb.label}];
+    steps = [
+      `Polar form: $${za.label}=${r1.toFixed(3)}e^{i\\cdot${(t1*180/Math.PI).toFixed(1)}°}$, $${zb.label}=${r2.toFixed(3)}e^{i\\cdot${(t2*180/Math.PI).toFixed(1)}°}$`,
+      `Multiply moduli: $${r1.toFixed(3)} \\times ${r2.toFixed(3)} = ${rr.toFixed(3)}$`,
+      `Add arguments: $${(t1*180/Math.PI).toFixed(1)}° + ${(t2*180/Math.PI).toFixed(1)}° = ${(tt*180/Math.PI).toFixed(1)}°$`,
+      `$= ${texRect(re,im)}$`
+    ];
+    animateRotation(za, r2, t2, resPoints, steps);
+    return;
+  }
+  if(op === 'div'){
+    const r1 = Math.sqrt(za.re*za.re+za.im*za.im);
+    const t1 = Math.atan2(za.im,za.re);
+    const r2 = Math.sqrt(zb.re*zb.re+zb.im*zb.im);
+    const t2 = Math.atan2(zb.im,zb.re);
+    if(r2 < 1e-12){ showSteps(['Cannot divide by zero.']); return; }
+    const rr = r1/r2, tt = t1-t2;
+    const re = rr*Math.cos(tt), im = rr*Math.sin(tt);
+    resPoints = [{re,im,color:'#fff',label:za.label+'/'+zb.label}];
+    steps = [
+      `Polar form: $${za.label}=${r1.toFixed(3)}e^{i\\cdot${(t1*180/Math.PI).toFixed(1)}°}$, $${zb.label}=${r2.toFixed(3)}e^{i\\cdot${(t2*180/Math.PI).toFixed(1)}°}$`,
+      `Divide moduli: $${r1.toFixed(3)} / ${r2.toFixed(3)} = ${rr.toFixed(3)}$`,
+      `Subtract arguments: $${(t1*180/Math.PI).toFixed(1)}° - ${(t2*180/Math.PI).toFixed(1)}° = ${(tt*180/Math.PI).toFixed(1)}°$`,
+      `$= ${texRect(re,im)}$`
+    ];
+    animateRotation(za, 1/r2, -t2, resPoints, steps);
+    return;
+  }
+  if(op === 'pow'){
+    const r = Math.sqrt(za.re*za.re+za.im*za.im);
+    const t = Math.atan2(za.im,za.re);
+    const rr = Math.pow(r,n), tt = t*n;
+    const re = rr*Math.cos(tt), im = rr*Math.sin(tt);
+    resPoints = [{re,im,color:'#fff',label:za.label+'^'+n}];
+    steps = [
+      `De Moivre's theorem: $(re^{i\\theta})^n = r^n e^{in\\theta}$`,
+      `$r=${r.toFixed(3)},\\;\\theta=${(t*180/Math.PI).toFixed(1)}°,\\;n=${n}$`,
+      `$r^n=${rr.toFixed(4)},\\;n\\theta=${(tt*180/Math.PI).toFixed(1)}°$`,
+      `$= ${texRect(re,im)}$`
+    ];
+    result = {points:resPoints};
+    showSteps(steps);
+    render();
+    return;
+  }
+  if(op === 'roots'){
+    const r = Math.sqrt(za.re*za.re+za.im*za.im);
+    const t = Math.atan2(za.im,za.re);
+    const rr = Math.pow(r,1/n);
+    resPoints = [];
+    steps = [`$n$th roots of $${za.label}$, $n=${n}$`, `$r^{1/n}=${rr.toFixed(4)}$`];
+    for(let k=0;k<n;k++){
+      const tt = (t+2*Math.PI*k)/n;
+      const re = rr*Math.cos(tt), im = rr*Math.sin(tt);
+      resPoints.push({re,im,color:COLORS[k%COLORS.length],label:'w'+k});
+      steps.push(`$w_${k}=${texRect(re,im)}$ at $${(tt*180/Math.PI).toFixed(1)}°$`);
+    }
+    animateRoots(resPoints, rr, steps);
+    return;
+  }
+});
+
+document.getElementById('opClear').addEventListener('click', () => {
+  result = null;
+  document.getElementById('opSteps').style.display = 'none';
+  render();
+});
+
+function showSteps(steps){
+  const el = document.getElementById('opSteps');
+  el.style.display = '';
+  el.innerHTML = steps.map(s => `<div class="step">${s}</div>`).join('');
+  if(window.MathJax && MathJax.typeset) MathJax.typeset();
+}
+
+/* ================================================================
+   ANIMATIONS
+   ================================================================ */
+function animateParallelogram(finalPts, para, steps){
+  if(animId) cancelAnimationFrame(animId);
+  const duration = 800;
+  const start = performance.now();
+  const targetPt = finalPts[0];
+
+  function frame(now){
+    const t = Math.min(1, (now-start)/duration);
+    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; // easeInOut
+
+    result = {
+      points: [{re:targetPt.re*ease, im:targetPt.im*ease, color:targetPt.color, label:targetPt.label}],
+      parallelogram: para ? para.map(p => ({re:p.re*ease,im:p.im*ease})) : null
+    };
+    // Fix: the parallelogram points shouldn't scale, only the result
+    if(para){
+      result.parallelogram = [
+        para[0],
+        para[1],
+        {re:para[1].re+(targetPt.re*ease-para[1].re+para[0].re-para[0].re*1)*1, im:para[1].im+(targetPt.im*ease-para[1].im)*1},
+        para[3]
+      ];
+      // Simply interpolate result
+      result.parallelogram = para;
+    }
+    render();
+    if(t<1) animId = requestAnimationFrame(frame);
+    else { result = {points:finalPts, parallelogram:para}; render(); showSteps(steps); }
+  }
+  animId = requestAnimationFrame(frame);
+}
+
+function animateRotation(za, scaleFactor, addAngle, finalPts, steps){
+  if(animId) cancelAnimationFrame(animId);
+  const duration = 1000;
+  const start = performance.now();
+  const r0 = Math.sqrt(za.re*za.re+za.im*za.im);
+  const t0 = Math.atan2(za.im, za.re);
+  const targetPt = finalPts[0];
+
+  function frame(now){
+    const t = Math.min(1,(now-start)/duration);
+    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    const curR = r0 * (1 + (scaleFactor-1)*ease);
+    const curT = t0 + addAngle*ease;
+    const re = curR*Math.cos(curT), im = curR*Math.sin(curT);
+    result = {points:[{re,im,color:'#fff',label:targetPt.label}]};
+    render();
+    if(t<1) animId = requestAnimationFrame(frame);
+    else { result={points:finalPts}; render(); showSteps(steps); }
+  }
+  animId = requestAnimationFrame(frame);
+}
+
+function animateRoots(finalPts, radius, steps){
+  if(animId) cancelAnimationFrame(animId);
+  const duration = 1200;
+  const start = performance.now();
+  const n = finalPts.length;
+
+  function frame(now){
+    const t = Math.min(1,(now-start)/duration);
+    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    const count = Math.ceil(n*ease);
+    result = {points: finalPts.slice(0,count).map((p,i) => {
+      const frac = i < count-1 ? 1 : (n*ease - Math.floor(n*ease) || 1);
+      return {re:p.re*frac, im:p.im*frac, color:p.color, label:p.label};
+    })};
+    // Draw the root circle
+    render();
+    // Extra: draw circle of radius
+    ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.arc(view.x,view.y,radius*view.scale,0,Math.PI*2);ctx.stroke();
+    ctx.setLineDash([]);
+
+    if(t<1) animId = requestAnimationFrame(frame);
+    else { result={points:finalPts}; render(); showSteps(steps); }
+  }
+  animId = requestAnimationFrame(frame);
+}
+
+/* ================================================================
+   SPECIAL VISUALIZATIONS
+   ================================================================ */
+const vizBtns = document.querySelectorAll('[data-viz]');
+let activeViz = null;
+
+vizBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.viz;
+    if(activeViz === v){
+      clearViz();
+      return;
+    }
+    vizBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeViz = v;
+    setupViz(v);
+  });
+});
+
+function setupViz(type){
+  const ctrl = document.getElementById('vizControls');
+  const slider = document.getElementById('vizSlider');
+  const label = document.getElementById('vizLabel');
+  ctrl.style.display = '';
+
+  if(type === 'powers'){
+    label.textContent = 'n (max power):';
+    slider.min = 1; slider.max = 20; slider.value = 8;
+    document.getElementById('vizSliderVal').textContent = '8';
+  } else if(type === 'unity'){
+    label.textContent = 'n (roots):';
+    slider.min = 2; slider.max = 20; slider.value = 6;
+    document.getElementById('vizSliderVal').textContent = '6';
+  } else if(type === 'unit-circle'){
+    label.textContent = '\u03B8 speed:';
+    slider.min = 1; slider.max = 10; slider.value = 3;
+    document.getElementById('vizSliderVal').textContent = '3';
+  } else if(type === 'euler'){
+    label.textContent = '\u03B8:';
+    slider.min = 0; slider.max = 360; slider.value = 45;
+    document.getElementById('vizSliderVal').textContent = '45°';
+  }
+  vizState = {type, data:[]};
+  render();
+}
+
+document.getElementById('vizSlider').addEventListener('input', function(){
+  const v = parseInt(this.value);
+  const label = activeViz==='euler' ? v+'°' : v;
+  document.getElementById('vizSliderVal').textContent = label;
+  if(activeViz === 'euler'){
+    const th = v * Math.PI / 180;
+    vizState = {type:'euler', data:[], theta:th};
+    render();
+  }
+});
+
+document.getElementById('vizGo').addEventListener('click', () => {
+  if(!activeViz) return;
+  const n = parseInt(document.getElementById('vizSlider').value);
+
+  if(activeViz === 'powers'){
+    if(numbers.length === 0){showSteps(['Add a number to the plane first.']); return;}
+    const z = numbers[selectedIdx >= 0 ? selectedIdx : 0];
+    const pts = [];
+    let re = z.re, im = z.im;
+    for(let k=1;k<=n;k++){
+      // z^k
+      const r = Math.pow(Math.sqrt(z.re*z.re+z.im*z.im),k);
+      const t = Math.atan2(z.im,z.re)*k;
+      pts.push({re:r*Math.cos(t), im:r*Math.sin(t), color:COLORS[k%COLORS.length], label:'z^'+k});
+    }
+    animateVizPoints(pts, 'powers');
+  }
+
+  if(activeViz === 'unity'){
+    const pts = [];
+    for(let k=0;k<n;k++){
+      const t = 2*Math.PI*k/n;
+      pts.push({re:Math.cos(t), im:Math.sin(t), color:COLORS[k%COLORS.length], label:'\u03C9'+k});
+    }
+    animateVizPoints(pts, 'unity');
+  }
+
+  if(activeViz === 'unit-circle'){
+    animateUnitCircle(n);
+  }
+
+  if(activeViz === 'euler'){
+    const th = parseInt(document.getElementById('vizSlider').value) * Math.PI / 180;
+    vizState = {type:'euler', data:[], theta:th};
+    render();
+  }
+});
+
+function animateVizPoints(pts, type){
+  if(animId) cancelAnimationFrame(animId);
+  const duration = 1000;
+  const start = performance.now();
+  function frame(now){
+    const t = Math.min(1,(now-start)/duration);
+    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    const count = Math.max(1,Math.ceil(pts.length*ease));
+    vizState = {type, data:pts.slice(0,count)};
+    render();
+    if(t<1) animId=requestAnimationFrame(frame);
+    else { vizState={type,data:pts}; render(); }
+  }
+  animId=requestAnimationFrame(frame);
+}
+
+function animateUnitCircle(speed){
+  if(animId) cancelAnimationFrame(animId);
+  let theta = 0;
+  const rate = speed * 0.02;
+  function frame(){
+    theta += rate;
+    if(theta > Math.PI*2) theta -= Math.PI*2;
+    vizState = {type:'unit-circle', data:[], theta};
+    render();
+    if(activeViz === 'unit-circle') animId = requestAnimationFrame(frame);
+  }
+  animId = requestAnimationFrame(frame);
+}
+
+document.getElementById('vizStop').addEventListener('click', clearViz);
+
+function clearViz(){
+  if(animId) cancelAnimationFrame(animId);
+  animId = null;
+  vizState = null;
+  activeViz = null;
+  vizBtns.forEach(b => b.classList.remove('active'));
+  document.getElementById('vizControls').style.display = 'none';
+  render();
+}
+
+/* ================================================================
+   REFERENCE TOGGLE
+   ================================================================ */
+document.getElementById('refToggle').addEventListener('click', () => {
+  const body = document.getElementById('refBody');
+  const arrow = document.querySelector('.cn-ref-toggle .arrow');
+  body.classList.toggle('open');
+  arrow.textContent = body.classList.contains('open') ? '\u25B2' : '\u25BC';
+  if(body.classList.contains('open') && window.MathJax && MathJax.typeset) MathJax.typeset();
+});
+
+/* ================================================================
+   INIT
+   ================================================================ */
+window.addEventListener('resize', resize);
+resize();
+view.x = W/(2*dpr);
+view.y = H/(2*dpr);
+render();
+
+/* Back to Top */
+const btt = document.getElementById('backToTop');
+if(btt){
+  window.addEventListener('scroll', function(){ btt.style.display = window.scrollY > 300 ? 'flex' : 'none'; });
+  btt.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+}
+
+/* Load header/footer */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+})();
+</script>
+</body>
+</html>

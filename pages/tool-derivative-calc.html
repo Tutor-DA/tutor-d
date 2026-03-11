@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Derivative Calculator | TutorDA</title>
+  <meta name="description" content="Compute symbolic derivatives with step-by-step rule application. Power, product, quotient, chain rules visualised with animated breakdowns and graphs.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <!-- math.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.0/math.min.js"></script>
+
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+
+  <style>
+    /* ── Variables ─────────────────────────────── */
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --dark:    #0d0d1a;
+      --card:    #111125;
+      --card2:   #1a1a35;
+      --border:  #1e1e3a;
+      --text:    #e8e8ff;
+      --muted:   #94a3b8;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    /* ── Layout ────────────────────────────────── */
+    .wrapper{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ──────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Input Section ────────────────────────── */
+    .input-section{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-bottom:20px;
+    }
+    .input-row{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+    .fn-input{
+      flex:1;min-width:200px;padding:14px 18px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+      outline:none;transition:border-color .2s;
+    }
+    .fn-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.15)}
+    .fn-input::placeholder{color:var(--muted);font-size:.92rem}
+
+    .select-sm{
+      padding:10px 14px;background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'Poppins',sans-serif;font-size:.88rem;outline:none;
+      cursor:pointer;appearance:auto;
+    }
+    .select-sm:focus{border-color:var(--cyan)}
+
+    .diff-btn{
+      padding:14px 32px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;border:none;border-radius:10px;font-family:'Orbitron',sans-serif;
+      font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;
+    }
+    .diff-btn:hover{opacity:.85}
+
+    .preview-row{
+      margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    }
+    .latex-preview{
+      flex:1;min-height:36px;padding:8px 14px;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      font-size:1.1rem;color:var(--text);overflow-x:auto;
+    }
+
+    /* ── Examples ──────────────────────────────── */
+    .examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .ex-chip{
+      padding:6px 14px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;font-size:.8rem;
+      font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;
+    }
+    .ex-chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    /* ── Main Grid ────────────────────────────── */
+    .main-grid{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start}
+
+    /* ── Result Card ──────────────────────────── */
+    .result-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-bottom:20px;display:none;
+    }
+    .result-card.show{display:block}
+    .result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .result-header h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan)}
+    .copy-btn{
+      padding:6px 14px;background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.25);
+      border-radius:8px;font-size:.78rem;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .copy-btn:hover{background:rgba(0,229,255,.2)}
+    .result-box{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:20px;font-size:1.2rem;text-align:center;overflow-x:auto;
+    }
+
+    /* ── Steps ────────────────────────────────── */
+    .steps-section{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-bottom:20px;display:none;
+    }
+    .steps-section.show{display:block}
+    .steps-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+    .steps-header h3{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--purple)}
+    .step-toggle-row{display:flex;gap:8px}
+    .step-toggle{
+      padding:5px 14px;border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;
+      border:1px solid var(--border);background:var(--dark);color:var(--muted);transition:all .2s;
+    }
+    .step-toggle.active{background:rgba(168,85,247,.12);border-color:var(--purple);color:var(--purple)}
+
+    .step-card{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:16px 18px;margin-bottom:12px;
+      opacity:0;transform:translateY(16px);transition:all .4s ease;
+    }
+    .step-card.visible{opacity:1;transform:translateY(0)}
+    .step-card.hidden-step{display:none}
+
+    .rule-badge{
+      display:inline-block;padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;
+      margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;
+    }
+    .rule-badge.power{background:rgba(0,229,255,.12);color:var(--cyan);border:1px solid rgba(0,229,255,.3)}
+    .rule-badge.product{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+    .rule-badge.quotient{background:rgba(236,72,153,.12);color:var(--pink);border:1px solid rgba(236,72,153,.3)}
+    .rule-badge.chain{background:rgba(250,204,21,.12);color:var(--gold);border:1px solid rgba(250,204,21,.3)}
+    .rule-badge.sum{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .rule-badge.trig{background:rgba(236,72,153,.12);color:var(--pink);border:1px solid rgba(236,72,153,.3)}
+    .rule-badge.exp{background:rgba(250,204,21,.12);color:var(--gold);border:1px solid rgba(250,204,21,.3)}
+    .rule-badge.log{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+    .rule-badge.constant{background:rgba(148,163,184,.12);color:var(--muted);border:1px solid rgba(148,163,184,.3)}
+
+    .step-rule{font-size:.85rem;color:var(--muted);margin-bottom:6px;font-style:italic}
+    .step-detail{font-size:.92rem;margin-bottom:4px}
+    .step-result{font-size:.95rem;margin-top:6px;padding-top:8px;border-top:1px solid var(--border)}
+
+    /* ── Sidebar ──────────────────────────────── */
+    .sidebar{display:flex;flex-direction:column;gap:20px}
+
+    /* ── Graph ────────────────────────────────── */
+    .graph-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;
+    }
+    .graph-card h3{font-family:'Orbitron',sans-serif;font-size:.92rem;color:var(--cyan);margin-bottom:12px}
+    #graph-container{width:100%;height:340px;border-radius:10px;overflow:hidden}
+
+    /* ── Evaluate ─────────────────────────────── */
+    .eval-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;
+    }
+    .eval-card h3{font-family:'Orbitron',sans-serif;font-size:.92rem;color:var(--gold);margin-bottom:12px}
+    .eval-row{display:flex;gap:8px;align-items:stretch;margin-bottom:12px}
+    .eval-input{
+      flex:1;padding:10px 14px;background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem;outline:none;
+    }
+    .eval-input:focus{border-color:var(--gold)}
+    .eval-btn{
+      padding:10px 18px;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000;
+      border:none;border-radius:8px;font-weight:700;font-size:.82rem;cursor:pointer;
+      font-family:'Orbitron',sans-serif;
+    }
+    .eval-results{font-size:.9rem;line-height:1.8}
+    .eval-results span{color:var(--muted)}
+
+    /* ── History ──────────────────────────────── */
+    .history-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;
+    }
+    .history-card h3{font-family:'Orbitron',sans-serif;font-size:.92rem;color:var(--pink);margin-bottom:12px;
+      cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+    .history-card h3::after{content:'\25BC';font-size:.65rem;transition:transform .3s}
+    .history-card h3.collapsed::after{transform:rotate(-90deg)}
+    .history-list{list-style:none}
+    .history-list li{
+      padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem;
+      font-family:'JetBrains Mono',monospace;color:var(--muted);cursor:pointer;transition:color .2s;
+    }
+    .history-list li:hover{color:var(--cyan)}
+    .history-list li:last-child{border-bottom:none}
+
+    /* ── Reference Panel ─────────────────────── */
+    .ref-section{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-top:20px;
+    }
+    .ref-header{
+      font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);
+      cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    }
+    .ref-header::after{content:'\25BC';font-size:.65rem;transition:transform .3s}
+    .ref-header.collapsed::after{transform:rotate(-90deg)}
+    .ref-body{margin-top:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .ref-body.hidden{display:none}
+    .ref-rule{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+    }
+    .ref-rule h4{font-size:.85rem;margin-bottom:8px;color:var(--cyan)}
+    .ref-rule .math-display{font-size:1rem;overflow-x:auto}
+
+    /* ── Back-to-top ─────────────────────────── */
+    #backToTop{
+      position:fixed;bottom:30px;right:30px;width:46px;height:46px;border-radius:50%;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#000;font-size:1.2rem;
+      display:none;align-items:center;justify-content:center;cursor:pointer;z-index:100;
+      border:none;box-shadow:0 4px 20px rgba(0,229,255,.3);
+    }
+    #backToTop.show{display:flex}
+
+    /* ── Responsive ───────────────────────────── */
+    @media(max-width:900px){
+      .main-grid{grid-template-columns:1fr}
+      .sidebar{order:2}
+      .ref-body{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){
+      .hero{padding:40px 16px 20px}
+      .wrapper{padding:0 12px 40px}
+      .input-section,.result-card,.steps-section,.ref-section{padding:16px}
+      .input-row{flex-direction:column}
+      .diff-btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div id="header-container"></div>
+
+  <div class="wrapper">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="eyebrow">Calculus Toolkit</div>
+      <h1>Derivative Calculator</h1>
+      <p>Enter any function and get the symbolic derivative with step-by-step rule breakdowns, interactive graphs, and evaluation tools.</p>
+    </section>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="input-row">
+        <input type="text" class="fn-input" id="fnInput" placeholder="e.g. x^3 + 2x^2 - 5x + 3" autocomplete="off" spellcheck="false"/>
+        <select class="select-sm" id="varSelect">
+          <option value="x">d/dx</option>
+          <option value="t">d/dt</option>
+          <option value="theta">d/d&theta;</option>
+        </select>
+        <select class="select-sm" id="orderSelect">
+          <option value="1">1st</option>
+          <option value="2">2nd</option>
+          <option value="3">3rd</option>
+          <option value="4">4th</option>
+          <option value="5">5th</option>
+        </select>
+        <button class="diff-btn" id="diffBtn">Differentiate</button>
+      </div>
+      <div class="preview-row">
+        <div class="latex-preview" id="latexPreview">Your function appears here&hellip;</div>
+      </div>
+      <div class="examples" id="examplesRow"></div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+      <!-- Left Column -->
+      <div class="left-col">
+        <!-- Result -->
+        <div class="result-card" id="resultCard">
+          <div class="result-header">
+            <h3>Result</h3>
+            <button class="copy-btn" id="copyBtn">Copy LaTeX</button>
+          </div>
+          <div class="result-box" id="resultBox"></div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps-section" id="stepsSection">
+          <div class="steps-header">
+            <h3>Step-by-Step Breakdown</h3>
+            <div class="step-toggle-row">
+              <button class="step-toggle active" id="btnShowAll" onclick="toggleStepMode('all')">Show All</button>
+              <button class="step-toggle" id="btnNextStep" onclick="toggleStepMode('next')">Next Step</button>
+            </div>
+          </div>
+          <div id="stepsContainer"></div>
+          <button class="diff-btn" id="nextStepBtn" style="display:none;margin-top:12px;padding:10px 24px;font-size:.8rem" onclick="showNextStep()">Next Step &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Graph -->
+        <div class="graph-card">
+          <h3>Graph: f(x) &amp; f'(x)</h3>
+          <div id="graph-container"></div>
+        </div>
+
+        <!-- Evaluate -->
+        <div class="eval-card">
+          <h3>Evaluate at a Point</h3>
+          <div class="eval-row">
+            <input type="text" class="eval-input" id="evalInput" placeholder="x = ?" />
+            <button class="eval-btn" id="evalBtn" onclick="evaluateAt()">Evaluate</button>
+          </div>
+          <div class="eval-results" id="evalResults"></div>
+        </div>
+
+        <!-- History -->
+        <div class="history-card">
+          <h3 id="historyToggle">History</h3>
+          <ul class="history-list" id="historyList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference Panel -->
+    <div class="ref-section">
+      <div class="ref-header" id="refToggle">Derivative Rules Reference</div>
+      <div class="ref-body" id="refBody"></div>
+    </div>
+  </div>
+
+  <div id="footer-container"></div>
+  <div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ================================================================
+   DERIVATIVE CALCULATOR – TutorDA
+   ================================================================ */
+
+// ── Quick Examples ───────────────────────────────────────────────
+const EXAMPLES = [
+  { label:'x\u00B3 + 2x\u00B2 \u2212 5x + 3', expr:'x^3 + 2*x^2 - 5*x + 3', tag:'power rule' },
+  { label:'sin(x)\u00B7cos(x)', expr:'sin(x)*cos(x)', tag:'product rule' },
+  { label:'(3x+1)/(x\u00B2\u22124)', expr:'(3*x+1)/(x^2-4)', tag:'quotient rule' },
+  { label:'e^(sin(x))', expr:'e^(sin(x))', tag:'chain rule' },
+  { label:'ln(x\u00B2+1)', expr:'log(x^2+1)', tag:'chain + log' },
+  { label:'x\u00B2\u00B7e^x', expr:'x^2*e^x', tag:'product rule' },
+  { label:'tan(x)', expr:'tan(x)', tag:'trig' },
+  { label:'\u221A(4x+1)', expr:'sqrt(4*x+1)', tag:'chain rule' },
+];
+
+const exRow = document.getElementById('examplesRow');
+EXAMPLES.forEach(e => {
+  const b = document.createElement('button');
+  b.className = 'ex-chip';
+  b.textContent = e.label;
+  b.title = e.tag;
+  b.onclick = () => { document.getElementById('fnInput').value = e.expr; updatePreview(); differentiate(); };
+  exRow.appendChild(b);
+});
+
+// ── Reference Rules ──────────────────────────────────────────────
+const RULES = [
+  { title:'Power Rule', tex:'\\frac{d}{dx}[x^n] = n\\,x^{n-1}' },
+  { title:'Constant Rule', tex:'\\frac{d}{dx}[c] = 0' },
+  { title:'Sum / Difference', tex:'(f \\pm g)\' = f\' \\pm g\'' },
+  { title:'Product Rule', tex:'(f\\cdot g)\' = f\'\\,g + f\\,g\'' },
+  { title:'Quotient Rule', tex:'\\left(\\frac{f}{g}\\right)\' = \\frac{f\'\\,g - f\\,g\'}{g^2}' },
+  { title:'Chain Rule', tex:'\\frac{d}{dx}[f(g(x))] = f\'(g(x))\\cdot g\'(x)' },
+  { title:'Exponential', tex:'\\frac{d}{dx}[e^x] = e^x \\qquad \\frac{d}{dx}[a^x] = a^x \\ln a' },
+  { title:'Logarithmic', tex:'\\frac{d}{dx}[\\ln x] = \\frac{1}{x}' },
+  { title:'Trig Derivatives', tex:'\\begin{aligned}&\\sin\'=\\cos,\\;\\cos\'=-\\sin,\\;\\tan\'=\\sec^2\\\\&\\sec\'=\\sec\\tan,\\;\\csc\'=-\\csc\\cot,\\;\\cot\'=-\\csc^2\\end{aligned}' },
+];
+
+const refBody = document.getElementById('refBody');
+RULES.forEach(r => {
+  const d = document.createElement('div');
+  d.className = 'ref-rule';
+  d.innerHTML = `<h4>${r.title}</h4><div class="math-display">\\[${r.tex}\\]</div>`;
+  refBody.appendChild(d);
+});
+
+// ── State ────────────────────────────────────────────────────────
+let currentExpr = null, currentDeriv = null, currentVar = 'x';
+let stepMode = 'all', currentStepIdx = 0, totalSteps = 0;
+
+// ── Collapsible toggles ─────────────────────────────────────────
+document.getElementById('refToggle').addEventListener('click', function(){
+  this.classList.toggle('collapsed');
+  document.getElementById('refBody').classList.toggle('hidden');
+});
+
+document.getElementById('historyToggle').addEventListener('click', function(){
+  this.classList.toggle('collapsed');
+  document.getElementById('historyList').classList.toggle('hidden');
+});
+
+// ── Live Preview ─────────────────────────────────────────────────
+const fnInput = document.getElementById('fnInput');
+fnInput.addEventListener('input', updatePreview);
+fnInput.addEventListener('keydown', e => { if(e.key === 'Enter') differentiate(); });
+
+function updatePreview(){
+  const raw = fnInput.value.trim();
+  const pv = document.getElementById('latexPreview');
+  if(!raw){ pv.innerHTML = 'Your function appears here&hellip;'; return; }
+  try {
+    const node = math.parse(normalizeInput(raw));
+    pv.innerHTML = '\\(' + node.toTex() + '\\)';
+    if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([pv]);
+  } catch(e){ pv.textContent = raw; }
+}
+
+// ── Normalise user input ─────────────────────────────────────────
+function normalizeInput(s){
+  // Allow implicit multiplication: 2x -> 2*x, 3sin -> 3*sin, etc.
+  s = s.replace(/(\d)([a-zA-Z(])/g,'$1*$2');
+  // ln -> log (math.js uses log for natural log)
+  s = s.replace(/\bln\b/g,'log');
+  return s;
+}
+
+// ── Main Differentiate ───────────────────────────────────────────
+function differentiate(){
+  const raw = fnInput.value.trim();
+  if(!raw) return;
+  currentVar = document.getElementById('varSelect').value;
+  const order = parseInt(document.getElementById('orderSelect').value);
+  const normalized = normalizeInput(raw);
+
+  try {
+    let node = math.parse(normalized);
+    let derivNode = node;
+    for(let i = 0; i < order; i++){
+      derivNode = math.derivative(derivNode, currentVar);
+    }
+    derivNode = math.simplify(derivNode);
+
+    currentExpr = node;
+    currentDeriv = derivNode;
+
+    // Show result
+    const rc = document.getElementById('resultCard');
+    rc.classList.add('show');
+    const orderLabel = order === 1 ? "'" : order === 2 ? "''" : order === 3 ? "'''" : `^{(${order})}`;
+    const rb = document.getElementById('resultBox');
+    rb.innerHTML = `\\[ f${orderLabel}(${currentVar}) = ${derivNode.toTex()} \\]`;
+    if(MathJax.typesetPromise) MathJax.typesetPromise([rb]);
+
+    // Generate steps (only for first-order, else show simplified note)
+    if(order === 1){
+      generateSteps(node, currentVar);
+    } else {
+      const sc = document.getElementById('stepsSection');
+      sc.classList.add('show');
+      const cont = document.getElementById('stepsContainer');
+      cont.innerHTML = '';
+      let stepNode = node;
+      for(let i = 1; i <= order; i++){
+        const d = math.simplify(math.derivative(stepNode, currentVar));
+        const card = document.createElement('div');
+        card.className = 'step-card visible';
+        const ordTxt = i===1?'1st':i===2?'2nd':i===3?'3rd':i+'th';
+        card.innerHTML = `<span class="rule-badge power">${ordTxt} Derivative</span>
+          <div class="step-detail">\\[ f${"'".repeat(i)}(${currentVar}) = ${d.toTex()} \\]</div>`;
+        cont.appendChild(card);
+        stepNode = d;
+      }
+      if(MathJax.typesetPromise) MathJax.typesetPromise([cont]);
+    }
+
+    // Graph
+    plotGraph(node, derivNode, currentVar);
+
+    // History
+    addHistory(raw);
+
+  } catch(err){
+    const rc = document.getElementById('resultCard');
+    rc.classList.add('show');
+    document.getElementById('resultBox').innerHTML = `<span style="color:var(--red)">Error: ${err.message}</span>`;
+    document.getElementById('stepsSection').classList.remove('show');
+  }
+}
+
+document.getElementById('diffBtn').addEventListener('click', differentiate);
+
+// ── Copy ─────────────────────────────────────────────────────────
+document.getElementById('copyBtn').addEventListener('click', function(){
+  if(!currentDeriv) return;
+  navigator.clipboard.writeText(currentDeriv.toTex()).then(()=>{
+    this.textContent = 'Copied!';
+    setTimeout(()=> this.textContent = 'Copy LaTeX', 1500);
+  });
+});
+
+// ── Step Mode Toggle ─────────────────────────────────────────────
+function toggleStepMode(mode){
+  stepMode = mode;
+  document.getElementById('btnShowAll').classList.toggle('active', mode==='all');
+  document.getElementById('btnNextStep').classList.toggle('active', mode==='next');
+  const cards = document.querySelectorAll('#stepsContainer .step-card');
+  const nBtn = document.getElementById('nextStepBtn');
+
+  if(mode === 'all'){
+    nBtn.style.display = 'none';
+    cards.forEach((c,i) => {
+      c.classList.remove('hidden-step');
+      setTimeout(()=> c.classList.add('visible'), i*120);
+    });
+  } else {
+    currentStepIdx = 0;
+    cards.forEach(c => { c.classList.add('hidden-step'); c.classList.remove('visible'); });
+    if(cards.length){ cards[0].classList.remove('hidden-step'); setTimeout(()=>cards[0].classList.add('visible'),50); }
+    nBtn.style.display = cards.length > 1 ? 'inline-block' : 'none';
+    currentStepIdx = 1;
+  }
+}
+
+function showNextStep(){
+  const cards = document.querySelectorAll('#stepsContainer .step-card');
+  if(currentStepIdx < cards.length){
+    const c = cards[currentStepIdx];
+    c.classList.remove('hidden-step');
+    setTimeout(()=> c.classList.add('visible'), 50);
+    currentStepIdx++;
+  }
+  if(currentStepIdx >= cards.length) document.getElementById('nextStepBtn').style.display = 'none';
+}
+
+// ── Step Generation (expression tree walk) ───────────────────────
+function generateSteps(node, v){
+  const sc = document.getElementById('stepsSection');
+  sc.classList.add('show');
+  const cont = document.getElementById('stepsContainer');
+  cont.innerHTML = '';
+
+  const steps = [];
+  walkNode(node, v, steps);
+
+  // Final simplified result
+  const finalD = math.simplify(math.derivative(node, v));
+  steps.push({
+    rule:'Result', badge:'power',
+    formula:'Simplified derivative',
+    detail: `\\[ f'(${v}) = ${finalD.toTex()} \\]`,
+    result:''
+  });
+
+  totalSteps = steps.length;
+  steps.forEach((s,i)=>{
+    const card = document.createElement('div');
+    card.className = 'step-card' + (stepMode==='all' ? '' : (i===0?'':' hidden-step'));
+    card.innerHTML = `
+      <span class="rule-badge ${s.badge}">${s.rule}</span>
+      <div class="step-rule">${s.formula}</div>
+      <div class="step-detail">${s.detail}</div>
+      ${s.result ? '<div class="step-result">'+s.result+'</div>' : ''}
+    `;
+    cont.appendChild(card);
+    const delay = stepMode==='all' ? i*120 : 50;
+    if(stepMode==='all' || i===0) setTimeout(()=> card.classList.add('visible'), delay);
+  });
+
+  if(stepMode==='next'){
+    currentStepIdx = 1;
+    document.getElementById('nextStepBtn').style.display = steps.length > 1 ? 'inline-block' : 'none';
+  }
+
+  if(MathJax.typesetPromise) MathJax.typesetPromise([cont]);
+}
+
+function walkNode(node, v, steps){
+  const type = node.type;
+
+  if(type === 'OperatorNode'){
+    const op = node.op;
+
+    // Addition / Subtraction (sum rule)
+    if(op === '+' || op === '-'){
+      const args = node.args;
+      steps.push({
+        rule:'Sum Rule', badge:'sum',
+        formula: `(f ${op} g)' = f' ${op} g'`,
+        detail: `Differentiate each term of \\( ${node.toTex()} \\) separately.`,
+        result:''
+      });
+      args.forEach(a => walkNode(a, v, steps));
+      return;
+    }
+
+    // Multiplication (product rule)
+    if(op === '*'){
+      const a = node.args[0], b = node.args[1];
+      // Check if one side is a constant
+      if(!containsVar(a, v)){
+        steps.push({
+          rule:'Constant Multiple', badge:'constant',
+          formula: '(c \\cdot g)\' = c \\cdot g\'',
+          detail: `\\( ${a.toTex()} \\) is a constant. Differentiate \\( ${b.toTex()} \\).`,
+          result: `\\( = ${a.toTex()} \\cdot \\frac{d}{d${v}}[${b.toTex()}] \\)`
+        });
+        walkNode(b, v, steps);
+      } else if(!containsVar(b, v)){
+        steps.push({
+          rule:'Constant Multiple', badge:'constant',
+          formula: '(f \\cdot c)\' = f\' \\cdot c',
+          detail: `\\( ${b.toTex()} \\) is a constant. Differentiate \\( ${a.toTex()} \\).`,
+          result: `\\( = \\frac{d}{d${v}}[${a.toTex()}] \\cdot ${b.toTex()} \\)`
+        });
+        walkNode(a, v, steps);
+      } else {
+        const da = math.simplify(math.derivative(a, v));
+        const db = math.simplify(math.derivative(b, v));
+        steps.push({
+          rule:'Product Rule', badge:'product',
+          formula: "(f \\cdot g)' = f' \\cdot g + f \\cdot g'",
+          detail: `Let \\( f = ${a.toTex()} \\) and \\( g = ${b.toTex()} \\).`,
+          result: `\\( = (${da.toTex()})\\cdot(${b.toTex()}) + (${a.toTex()})\\cdot(${db.toTex()}) \\)`
+        });
+      }
+      return;
+    }
+
+    // Division (quotient rule)
+    if(op === '/'){
+      const a = node.args[0], b = node.args[1];
+      if(!containsVar(b, v)){
+        steps.push({
+          rule:'Constant Divisor', badge:'constant',
+          formula: '(f / c)\' = f\' / c',
+          detail: `\\( ${b.toTex()} \\) is constant. Just differentiate the numerator.`,
+          result:''
+        });
+        walkNode(a, v, steps);
+      } else {
+        const da = math.simplify(math.derivative(a, v));
+        const db = math.simplify(math.derivative(b, v));
+        steps.push({
+          rule:'Quotient Rule', badge:'quotient',
+          formula: "\\left(\\frac{f}{g}\\right)' = \\frac{f'g - fg'}{g^2}",
+          detail: `Let \\( f = ${a.toTex()} \\) and \\( g = ${b.toTex()} \\).`,
+          result: `\\( = \\frac{(${da.toTex()})(${b.toTex()}) - (${a.toTex()})(${db.toTex()})}{(${b.toTex()})^2} \\)`
+        });
+      }
+      return;
+    }
+
+    // Power
+    if(op === '^'){
+      const base = node.args[0], exp = node.args[1];
+      // x^n
+      if(base.type === 'SymbolNode' && base.name === v && !containsVar(exp, v)){
+        steps.push({
+          rule:'Power Rule', badge:'power',
+          formula: `\\frac{d}{d${v}}[${v}^n] = n\\,${v}^{n-1}`,
+          detail: `\\( \\frac{d}{d${v}}[${node.toTex()}] = ${exp.toTex()} \\cdot ${v}^{${exp.toTex()}-1} \\)`,
+          result: `\\( = ${math.simplify(math.derivative(node, v)).toTex()} \\)`
+        });
+      }
+      // e^(g(x)) or base^(g(x))
+      else if(!containsVar(base, v) && containsVar(exp, v)){
+        const dexp = math.simplify(math.derivative(exp, v));
+        const bTex = base.toTex();
+        const isE = (base.type === 'SymbolNode' && base.name === 'e') || (base.type === 'ConstantNode' && Math.abs(base.value - Math.E) < 0.001);
+        if(isE){
+          steps.push({
+            rule:'Exponential + Chain', badge:'chain',
+            formula: "\\frac{d}{d"+v+"}[e^{g("+v+")}] = e^{g("+v+")} \\cdot g'("+v+")",
+            detail: `Inner function \\( g(${v}) = ${exp.toTex()} \\), so \\( g' = ${dexp.toTex()} \\).`,
+            result: `\\( = e^{${exp.toTex()}} \\cdot ${dexp.toTex()} \\)`
+          });
+        } else {
+          steps.push({
+            rule:'Exponential + Chain', badge:'chain',
+            formula: "\\frac{d}{d"+v+"}[a^{g("+v+")}] = a^{g("+v+")} \\ln(a) \\cdot g'("+v+")",
+            detail: `Base \\( a=${bTex} \\), inner \\( g = ${exp.toTex()} \\), \\( g'=${dexp.toTex()} \\).`,
+            result: `\\( = ${bTex}^{${exp.toTex()}} \\ln(${bTex}) \\cdot ${dexp.toTex()} \\)`
+          });
+        }
+      }
+      // (g(x))^n  — chain + power
+      else if(containsVar(base, v) && !containsVar(exp, v)){
+        const dbase = math.simplify(math.derivative(base, v));
+        steps.push({
+          rule:'Chain + Power Rule', badge:'chain',
+          formula: "\\frac{d}{d"+v+"}[g("+v+")^n] = n\\,g("+v+")^{n-1} \\cdot g'("+v+")",
+          detail: `\\( g(${v}) = ${base.toTex()} \\), \\( n = ${exp.toTex()} \\), \\( g' = ${dbase.toTex()} \\).`,
+          result: `\\( = ${exp.toTex()} \\cdot (${base.toTex()})^{${exp.toTex()}-1} \\cdot ${dbase.toTex()} \\)`
+        });
+      }
+      else {
+        steps.push({
+          rule:'General Power', badge:'chain',
+          formula: "\\frac{d}{d"+v+"}[f^g] = f^g\\left(g'\\ln f + g\\frac{f'}{f}\\right)",
+          detail: `\\( ${node.toTex()} \\)`,
+          result: `\\( = ${math.simplify(math.derivative(node, v)).toTex()} \\)`
+        });
+      }
+      return;
+    }
+
+    // Unary minus
+    if(op === '-' && node.args.length === 1){
+      steps.push({
+        rule:'Negate', badge:'constant',
+        formula: "(-f)' = -f'",
+        detail: `Negate the derivative of \\( ${node.args[0].toTex()} \\).`,
+        result:''
+      });
+      walkNode(node.args[0], v, steps);
+      return;
+    }
+  }
+
+  // Function calls: sin, cos, tan, log, sqrt, etc.
+  if(type === 'FunctionNode'){
+    const fname = node.fn.name || node.name;
+    const inner = node.args[0];
+    const isSimple = (inner.type === 'SymbolNode' && inner.name === v);
+    const innerTex = inner.toTex();
+
+    const trigMap = {
+      sin: { deriv:'\\cos', badge:'trig', rule:'Trig' },
+      cos: { deriv:'-\\sin', badge:'trig', rule:'Trig' },
+      tan: { deriv:'\\sec^2', badge:'trig', rule:'Trig' },
+      sec: { deriv:'\\sec\\tan', badge:'trig', rule:'Trig' },
+      csc: { deriv:'-\\csc\\cot', badge:'trig', rule:'Trig' },
+      cot: { deriv:'-\\csc^2', badge:'trig', rule:'Trig' },
+    };
+
+    if(fname === 'log' || fname === 'ln'){
+      if(isSimple){
+        steps.push({
+          rule:'Logarithmic', badge:'log',
+          formula: `\\frac{d}{d${v}}[\\ln(${v})] = \\frac{1}{${v}}`,
+          detail: `\\( \\frac{d}{d${v}}[\\ln(${v})] = \\frac{1}{${v}} \\)`,
+          result:''
+        });
+      } else {
+        const di = math.simplify(math.derivative(inner, v));
+        steps.push({
+          rule:'Chain + Log Rule', badge:'chain',
+          formula: `\\frac{d}{d${v}}[\\ln(g)] = \\frac{g'}{g}`,
+          detail: `Inner \\( g = ${innerTex} \\), \\( g' = ${di.toTex()} \\).`,
+          result: `\\( = \\frac{${di.toTex()}}{${innerTex}} \\)`
+        });
+      }
+      return;
+    }
+
+    if(fname === 'sqrt'){
+      if(isSimple){
+        steps.push({
+          rule:'Power Rule', badge:'power',
+          formula: `\\frac{d}{d${v}}[\\sqrt{${v}}] = \\frac{1}{2\\sqrt{${v}}}`,
+          detail: `Rewrite \\( \\sqrt{${v}} = ${v}^{1/2} \\) and apply power rule.`,
+          result: `\\( = \\frac{1}{2\\sqrt{${v}}} \\)`
+        });
+      } else {
+        const di = math.simplify(math.derivative(inner, v));
+        steps.push({
+          rule:'Chain + Sqrt', badge:'chain',
+          formula: `\\frac{d}{d${v}}[\\sqrt{g}] = \\frac{g'}{2\\sqrt{g}}`,
+          detail: `Inner \\( g = ${innerTex} \\), \\( g' = ${di.toTex()} \\).`,
+          result: `\\( = \\frac{${di.toTex()}}{2\\sqrt{${innerTex}}} \\)`
+        });
+      }
+      return;
+    }
+
+    if(fname === 'exp'){
+      if(isSimple){
+        steps.push({
+          rule:'Exponential', badge:'exp',
+          formula: `\\frac{d}{d${v}}[e^{${v}}] = e^{${v}}`,
+          detail: `The derivative of \\( e^{${v}} \\) is itself.`,
+          result:''
+        });
+      } else {
+        const di = math.simplify(math.derivative(inner, v));
+        steps.push({
+          rule:'Chain + Exponential', badge:'chain',
+          formula: `\\frac{d}{d${v}}[e^{g}] = e^{g} \\cdot g'`,
+          detail: `Inner \\( g = ${innerTex} \\), \\( g' = ${di.toTex()} \\).`,
+          result: `\\( = e^{${innerTex}} \\cdot ${di.toTex()} \\)`
+        });
+      }
+      return;
+    }
+
+    if(trigMap[fname]){
+      const info = trigMap[fname];
+      if(isSimple){
+        steps.push({
+          rule: info.rule, badge: info.badge,
+          formula: `\\frac{d}{d${v}}[\\${fname}(${v})] = ${info.deriv}(${v})`,
+          detail: `\\( \\frac{d}{d${v}}[\\${fname}(${v})] = ${info.deriv}(${v}) \\)`,
+          result:''
+        });
+      } else {
+        const di = math.simplify(math.derivative(inner, v));
+        steps.push({
+          rule: 'Chain + ' + info.rule, badge: 'chain',
+          formula: `\\frac{d}{d${v}}[\\${fname}(g)] = ${info.deriv}(g) \\cdot g'`,
+          detail: `Inner \\( g = ${innerTex} \\), \\( g' = ${di.toTex()} \\).`,
+          result: `\\( = ${info.deriv}(${innerTex}) \\cdot ${di.toTex()} \\)`
+        });
+      }
+      return;
+    }
+
+    // Fallback for other functions
+    try {
+      const d = math.simplify(math.derivative(node, v));
+      steps.push({
+        rule:'Derivative', badge:'power',
+        formula: `\\frac{d}{d${v}}[${node.toTex()}]`,
+        detail: `\\( = ${d.toTex()} \\)`,
+        result:''
+      });
+    } catch(e){}
+    return;
+  }
+
+  // Simple symbol (x) → power rule with n=1
+  if(type === 'SymbolNode' && node.name === v){
+    steps.push({
+      rule:'Power Rule', badge:'power',
+      formula: `\\frac{d}{d${v}}[${v}] = 1`,
+      detail: `\\( ${v}^1 \\Rightarrow 1 \\cdot ${v}^{0} = 1 \\)`,
+      result:''
+    });
+    return;
+  }
+
+  // Constant
+  if(type === 'ConstantNode' || (type === 'SymbolNode' && node.name !== v)){
+    steps.push({
+      rule:'Constant', badge:'constant',
+      formula: `\\frac{d}{d${v}}[c] = 0`,
+      detail: `\\( \\frac{d}{d${v}}[${node.toTex()}] = 0 \\)`,
+      result:''
+    });
+    return;
+  }
+
+  // Parenthesis / accessor — just recurse
+  if(type === 'ParenthesisNode'){
+    walkNode(node.content, v, steps);
+    return;
+  }
+}
+
+function containsVar(node, v){
+  if(node.type === 'SymbolNode') return node.name === v;
+  if(node.args) return node.args.some(a => containsVar(a, v));
+  if(node.content) return containsVar(node.content, v);
+  return false;
+}
+
+// ── Graph ────────────────────────────────────────────────────────
+let tangentX = 0;
+
+function plotGraph(exprNode, derivNode, v){
+  const xs = [], ys = [], dys = [];
+  const code = exprNode.compile();
+  const dcode = derivNode.compile();
+  for(let i = -200; i <= 200; i++){
+    const xv = i * 0.05;
+    xs.push(xv);
+    try { const scope = {}; scope[v] = xv; ys.push(code.evaluate(scope)); } catch(e){ ys.push(NaN); }
+    try { const scope = {}; scope[v] = xv; dys.push(dcode.evaluate(scope)); } catch(e){ dys.push(NaN); }
+  }
+
+  // Clamp extreme values for clean plotting
+  const clamp = (arr) => arr.map(y => (typeof y==='number' && isFinite(y) && Math.abs(y)<1e6) ? y : NaN);
+
+  const traceF = { x:xs, y:clamp(ys), name:'f('+v+')', line:{color:'#00e5ff',width:2.5}, type:'scatter' };
+  const traceD = { x:xs, y:clamp(dys), name:"f'("+v+')', line:{color:'#a855f7',width:2.5,dash:'dot'}, type:'scatter' };
+
+  const layout = {
+    paper_bgcolor:'#111125', plot_bgcolor:'#0d0d1a',
+    font:{color:'#94a3b8',family:'Poppins',size:11},
+    margin:{l:40,r:16,t:16,b:36},
+    xaxis:{gridcolor:'#1e1e3a',zerolinecolor:'#333',title:v},
+    yaxis:{gridcolor:'#1e1e3a',zerolinecolor:'#333'},
+    legend:{orientation:'h',y:-0.18,font:{size:11}},
+    hovermode:'x unified',
+    dragmode:'pan',
+  };
+
+  Plotly.newPlot('graph-container', [traceF, traceD], layout, {responsive:true, displayModeBar:false});
+}
+
+// ── Evaluate ─────────────────────────────────────────────────────
+function evaluateAt(){
+  if(!currentExpr || !currentDeriv) return;
+  const xRaw = document.getElementById('evalInput').value.trim();
+  const x0 = parseFloat(xRaw);
+  if(isNaN(x0)) return;
+  const v = currentVar;
+  const scope = {}; scope[v] = x0;
+  try {
+    const fv = currentExpr.compile().evaluate(scope);
+    const dv = currentDeriv.compile().evaluate(scope);
+    const res = document.getElementById('evalResults');
+    res.innerHTML = `<span>f(${x0})</span> = <strong>${typeof fv==='number'?fv.toFixed(6):fv}</strong><br>
+      <span>f'(${x0})</span> = <strong>${typeof dv==='number'?dv.toFixed(6):dv}</strong>`;
+
+    // Add point and tangent line on graph
+    const tanXs = [x0-2, x0+2];
+    const tanYs = tanXs.map(tx => fv + dv*(tx - x0));
+    const ptTrace = { x:[x0], y:[fv], mode:'markers', marker:{color:'#facc15',size:10,symbol:'circle'}, name:`(${x0}, ${fv.toFixed(2)})`, showlegend:false };
+    const tanTrace = { x:tanXs, y:tanYs, mode:'lines', line:{color:'#facc15',width:1.5,dash:'dash'}, name:'Tangent', showlegend:false };
+    Plotly.addTraces('graph-container', [ptTrace, tanTrace]);
+  } catch(e){
+    document.getElementById('evalResults').innerHTML = `<span style="color:var(--red)">Error evaluating</span>`;
+  }
+}
+document.getElementById('evalBtn').addEventListener('click', evaluateAt);
+
+// ── History ──────────────────────────────────────────────────────
+function loadHistory(){
+  try { return JSON.parse(sessionStorage.getItem('derivHistory') || '[]'); } catch(e){ return []; }
+}
+function saveHistory(list){
+  sessionStorage.setItem('derivHistory', JSON.stringify(list));
+}
+function renderHistory(){
+  const list = loadHistory();
+  const ul = document.getElementById('historyList');
+  ul.innerHTML = '';
+  list.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    li.onclick = () => { document.getElementById('fnInput').value = item; updatePreview(); differentiate(); };
+    ul.appendChild(li);
+  });
+}
+function addHistory(expr){
+  let list = loadHistory();
+  list = list.filter(e => e !== expr);
+  list.unshift(expr);
+  if(list.length > 10) list = list.slice(0,10);
+  saveHistory(list);
+  renderHistory();
+}
+renderHistory();
+
+// ── Back to Top ──────────────────────────────────────────────────
+window.addEventListener('scroll', ()=>{
+  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 300);
+});
+document.getElementById('backToTop').addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+
+// ── Load header/footer ──────────────────────────────────────────
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
+
+// ── Initial MathJax typeset for reference panel ──────────────────
+window.addEventListener('load', ()=>{
+  if(MathJax.typesetPromise) MathJax.typesetPromise([document.getElementById('refBody')]);
+});
+</script>
+</body>
+</html>

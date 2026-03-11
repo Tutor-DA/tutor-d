@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sequence &amp; Series Analyzer | TutorDA</title>
+  <meta name="description" content="Identify patterns in sequences, find formulas, compute sums, test convergence. Arithmetic, geometric, quadratic, Fibonacci and more.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --text:#e8e8ff;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--r:14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* Starfield */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 20px 60px}
+
+    /* Hero */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* Input Section */
+    .input-section{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:20px}
+    .mode-toggle{display:flex;gap:8px;margin-bottom:16px}
+    .mode-btn{padding:8px 20px;background:var(--dark);color:var(--muted);border:1px solid var(--border);
+      border-radius:20px;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .mode-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+    .mode-btn.active{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+    .input-row{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+    .seq-input{flex:1;min-width:200px;padding:14px 18px;background:var(--dark);border:1px solid var(--border);
+      border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;outline:none;transition:border-color .2s}
+    .seq-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.15)}
+    .seq-input::placeholder{color:var(--muted);font-size:.92rem}
+    .analyze-btn{padding:14px 32px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;border:none;border-radius:10px;font-family:'Orbitron',sans-serif;
+      font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+    .analyze-btn:hover{opacity:.85}
+
+    /* Tabs */
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+    .tab{padding:8px 18px;background:var(--card);color:var(--muted);border:1px solid var(--border);
+      border-radius:10px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif}
+    .tab:hover{border-color:var(--purple);color:var(--purple)}
+    .tab.active{background:rgba(168,85,247,.1);border-color:var(--purple);color:var(--purple)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* Cards & Panels */
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px}
+    .panel-title{font-family:'Orbitron',sans-serif;font-size:.95rem;color:var(--cyan);margin-bottom:14px}
+    .sub-title{font-size:.85rem;color:var(--purple);font-weight:600;margin:12px 0 8px}
+
+    /* Badge */
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;
+      font-size:.78rem;font-weight:600;white-space:nowrap}
+    .badge-cyan{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.25)}
+    .badge-green{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+    .badge-red{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+    .badge-gold{background:rgba(250,204,21,.1);color:var(--gold);border:1px solid rgba(250,204,21,.25)}
+
+    /* Detected Result */
+    .detected-box{display:none;background:var(--dark);border:1px solid var(--cyan);border-radius:var(--r);
+      padding:20px;margin-bottom:16px;box-shadow:0 0 20px rgba(0,229,255,.08)}
+    .detected-box.show{display:block}
+    .detected-type{font-family:'Orbitron',sans-serif;font-size:1.1rem;margin-bottom:6px}
+    .formula-display{font-size:1.15rem;padding:10px 0;min-height:30px}
+    .predicted-terms{margin-top:12px}
+    .predicted-terms span{display:inline-block;padding:4px 12px;background:rgba(168,85,247,.1);
+      border:1px solid rgba(168,85,247,.2);border-radius:8px;margin:3px 4px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--purple)}
+
+    /* Difference Table */
+    .diff-table{width:100%;border-collapse:collapse;margin-top:10px;overflow-x:auto;display:block}
+    .diff-table th,.diff-table td{padding:6px 10px;border:1px solid var(--border);font-size:.82rem;text-align:center;white-space:nowrap}
+    .diff-table th{background:var(--card2);color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.72rem}
+    .diff-table td{font-family:'JetBrains Mono',monospace;color:var(--text)}
+    .diff-table tr:nth-child(2) td{color:var(--cyan)}
+    .diff-table tr:nth-child(3) td{color:var(--purple)}
+    .diff-table tr:nth-child(4) td{color:var(--pink)}
+    .diff-table tr:nth-child(5) td{color:var(--gold)}
+
+    /* Any-term calculator */
+    .calc-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .calc-row label{font-size:.85rem;color:var(--muted)}
+    .calc-input{width:80px;padding:8px 12px;background:var(--dark);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem;outline:none}
+    .calc-input:focus{border-color:var(--cyan)}
+    .calc-btn{padding:8px 18px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer}
+    .calc-result{font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--gold)}
+
+    /* Series */
+    .sum-display{font-size:1.1rem;padding:8px 0}
+    .slider-row{display:flex;gap:14px;align-items:center;margin:12px 0}
+    .slider-row label{font-size:.85rem;color:var(--muted);white-space:nowrap}
+    .slider-row input[type="range"]{flex:1;accent-color:var(--cyan)}
+    .slider-val{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:.9rem;min-width:28px}
+
+    /* Convergence */
+    .test-card{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+    .test-name{font-weight:600;font-size:.88rem;margin-bottom:6px}
+    .test-steps{font-size:.82rem;color:var(--muted);margin-bottom:8px;line-height:1.6}
+
+    /* Chart */
+    .chart-container{position:relative;height:320px;margin-top:10px}
+    .chart-toggles{display:flex;gap:8px;margin-bottom:10px}
+
+    /* Famous Gallery */
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+    .gallery-card{background:var(--dark);border:1px solid var(--border);border-radius:var(--r);
+      padding:16px;cursor:pointer;transition:all .25s}
+    .gallery-card:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,229,255,.1)}
+    .gallery-card .gc-name{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--cyan);margin-bottom:6px}
+    .gallery-card .gc-terms{font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--text);margin-bottom:6px}
+    .gallery-card .gc-formula{font-size:.78rem;color:var(--muted)}
+
+    /* Practice */
+    .practice-area{text-align:center}
+    .practice-terms{font-family:'JetBrains Mono',monospace;font-size:1.3rem;margin:16px 0;letter-spacing:2px}
+    .practice-terms .term{display:inline-block;padding:6px 14px;background:var(--dark);border:1px solid var(--border);
+      border-radius:8px;margin:4px}
+    .practice-terms .term.unknown{border-color:var(--gold);color:var(--gold);min-width:50px}
+    .practice-input-row{display:flex;gap:10px;justify-content:center;align-items:center;margin:16px 0;flex-wrap:wrap}
+    .practice-input{width:120px;padding:10px 14px;background:var(--dark);border:1px solid var(--border);
+      border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+      outline:none;text-align:center}
+    .practice-input:focus{border-color:var(--gold)}
+    .practice-feedback{font-size:1rem;min-height:30px;margin-top:10px}
+    .score-display{font-size:.85rem;color:var(--muted);margin-top:12px}
+    .score-display span{color:var(--gold);font-weight:600}
+
+    .empty-msg{color:var(--muted);font-size:.9rem;text-align:center;padding:30px 0}
+
+    /* Responsive */
+    @media(max-width:768px){
+      .hero{padding:40px 16px 20px}
+      .input-row{flex-direction:column}
+      .analyze-btn{width:100%}
+      .gallery-grid{grid-template-columns:1fr 1fr}
+      .chart-container{height:260px}
+    }
+    @media(max-width:480px){
+      .gallery-grid{grid-template-columns:1fr}
+      .tabs{gap:4px}
+      .tab{padding:6px 12px;font-size:.76rem}
+      .practice-terms{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+
+<div id="header-container"></div>
+
+<div class="wrapper">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">Math Tools</div>
+    <h1>Sequence &amp; Series Analyzer</h1>
+    <p>Identify patterns, find closed-form formulas, compute partial and infinite sums, and test convergence.</p>
+  </section>
+
+  <!-- Input -->
+  <section class="input-section">
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="terms" onclick="setMode('terms')">From Terms</button>
+      <button class="mode-btn" data-mode="formula" onclick="setMode('formula')">From Formula</button>
+    </div>
+    <div class="input-row">
+      <input id="seqInput" class="seq-input" placeholder="e.g. 2, 5, 8, 11, 14" autocomplete="off"/>
+      <button class="analyze-btn" onclick="analyze()">Analyze</button>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="results" onclick="switchTab('results')">Results</button>
+    <button class="tab" data-tab="series" onclick="switchTab('series')">Series &amp; Sums</button>
+    <button class="tab" data-tab="convergence" onclick="switchTab('convergence')">Convergence</button>
+    <button class="tab" data-tab="chart" onclick="switchTab('chart')">Visualization</button>
+    <button class="tab" data-tab="gallery" onclick="switchTab('gallery')">Famous Sequences</button>
+    <button class="tab" data-tab="practice" onclick="switchTab('practice')">Practice</button>
+  </div>
+
+  <!-- TAB: Results -->
+  <div id="tab-results" class="tab-panel active">
+    <div id="detectedBox" class="detected-box">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="detected-type" id="detectedType"></span>
+        <span class="badge badge-cyan" id="confidenceBadge"></span>
+      </div>
+      <div class="sub-title">General Term</div>
+      <div class="formula-display" id="formulaDisplay"></div>
+      <div class="sub-title">Next 5 Predicted Terms</div>
+      <div class="predicted-terms" id="predictedTerms"></div>
+      <div class="sub-title">Compute Any Term</div>
+      <div class="calc-row">
+        <label>n =</label>
+        <input type="number" id="nCalcInput" class="calc-input" min="1" value="10"/>
+        <button class="calc-btn" onclick="computeNthTerm()">Get a<sub>n</sub></button>
+        <span class="calc-result" id="nCalcResult"></span>
+      </div>
+    </div>
+    <div class="panel" id="diffPanel" style="display:none">
+      <div class="panel-title">Difference Table</div>
+      <table class="diff-table" id="diffTable"></table>
+    </div>
+    <div id="resultsEmpty" class="empty-msg">Enter a sequence or formula above and click Analyze.</div>
+  </div>
+
+  <!-- TAB: Series -->
+  <div id="tab-series" class="tab-panel">
+    <div class="panel" id="seriesPanel">
+      <div class="panel-title">Series &amp; Sums</div>
+      <div id="seriesEmpty" class="empty-msg">Analyze a sequence first to view sums.</div>
+      <div id="seriesContent" style="display:none">
+        <div class="sub-title">Partial Sum Formula</div>
+        <div class="sum-display" id="sumFormula"></div>
+        <div class="sub-title" id="infSumLabel" style="display:none">Infinite Sum</div>
+        <div class="sum-display" id="infSumDisplay" style="display:none"></div>
+        <div class="sub-title">Partial Sums for first N terms</div>
+        <div class="slider-row">
+          <label>N =</label>
+          <input type="range" id="sumSlider" min="5" max="100" value="20"/>
+          <span class="slider-val" id="sumSliderVal">20</span>
+        </div>
+        <div class="sum-display" id="partialSumResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Convergence -->
+  <div id="tab-convergence" class="tab-panel">
+    <div class="panel">
+      <div class="panel-title">Convergence Tests</div>
+      <div id="convEmpty" class="empty-msg">Analyze a sequence from a formula to run convergence tests.</div>
+      <div id="convContent" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- TAB: Chart -->
+  <div id="tab-chart" class="tab-panel">
+    <div class="panel">
+      <div class="panel-title">Visualization</div>
+      <div id="chartEmpty" class="empty-msg">Analyze a sequence first to see plots.</div>
+      <div id="chartContent" style="display:none">
+        <div class="chart-toggles">
+          <button class="mode-btn active" id="chartSeqBtn" onclick="showChart('seq')">Sequence Terms</button>
+          <button class="mode-btn" id="chartSumBtn" onclick="showChart('sum')">Partial Sums</button>
+        </div>
+        <div class="chart-container"><canvas id="mainChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Famous Gallery -->
+  <div id="tab-gallery" class="tab-panel">
+    <div class="panel">
+      <div class="panel-title">Famous Sequences Gallery</div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+
+  <!-- TAB: Practice -->
+  <div id="tab-practice" class="tab-panel">
+    <div class="panel practice-area">
+      <div class="panel-title">Practice Mode</div>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:12px">Guess the next term in the sequence!</p>
+      <div class="practice-terms" id="practiceTerms"></div>
+      <div class="practice-input-row">
+        <input type="number" id="practiceGuess" class="practice-input" placeholder="?" step="any"/>
+        <button class="calc-btn" onclick="checkPractice()">Check</button>
+        <button class="mode-btn" onclick="newPractice()">New</button>
+      </div>
+      <div class="practice-feedback" id="practiceFeedback"></div>
+      <div class="score-display">Score: <span id="practiceCorrect">0</span> / <span id="practiceTotal">0</span></div>
+    </div>
+  </div>
+
+</div><!-- wrapper -->
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+/* ================================================================
+   SEQUENCE & SERIES ANALYZER  - TutorDA
+   ================================================================ */
+
+// ─── State ──────────────────────────────────────────────────
+let currentMode = 'terms';
+let seqResult = null;   // stores analysis
+let mainChart = null;
+let practiceAnswer = null;
+let practiceScore = JSON.parse(localStorage.getItem('seqPracticeScore')||'{"c":0,"t":0}');
+
+document.getElementById('practiceCorrect').textContent = practiceScore.c;
+document.getElementById('practiceTotal').textContent = practiceScore.t;
+
+// ─── Mode toggle ────────────────────────────────────────────
+function setMode(m){
+  currentMode = m;
+  document.querySelectorAll('.mode-toggle .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  const inp = document.getElementById('seqInput');
+  if(m==='terms'){inp.placeholder='e.g. 2, 5, 8, 11, 14';}
+  else{inp.placeholder='e.g. 3*n+2  or  n^2  or  2^n  or  1/n';}
+}
+
+// ─── Tab switching ──────────────────────────────────────────
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+t));
+  if(t==='practice' && !practiceAnswer) newPractice();
+  if(t==='gallery') buildGallery();
+}
+
+// ─── Math helpers ───────────────────────────────────────────
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;}
+function isPrime(n){if(n<2)return false;if(n<4)return true;if(n%2===0||n%3===0)return false;
+  for(let i=5;i*i<=n;i+=6)if(n%i===0||(n%(i+2))===0)return false;return true;}
+function factorial(n){let r=1;for(let i=2;i<=n;i++)r*=i;return r;}
+function triangular(n){return n*(n+1)/2;}
+
+// Safe formula eval: replace n with value, support ^ as **
+function evalFormula(expr, n){
+  let s = expr.replace(/\^/g,'**')
+    .replace(/(\d)([a-z])/gi,'$1*$2')
+    .replace(/([a-z])(\d)/gi,'$1*$2')
+    .replace(/\bpi\b/g,'Math.PI')
+    .replace(/\be\b/g,'Math.E')
+    .replace(/\bsqrt\s*\(/g,'Math.sqrt(')
+    .replace(/\babs\s*\(/g,'Math.abs(')
+    .replace(/\bln\s*\(/g,'Math.log(')
+    .replace(/\blog\s*\(/g,'Math.log10(')
+    .replace(/\bsin\s*\(/g,'Math.sin(')
+    .replace(/\bcos\s*\(/g,'Math.cos(')
+    .replace(/\bn!/g,'factorial(n)')
+    .replace(/\bn\b/g,'('+n+')');
+  try{return Function('factorial','return '+s)(factorial);}catch(e){return NaN;}
+}
+
+// ─── Pattern detection ──────────────────────────────────────
+function differences(arr){
+  let d=[];for(let i=1;i<arr.length;i++) d.push(arr[i]-arr[i-1]);return d;
+}
+
+function allEqual(arr,tol=1e-9){
+  if(arr.length===0) return false;
+  return arr.every(v=>Math.abs(v-arr[0])<tol);
+}
+
+function allEqualRatio(arr,tol=1e-9){
+  if(arr.length<2) return false;
+  let ratios=[];
+  for(let i=1;i<arr.length;i++){
+    if(Math.abs(arr[i-1])<1e-15) return false;
+    ratios.push(arr[i]/arr[i-1]);
+  }
+  return allEqual(ratios,tol)?ratios[0]:false;
+}
+
+function detectType(terms){
+  const n = terms.length;
+  if(n<3) return {type:'unknown',confidence:'Low'};
+
+  // Check arithmetic
+  const d1 = differences(terms);
+  if(allEqual(d1)){
+    const d=d1[0], a1=terms[0];
+    return {type:'Arithmetic',confidence:'High',d,a1,
+      formula:`a_n = ${a1} + (n-1) \\cdot ${d} = ${d}n + ${a1-d}`,
+      nthTerm: nn=> a1+(nn-1)*d,
+      sumFormula: `S_n = \\frac{n}{2}(2 \\cdot ${a1} + (n-1) \\cdot ${d})`,
+      partialSum: nn=> nn/2*(2*a1+(nn-1)*d)
+    };
+  }
+
+  // Check geometric
+  const r = allEqualRatio(terms);
+  if(r!==false && Math.abs(r)>1e-12){
+    const a1=terms[0];
+    const rStr = Number.isInteger(r)?r:(Math.round(r*10000)/10000);
+    return {type:'Geometric',confidence:'High',r,a1,
+      formula:`a_n = ${a1} \\cdot ${rStr}^{n-1}`,
+      nthTerm: nn=> a1*Math.pow(r,nn-1),
+      sumFormula: Math.abs(r)===1?`S_n = ${a1} \\cdot n`:
+        `S_n = ${a1} \\cdot \\frac{1 - ${rStr}^n}{1 - ${rStr}}`,
+      partialSum: Math.abs(r)===1? nn=>a1*nn : nn=> a1*(1-Math.pow(r,nn))/(1-r),
+      converges: Math.abs(r)<1,
+      infSum: Math.abs(r)<1? a1/(1-r) : null
+    };
+  }
+
+  // Check quadratic (2nd diff constant)
+  const d2 = differences(d1);
+  if(d2.length>=1 && allEqual(d2)){
+    const c2 = d2[0]/2;
+    // a_n = c2*n^2 + c1*n + c0
+    // from terms[0]=a(1): c2+c1+c0 = terms[0]
+    // d1[0]=a(2)-a(1) = 3c2+c1, so c1=d1[0]-3c2
+    const c1 = d1[0]-3*c2;
+    const c0 = terms[0]-c2-c1;
+    const fmt = v=>{
+      if(Math.abs(v)<1e-10) return '';
+      const r = Math.round(v*10000)/10000;
+      return r;
+    };
+    let formulaStr = '';
+    if(Math.abs(c2)>1e-10) formulaStr += (c2===1?'':c2===-1?'-':c2)+'n^2';
+    if(Math.abs(c1)>1e-10) formulaStr += (c1>0&&formulaStr?'+':'')+(c1===1?'':c1===-1?'-':c1)+'n';
+    if(Math.abs(c0)>1e-10) formulaStr += (c0>0&&formulaStr?'+':'')+fmt(c0);
+    if(!formulaStr) formulaStr='0';
+    return {type:'Quadratic',confidence:'High',c2,c1,c0,
+      formula:`a_n = ${formulaStr}`,
+      nthTerm: nn=> c2*nn*nn+c1*nn+c0,
+      partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++)s+=c2*i*i+c1*i+c0;return s;}
+    };
+  }
+
+  // Check cubic (3rd diff constant)
+  const d3 = differences(d2);
+  if(d3.length>=1 && allEqual(d3)){
+    // fit cubic: a_n = An^3+Bn^2+Cn+D using first 4 terms
+    // Simple approach: solve system
+    const t = terms;
+    const A = d3[0]/6;
+    const B = (d2[0]-6*A)/2;
+    const C = d1[0]-A-B; // a(2)-a(1) = 7A+3B+C actually let's use general
+    // Better: use a(1)..a(4)
+    // A+B+C+D=t0, 8A+4B+2C+D=t1, 27A+9B+3C+D=t2, 64A+16B+4C+D=t3
+    // We have A from d3. Let's just compute numerically.
+    const fC = t[0] - A - B - (t[0]-A-B); // D unknown
+    // Actually let's just build nthTerm from differences
+    const nthTerm = nn => {
+      // Use Newton forward difference formula
+      const a0=terms[0], dd1=d1[0], dd2=d2[0], dd3=d3[0];
+      const k=nn-1;
+      return a0 + k*dd1 + k*(k-1)/2*dd2 + k*(k-1)*(k-2)/6*dd3;
+    };
+    return {type:'Cubic',confidence:'High',
+      formula:`a_n \\text{ (cubic polynomial)}`,
+      nthTerm,
+      partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++)s+=nthTerm(i);return s;}
+    };
+  }
+
+  // Check Fibonacci-like
+  if(n>=5){
+    let isFib=true;
+    for(let i=2;i<n;i++){
+      if(Math.abs(terms[i]-(terms[i-1]+terms[i-2]))>1e-9){isFib=false;break;}
+    }
+    if(isFib){
+      const nthTerm = nn=>{
+        if(nn<=0) return 0;
+        let a=terms[0],b=terms[1];
+        if(nn===1)return a;if(nn===2)return b;
+        for(let i=3;i<=nn;i++){[a,b]=[b,a+b];}return b;
+      };
+      return {type:'Fibonacci-like',confidence:'High',
+        formula:`a_n = a_{n-1} + a_{n-2},\\; a_1=${terms[0]},\\; a_2=${terms[1]}`,
+        nthTerm,
+        partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++)s+=nthTerm(i);return s;}
+      };
+    }
+  }
+
+  // Check factorial
+  if(n>=4){
+    let isFact=true;
+    for(let i=0;i<n;i++){
+      if(Math.abs(terms[i]-factorial(i+1))>1e-9){isFact=false;break;}
+    }
+    if(isFact) return {type:'Factorial',confidence:'High',
+      formula:'a_n = n!',
+      nthTerm: nn=>factorial(nn),
+      partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++)s+=factorial(i);return s;}
+    };
+  }
+
+  // Check triangular
+  if(n>=4){
+    let isTri=true;
+    for(let i=0;i<n;i++){
+      if(Math.abs(terms[i]-triangular(i+1))>1e-9){isTri=false;break;}
+    }
+    if(isTri) return {type:'Triangular Numbers',confidence:'High',
+      formula:'a_n = \\frac{n(n+1)}{2}',
+      nthTerm: nn=>triangular(nn),
+      sumFormula:'S_n = \\frac{n(n+1)(n+2)}{6}',
+      partialSum: nn=>nn*(nn+1)*(nn+2)/6
+    };
+  }
+
+  // Check perfect squares
+  if(n>=4){
+    let isSq=true;
+    for(let i=0;i<n;i++){
+      if(Math.abs(terms[i]-(i+1)*(i+1))>1e-9){isSq=false;break;}
+    }
+    if(isSq) return {type:'Perfect Squares',confidence:'High',
+      formula:'a_n = n^2',
+      nthTerm: nn=>nn*nn,
+      sumFormula:'S_n = \\frac{n(n+1)(2n+1)}{6}',
+      partialSum: nn=>nn*(nn+1)*(2*nn+1)/6
+    };
+  }
+
+  // Check perfect cubes
+  if(n>=4){
+    let isCube=true;
+    for(let i=0;i<n;i++){
+      if(Math.abs(terms[i]-Math.pow(i+1,3))>1e-9){isCube=false;break;}
+    }
+    if(isCube) return {type:'Perfect Cubes',confidence:'High',
+      formula:'a_n = n^3',
+      nthTerm: nn=>nn*nn*nn,
+      partialSum: nn=>{const s=nn*(nn+1)/2;return s*s;}
+    };
+  }
+
+  // Check powers of 2
+  if(n>=4){
+    let isPow2=true;
+    for(let i=0;i<n;i++){
+      if(Math.abs(terms[i]-Math.pow(2,i))>1e-9){isPow2=false;break;}
+    }
+    if(isPow2) return {type:'Powers of 2',confidence:'High',
+      formula:'a_n = 2^{n-1}',
+      nthTerm: nn=>Math.pow(2,nn-1),
+      partialSum: nn=>Math.pow(2,nn)-1
+    };
+  }
+
+  // Check primes
+  if(n>=4){
+    let primes=[],k=2;
+    while(primes.length<n+5){if(isPrime(k))primes.push(k);k++;}
+    let isP=true;
+    for(let i=0;i<n;i++){if(terms[i]!==primes[i]){isP=false;break;}}
+    if(isP){
+      return {type:'Prime Numbers',confidence:'High',
+        formula:'a_n = p_n \\text{ (the n-th prime)}',
+        nthTerm: nn=>{let ps=[],j=2;while(ps.length<nn){if(isPrime(j))ps.push(j);j++;}return ps[nn-1];},
+        partialSum: nn=>{let ps=[],j=2,s=0;while(ps.length<nn){if(isPrime(j)){ps.push(j);s+=j;}j++;}return s;}
+      };
+    }
+  }
+
+  // Fallback: try polynomial fit up to degree 4 using Newton forward differences
+  {
+    const nthTerm = nn=>{
+      // Newton forward difference interpolation
+      let val=0;
+      let diffs = [terms.slice()];
+      for(let k=0;k<Math.min(n-1,5);k++){
+        let prev=diffs[diffs.length-1];
+        let nd=[];for(let i=1;i<prev.length;i++)nd.push(prev[i]-prev[i-1]);
+        diffs.push(nd);
+        if(nd.length===0)break;
+      }
+      const m=nn-1;
+      let binom=1;
+      for(let k=0;k<diffs.length;k++){
+        if(diffs[k].length===0) break;
+        val += binom * diffs[k][0];
+        binom *= (m-k)/(k+1);
+      }
+      return val;
+    };
+    return {type:'Polynomial (interpolated)',confidence:'Medium',
+      formula:'a_n \\text{ via Newton forward differences}',
+      nthTerm,
+      partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++)s+=nthTerm(i);return s;}
+    };
+  }
+}
+
+// ─── Main analyze ───────────────────────────────────────────
+function analyze(){
+  const raw = document.getElementById('seqInput').value.trim();
+  if(!raw) return;
+
+  let terms=[];
+  let formulaExpr = null;
+
+  if(currentMode==='terms'){
+    terms = raw.split(',').map(s=>s.trim()).filter(s=>s!=='').map(Number);
+    if(terms.some(isNaN)){alert('Please enter valid numbers separated by commas.');return;}
+    if(terms.length<3){alert('Enter at least 3 terms.');return;}
+    seqResult = detectType(terms);
+    seqResult.terms = terms;
+  } else {
+    // Formula mode
+    formulaExpr = raw;
+    terms=[];
+    for(let i=1;i<=20;i++){
+      const v=evalFormula(formulaExpr,i);
+      if(isNaN(v)||!isFinite(v)){terms.push(null);}else{terms.push(v);}
+    }
+    const validTerms = terms.filter(v=>v!==null);
+    if(validTerms.length<3){alert('Could not evaluate formula. Try e.g. n^2 or 3*n+2');return;}
+    seqResult = {
+      type:'Formula-defined',confidence:'Exact',
+      formula:'a_n = '+raw.replace(/\*/g,'\\cdot ').replace(/\^/g,'^{').replace(/(\^{[^}]*)/g,'$1}').replace(/\^{(\d)}/g,'^{$1}'),
+      nthTerm: nn=>evalFormula(formulaExpr,nn),
+      terms: terms.filter(v=>v!==null),
+      formulaExpr,
+      partialSum: nn=>{let s=0;for(let i=1;i<=nn;i++){const v=evalFormula(formulaExpr,i);if(isFinite(v))s+=v;}return s;}
+    };
+  }
+
+  renderResults();
+  renderSeries();
+  renderConvergence();
+  renderChart();
+}
+
+// ─── Render Results ─────────────────────────────────────────
+function renderResults(){
+  const r=seqResult;if(!r)return;
+  document.getElementById('resultsEmpty').style.display='none';
+  const box=document.getElementById('detectedBox');box.classList.add('show');
+  document.getElementById('detectedType').textContent=r.type;
+  const conf=r.confidence;
+  const cb=document.getElementById('confidenceBadge');
+  cb.textContent='Confidence: '+conf;
+  cb.className='badge '+(conf==='High'||conf==='Exact'?'badge-green':conf==='Medium'?'badge-gold':'badge-red');
+
+  document.getElementById('formulaDisplay').innerHTML='\\('+r.formula+'\\)';
+
+  // Predicted terms
+  const pt=document.getElementById('predictedTerms');pt.innerHTML='';
+  if(r.nthTerm){
+    const start=r.terms.length+1;
+    for(let i=start;i<start+5;i++){
+      const v=r.nthTerm(i);
+      const sp=document.createElement('span');
+      sp.textContent=Number.isInteger(v)?v:(Math.round(v*10000)/10000);
+      pt.appendChild(sp);
+    }
+  }
+
+  // Difference table
+  const dp=document.getElementById('diffPanel');
+  if(r.terms && r.terms.length>=3){
+    dp.style.display='block';
+    buildDiffTable(r.terms);
+  } else {dp.style.display='none';}
+
+  typeset();
+}
+
+function buildDiffTable(terms){
+  const tbl=document.getElementById('diffTable');
+  let rows=[terms.slice()];
+  for(let k=0;k<Math.min(3,terms.length-1);k++){
+    const prev=rows[rows.length-1];
+    const d=[];for(let i=1;i<prev.length;i++)d.push(Math.round((prev[i]-prev[i-1])*1e8)/1e8);
+    if(d.length===0)break;
+    rows.push(d);
+  }
+  let html='<tr><th>Sequence</th>';
+  for(let i=0;i<terms.length;i++) html+='<th>a<sub>'+(i+1)+'</sub></th>';
+  html+='</tr>';
+  const labels=['Terms','1st diff','2nd diff','3rd diff'];
+  rows.forEach((row,ri)=>{
+    html+='<tr><td style="color:var(--muted);font-size:.75rem">'+labels[ri]+'</td>';
+    // offset for centering differences
+    for(let pad=0;pad<ri;pad++) html+='<td></td>';
+    row.forEach(v=>{html+='<td>'+(Number.isInteger(v)?v:(Math.round(v*10000)/10000))+'</td>';});
+    const rem=terms.length-row.length-ri;
+    for(let pad=0;pad<rem;pad++) html+='<td></td>';
+    html+='</tr>';
+  });
+  tbl.innerHTML=html;
+}
+
+function computeNthTerm(){
+  if(!seqResult||!seqResult.nthTerm)return;
+  const n=parseInt(document.getElementById('nCalcInput').value);
+  if(isNaN(n)||n<1)return;
+  const v=seqResult.nthTerm(n);
+  document.getElementById('nCalcResult').textContent='a'+n+' = '+(Number.isInteger(v)?v:(Math.round(v*1e8)/1e8));
+}
+
+// ─── Render Series ──────────────────────────────────────────
+function renderSeries(){
+  const r=seqResult;if(!r){return;}
+  document.getElementById('seriesEmpty').style.display='none';
+  document.getElementById('seriesContent').style.display='block';
+
+  // Sum formula
+  const sf=document.getElementById('sumFormula');
+  if(r.sumFormula) sf.innerHTML='\\('+r.sumFormula+'\\)';
+  else sf.innerHTML='<span style="color:var(--muted);font-size:.85rem">No closed-form sum formula available.</span>';
+
+  // Infinite sum
+  const il=document.getElementById('infSumLabel'),id=document.getElementById('infSumDisplay');
+  if(r.converges && r.infSum!==null && r.infSum!==undefined){
+    il.style.display='block';id.style.display='block';
+    id.innerHTML='\\(S_\\infty = '+Math.round(r.infSum*1e8)/1e8+'\\) <span class="badge badge-green" style="margin-left:8px">Converges</span>';
+  } else {il.style.display='none';id.style.display='none';}
+
+  // Slider
+  const slider=document.getElementById('sumSlider');
+  const val=document.getElementById('sumSliderVal');
+  const res=document.getElementById('partialSumResult');
+  function updateSum(){
+    const N=parseInt(slider.value);val.textContent=N;
+    if(r.partialSum){
+      const s=r.partialSum(N);
+      res.innerHTML='\\(S_{'+N+'} = '+(Number.isInteger(s)?s:(Math.round(s*1e8)/1e8))+'\\)';
+      typeset();
+    }
+  }
+  slider.oninput=updateSum;
+  updateSum();
+  typeset();
+}
+
+// ─── Render Convergence ─────────────────────────────────────
+function renderConvergence(){
+  const r=seqResult;
+  const cont=document.getElementById('convContent');
+  const emp=document.getElementById('convEmpty');
+  if(!r||!r.nthTerm){cont.style.display='none';emp.style.display='block';return;}
+  emp.style.display='none';cont.style.display='block';
+  cont.innerHTML='';
+
+  const nth=r.nthTerm;
+
+  // Ratio test
+  {
+    const card=document.createElement('div');card.className='test-card';
+    const ratios=[];
+    for(let n=10;n<=50;n++){
+      const an=nth(n),an1=nth(n+1);
+      if(Math.abs(an)>1e-15) ratios.push(Math.abs(an1/an));
+    }
+    const L=ratios.length?ratios[ratios.length-1]:NaN;
+    let verdict='Inconclusive',vClass='badge-gold';
+    if(!isNaN(L)){
+      if(L<1-1e-6){verdict='Converges';vClass='badge-green';}
+      else if(L>1+1e-6){verdict='Diverges';vClass='badge-red';}
+    }
+    card.innerHTML=`<div class="test-name">Ratio Test</div>
+      <div class="test-steps">Compute \\(L = \\lim_{n\\to\\infty} \\left|\\frac{a_{n+1}}{a_n}\\right|\\)<br>
+      For large n: \\(|a_{n+1}/a_n| \\approx ${isNaN(L)?'\\text{undefined}':(Math.round(L*1e6)/1e6)}\\)</div>
+      <span class="badge ${vClass}">${verdict}</span>`;
+    cont.appendChild(card);
+  }
+
+  // Root test
+  {
+    const card=document.createElement('div');card.className='test-card';
+    const roots=[];
+    for(let n=10;n<=50;n++){
+      const an=nth(n);
+      if(an!==null && isFinite(an)) roots.push(Math.pow(Math.abs(an),1/n));
+    }
+    const L=roots.length?roots[roots.length-1]:NaN;
+    let verdict='Inconclusive',vClass='badge-gold';
+    if(!isNaN(L)){
+      if(L<1-1e-6){verdict='Converges';vClass='badge-green';}
+      else if(L>1+1e-6){verdict='Diverges';vClass='badge-red';}
+    }
+    card.innerHTML=`<div class="test-name">Root Test</div>
+      <div class="test-steps">Compute \\(L = \\lim_{n\\to\\infty} |a_n|^{1/n}\\)<br>
+      For large n: \\(|a_n|^{1/n} \\approx ${isNaN(L)?'\\text{undefined}':(Math.round(L*1e6)/1e6)}\\)</div>
+      <span class="badge ${vClass}">${verdict}</span>`;
+    cont.appendChild(card);
+  }
+
+  // Comparison with p-series / geometric
+  {
+    const card=document.createElement('div');card.className='test-card';
+    const a50=Math.abs(nth(50)),a100=Math.abs(nth(100));
+    let comp='';
+    if(a50>1e-15 && a100>1e-15){
+      const ratio=Math.log(a50/a100)/Math.log(100/50);
+      if(ratio>1.05) comp=`Terms decay like \\(1/n^{${Math.round(ratio*100)/100}}\\) (p-series with p > 1 converges).`;
+      else if(ratio>0.95) comp=`Terms decay like \\(1/n\\) (harmonic series, diverges).`;
+      else comp=`Terms do not decay fast enough for p-series comparison.`;
+    } else if(a100<1e-15){comp='Terms approach 0 very rapidly.';}
+    else {comp='Could not determine comparison.';}
+    card.innerHTML=`<div class="test-name">Comparison (p-series / geometric)</div>
+      <div class="test-steps">${comp}</div>`;
+    cont.appendChild(card);
+  }
+
+  typeset();
+}
+
+// ─── Chart ──────────────────────────────────────────────────
+let chartMode='seq';
+function showChart(mode){
+  chartMode=mode;
+  document.getElementById('chartSeqBtn').classList.toggle('active',mode==='seq');
+  document.getElementById('chartSumBtn').classList.toggle('active',mode==='sum');
+  renderChart();
+}
+
+function renderChart(){
+  const r=seqResult;
+  if(!r||!r.nthTerm){document.getElementById('chartEmpty').style.display='block';
+    document.getElementById('chartContent').style.display='none';return;}
+  document.getElementById('chartEmpty').style.display='none';
+  document.getElementById('chartContent').style.display='block';
+
+  const N=30;
+  const labels=[],seqData=[],sumData=[];
+  let cumSum=0;
+  for(let i=1;i<=N;i++){
+    labels.push(i);
+    const v=r.nthTerm(i);
+    seqData.push(isFinite(v)?v:null);
+    cumSum+=(isFinite(v)?v:0);
+    sumData.push(cumSum);
+  }
+
+  if(mainChart){mainChart.destroy();}
+
+  const ctx=document.getElementById('mainChart').getContext('2d');
+  const data = chartMode==='seq'?seqData:sumData;
+  const label = chartMode==='seq'?'a_n':'S_n';
+  const color = chartMode==='seq'?'#00e5ff':'#a855f7';
+
+  const datasets=[{
+    label,data,
+    borderColor:color,backgroundColor:color+'44',
+    pointBackgroundColor:color,pointRadius:4,
+    tension:0.1,fill:false
+  }];
+
+  // Asymptote for convergent series
+  if(chartMode==='sum' && r.converges && r.infSum!==null){
+    datasets.push({
+      label:'S_inf = '+Math.round(r.infSum*1e4)/1e4,
+      data:Array(N).fill(r.infSum),
+      borderColor:'#facc15',borderDash:[6,4],
+      pointRadius:0,fill:false
+    });
+  }
+
+  mainChart=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#94a3b8'}}},
+      scales:{
+        x:{title:{display:true,text:'n',color:'#94a3b8'},ticks:{color:'#94a3b8'},grid:{color:'#1e1e3a'}},
+        y:{title:{display:true,text:label,color:'#94a3b8'},ticks:{color:'#94a3b8'},grid:{color:'#1e1e3a'}}
+      }
+    }
+  });
+}
+
+// ─── Gallery ────────────────────────────────────────────────
+const famousSequences=[
+  {name:'Fibonacci',terms:'1, 1, 2, 3, 5, 8, 13, 21',formula:'a_n = a_{n-1}+a_{n-2}',input:'1, 1, 2, 3, 5, 8, 13, 21'},
+  {name:'Prime Numbers',terms:'2, 3, 5, 7, 11, 13, 17',formula:'p_n',input:'2, 3, 5, 7, 11, 13, 17'},
+  {name:'Triangular',terms:'1, 3, 6, 10, 15, 21',formula:'n(n+1)/2',input:'1, 3, 6, 10, 15, 21'},
+  {name:'Square Numbers',terms:'1, 4, 9, 16, 25, 36',formula:'n^2',input:'1, 4, 9, 16, 25, 36'},
+  {name:'Powers of 2',terms:'1, 2, 4, 8, 16, 32',formula:'2^{n-1}',input:'1, 2, 4, 8, 16, 32'},
+  {name:'Catalan Numbers',terms:'1, 1, 2, 5, 14, 42, 132',formula:'\\frac{1}{n+1}\\binom{2n}{n}',input:'1, 1, 2, 5, 14, 42, 132'},
+  {name:'Harmonic (partial)',terms:'1, 0.5, 0.333, 0.25, 0.2',formula:'1/n',input:'1/n',mode:'formula'},
+  {name:'Geometric (r=1/2)',terms:'1, 0.5, 0.25, 0.125, 0.0625',formula:'(1/2)^{n-1}',input:'1, 0.5, 0.25, 0.125, 0.0625'}
+];
+
+let galleryBuilt=false;
+function buildGallery(){
+  if(galleryBuilt)return;galleryBuilt=true;
+  const grid=document.getElementById('galleryGrid');
+  famousSequences.forEach(s=>{
+    const card=document.createElement('div');card.className='gallery-card';
+    card.innerHTML=`<div class="gc-name">${s.name}</div>
+      <div class="gc-terms">${s.terms} ...</div>
+      <div class="gc-formula">\\(${s.formula}\\)</div>`;
+    card.onclick=()=>{
+      if(s.mode==='formula'){setMode('formula');}else{setMode('terms');}
+      document.getElementById('seqInput').value=s.input;
+      switchTab('results');
+      analyze();
+    };
+    grid.appendChild(card);
+  });
+  typeset();
+}
+
+// ─── Practice Mode ──────────────────────────────────────────
+const practiceBank=[
+  {terms:[2,4,6,8],answer:10,type:'Arithmetic (d=2)'},
+  {terms:[3,6,12,24],answer:48,type:'Geometric (r=2)'},
+  {terms:[1,4,9,16,25],answer:36,type:'Perfect Squares'},
+  {terms:[1,1,2,3,5],answer:8,type:'Fibonacci'},
+  {terms:[1,3,6,10,15],answer:21,type:'Triangular'},
+  {terms:[1,8,27,64],answer:125,type:'Perfect Cubes'},
+  {terms:[2,3,5,7,11],answer:13,type:'Primes'},
+  {terms:[1,2,4,8,16],answer:32,type:'Powers of 2'},
+  {terms:[5,10,15,20],answer:25,type:'Arithmetic (d=5)'},
+  {terms:[100,50,25,12.5],answer:6.25,type:'Geometric (r=0.5)'},
+  {terms:[1,4,10,20,35],answer:56,type:'Tetrahedral'},
+  {terms:[0,1,4,9,16],answer:25,type:'Squares from 0'},
+  {terms:[2,6,12,20,30],answer:42,type:'n(n+1)'},
+  {terms:[1,2,6,24,120],answer:720,type:'Factorial'},
+  {terms:[3,7,11,15,19],answer:23,type:'Arithmetic (d=4)'}
+];
+
+function newPractice(){
+  const p=practiceBank[Math.floor(Math.random()*practiceBank.length)];
+  practiceAnswer=p.answer;
+  const el=document.getElementById('practiceTerms');
+  el.innerHTML='';
+  p.terms.forEach(t=>{
+    const sp=document.createElement('span');sp.className='term';sp.textContent=t;el.appendChild(sp);
+  });
+  const q=document.createElement('span');q.className='term unknown';q.textContent='?';el.appendChild(q);
+  document.getElementById('practiceGuess').value='';
+  document.getElementById('practiceFeedback').innerHTML='';
+}
+
+function checkPractice(){
+  const guess=parseFloat(document.getElementById('practiceGuess').value);
+  if(isNaN(guess)){return;}
+  practiceScore.t++;
+  const fb=document.getElementById('practiceFeedback');
+  if(Math.abs(guess-practiceAnswer)<0.01){
+    practiceScore.c++;
+    fb.innerHTML='<span style="color:var(--green)">Correct!</span>';
+  } else {
+    fb.innerHTML='<span style="color:var(--red)">Not quite. The answer is '+practiceAnswer+'</span>';
+  }
+  localStorage.setItem('seqPracticeScore',JSON.stringify(practiceScore));
+  document.getElementById('practiceCorrect').textContent=practiceScore.c;
+  document.getElementById('practiceTotal').textContent=practiceScore.t;
+}
+
+// Enter key to check practice
+document.getElementById('practiceGuess').addEventListener('keydown',e=>{if(e.key==='Enter')checkPractice();});
+document.getElementById('seqInput').addEventListener('keydown',e=>{if(e.key==='Enter')analyze();});
+
+// ─── MathJax typeset helper ─────────────────────────────────
+function typeset(){
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise().catch(()=>{});
+  }
+}
+
+// ─── Load header/footer ─────────────────────────────────────
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+// ─── Back to top ────────────────────────────────────────────
+const btt=document.getElementById('backToTop');
+window.addEventListener('scroll',()=>{btt.style.display=window.scrollY>300?'flex':'none';});
+btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+</body>
+</html>

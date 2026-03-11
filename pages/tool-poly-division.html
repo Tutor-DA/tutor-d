@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Polynomial Division | TutorDA</title>
+  <meta name="description" content="Step-by-step animated polynomial long division and synthetic division with remainder theorem, factor theorem, and complete factorization.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- MathJax v3 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      startup: { typeset: false }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    :root {
+      --cyan:    #00e5ff;
+      --purple:  #a855f7;
+      --pink:    #ec4899;
+      --gold:    #facc15;
+      --dark:    #0d0d1a;
+      --card:    #111125;
+      --card2:   #1a1a35;
+      --border:  #1e1e3a;
+      --text:    #e8e8ff;
+      --muted:   #94a3b8;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --r:       14px;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    /* ── Starfield ─────────────────────────────── */
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 20px 60px}
+
+    /* ── Hero ────────────────────────────────── */
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    /* ── Cards / Panels ──────────────────────── */
+    .panel{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:24px;margin-bottom:20px;
+    }
+    .panel-title{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);margin-bottom:16px}
+
+    /* ── Input ────────────────────────────────── */
+    .mode-toggle{display:flex;gap:8px;margin-bottom:14px}
+    .mode-btn{
+      padding:6px 16px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:20px;font-size:.8rem;
+      cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .mode-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+    .mode-btn.active{background:rgba(0,229,255,.1);border-color:var(--cyan);color:var(--cyan)}
+
+    .input-group{margin-bottom:14px}
+    .input-group label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:500}
+    .poly-input{
+      width:100%;padding:14px 18px;
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.05rem;
+      outline:none;transition:border-color .2s;
+    }
+    .poly-input:focus{border-color:var(--cyan);box-shadow:0 0 12px rgba(0,229,255,.15)}
+    .poly-input::placeholder{color:var(--muted);font-size:.9rem}
+
+    .latex-preview{
+      min-height:36px;padding:8px 14px;margin-top:6px;
+      background:var(--dark);border:1px solid var(--border);border-radius:8px;
+      font-size:1.05rem;color:var(--text);
+    }
+
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+    .solve-btn{
+      padding:14px 32px;background:linear-gradient(135deg,var(--cyan),var(--purple));
+      color:#000;border:none;border-radius:10px;font-family:'Orbitron',sans-serif;
+      font-size:.9rem;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap;
+    }
+    .solve-btn:hover{opacity:.85}
+
+    .method-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .method-label{font-size:.82rem;color:var(--muted);margin-right:4px}
+    .pill{
+      padding:6px 16px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:20px;font-size:.8rem;
+      cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .pill:hover{border-color:var(--purple);color:var(--purple)}
+    .pill.active{background:rgba(168,85,247,.12);border-color:var(--purple);color:var(--purple)}
+    .pill:disabled{opacity:.4;cursor:not-allowed}
+
+    /* ── Examples ─────────────────────────────── */
+    .examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .ex-btn{
+      padding:6px 14px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;font-size:.78rem;
+      font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;
+    }
+    .ex-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    /* ── Division Display ────────────────────── */
+    .division-wrap{overflow-x:auto;padding:10px 0}
+    .long-div-grid{
+      display:inline-block;font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+      line-height:2;min-width:100%;
+    }
+    .ld-row{display:flex;white-space:nowrap;align-items:baseline}
+    .ld-cell{min-width:7ch;text-align:center;padding:0 4px;display:inline-block}
+    .ld-pad{display:inline-block;min-width:7ch}
+    .ld-divisor-area{display:inline-flex;align-items:baseline;white-space:nowrap;color:var(--text)}
+    .ld-bracket{color:var(--muted);font-weight:700;margin:0 6px 0 4px;font-size:1.2em}
+    .ld-quotient .ld-cell{color:var(--cyan);font-weight:700}
+    .ld-dividend{display:inline-flex}
+    .ld-dividend .ld-cell{color:var(--text)}
+    .ld-multiply .ld-cell{color:var(--purple)}
+    .ld-subtract .ld-cell{color:var(--pink)}
+    .ld-top-line{border-top:2px solid var(--muted);padding-top:4px}
+    .ld-remainder-zero .ld-cell{color:var(--green);font-weight:700}
+    .ld-remainder-nonzero .ld-cell{color:var(--red);font-weight:700}
+    .ld-sign,.ld-sign-dim{margin-right:2px}
+    .ld-sign-dim{color:var(--muted)}
+    .ld-hr{display:inline-flex}
+    .ld-hr .ld-cell{padding:0 4px}
+    .ld-line-seg{display:block;border-bottom:2px solid var(--border);width:100%;height:0;margin:0}
+
+    .ld-step{opacity:0;transform:translateY(8px);transition:opacity .4s ease, transform .4s ease}
+    .ld-step.visible{opacity:1;transform:translateY(0)}
+
+    /* ── Synthetic Division ───────────────────── */
+    .synth-table{
+      font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+      border-collapse:collapse;margin:16px auto;
+    }
+    .synth-table td{padding:6px 14px;text-align:center;min-width:3ch}
+    .synth-c{color:var(--gold);font-weight:700;border-right:2px solid var(--muted)}
+    .synth-coeff{color:var(--text)}
+    .synth-prod{color:var(--purple)}
+    .synth-sum{color:var(--cyan);font-weight:700;border-top:2px solid var(--muted)}
+    .synth-rem{color:var(--pink);font-weight:700;border-top:2px solid var(--muted);border-left:2px solid var(--muted)}
+    .synth-step{opacity:0;transition:opacity .4s ease}
+    .synth-step.visible{opacity:1}
+
+    /* ── Controls ─────────────────────────────── */
+    .step-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+    .ctrl-btn{
+      padding:5px 14px;background:var(--dark);color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;font-size:.78rem;
+      cursor:pointer;transition:all .2s;font-family:'Poppins',sans-serif;
+    }
+    .ctrl-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+    .ctrl-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+    .step-counter{font-size:.82rem;color:var(--muted);margin-left:auto}
+
+    /* ── Result ───────────────────────────────── */
+    .result-box{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;
+      padding:18px;margin-top:16px;font-size:1.05rem;line-height:1.8;
+    }
+    .badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:600;margin-left:8px}
+    .badge-green{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .badge-red{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+
+    /* ── Theorem panel ────────────────────────── */
+    .theorem-box{
+      background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);border-radius:10px;
+      padding:16px;margin-top:14px;
+    }
+    .theorem-box h4{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--purple);margin-bottom:8px}
+    .theorem-box p{font-size:.9rem;color:var(--muted);line-height:1.6}
+
+    /* ── Related Tools ────────────────────────── */
+    .related-panel{margin-top:20px}
+    .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .related-card{
+      background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:16px;
+    }
+    .related-card h4{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--gold);margin-bottom:10px}
+    .related-card .poly-input{font-size:.9rem;padding:10px 14px;margin-bottom:8px}
+    .related-card .mini-btn{
+      padding:6px 16px;background:linear-gradient(135deg,var(--gold),var(--pink));
+      color:#000;border:none;border-radius:8px;font-size:.78rem;font-weight:600;
+      cursor:pointer;transition:opacity .2s;
+    }
+    .related-card .mini-btn:hover{opacity:.85}
+    .related-card .result-area{margin-top:10px;font-size:.9rem;line-height:1.6;color:var(--text);min-height:20px}
+
+    /* ── Graph ────────────────────────────────── */
+    .graph-panel{margin-top:20px}
+    .graph-canvas-wrap{position:relative;background:var(--dark);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    #graphCanvas{display:block;width:100%;height:360px}
+    .graph-tooltip{
+      position:absolute;display:none;padding:6px 12px;background:var(--card);border:1px solid var(--border);
+      border-radius:8px;font-size:.78rem;color:var(--text);pointer-events:none;z-index:5;
+      font-family:'JetBrains Mono',monospace;
+    }
+    .graph-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted)}
+    .legend-dot{width:10px;height:10px;border-radius:50%}
+
+    /* ── Reference ────────────────────────────── */
+    .ref-panel{margin-top:20px}
+    .ref-toggle{
+      display:flex;align-items:center;gap:8px;cursor:pointer;
+      font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);
+      background:none;border:none;padding:0;
+    }
+    .ref-toggle .arrow{transition:transform .3s;display:inline-block}
+    .ref-toggle.open .arrow{transform:rotate(90deg)}
+    .ref-body{display:none;margin-top:14px}
+    .ref-body.open{display:block}
+    .ref-section{margin-bottom:18px}
+    .ref-section h4{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--purple);margin-bottom:8px}
+    .ref-section p, .ref-section li{font-size:.88rem;color:var(--muted);line-height:1.7}
+    .ref-section ol, .ref-section ul{padding-left:20px}
+
+    /* ── Back to top ─────────────────────────── */
+    #backToTop{
+      position:fixed;bottom:30px;right:30px;width:44px;height:44px;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));
+      border:none;border-radius:50%;color:#000;font-size:1.2rem;
+      cursor:pointer;z-index:99;display:none;align-items:center;justify-content:center;
+      transition:opacity .3s;
+    }
+    #backToTop.show{display:flex}
+
+    /* ── Mobile ───────────────────────────────── */
+    @media(max-width:768px){
+      .wrapper{padding:0 12px 40px}
+      .hero{padding:40px 12px 20px}
+      .panel{padding:16px}
+      .related-grid{grid-template-columns:1fr}
+      .long-div-grid{font-size:.9rem}
+      .synth-table{font-size:.9rem}
+      .synth-table td{padding:4px 8px}
+      .step-controls{flex-wrap:wrap}
+      .step-counter{margin-left:0;width:100%;text-align:center;margin-top:6px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="eyebrow">Algebra Tool</div>
+    <h1>Polynomial Long Division & Synthetic Division</h1>
+    <p>Step-by-step animated polynomial division with remainder theorem verification, factor detection, and complete factorization.</p>
+  </section>
+
+  <!-- Input Panel -->
+  <section class="panel" id="inputPanel">
+    <div class="panel-title">Input</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="expr">Expression Mode</button>
+      <button class="mode-btn" data-mode="coeff">Coefficient Mode</button>
+    </div>
+
+    <div class="input-group">
+      <label>Dividend P(x)</label>
+      <input type="text" class="poly-input" id="dividendInput" placeholder="e.g. x^3 - 3x^2 + 2x + 5" autocomplete="off">
+      <div class="latex-preview" id="dividendPreview"></div>
+    </div>
+    <div class="input-group">
+      <label>Divisor D(x)</label>
+      <input type="text" class="poly-input" id="divisorInput" placeholder="e.g. x - 1" autocomplete="off">
+      <div class="latex-preview" id="divisorPreview"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="solve-btn" id="divideBtn">Divide</button>
+      <div class="method-row">
+        <span class="method-label">Method:</span>
+        <button class="pill active" id="methodLong">Long Division</button>
+        <button class="pill" id="methodSynth" disabled title="Available for linear divisors (x - c)">Synthetic Division</button>
+      </div>
+    </div>
+
+    <!-- Quick Examples -->
+    <div class="examples" id="examples"></div>
+  </section>
+
+  <!-- Step Controls + Division Display -->
+  <section class="panel" id="divisionPanel" style="display:none">
+    <div class="panel-title" id="divMethodTitle">Long Division</div>
+    <div class="step-controls">
+      <button class="ctrl-btn" id="btnPrev">&#9664; Prev</button>
+      <button class="ctrl-btn" id="btnNext">Next &#9654;</button>
+      <button class="ctrl-btn" id="btnShowAll">Show All</button>
+      <button class="ctrl-btn" id="btnAutoPlay">Auto Play</button>
+      <span class="step-counter" id="stepCounter"></span>
+    </div>
+    <div class="division-wrap" id="divisionDisplay"></div>
+  </section>
+
+  <!-- Result -->
+  <section class="panel" id="resultPanel" style="display:none">
+    <div class="panel-title">Result</div>
+    <div class="result-box" id="resultBox"></div>
+  </section>
+
+  <!-- Remainder / Factor Theorem -->
+  <section class="panel" id="theoremPanel" style="display:none">
+    <div class="panel-title">Remainder & Factor Theorem</div>
+    <div id="theoremContent"></div>
+  </section>
+
+  <!-- Related Tools -->
+  <section class="panel related-panel" id="relatedPanel">
+    <div class="panel-title">Related Tools</div>
+    <div class="related-grid">
+      <div class="related-card">
+        <h4>Evaluate P(c)</h4>
+        <input type="text" class="poly-input" id="evalCInput" placeholder="Enter c value">
+        <button class="mini-btn" id="evalCBtn">Evaluate</button>
+        <div class="result-area" id="evalCResult"></div>
+      </div>
+      <div class="related-card">
+        <h4>Find Rational Roots</h4>
+        <button class="mini-btn" id="rationalRootsBtn">Find Roots</button>
+        <div class="result-area" id="rationalRootsResult"></div>
+      </div>
+      <div class="related-card">
+        <h4>Complete Factorization</h4>
+        <button class="mini-btn" id="factorBtn">Factor</button>
+        <div class="result-area" id="factorResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Graph -->
+  <section class="panel graph-panel" id="graphPanel" style="display:none">
+    <div class="panel-title">Graph</div>
+    <div class="graph-canvas-wrap">
+      <canvas id="graphCanvas"></canvas>
+      <div class="graph-tooltip" id="graphTooltip"></div>
+    </div>
+    <div class="graph-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>P(x) Dividend</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>D(x) Divisor</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Q(x) Quotient</div>
+    </div>
+  </section>
+
+  <!-- Reference Panel -->
+  <section class="panel ref-panel">
+    <button class="ref-toggle" id="refToggle">
+      <span class="arrow">&#9654;</span> Reference: Division Theorems
+    </button>
+    <div class="ref-body" id="refBody">
+      <div class="ref-section">
+        <h4>Long Division Algorithm</h4>
+        <ol>
+          <li>Divide the leading term of the dividend by the leading term of the divisor.</li>
+          <li>Multiply the entire divisor by the result. Write below the dividend, aligned by degree.</li>
+          <li>Subtract to get a new (smaller) polynomial.</li>
+          <li>Bring down the next term. Repeat until the degree of the remainder is less than the degree of the divisor.</li>
+        </ol>
+      </div>
+      <div class="ref-section">
+        <h4>Synthetic Division</h4>
+        <p>A shortcut for dividing by a linear factor \((x - c)\). Write the coefficients of the dividend in a row. Bring down the first coefficient, multiply by \(c\), add to the next column, and repeat. The last value is the remainder.</p>
+      </div>
+      <div class="ref-section">
+        <h4>Remainder Theorem</h4>
+        <p>If a polynomial \(P(x)\) is divided by \((x - c)\), the remainder is \(P(c)\).</p>
+      </div>
+      <div class="ref-section">
+        <h4>Factor Theorem</h4>
+        <p>\((x - c)\) is a factor of \(P(x)\) if and only if \(P(c) = 0\).</p>
+      </div>
+      <div class="ref-section">
+        <h4>Rational Root Theorem</h4>
+        <p>If \(P(x) = a_n x^n + \dots + a_0\) has a rational root \(\frac{p}{q}\) in lowest terms, then \(p\) divides \(a_0\) and \(q\) divides \(a_n\).</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="footer-container"></div>
+<button id="backToTop" title="Back to top">&#9650;</button>
+
+<script>
+/* ====================================================================
+   POLYNOMIAL LONG DIVISION & SYNTHETIC DIVISION TOOL
+   ==================================================================== */
+
+// ── Utility helpers ──────────────────────────────────────────────────
+
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+
+// Parse polynomial from expression string → coefficient array (highest degree first)
+function parseExpr(str) {
+  str = str.replace(/\s+/g, '').replace(/−/g, '-').replace(/\*\*/g, '^');
+  if (!str) return null;
+
+  // Find max degree
+  const terms = [];
+  // Split on + or - but keep the sign
+  const parts = str.replace(/([+-])/g, '|||$1').split('|||').filter(Boolean);
+
+  let maxDeg = 0;
+  const degCoeffs = {};
+
+  for (let part of parts) {
+    part = part.trim();
+    if (!part) continue;
+
+    let coeff = 0, deg = 0;
+
+    if (/x/i.test(part)) {
+      // Has x
+      const m = part.match(/^([+-]?\d*\.?\d*)\s*x(?:\^(\d+))?$/i);
+      if (m) {
+        let c = m[1];
+        if (c === '' || c === '+') c = '1';
+        else if (c === '-') c = '-1';
+        coeff = parseFloat(c);
+        deg = m[2] !== undefined ? parseInt(m[2]) : 1;
+      } else {
+        return null; // parse error
+      }
+    } else {
+      // Constant
+      coeff = parseFloat(part);
+      deg = 0;
+      if (isNaN(coeff)) return null;
+    }
+
+    if (isNaN(coeff)) return null;
+    maxDeg = Math.max(maxDeg, deg);
+    degCoeffs[deg] = (degCoeffs[deg] || 0) + coeff;
+  }
+
+  const coeffs = [];
+  for (let i = maxDeg; i >= 0; i--) {
+    coeffs.push(degCoeffs[i] || 0);
+  }
+  return coeffs;
+}
+
+// Parse coefficient string "[1, -3, 2, 5]" or "1, -3, 2, 5"
+function parseCoeffStr(str) {
+  str = str.replace(/[\[\]]/g, '').trim();
+  if (!str) return null;
+  const parts = str.split(',').map(s => parseFloat(s.trim()));
+  if (parts.some(isNaN)) return null;
+  return parts;
+}
+
+// Coefficients to LaTeX
+function coeffsToLatex(c) {
+  if (!c || c.length === 0) return '';
+  const deg = c.length - 1;
+  let s = '';
+  for (let i = 0; i <= deg; i++) {
+    const d = deg - i;
+    const v = c[i];
+    if (v === 0) continue;
+
+    const absV = Math.abs(v);
+    let sign = v < 0 ? '-' : (s ? '+' : '');
+
+    let coefStr = '';
+    if (d === 0) {
+      coefStr = absV.toString();
+    } else if (absV === 1) {
+      coefStr = '';
+    } else {
+      coefStr = absV.toString();
+    }
+
+    let varStr = '';
+    if (d > 1) varStr = 'x^{' + d + '}';
+    else if (d === 1) varStr = 'x';
+
+    if (s) s += ' ' + sign + ' ';
+    else if (sign === '-') s += '-';
+
+    s += coefStr + varStr;
+  }
+  return s || '0';
+}
+
+// Format a single term for display
+function termStr(coeff, deg) {
+  if (coeff === 0) return '0';
+  const abs = Math.abs(coeff);
+  let s = '';
+  if (deg === 0) return coeff.toString();
+  if (abs !== 1) s = abs.toString();
+  s += 'x';
+  if (deg > 1) s += '^' + deg;
+  return (coeff < 0 ? '-' : '') + s;
+}
+
+// Evaluate polynomial at x
+function evalPoly(coeffs, x) {
+  let result = 0;
+  for (let i = 0; i < coeffs.length; i++) {
+    result = result * x + coeffs[i];
+  }
+  return result;
+}
+
+// Degree of polynomial
+function polyDeg(c) { return c.length - 1; }
+
+// Remove leading zeros
+function trimPoly(c) {
+  const r = [...c];
+  while (r.length > 1 && r[0] === 0) r.shift();
+  return r;
+}
+
+// ── Long Division ────────────────────────────────────────────────────
+
+function longDivide(dividend, divisor) {
+  // returns { quotient, remainder, steps }
+  // Each step: { quotientTerm, quotientDeg, multiplyResult, subtractResult, bringDownIdx }
+  dividend = [...dividend];
+  divisor = trimPoly([...divisor]);
+
+  const dDeg = divisor.length - 1;
+  const steps = [];
+  const quotient = [];
+  let remainder = [...dividend];
+
+  while (remainder.length - 1 >= dDeg && !(remainder.length === 1 && remainder[0] === 0)) {
+    const qCoeff = remainder[0] / divisor[0];
+    const qDeg = remainder.length - 1 - dDeg;
+
+    // Multiply
+    const mult = new Array(remainder.length).fill(0);
+    for (let i = 0; i < divisor.length; i++) {
+      mult[i] = divisor[i] * qCoeff;
+    }
+
+    // Subtract
+    const sub = [];
+    for (let i = 0; i < remainder.length; i++) {
+      sub.push(remainder[i] - (mult[i] || 0));
+    }
+    // Remove leading zero
+    sub.shift();
+
+    steps.push({
+      qCoeff,
+      qDeg,
+      currentDividend: [...remainder],
+      multiply: mult.slice(0, divisor.length),
+      subtractResult: [...sub],
+    });
+
+    quotient.push(qCoeff);
+    remainder = [...sub];
+
+    if (remainder.length === 0) { remainder = [0]; break; }
+  }
+
+  return { quotient: quotient.length ? quotient : [0], remainder: trimPoly(remainder), steps };
+}
+
+// ── Synthetic Division ───────────────────────────────────────────────
+
+function syntheticDivide(dividend, c) {
+  // divisor is (x - c)
+  const n = dividend.length;
+  const result = [dividend[0]];
+  const products = [0]; // first product is 0 (brought down)
+  const steps = [];
+
+  steps.push({ type: 'bringDown', idx: 0, value: dividend[0] });
+
+  for (let i = 1; i < n; i++) {
+    const prod = result[i - 1] * c;
+    products.push(prod);
+    const sum = dividend[i] + prod;
+    result.push(sum);
+    steps.push({ type: 'multiply', idx: i, product: prod });
+    steps.push({ type: 'add', idx: i, sum: sum });
+  }
+
+  const quotient = result.slice(0, n - 1);
+  const remainder = result[n - 1];
+
+  return { quotient, remainder: [remainder], products, sums: result, steps };
+}
+
+// ── State ────────────────────────────────────────────────────────────
+
+let currentMode = 'expr';
+let currentMethod = 'long';
+let divResult = null;
+let currentDividend = null;
+let currentDivisor = null;
+let totalSteps = 0;
+let currentStep = 0;
+let autoPlayTimer = null;
+
+const EXAMPLES = [
+  { div: 'x^3 - 3x^2 + 2x + 5', dvs: 'x - 1' },
+  { div: '2x^4 + 3x^3 - x + 7', dvs: 'x + 2' },
+  { div: 'x^3 + 8', dvs: 'x + 2' },
+  { div: '6x^3 + 11x^2 - 4x - 4', dvs: '3x + 2' },
+  { div: 'x^4 - 1', dvs: 'x - 1' },
+  { div: 'x^3 - 6x^2 + 11x - 6', dvs: 'x - 2' },
+  { div: '2x^2 + 5x + 3', dvs: 'x + 1' },
+  { div: 'x^4 + 2x^3 - 3x^2 + x - 5', dvs: 'x^2 + 1' },
+  { div: '4x^3 - 8x + 3', dvs: '2x - 1' },
+  { div: 'x^5 - 1', dvs: 'x - 1' },
+];
+
+// ── DOM ──────────────────────────────────────────────────────────────
+
+const dividendInput = document.getElementById('dividendInput');
+const divisorInput = document.getElementById('divisorInput');
+const dividendPreview = document.getElementById('dividendPreview');
+const divisorPreview = document.getElementById('divisorPreview');
+const divideBtn = document.getElementById('divideBtn');
+const methodLong = document.getElementById('methodLong');
+const methodSynth = document.getElementById('methodSynth');
+const divisionPanel = document.getElementById('divisionPanel');
+const divisionDisplay = document.getElementById('divisionDisplay');
+const divMethodTitle = document.getElementById('divMethodTitle');
+const resultPanel = document.getElementById('resultPanel');
+const resultBox = document.getElementById('resultBox');
+const theoremPanel = document.getElementById('theoremPanel');
+const theoremContent = document.getElementById('theoremContent');
+const graphPanel = document.getElementById('graphPanel');
+const stepCounter = document.getElementById('stepCounter');
+const examplesEl = document.getElementById('examples');
+
+// ── Mode toggle ──────────────────────────────────────────────────────
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = btn.dataset.mode;
+    if (currentMode === 'coeff') {
+      dividendInput.placeholder = 'e.g. 1, -3, 2, 5  for x\u00b3-3x\u00b2+2x+5';
+      divisorInput.placeholder = 'e.g. 1, -1  for x-1';
+    } else {
+      dividendInput.placeholder = 'e.g. x^3 - 3x^2 + 2x + 5';
+      divisorInput.placeholder = 'e.g. x - 1';
+    }
+    updatePreview();
+  });
+});
+
+// ── Method toggle ────────────────────────────────────────────────────
+
+methodLong.addEventListener('click', () => {
+  currentMethod = 'long';
+  methodLong.classList.add('active');
+  methodSynth.classList.remove('active');
+});
+methodSynth.addEventListener('click', () => {
+  if (methodSynth.disabled) return;
+  currentMethod = 'synth';
+  methodSynth.classList.add('active');
+  methodLong.classList.remove('active');
+});
+
+// ── Parse current inputs ─────────────────────────────────────────────
+
+function getCoeffs(inputEl) {
+  const val = inputEl.value.trim();
+  if (!val) return null;
+  if (currentMode === 'coeff') return parseCoeffStr(val);
+  return parseExpr(val);
+}
+
+function updatePreview() {
+  const d = getCoeffs(dividendInput);
+  const v = getCoeffs(divisorInput);
+  dividendPreview.innerHTML = d ? '\\(' + coeffsToLatex(d) + '\\)' : '<span style="color:var(--muted);font-size:.85rem">Enter polynomial above</span>';
+  divisorPreview.innerHTML = v ? '\\(' + coeffsToLatex(v) + '\\)' : '<span style="color:var(--muted);font-size:.85rem">Enter polynomial above</span>';
+
+  // Check if synthetic division is available
+  if (v && v.length === 2 && v[0] === 1) {
+    methodSynth.disabled = false;
+    methodSynth.title = 'Synthetic division available';
+  } else if (v && v.length === 2) {
+    // Could be made monic
+    methodSynth.disabled = false;
+    methodSynth.title = 'Synthetic division (divisor will be treated as x - c form)';
+  } else {
+    methodSynth.disabled = true;
+    methodSynth.title = 'Available only for linear divisors';
+    if (currentMethod === 'synth') {
+      currentMethod = 'long';
+      methodLong.classList.add('active');
+      methodSynth.classList.remove('active');
+    }
+  }
+
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([dividendPreview, divisorPreview]).catch(() => {});
+  }
+}
+
+dividendInput.addEventListener('input', updatePreview);
+divisorInput.addEventListener('input', updatePreview);
+
+// ── Examples ─────────────────────────────────────────────────────────
+
+EXAMPLES.forEach((ex, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'ex-btn';
+  btn.textContent = `Ex ${i + 1}`;
+  btn.title = `(${ex.div}) \u00f7 (${ex.dvs})`;
+  btn.addEventListener('click', () => {
+    if (currentMode === 'coeff') {
+      // Switch to expr mode
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.mode-btn[data-mode="expr"]').classList.add('active');
+      currentMode = 'expr';
+      dividendInput.placeholder = 'e.g. x^3 - 3x^2 + 2x + 5';
+      divisorInput.placeholder = 'e.g. x - 1';
+    }
+    dividendInput.value = ex.div;
+    divisorInput.value = ex.dvs;
+    updatePreview();
+    performDivision();
+  });
+  examplesEl.appendChild(btn);
+});
+
+// ── Main Division ────────────────────────────────────────────────────
+
+divideBtn.addEventListener('click', performDivision);
+dividendInput.addEventListener('keydown', e => { if (e.key === 'Enter') performDivision(); });
+divisorInput.addEventListener('keydown', e => { if (e.key === 'Enter') performDivision(); });
+
+function performDivision() {
+  stopAutoPlay();
+  const dividend = getCoeffs(dividendInput);
+  const divisor = getCoeffs(divisorInput);
+
+  if (!dividend || !divisor) {
+    alert('Please enter valid polynomials.');
+    return;
+  }
+  if (divisor.every(c => c === 0)) {
+    alert('Cannot divide by zero polynomial.');
+    return;
+  }
+  if (polyDeg(dividend) < polyDeg(divisor)) {
+    alert('Dividend degree must be \u2265 divisor degree.');
+    return;
+  }
+
+  currentDividend = dividend;
+  currentDivisor = divisor;
+
+  // Check if synthetic is selected and applicable
+  const isLinear = divisor.length === 2;
+  if (currentMethod === 'synth' && !isLinear) {
+    currentMethod = 'long';
+    methodLong.classList.add('active');
+    methodSynth.classList.remove('active');
+  }
+
+  if (currentMethod === 'synth' && isLinear) {
+    // For synthetic division, divisor must be (x - c), so c = -divisor[1]/divisor[0]
+    if (divisor[0] !== 1) {
+      // Normalize: divide everything
+      // Actually synthetic division only works for monic linear divisors
+      // Fall back to long division
+      currentMethod = 'long';
+      methodLong.classList.add('active');
+      methodSynth.classList.remove('active');
+    }
+  }
+
+  if (currentMethod === 'synth' && isLinear && divisor[0] === 1) {
+    const c = -divisor[1];
+    divResult = syntheticDivide(dividend, c);
+    divResult.method = 'synth';
+    divResult.c = c;
+    totalSteps = divResult.steps.length;
+    renderSyntheticDivision(dividend, c, divResult);
+  } else {
+    divResult = longDivide(dividend, divisor);
+    divResult.method = 'long';
+    // Each step in long division has 3 sub-steps: quotient term, multiply, subtract
+    totalSteps = divResult.steps.length * 3;
+    renderLongDivision(dividend, divisor, divResult);
+  }
+
+  currentStep = 0;
+  updateStepCounter();
+
+  divisionPanel.style.display = '';
+  divMethodTitle.textContent = divResult.method === 'synth' ? 'Synthetic Division' : 'Long Division';
+
+  // Show result
+  showResult(dividend, divisor, divResult);
+
+  // Theorems
+  showTheorems(dividend, divisor, divResult);
+
+  // Graph
+  drawGraph(dividend, divisor, divResult.quotient);
+  graphPanel.style.display = '';
+
+  divisionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Render Long Division ─────────────────────────────────────────────
+
+function renderLongDivision(dividend, divisor, result) {
+  const { quotient, remainder, steps } = result;
+  const nCols = dividend.length; // total coefficient columns
+  const dvrLen = divisor.length;
+  const remIsZero = remainder.every(r => Math.abs(r) < 1e-10);
+
+  // Build rows: each row is an array of {text, colStart, colSpan, cls}
+  // We use a column-aligned grid: columns 0..nCols-1 correspond to degree positions
+  // The quotient starts at column (dvrLen-1) from left of dividend columns
+
+  const animRows = []; // {html, animStep}
+
+  // Helper: format a coefficient for grid display (with variable)
+  function fmtTerm(coeff, degree) {
+    if (coeff === 0) return '0';
+    const a = Math.abs(coeff);
+    let s = '';
+    if (degree === 0) return roundN(coeff).toString();
+    if (a !== 1) s = roundN(a).toString();
+    s += 'x';
+    if (degree > 1) s += '<sup>' + degree + '</sup>';
+    return s;
+  }
+  function roundN(n) { return Math.round(n * 10000) / 10000; }
+  function signChar(v) { return v < 0 ? '\u2212' : '+'; }
+
+  // --- Quotient row (individual terms revealed per step) ---
+  // Each quotient term i appears at animation step i*3
+  let qCells = '';
+  for (let i = 0; i < nCols; i++) {
+    if (i < quotient.length) {
+      const deg = dividend.length - 1 - dvrLen + 1 - i;
+      const animStep = i * 3; // quotient term appears at step 0,3,6,...
+      const sign = (i > 0) ? ('<span class="ld-sign">' + signChar(quotient[i]) + '</span> ') : (quotient[i] < 0 ? '<span class="ld-sign">\u2212</span>' : '');
+      qCells += '<span class="ld-cell ld-step" data-anim-step="' + animStep + '">' + sign + fmtTerm(Math.abs(quotient[i]), deg) + '</span>';
+    } else {
+      qCells += '<span class="ld-cell"></span>';
+    }
+  }
+
+  // --- Build HTML ---
+  let html = '<div class="long-div-grid">';
+
+  // Quotient row (shifted right by padding for divisor area)
+  html += '<div class="ld-row ld-quotient"><span class="ld-pad"></span>' + qCells + '</div>';
+
+  // Divisor ) Dividend row
+  html += '<div class="ld-row">';
+  html += '<span class="ld-divisor-area">' + polyToShortStr(divisor) + '<span class="ld-bracket">)</span></span>';
+  html += '<span class="ld-dividend ld-top-line">';
+  for (let i = 0; i < nCols; i++) {
+    const deg = dividend.length - 1 - i;
+    const sign = (i > 0 && dividend[i] !== 0) ? ('<span class="ld-sign-dim">' + signChar(dividend[i]) + '</span> ') : (i === 0 && dividend[i] < 0 ? '<span class="ld-sign-dim">\u2212</span>' : '');
+    const val = (i === 0) ? fmtTerm(Math.abs(dividend[i]), deg) : fmtTerm(Math.abs(dividend[i]), deg);
+    html += '<span class="ld-cell">' + sign + val + '</span>';
+  }
+  html += '</span></div>';
+
+  // Division steps
+  for (let s = 0; s < steps.length; s++) {
+    const step = steps[s];
+    const startCol = s; // multiply aligns starting at this column index
+    const animBase = s * 3; // 0-indexed: quotient=+0, multiply=+1, subtract=+2
+
+    // Multiply row (shown with minus sign to indicate subtraction)
+    html += '<div class="ld-row ld-multiply ld-step" data-anim-step="' + (animBase + 1) + '">';
+    html += '<span class="ld-pad"></span>';
+    for (let i = 0; i < nCols; i++) {
+      const mi = i - startCol;
+      if (mi >= 0 && mi < step.multiply.length) {
+        const deg = dividend.length - 1 - i;
+        const val = step.multiply[mi];
+        const sign = (mi > 0 && val !== 0) ? ('<span class="ld-sign">' + signChar(val) + '</span> ') : (mi === 0 ? '\u2212' : '');
+        html += '<span class="ld-cell">' + sign + fmtTerm(Math.abs(val), deg) + '</span>';
+      } else {
+        html += '<span class="ld-cell"></span>';
+      }
+    }
+    html += '</div>';
+
+    // Horizontal line
+    html += '<div class="ld-row ld-step" data-anim-step="' + (animBase + 1) + '"><span class="ld-pad"></span><span class="ld-hr">';
+    for (let i = 0; i < nCols; i++) {
+      const mi = i - startCol;
+      html += '<span class="ld-cell">' + (mi >= 0 && mi <= step.multiply.length ? '<span class="ld-line-seg"></span>' : '') + '</span>';
+    }
+    html += '</span></div>';
+
+    // Subtract result / bring-down row
+    const sub = step.subtractResult;
+    const isLast = s === steps.length - 1;
+    const rowCls = isLast ? (remIsZero ? 'ld-remainder-zero' : 'ld-remainder-nonzero') : 'ld-subtract';
+    html += '<div class="ld-row ' + rowCls + ' ld-step" data-anim-step="' + (animBase + 2) + '">';
+    html += '<span class="ld-pad"></span>';
+    for (let i = 0; i < nCols; i++) {
+      const si = i - startCol - 1;
+      if (si >= 0 && si < sub.length) {
+        const deg = dividend.length - 1 - i;
+        const val = sub[si];
+        const bringDown = !isLast && si === sub.length - 1 && si >= step.multiply.length - 1;
+        const cls = bringDown ? ' style="color:var(--gold);font-weight:600"' : '';
+        const sign = (si > 0 && val !== 0) ? ('<span class="ld-sign">' + signChar(val) + '</span> ') : (si === 0 && val < 0 ? '\u2212' : '');
+        const absVal = (si === 0 && val < 0) ? fmtTerm(Math.abs(val), deg) : (si > 0 ? fmtTerm(Math.abs(val), deg) : fmtTerm(val, deg));
+        html += '<span class="ld-cell"' + cls + '>' + sign + absVal + '</span>';
+      } else {
+        html += '<span class="ld-cell"></span>';
+      }
+    }
+    html += '</div>';
+  }
+
+  html += '</div>';
+  divisionDisplay.innerHTML = html;
+
+  totalSteps = steps.length * 3;
+  currentStep = 0;
+  updateStepCounter();
+}
+
+function formatCoeffCell(coeff, deg, absMode) {
+  if (coeff === undefined || coeff === null) return '';
+  const v = absMode ? coeff : coeff;
+  const rounded = Math.round(v * 10000) / 10000;
+  if (deg === 0) return rounded.toString();
+  if (rounded === 0) return '0';
+  const abs = Math.abs(rounded);
+  let s = '';
+  if (abs !== 1) s = abs.toString();
+  s += 'x';
+  if (deg > 1) s += '<sup>' + deg + '</sup>';
+  if (rounded < 0 && !absMode) s = '-' + s;
+  return s;
+}
+
+function polyToShortStr(coeffs) {
+  const deg = coeffs.length - 1;
+  let s = '';
+  for (let i = 0; i <= deg; i++) {
+    const d = deg - i;
+    const v = coeffs[i];
+    if (v === 0) continue;
+    const abs = Math.abs(v);
+    let sign = v < 0 ? '-' : '+';
+    if (!s) sign = v < 0 ? '-' : '';
+
+    let coef = '';
+    if (d === 0) coef = abs.toString();
+    else if (abs !== 1) coef = abs.toString();
+
+    let varPart = '';
+    if (d > 1) varPart = 'x<sup>' + d + '</sup>';
+    else if (d === 1) varPart = 'x';
+
+    s += (s ? ' ' + sign + ' ' : sign) + coef + varPart;
+  }
+  return s || '0';
+}
+
+// ── Render Synthetic Division ────────────────────────────────────────
+
+function renderSyntheticDivision(dividend, c, result) {
+  const { products, sums, steps } = result;
+  const n = dividend.length;
+
+  let html = '<table class="synth-table">';
+
+  // Row 1: c | coefficients
+  html += '<tr>';
+  html += '<td class="synth-c">' + c + '</td>';
+  for (let i = 0; i < n; i++) {
+    html += '<td class="synth-coeff synth-step" data-synth-step="' + (i === 0 ? 0 : (i * 2 - 1)) + '">' + dividend[i] + '</td>';
+  }
+  html += '</tr>';
+
+  // Row 2: products (skip first)
+  html += '<tr>';
+  html += '<td></td>';
+  for (let i = 0; i < n; i++) {
+    if (i === 0) {
+      html += '<td></td>';
+    } else {
+      html += '<td class="synth-prod synth-step" data-synth-step="' + (i * 2 - 1) + '">' + (products[i] >= 0 ? '+' : '') + products[i] + '</td>';
+    }
+  }
+  html += '</tr>';
+
+  // Row 3: sums (quotient coeffs + remainder)
+  html += '<tr>';
+  html += '<td></td>';
+  for (let i = 0; i < n; i++) {
+    const isRemainder = i === n - 1;
+    const cls = isRemainder ? 'synth-rem' : 'synth-sum';
+    const stepNum = i === 0 ? 0 : (i * 2);
+    html += '<td class="' + cls + ' synth-step" data-synth-step="' + stepNum + '">' + sums[i] + '</td>';
+  }
+  html += '</tr>';
+
+  html += '</table>';
+
+  divisionDisplay.innerHTML = html;
+
+  // Count total animation steps
+  totalSteps = (n - 1) * 2 + 1; // bring down first, then (multiply, add) for each remaining
+  currentStep = 0;
+  updateStepCounter();
+}
+
+// ── Step Animation ───────────────────────────────────────────────────
+
+function updateStepCounter() {
+  stepCounter.textContent = totalSteps > 0 ? ('Step ' + currentStep + ' of ' + totalSteps) : '';
+}
+
+function showStepsUpTo(n) {
+  if (divResult && divResult.method === 'synth') {
+    divisionDisplay.querySelectorAll('.synth-step').forEach(el => {
+      const s = parseInt(el.getAttribute('data-synth-step'));
+      if (s <= n - 1) el.classList.add('visible');
+      else el.classList.remove('visible');
+    });
+  } else {
+    // For long division, animation steps go 0,1,2,3,...
+    // n=1 means show step 0 (first quotient term), n=2 means show 0 and 1, etc.
+    divisionDisplay.querySelectorAll('.ld-step').forEach(el => {
+      const s = parseInt(el.getAttribute('data-anim-step'));
+      if (!isNaN(s) && s <= n - 1) el.classList.add('visible');
+      else el.classList.remove('visible');
+    });
+  }
+}
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (currentStep < totalSteps) {
+    currentStep++;
+    showStepsUpTo(currentStep);
+    updateStepCounter();
+  }
+});
+
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if (currentStep > 0) {
+    currentStep--;
+    showStepsUpTo(currentStep);
+    updateStepCounter();
+  }
+});
+
+document.getElementById('btnShowAll').addEventListener('click', () => {
+  stopAutoPlay();
+  currentStep = totalSteps;
+  showStepsUpTo(currentStep);
+  updateStepCounter();
+});
+
+document.getElementById('btnAutoPlay').addEventListener('click', function () {
+  if (autoPlayTimer) {
+    stopAutoPlay();
+    return;
+  }
+  this.classList.add('active');
+  this.textContent = 'Pause';
+  if (currentStep >= totalSteps) {
+    currentStep = 0;
+    showStepsUpTo(0);
+  }
+  autoPlayTimer = setInterval(() => {
+    if (currentStep < totalSteps) {
+      currentStep++;
+      showStepsUpTo(currentStep);
+      updateStepCounter();
+    } else {
+      stopAutoPlay();
+    }
+  }, 1500);
+});
+
+function stopAutoPlay() {
+  if (autoPlayTimer) {
+    clearInterval(autoPlayTimer);
+    autoPlayTimer = null;
+  }
+  const btn = document.getElementById('btnAutoPlay');
+  btn.classList.remove('active');
+  btn.textContent = 'Auto Play';
+}
+
+// ── Result Display ───────────────────────────────────────────────────
+
+function showResult(dividend, divisor, result) {
+  const { quotient, remainder } = result;
+  const remIsZero = remainder.every(r => Math.abs(r) < 1e-10);
+
+  let html = '<p style="margin-bottom:12px">\\[ ' + coeffsToLatex(dividend) + ' = \\left(' + coeffsToLatex(divisor) + '\\right) \\cdot \\left(' + coeffsToLatex(quotient) + '\\right)';
+  if (!remIsZero) {
+    html += ' + \\left(' + coeffsToLatex(remainder) + '\\right)';
+  }
+  html += ' \\]</p>';
+
+  html += '<p><strong style="color:var(--cyan)">Quotient Q(x):</strong> \\(' + coeffsToLatex(quotient) + '\\)</p>';
+  html += '<p><strong style="color:var(--pink)">Remainder R(x):</strong> \\(' + coeffsToLatex(remainder) + '\\)';
+
+  if (remIsZero) {
+    html += ' <span class="badge badge-green">Divisor is a factor!</span>';
+  } else {
+    html += ' <span class="badge badge-red">Non-zero remainder</span>';
+  }
+  html += '</p>';
+
+  resultBox.innerHTML = html;
+  resultPanel.style.display = '';
+
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([resultBox]).catch(() => {});
+  }
+}
+
+// ── Theorem Display ──────────────────────────────────────────────────
+
+function showTheorems(dividend, divisor, result) {
+  const { quotient, remainder } = result;
+  const isLinear = divisor.length === 2;
+
+  if (!isLinear) {
+    theoremPanel.style.display = 'none';
+    return;
+  }
+
+  const c = -divisor[1] / divisor[0];
+  const pc = evalPoly(dividend, c);
+  const remVal = remainder[0];
+  const remIsZero = Math.abs(remVal) < 1e-10;
+
+  let html = '';
+
+  // Remainder theorem
+  html += '<div class="theorem-box">';
+  html += '<h4>Remainder Theorem Verification</h4>';
+  html += '<p>For divisor \\(' + coeffsToLatex(divisor) + '\\), we have \\(c = ' + formatNum(c) + '\\).</p>';
+  html += '<p>\\(P(' + formatNum(c) + ') = ' + formatNum(pc) + '\\)</p>';
+  html += '<p>Remainder from division: \\(' + formatNum(remVal) + '\\)</p>';
+  if (Math.abs(pc - remVal) < 1e-10) {
+    html += '<p style="color:var(--green)">Verified: \\(P(c) = R\\)</p>';
+  }
+  html += '</div>';
+
+  // Factor theorem
+  if (remIsZero) {
+    html += '<div class="theorem-box" style="margin-top:12px">';
+    html += '<h4>Factor Theorem</h4>';
+    html += '<p>Since \\(P(' + formatNum(c) + ') = 0\\), by the Factor Theorem, \\(' + coeffsToLatex(divisor) + '\\) is a factor of \\(P(x)\\).</p>';
+    html += '<p>Factored form: \\(' + coeffsToLatex(dividend) + ' = \\left(' + coeffsToLatex(divisor) + '\\right)\\left(' + coeffsToLatex(quotient) + '\\right)\\)</p>';
+    html += '</div>';
+  }
+
+  theoremContent.innerHTML = html;
+  theoremPanel.style.display = '';
+
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([theoremContent]).catch(() => {});
+  }
+}
+
+function formatNum(n) {
+  if (Number.isInteger(n)) return n.toString();
+  const rounded = Math.round(n * 10000) / 10000;
+  // Try fraction
+  for (let d = 1; d <= 100; d++) {
+    const num = n * d;
+    if (Math.abs(num - Math.round(num)) < 1e-8) {
+      const g = gcd(Math.abs(Math.round(num)), d);
+      const nn = Math.round(num) / g;
+      const dd = d / g;
+      if (dd === 1) return nn.toString();
+      return '\\frac{' + nn + '}{' + dd + '}';
+    }
+  }
+  return rounded.toString();
+}
+
+// ── Related Tools ────────────────────────────────────────────────────
+
+// Evaluate P(c)
+document.getElementById('evalCBtn').addEventListener('click', () => {
+  if (!currentDividend) { alert('Enter a dividend first.'); return; }
+  const cVal = parseFloat(document.getElementById('evalCInput').value);
+  if (isNaN(cVal)) { alert('Enter a valid number.'); return; }
+  const result = evalPoly(currentDividend, cVal);
+  const el = document.getElementById('evalCResult');
+  el.innerHTML = '\\(P(' + formatNum(cVal) + ') = ' + formatNum(result) + '\\)';
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([el]).catch(() => {});
+  }
+});
+
+// Rational Roots
+document.getElementById('rationalRootsBtn').addEventListener('click', () => {
+  if (!currentDividend) { alert('Enter a dividend first.'); return; }
+  const coeffs = currentDividend;
+  const leading = Math.abs(coeffs[0]);
+  const constant = Math.abs(coeffs[coeffs.length - 1]);
+
+  if (constant === 0) {
+    document.getElementById('rationalRootsResult').innerHTML = '\\(x = 0\\) is a root (constant term is 0). Factor out \\(x\\) first.';
+    if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+      MathJax.typesetPromise([document.getElementById('rationalRootsResult')]).catch(() => {});
+    }
+    return;
+  }
+
+  const factorsOf = n => {
+    const f = [];
+    for (let i = 1; i <= Math.abs(n); i++) {
+      if (n % i === 0) f.push(i);
+    }
+    return f;
+  };
+
+  const pFactors = factorsOf(constant);
+  const qFactors = factorsOf(leading);
+
+  const candidates = new Set();
+  for (const p of pFactors) {
+    for (const q of qFactors) {
+      const g = gcd(p, q);
+      const pn = p / g, qn = q / g;
+      if (qn === 1) {
+        candidates.add(pn);
+        candidates.add(-pn);
+      } else {
+        candidates.add(pn + '/' + qn);
+        candidates.add('-' + pn + '/' + qn);
+      }
+    }
+  }
+
+  // Test each
+  const roots = [];
+  const candidateArr = [...candidates].map(c => {
+    if (typeof c === 'string') {
+      const parts = c.replace(/^-/, '').split('/');
+      const val = parseInt(parts[0]) / parseInt(parts[1]);
+      return { label: c, value: c.startsWith('-') ? -val : val };
+    }
+    return { label: c.toString(), value: c };
+  });
+
+  candidateArr.sort((a, b) => a.value - b.value);
+
+  let html = '<p style="font-size:.85rem;color:var(--muted);margin-bottom:8px">Candidates: \\(\\pm\\{' + pFactors.join(', ') + '\\}\\) over \\(\\{' + qFactors.join(', ') + '\\}\\)</p>';
+  html += '<table style="font-size:.85rem;width:100%;border-collapse:collapse">';
+  html += '<tr style="color:var(--muted)"><th style="text-align:left;padding:4px 8px">Candidate</th><th style="text-align:left;padding:4px 8px">P(c)</th><th style="padding:4px 8px">Root?</th></tr>';
+
+  for (const c of candidateArr) {
+    const val = evalPoly(coeffs, c.value);
+    const isRoot = Math.abs(val) < 1e-10;
+    if (isRoot) roots.push(c);
+    html += '<tr style="border-top:1px solid var(--border);' + (isRoot ? 'color:var(--green)' : '') + '">';
+    html += '<td style="padding:4px 8px">\\(' + c.label + '\\)</td>';
+    html += '<td style="padding:4px 8px">' + formatNum(val) + '</td>';
+    html += '<td style="padding:4px 8px;text-align:center">' + (isRoot ? 'Yes' : '') + '</td>';
+    html += '</tr>';
+  }
+  html += '</table>';
+
+  if (roots.length > 0) {
+    html += '<p style="margin-top:10px;color:var(--green)">Rational roots found: ' + roots.map(r => '\\(' + r.label + '\\)').join(', ') + '</p>';
+  } else {
+    html += '<p style="margin-top:10px;color:var(--muted)">No rational roots found.</p>';
+  }
+
+  const el = document.getElementById('rationalRootsResult');
+  el.innerHTML = html;
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([el]).catch(() => {});
+  }
+});
+
+// Complete Factorization
+document.getElementById('factorBtn').addEventListener('click', () => {
+  if (!currentDividend) { alert('Enter a dividend first.'); return; }
+  const coeffs = [...currentDividend];
+  const leading = coeffs[0];
+  const constant = coeffs[coeffs.length - 1];
+
+  // Find all rational roots by testing
+  let remaining = [...coeffs];
+  const foundRoots = [];
+
+  const findRoot = (poly) => {
+    const a = Math.abs(poly[0]);
+    const c = Math.abs(poly[poly.length - 1]);
+    if (c === 0) return { value: 0, label: '0' };
+
+    const pF = [];
+    for (let i = 1; i <= c; i++) { if (c % i === 0) pF.push(i); }
+    const qF = [];
+    for (let i = 1; i <= a; i++) { if (a % i === 0) qF.push(i); }
+
+    for (const p of pF) {
+      for (const q of qF) {
+        const val = p / q;
+        if (Math.abs(evalPoly(poly, val)) < 1e-10) return { value: val, label: q === 1 ? '' + p : p + '/' + q };
+        if (Math.abs(evalPoly(poly, -val)) < 1e-10) return { value: -val, label: q === 1 ? '' + (-p) : '-' + p + '/' + q };
+      }
+    }
+    return null;
+  };
+
+  let maxIter = 20;
+  while (remaining.length > 1 && maxIter-- > 0) {
+    const root = findRoot(remaining);
+    if (!root) break;
+    foundRoots.push(root);
+    // Divide by (x - root.value) using synthetic
+    const c = root.value;
+    const newCoeffs = [remaining[0]];
+    for (let i = 1; i < remaining.length; i++) {
+      newCoeffs.push(remaining[i] + newCoeffs[i - 1] * c);
+    }
+    newCoeffs.pop(); // remove remainder (should be ~0)
+    remaining = newCoeffs;
+  }
+
+  const el = document.getElementById('factorResult');
+
+  if (foundRoots.length === 0) {
+    el.innerHTML = '<p style="color:var(--muted)">No rational linear factors found. The polynomial may be irreducible over the rationals.</p>';
+  } else {
+    let factored = '';
+    if (Math.abs(leading) !== 1) factored = leading.toString();
+
+    for (const r of foundRoots) {
+      if (r.value === 0) {
+        factored += '(x)';
+      } else if (r.value > 0) {
+        factored += '(x - ' + formatNum(r.value) + ')';
+      } else {
+        factored += '(x + ' + formatNum(-r.value) + ')';
+      }
+    }
+
+    if (remaining.length > 1 && !(remaining.length === 1 && remaining[0] === 1)) {
+      factored += '(' + coeffsToLatex(remaining) + ')';
+    }
+
+    let html = '<p>\\(' + coeffsToLatex(coeffs) + ' = ' + factored + '\\)</p>';
+    html += '<p style="font-size:.85rem;color:var(--muted);margin-top:6px">Found ' + foundRoots.length + ' rational root(s): ' + foundRoots.map(r => '\\(' + r.label + '\\)').join(', ') + '</p>';
+    if (remaining.length > 2) {
+      html += '<p style="font-size:.85rem;color:var(--muted)">Remaining factor \\(' + coeffsToLatex(remaining) + '\\) has no rational roots.</p>';
+    }
+    el.innerHTML = html;
+  }
+
+  if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+    MathJax.typesetPromise([el]).catch(() => {});
+  }
+});
+
+// ── Graph ────────────────────────────────────────────────────────────
+
+function drawGraph(dividend, divisor, quotient) {
+  const canvas = document.getElementById('graphCanvas');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = 360 * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = '360px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = 360;
+
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Find reasonable x range
+  const deg = dividend.length - 1;
+  let xMin = -5, xMax = 5;
+
+  // Find roots approximately to set range
+  const samplePoints = [];
+  for (let x = -20; x <= 20; x += 0.5) {
+    if (Math.abs(evalPoly(dividend, x)) < 1) samplePoints.push(x);
+  }
+  if (samplePoints.length > 0) {
+    xMin = Math.min(...samplePoints) - 3;
+    xMax = Math.max(...samplePoints) + 3;
+  }
+  xMin = Math.max(xMin, -15);
+  xMax = Math.min(xMax, 15);
+  if (xMax - xMin < 6) { xMin -= 3; xMax += 3; }
+
+  // Find y range
+  let yMin = Infinity, yMax = -Infinity;
+  const step = (xMax - xMin) / 200;
+  for (let x = xMin; x <= xMax; x += step) {
+    for (const p of [dividend, divisor, quotient]) {
+      const y = evalPoly(p, x);
+      if (Math.abs(y) < 1000) {
+        yMin = Math.min(yMin, y);
+        yMax = Math.max(yMax, y);
+      }
+    }
+  }
+  const yPad = (yMax - yMin) * 0.15 || 5;
+  yMin -= yPad;
+  yMax += yPad;
+
+  const toX = x => ((x - xMin) / (xMax - xMin)) * W;
+  const toY = y => H - ((y - yMin) / (yMax - yMin)) * H;
+
+  // Grid
+  ctx.strokeStyle = '#1e1e3a';
+  ctx.lineWidth = 1;
+  // x-axis
+  if (yMin <= 0 && yMax >= 0) {
+    ctx.strokeStyle = '#2a2a4a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, toY(0));
+    ctx.lineTo(W, toY(0));
+    ctx.stroke();
+  }
+  // y-axis
+  if (xMin <= 0 && xMax >= 0) {
+    ctx.beginPath();
+    ctx.moveTo(toX(0), 0);
+    ctx.lineTo(toX(0), H);
+    ctx.stroke();
+  }
+
+  // Draw polynomials
+  const drawPoly = (coeffs, color, width) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    let started = false;
+    for (let px = 0; px <= W; px++) {
+      const x = xMin + (px / W) * (xMax - xMin);
+      const y = evalPoly(coeffs, x);
+      const sy = toY(y);
+      if (Math.abs(y) > 2000) {
+        started = false;
+        continue;
+      }
+      if (!started) { ctx.moveTo(px, sy); started = true; }
+      else ctx.lineTo(px, sy);
+    }
+    ctx.stroke();
+  };
+
+  drawPoly(dividend, '#00e5ff', 2.5);
+  drawPoly(divisor, '#a855f7', 2);
+  drawPoly(quotient, '#facc15', 2);
+
+  // Mark x-intercepts
+  const markRoots = (coeffs, color) => {
+    for (let x = xMin; x <= xMax - step; x += step) {
+      const y1 = evalPoly(coeffs, x);
+      const y2 = evalPoly(coeffs, x + step);
+      if (y1 * y2 <= 0 && (Math.abs(y1) < 500 || Math.abs(y2) < 500)) {
+        // Linear interpolation
+        const root = x - y1 * step / (y2 - y1);
+        ctx.beginPath();
+        ctx.arc(toX(root), toY(0), 5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#0d0d1a';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+  };
+
+  markRoots(dividend, '#00e5ff');
+  markRoots(divisor, '#a855f7');
+  markRoots(quotient, '#facc15');
+
+  // Hover tooltip
+  const tooltip = document.getElementById('graphTooltip');
+  canvas.onmousemove = e => {
+    const cr = canvas.getBoundingClientRect();
+    const mx = e.clientX - cr.left;
+    const my = e.clientY - cr.top;
+    const x = xMin + (mx / W) * (xMax - xMin);
+    const pv = evalPoly(dividend, x);
+    const dv = evalPoly(divisor, x);
+    const qv = evalPoly(quotient, x);
+    tooltip.style.display = 'block';
+    tooltip.style.left = (mx + 14) + 'px';
+    tooltip.style.top = (my - 10) + 'px';
+    if (mx > W - 160) tooltip.style.left = (mx - 160) + 'px';
+    tooltip.innerHTML = 'x=' + x.toFixed(2) + '<br>P=' + pv.toFixed(3) + '<br>D=' + dv.toFixed(3) + '<br>Q=' + qv.toFixed(3);
+  };
+  canvas.onmouseleave = () => { tooltip.style.display = 'none'; };
+}
+
+// Redraw on resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (currentDividend && currentDivisor && divResult) {
+      drawGraph(currentDividend, currentDivisor, divResult.quotient);
+    }
+  }, 200);
+});
+
+// ── Reference toggle ─────────────────────────────────────────────────
+
+document.getElementById('refToggle').addEventListener('click', function () {
+  this.classList.toggle('open');
+  document.getElementById('refBody').classList.toggle('open');
+});
+
+// ── Back to top ──────────────────────────────────────────────────────
+
+const backBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) backBtn.classList.add('show');
+  else backBtn.classList.remove('show');
+});
+backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ── Initial preview ──────────────────────────────────────────────────
+
+updatePreview();
+
+// Typeset reference section on load
+if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+  MathJax.startup.promise.then(() => {
+    MathJax.typesetPromise([document.querySelector('.ref-panel')]).catch(() => {});
+  });
+}
+
+/* ====================================================================
+   HEADER / FOOTER INJECTION
+   ==================================================================== */
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+</script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vector Calculator &amp; Visualizer | TutorDA</title>
+  <meta name="description" content="Free interactive vector calculator — compute vector operations with animated 2D/3D visualizations, step-by-step solutions, and LaTeX rendering.">
+  <link rel="stylesheet" href="../assets/css/style.css"/>
+  <link rel="stylesheet" href="../assets/css/footer.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+  <script>
+    window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]},startup:{typeset:true}};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    :root {
+      --cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;
+      --dark:#0d0d1a;--card:#111125;--card2:#1a1a35;--border:#1e1e3a;
+      --text:#e8e8ff;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;
+      --r:14px;--mono:'JetBrains Mono',monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--dark);color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh}
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at 20% 50%,#1a0a3d 0%,transparent 60%),
+                 radial-gradient(ellipse at 80% 20%,#0d1a3d 0%,transparent 50%),var(--dark)}
+    .stars::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(1px 1px at 8% 12%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 25% 68%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 45% 33%,rgba(255,255,255,.6) 0%,transparent 100%),
+        radial-gradient(1px 1px at 65% 78%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 88% 42%,rgba(255,255,255,.8) 0%,transparent 100%),
+        radial-gradient(1px 1px at 18% 88%,rgba(255,255,255,.5) 0%,transparent 100%),
+        radial-gradient(1px 1px at 55% 8%,#fff 0%,transparent 100%),
+        radial-gradient(1px 1px at 92% 62%,rgba(255,255,255,.7) 0%,transparent 100%),
+        radial-gradient(1px 1px at 38% 55%,rgba(255,255,255,.4) 0%,transparent 100%),
+        radial-gradient(1px 1px at 72% 22%,rgba(255,255,255,.6) 0%,transparent 100%)}
+
+    .wrapper{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:0 20px 60px}
+
+    .hero{text-align:center;padding:56px 24px 28px}
+    .hero .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:.2em;
+      color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,5.5vw,3.2rem);font-weight:900;
+      background:linear-gradient(135deg,#fff 0%,var(--cyan) 55%,var(--purple) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1.15;margin-bottom:14px}
+    .hero p{color:var(--muted);max-width:620px;margin:0 auto;font-size:1rem;line-height:1.65}
+
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:16px}
+    .panel-title{font-family:'Orbitron',sans-serif;font-size:.85rem;letter-spacing:.1em;color:var(--cyan);
+      text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+    .main-grid{display:grid;grid-template-columns:360px 1fr;gap:16px;align-items:start}
+
+    label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px;font-weight:500}
+    input[type="number"],select{
+      width:100%;background:#0d0d1a;color:var(--text);border:1px solid var(--border);
+      border-radius:8px;padding:9px 10px;font-family:var(--mono);font-size:.85rem;
+      transition:border-color .2s;outline:none}
+    input[type="number"]:focus,select:focus{border-color:var(--cyan)}
+
+    input[type="range"]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;
+      background:#1e1e3a;outline:none;margin:6px 0}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+      background:var(--cyan);cursor:pointer;border:2px solid var(--dark)}
+    input[type="range"]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--cyan);cursor:pointer;border:2px solid var(--dark)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      border:none;border-radius:8px;padding:10px 18px;font-family:'Poppins',sans-serif;
+      font-size:.85rem;font-weight:600;cursor:pointer;transition:all .25s;white-space:nowrap}
+    .btn-cyan{background:linear-gradient(135deg,#00e5ff,#06b6d4);color:#0d0d1a}
+    .btn-cyan:hover{filter:brightness(1.15);transform:translateY(-1px)}
+    .btn-purple{background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff}
+    .btn-purple:hover{filter:brightness(1.15);transform:translateY(-1px)}
+    .btn-pink{background:linear-gradient(135deg,var(--pink),#db2777);color:#fff}
+    .btn-pink:hover{filter:brightness(1.15);transform:translateY(-1px)}
+    .btn-gold{background:linear-gradient(135deg,var(--gold),#eab308);color:#0d0d1a}
+    .btn-gold:hover{filter:brightness(1.15);transform:translateY(-1px)}
+    .btn-sm{padding:7px 12px;font-size:.78rem;border-radius:6px}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .btn-outline:hover{border-color:var(--cyan);color:var(--cyan)}
+    .btn-outline.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+    .btn-group{display:flex;gap:6px;flex-wrap:wrap}
+
+    /* Dimension toggle */
+    .dim-toggle{display:flex;gap:0;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:fit-content;margin:0 auto 20px}
+    .dim-toggle button{border:none;background:transparent;color:var(--muted);font-family:'Orbitron',sans-serif;
+      font-size:.82rem;font-weight:700;padding:10px 28px;cursor:pointer;transition:all .25s;letter-spacing:.08em}
+    .dim-toggle button.active{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a}
+
+    /* Vector input */
+    .vec-block{margin-bottom:14px;padding:12px;border-radius:10px;border:1px solid var(--border);background:#0d0d1a;position:relative}
+    .vec-block .vec-label{font-family:'Orbitron',sans-serif;font-size:.82rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .vec-block .color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+    .vec-comp-row{display:flex;gap:8px;align-items:end}
+    .vec-comp-row .comp{flex:1}
+    .vec-comp-row .comp label{font-size:.72rem;text-align:center}
+    .vec-comp-row .comp input{text-align:center;padding:8px 4px}
+    .vec-remove{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1}
+    .vec-remove:hover{color:var(--red)}
+
+    /* Preset chips */
+    .presets-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .preset-chip{font-size:.72rem;padding:5px 10px;border-radius:6px;background:var(--card2);border:1px solid var(--border);
+      color:var(--muted);cursor:pointer;font-family:var(--mono);transition:all .2s}
+    .preset-chip:hover{border-color:var(--cyan);color:var(--cyan)}
+
+    /* Operations */
+    .ops-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;margin-bottom:14px}
+    .op-btn{padding:8px 10px;font-size:.75rem;border-radius:8px;background:#0d0d1a;border:1px solid var(--border);
+      color:var(--text);cursor:pointer;transition:all .25s;font-family:'Poppins',sans-serif;font-weight:500;text-align:center}
+    .op-btn:hover,.op-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.06)}
+
+    /* Scalar slider */
+    .scalar-row{display:flex;align-items:center;gap:10px;margin-top:8px;display:none}
+    .scalar-row.show{display:flex}
+    .scalar-row input[type="range"]{flex:1}
+    .scalar-val{font-family:var(--mono);font-size:.82rem;color:var(--gold);min-width:40px;text-align:center}
+
+    /* Canvas area */
+    #canvas2d{width:100%;background:#080814;border-radius:var(--r);cursor:crosshair;display:block;border:1px solid var(--border)}
+    #plot3d{width:100%;height:520px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);display:none}
+
+    /* Steps */
+    .steps-container{margin-top:16px}
+    .step-card{background:#0d0d1a;border:1px solid var(--border);border-radius:10px;padding:14px 16px;
+      margin-bottom:8px;opacity:0;transform:translateY(12px);transition:all .4s ease}
+    .step-card.show{opacity:1;transform:translateY(0)}
+    .step-card .step-num{font-family:'Orbitron',sans-serif;font-size:.68rem;color:var(--purple);margin-bottom:6px;letter-spacing:.1em}
+    .step-card .step-body{font-size:.92rem;line-height:1.7;overflow-x:auto}
+    .result-card{border-color:var(--cyan);background:rgba(0,229,255,.04)}
+    .result-card .step-num{color:var(--cyan)}
+
+    /* Properties */
+    .prop-table{width:100%;border-collapse:collapse;font-size:.82rem}
+    .prop-table th{text-align:left;color:var(--muted);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--border)}
+    .prop-table td{padding:6px 8px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:.78rem}
+
+    /* Demos */
+    .demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+    .demo-card{background:#0d0d1a;border:1px solid var(--border);border-radius:10px;padding:12px;
+      cursor:pointer;transition:all .25s;text-align:center}
+    .demo-card:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,229,255,.1)}
+    .demo-card .demo-icon{font-size:1.5rem;margin-bottom:6px}
+    .demo-card .demo-name{font-size:.78rem;font-weight:600;color:var(--text)}
+    .demo-card .demo-desc{font-size:.68rem;color:var(--muted);margin-top:4px;line-height:1.4}
+
+    /* Collapsible */
+    .collapsible{margin-bottom:16px}
+    .collapsible-header{cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
+    .collapsible-header .arrow{transition:transform .3s;font-size:.8rem;color:var(--muted)}
+    .collapsible-header.open .arrow{transform:rotate(180deg)}
+    .collapsible-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+    .collapsible-body.open{max-height:3000px}
+    .ref-section{margin-bottom:12px}
+    .ref-section h4{font-family:'Orbitron',sans-serif;font-size:.75rem;color:var(--purple);margin-bottom:8px;letter-spacing:.08em}
+    .ref-formula{background:#0d0d1a;border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:.88rem;overflow-x:auto}
+
+    /* Check badges */
+    .check-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:600;margin:4px}
+    .check-yes{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .check-no{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+
+    /* Back to top */
+    #backToTop{position:fixed;bottom:28px;right:28px;z-index:50;width:44px;height:44px;border-radius:50%;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;font-size:1.2rem;
+      border:none;cursor:pointer;display:none;align-items:center;justify-content:center;
+      box-shadow:0 4px 20px rgba(0,229,255,.3);transition:all .3s}
+    #backToTop.show{display:flex}
+
+    @media(max-width:860px){
+      .main-grid{grid-template-columns:1fr}
+      .ops-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+      .demo-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+    }
+    @media(max-width:500px){
+      .wrapper{padding:0 10px 40px}
+      .hero{padding:40px 12px 20px}
+      .panel{padding:14px}
+      #plot3d{height:350px}
+    }
+  </style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+
+<div class="wrapper">
+  <section class="hero">
+    <div class="eyebrow">Interactive Tool</div>
+    <h1>Vector Calculator &amp; Visualizer</h1>
+    <p>Compute vector operations with animated 2D / 3D visualizations and step-by-step LaTeX solutions.</p>
+  </section>
+
+  <!-- Dimension Toggle -->
+  <div class="dim-toggle" id="dimToggle">
+    <button class="active" data-dim="2">2D</button>
+    <button data-dim="3">3D</button>
+  </div>
+
+  <div class="main-grid">
+    <!-- LEFT PANEL -->
+    <div>
+      <!-- Vector Inputs -->
+      <div class="panel">
+        <div class="panel-title">Vector Inputs</div>
+        <div class="presets-row">
+          <span class="preset-chip" data-preset="i">&#238; (1,0)</span>
+          <span class="preset-chip" data-preset="j">&#309; (0,1)</span>
+          <span class="preset-chip" data-preset="k" style="display:none">k&#770; (0,0,1)</span>
+          <span class="preset-chip" data-preset="diag">Diagonal</span>
+          <span class="preset-chip" data-preset="perp">Perpendicular</span>
+        </div>
+        <div id="vectorInputs"></div>
+        <button class="btn btn-sm btn-outline" id="addVecBtn" style="margin-top:8px">+ Add Vector</button>
+      </div>
+
+      <!-- Operations -->
+      <div class="panel">
+        <div class="panel-title">Operations</div>
+        <div class="ops-grid" id="opsGrid">
+          <div class="op-btn active" data-op="add">A + B</div>
+          <div class="op-btn" data-op="sub">A &minus; B</div>
+          <div class="op-btn" data-op="scalar">Scalar kA</div>
+          <div class="op-btn" data-op="dot">Dot A&middot;B</div>
+          <div class="op-btn" data-op="cross" style="display:none">Cross A&times;B</div>
+          <div class="op-btn" data-op="mag">Magnitude</div>
+          <div class="op-btn" data-op="unit">Unit Vector</div>
+          <div class="op-btn" data-op="angle">Angle Between</div>
+          <div class="op-btn" data-op="proj">Projection</div>
+          <div class="op-btn" data-op="area" style="display:none">Parallelogram Area</div>
+        </div>
+        <div class="scalar-row" id="scalarRow">
+          <label style="margin:0;min-width:20px;color:var(--gold);font-family:var(--mono)">k</label>
+          <input type="range" id="scalarK" min="-3" max="3" step="0.1" value="1">
+          <span class="scalar-val" id="scalarVal">1.0</span>
+        </div>
+        <button class="btn btn-cyan" id="computeBtn" style="margin-top:12px;width:100%">Compute</button>
+      </div>
+
+      <!-- Properties -->
+      <div class="panel">
+        <div class="panel-title">Properties</div>
+        <div id="propsContent"></div>
+      </div>
+
+      <!-- Interactive Demos -->
+      <div class="panel">
+        <div class="panel-title">Interactive Demos</div>
+        <div class="demo-grid">
+          <div class="demo-card" data-demo="parallelogram">
+            <div class="demo-icon">&#9645;</div>
+            <div class="demo-name">Parallelogram Rule</div>
+            <div class="demo-desc">Visualize addition</div>
+          </div>
+          <div class="demo-card" data-demo="perpendicular">
+            <div class="demo-icon">&#8869;</div>
+            <div class="demo-name">Dot Product = 0</div>
+            <div class="demo-desc">Perpendicular vectors</div>
+          </div>
+          <div class="demo-card" data-demo="crossdir" style="display:none">
+            <div class="demo-icon">&#8855;</div>
+            <div class="demo-name">Cross Product Dir</div>
+            <div class="demo-desc">Right-hand rule</div>
+          </div>
+          <div class="demo-card" data-demo="projection">
+            <div class="demo-icon">&#8614;</div>
+            <div class="demo-name">Projection</div>
+            <div class="demo-desc">See projection change</div>
+          </div>
+          <div class="demo-card" data-demo="basis">
+            <div class="demo-icon">&#8899;</div>
+            <div class="demo-name">Basis Vectors</div>
+            <div class="demo-desc">Decompose into components</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div>
+      <!-- Visualization -->
+      <div class="panel" style="padding:12px">
+        <canvas id="canvas2d" width="800" height="560"></canvas>
+        <div id="plot3d"></div>
+      </div>
+
+      <!-- Step-by-Step -->
+      <div class="panel">
+        <div class="panel-title">Step-by-Step Solution</div>
+        <div class="steps-container" id="stepsContainer">
+          <div style="color:var(--muted);font-size:.88rem">Select an operation and click Compute to see the solution.</div>
+        </div>
+      </div>
+
+      <!-- Quick Reference -->
+      <div class="panel collapsible">
+        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+          <div class="panel-title" style="margin-bottom:0">Quick Reference</div>
+          <span class="arrow">&#9660;</span>
+        </div>
+        <div class="collapsible-body">
+          <div style="padding-top:14px">
+            <div class="ref-section">
+              <h4>Vector Operations</h4>
+              <div class="ref-formula">$\vec{A}+\vec{B} = (a_x+b_x,\; a_y+b_y,\; a_z+b_z)$</div>
+              <div class="ref-formula">$\vec{A}-\vec{B} = (a_x-b_x,\; a_y-b_y,\; a_z-b_z)$</div>
+              <div class="ref-formula">$k\vec{A} = (k\,a_x,\; k\,a_y,\; k\,a_z)$</div>
+              <div class="ref-formula">$|\vec{A}| = \sqrt{a_x^2 + a_y^2 + a_z^2}$</div>
+              <div class="ref-formula">$\hat{A} = \dfrac{\vec{A}}{|\vec{A}|}$</div>
+            </div>
+            <div class="ref-section">
+              <h4>Dot Product</h4>
+              <div class="ref-formula">$\vec{A}\cdot\vec{B} = a_x b_x + a_y b_y + a_z b_z$</div>
+              <div class="ref-formula">$\vec{A}\cdot\vec{B} = |\vec{A}|\,|\vec{B}|\cos\theta$</div>
+              <div class="ref-formula">Commutative: $\vec{A}\cdot\vec{B}=\vec{B}\cdot\vec{A}$</div>
+              <div class="ref-formula">Distributive: $\vec{A}\cdot(\vec{B}+\vec{C})=\vec{A}\cdot\vec{B}+\vec{A}\cdot\vec{C}$</div>
+            </div>
+            <div class="ref-section">
+              <h4>Cross Product (3D)</h4>
+              <div class="ref-formula">$\vec{A}\times\vec{B} = \begin{vmatrix}\hat{i}&\hat{j}&\hat{k}\\a_x&a_y&a_z\\b_x&b_y&b_z\end{vmatrix}$</div>
+              <div class="ref-formula">$= (a_y b_z - a_z b_y)\hat{i} - (a_x b_z - a_z b_x)\hat{j} + (a_x b_y - a_y b_x)\hat{k}$</div>
+              <div class="ref-formula">Anti-commutative: $\vec{A}\times\vec{B}=-(\vec{B}\times\vec{A})$</div>
+              <div class="ref-formula">$|\vec{A}\times\vec{B}| = |\vec{A}|\,|\vec{B}|\sin\theta$ (parallelogram area)</div>
+            </div>
+            <div class="ref-section">
+              <h4>Projection</h4>
+              <div class="ref-formula">$\text{proj}_{\vec{B}}\vec{A} = \dfrac{\vec{A}\cdot\vec{B}}{|\vec{B}|^2}\,\vec{B}$</div>
+              <div class="ref-formula">$\text{comp}_{\vec{B}}\vec{A} = \dfrac{\vec{A}\cdot\vec{B}}{|\vec{B}|}$ (scalar projection)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop">&#x1F51D;</div>
+
+<script>
+// ===== STATE =====
+const COLORS = {A:'#00e5ff',B:'#a855f7',C:'#ec4899',D:'#facc15'};
+const NAMES = ['A','B','C','D'];
+let dim = 2;
+let vectors = [
+  {name:'A', x:3, y:2, z:0},
+  {name:'B', x:-1, y:3, z:0}
+];
+let currentOp = 'add';
+let scalarK = 1;
+let canvasScale = 40; // pixels per unit
+let canvasOffX = 0, canvasOffY = 0;
+let dragging = null; // index of vector being dragged
+let panning = false;
+let panStart = {x:0,y:0};
+
+// ===== INIT =====
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+const canvas = document.getElementById('canvas2d');
+const ctx = canvas.getContext('2d');
+const plot3d = document.getElementById('plot3d');
+
+function init(){
+  buildVectorInputs();
+  updateProperties();
+  draw2D();
+  setupEvents();
+}
+
+// ===== DIMENSION TOGGLE =====
+document.querySelectorAll('#dimToggle button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#dimToggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    dim = +b.dataset.dim;
+    // show/hide z-related
+    document.querySelectorAll('.z-comp').forEach(el=>el.style.display=dim===3?'':'none');
+    document.querySelectorAll('[data-op="cross"],[data-op="area"]').forEach(el=>el.style.display=dim===3?'':'none');
+    document.querySelectorAll('.preset-k').forEach(el=>el.style.display=dim===3?'':'none');
+    document.querySelectorAll('[data-demo="crossdir"]').forEach(el=>el.style.display=dim===3?'':'none');
+    if(dim===2){canvas.style.display='block';plot3d.style.display='none';draw2D();}
+    else{canvas.style.display='none';plot3d.style.display='block';draw3D();}
+    if(currentOp==='cross'&&dim===2){selectOp('add');}
+    if(currentOp==='area'&&dim===2){selectOp('add');}
+    updateProperties();
+  });
+});
+
+// ===== VECTOR INPUT BUILDING =====
+function buildVectorInputs(){
+  const c = document.getElementById('vectorInputs');
+  c.innerHTML = '';
+  vectors.forEach((v,i)=>{
+    const col = COLORS[v.name]||'#fff';
+    const div = document.createElement('div');
+    div.className = 'vec-block';
+    div.innerHTML = `
+      <div class="vec-label"><span class="color-dot" style="background:${col}"></span><span style="color:${col}">${v.name}</span></div>
+      ${i>=2?'<button class="vec-remove" data-idx="'+i+'">&times;</button>':''}
+      <div class="vec-comp-row">
+        <div class="comp"><label>x</label><input type="number" data-idx="${i}" data-c="x" value="${v.x}" step="0.5"></div>
+        <div class="comp"><label>y</label><input type="number" data-idx="${i}" data-c="y" value="${v.y}" step="0.5"></div>
+        <div class="comp z-comp" style="display:${dim===3?'':'none'}"><label>z</label><input type="number" data-idx="${i}" data-c="z" value="${v.z}" step="0.5"></div>
+      </div>`;
+    c.appendChild(div);
+  });
+  // Events
+  c.querySelectorAll('input[type="number"]').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const i = +inp.dataset.idx, comp = inp.dataset.c;
+      vectors[i][comp] = parseFloat(inp.value)||0;
+      if(dim===2) draw2D(); else draw3D();
+      updateProperties();
+    });
+  });
+  c.querySelectorAll('.vec-remove').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      vectors.splice(+btn.dataset.idx,1);
+      renameVectors();
+      buildVectorInputs();
+      if(dim===2) draw2D(); else draw3D();
+      updateProperties();
+    });
+  });
+  // update add btn visibility
+  document.getElementById('addVecBtn').style.display = vectors.length>=4?'none':'';
+}
+
+function renameVectors(){vectors.forEach((v,i)=>v.name=NAMES[i]);}
+
+document.getElementById('addVecBtn').addEventListener('click',()=>{
+  if(vectors.length>=4) return;
+  vectors.push({name:NAMES[vectors.length], x:1, y:-2, z:1});
+  buildVectorInputs();
+  if(dim===2) draw2D(); else draw3D();
+  updateProperties();
+});
+
+// ===== PRESETS =====
+document.querySelectorAll('.preset-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const p = chip.dataset.preset;
+    if(p==='i'){vectors[0]={name:'A',x:1,y:0,z:0};}
+    if(p==='j'){vectors[0]={name:'A',x:0,y:1,z:0};}
+    if(p==='k'){vectors[0]={name:'A',x:0,y:0,z:1};}
+    if(p==='diag'){vectors[0]={name:'A',x:3,y:3,z:dim===3?3:0};if(vectors.length>1)vectors[1]={name:'B',x:-2,y:2,z:dim===3?1:0};}
+    if(p==='perp'){vectors[0]={name:'A',x:3,y:0,z:0};if(vectors.length>1)vectors[1]={name:'B',x:0,y:3,z:0};}
+    buildVectorInputs();
+    if(dim===2) draw2D(); else draw3D();
+    updateProperties();
+  });
+});
+
+// k-hat preset
+document.querySelectorAll('.preset-chip[data-preset="k"]').forEach(el=>el.classList.add('preset-k'));
+
+// ===== OPERATIONS =====
+function selectOp(op){
+  currentOp = op;
+  document.querySelectorAll('.op-btn').forEach(b=>b.classList.toggle('active',b.dataset.op===op));
+  document.getElementById('scalarRow').classList.toggle('show',op==='scalar');
+}
+document.querySelectorAll('.op-btn').forEach(b=>{
+  b.addEventListener('click',()=>selectOp(b.dataset.op));
+});
+document.getElementById('scalarK').addEventListener('input',e=>{
+  scalarK = parseFloat(e.target.value);
+  document.getElementById('scalarVal').textContent = scalarK.toFixed(1);
+});
+
+document.getElementById('computeBtn').addEventListener('click',compute);
+
+// ===== 2D CANVAS =====
+function resizeCanvas(){
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const w = rect.width - 24;
+  canvas.width = w * (window.devicePixelRatio||1);
+  canvas.height = Math.round(w * 0.7) * (window.devicePixelRatio||1);
+  canvas.style.width = w + 'px';
+  canvas.style.height = Math.round(w * 0.7) + 'px';
+  ctx.setTransform(window.devicePixelRatio||1,0,0,window.devicePixelRatio||1,0,0);
+}
+
+function toCanvas(x,y){
+  const cw = canvas.width/(window.devicePixelRatio||1), ch = canvas.height/(window.devicePixelRatio||1);
+  return [cw/2 + canvasOffX + x*canvasScale, ch/2 + canvasOffY - y*canvasScale];
+}
+function fromCanvas(cx,cy){
+  const cw = canvas.width/(window.devicePixelRatio||1), ch = canvas.height/(window.devicePixelRatio||1);
+  return [(cx - cw/2 - canvasOffX)/canvasScale, (ch/2 + canvasOffY - cy)/canvasScale];
+}
+
+function draw2D(){
+  resizeCanvas();
+  const cw = canvas.width/(window.devicePixelRatio||1), ch = canvas.height/(window.devicePixelRatio||1);
+  ctx.clearRect(0,0,cw,ch);
+  ctx.fillStyle = '#080814';
+  ctx.fillRect(0,0,cw,ch);
+
+  // Grid
+  ctx.strokeStyle = '#1a1a30';
+  ctx.lineWidth = 1;
+  const step = canvasScale;
+  const ox = cw/2 + canvasOffX, oy = ch/2 + canvasOffY;
+  // Vertical lines
+  for(let x = ox%step; x < cw; x += step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,ch);ctx.stroke();}
+  // Horizontal lines
+  for(let y = oy%step; y < ch; y += step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cw,y);ctx.stroke();}
+  // Axes
+  ctx.strokeStyle = '#333';ctx.lineWidth = 1.5;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(cw,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,ch);ctx.stroke();
+  // Axis labels
+  ctx.font = '11px JetBrains Mono, monospace';ctx.fillStyle='#555';
+  for(let i=-20;i<=20;i++){
+    if(i===0) continue;
+    const [lx,ly] = toCanvas(i,0);
+    if(lx>10 && lx<cw-10) {ctx.fillText(i, lx-4, oy+14);}
+    const [lx2,ly2] = toCanvas(0,i);
+    if(ly2>10 && ly2<ch-10) {ctx.fillText(i, ox+6, ly2+4);}
+  }
+  ctx.fillText('O', ox+4, oy+14);
+
+  // Extra drawings for current operation result
+  drawOperationResult2D();
+
+  // Draw vectors
+  vectors.forEach((v,i)=>{
+    drawArrow2D(0,0,v.x,v.y,COLORS[v.name],3,false);
+    // Label
+    const [tx,ty] = toCanvas(v.x,v.y);
+    ctx.font = 'bold 13px Orbitron, sans-serif';
+    ctx.fillStyle = COLORS[v.name];
+    ctx.fillText(v.name, tx+8, ty-8);
+  });
+}
+
+function drawArrow2D(x1,y1,x2,y2,color,lw,dashed){
+  const [cx1,cy1] = toCanvas(x1,y1);
+  const [cx2,cy2] = toCanvas(x2,y2);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = lw;
+  if(dashed) ctx.setLineDash([6,4]);
+  ctx.beginPath();ctx.moveTo(cx1,cy1);ctx.lineTo(cx2,cy2);ctx.stroke();
+  ctx.setLineDash([]);
+  // Arrowhead
+  const angle = Math.atan2(cy2-cy1,cx2-cx1);
+  const hl = 12;
+  ctx.beginPath();
+  ctx.moveTo(cx2,cy2);
+  ctx.lineTo(cx2 - hl*Math.cos(angle-0.35), cy2 - hl*Math.sin(angle-0.35));
+  ctx.lineTo(cx2 - hl*Math.cos(angle+0.35), cy2 - hl*Math.sin(angle+0.35));
+  ctx.closePath();ctx.fill();
+  ctx.restore();
+}
+
+function drawArc2D(cx_,cy_,r,startAngle,endAngle,color){
+  const [ox,oy] = toCanvas(cx_,cy_);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4,3]);
+  ctx.beginPath();
+  ctx.arc(ox,oy,r*canvasScale,-startAngle,-endAngle,endAngle>startAngle);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawDashedLine2D(x1,y1,x2,y2,color){
+  const [cx1,cy1]=toCanvas(x1,y1),[cx2,cy2]=toCanvas(x2,y2);
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(cx1,cy1);ctx.lineTo(cx2,cy2);ctx.stroke();
+  ctx.setLineDash([]);ctx.restore();
+}
+
+function drawRightAngleMark(px,py,dx,dy,color){
+  // Draw a small right-angle mark at (px,py) with direction (dx,dy)
+  const size = 0.3;
+  const nx = -dy, ny = dx; // perpendicular
+  const len = Math.sqrt(dx*dx+dy*dy)||1;
+  const ux = dx/len*size, uy = dy/len*size;
+  const vnx = nx/len*size, vny = ny/len*size;
+  const p1x=px+ux, p1y=py+uy;
+  const p2x=px+ux+vnx, p2y=py+uy+vny;
+  const p3x=px+vnx, p3y=py+vny;
+  const [c1,c2]=toCanvas(p1x,p1y),[c3,c4]=toCanvas(p2x,p2y),[c5,c6]=toCanvas(p3x,p3y);
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(c1,c2);ctx.lineTo(c3,c4);ctx.lineTo(c5,c6);ctx.stroke();
+  ctx.restore();
+}
+
+function drawOperationResult2D(){
+  const a = vectors[0], b = vectors[1]||{x:0,y:0,z:0};
+  if(currentOp==='add' && vectors.length>=2){
+    // parallelogram dashed lines
+    drawDashedLine2D(a.x,a.y,a.x+b.x,a.y+b.y,'#ffffff33');
+    drawDashedLine2D(b.x,b.y,a.x+b.x,a.y+b.y,'#ffffff33');
+    drawArrow2D(0,0,a.x+b.x,a.y+b.y,'#22c55e',2.5,true);
+    const [tx,ty]=toCanvas(a.x+b.x,a.y+b.y);
+    ctx.font='bold 12px Orbitron,sans-serif';ctx.fillStyle='#22c55e';ctx.fillText('A+B',tx+8,ty-8);
+  }
+  if(currentOp==='sub' && vectors.length>=2){
+    drawArrow2D(0,0,a.x-b.x,a.y-b.y,'#ef4444',2.5,true);
+    const [tx,ty]=toCanvas(a.x-b.x,a.y-b.y);
+    ctx.font='bold 12px Orbitron,sans-serif';ctx.fillStyle='#ef4444';ctx.fillText('A-B',tx+8,ty-8);
+  }
+  if(currentOp==='scalar'){
+    drawArrow2D(0,0,a.x*scalarK,a.y*scalarK,'#facc15',2.5,true);
+    const [tx,ty]=toCanvas(a.x*scalarK,a.y*scalarK);
+    ctx.font='bold 12px Orbitron,sans-serif';ctx.fillStyle='#facc15';ctx.fillText('kA',tx+8,ty-8);
+  }
+  if(currentOp==='unit'){
+    const m=Math.sqrt(a.x*a.x+a.y*a.y)||1;
+    drawArrow2D(0,0,a.x/m,a.y/m,'#22c55e',2.5,true);
+  }
+  if(currentOp==='angle' && vectors.length>=2){
+    const angA = Math.atan2(a.y,a.x), angB = Math.atan2(b.y,b.x);
+    let s = Math.min(angA,angB), e = Math.max(angA,angB);
+    if(e-s>Math.PI){const t=s;s=e;e=t+2*Math.PI;}
+    drawArc2D(0,0,0.8,s,e,'#facc15');
+  }
+  if(currentOp==='proj' && vectors.length>=2){
+    const dot = a.x*b.x+a.y*b.y;
+    const bMag2 = b.x*b.x+b.y*b.y;
+    if(bMag2>0){
+      const s = dot/bMag2;
+      const px=s*b.x, py=s*b.y;
+      drawArrow2D(0,0,px,py,'#22c55e',2.5,true);
+      drawDashedLine2D(a.x,a.y,px,py,'#ffffff44');
+      // right angle mark
+      const bLen=Math.sqrt(bMag2);
+      drawRightAngleMark(px,py,a.x-px,a.y-py,'#facc15');
+      const [tx,ty]=toCanvas(px,py);
+      ctx.font='bold 11px Orbitron,sans-serif';ctx.fillStyle='#22c55e';ctx.fillText('proj',tx+8,ty+16);
+    }
+  }
+}
+
+// ===== CANVAS INTERACTION =====
+function setupEvents(){
+  canvas.addEventListener('mousedown',e=>{
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+    // check if near a vector tip
+    for(let i=0;i<vectors.length;i++){
+      const [tx,ty]=toCanvas(vectors[i].x,vectors[i].y);
+      if(Math.hypot(mx-tx,my-ty)<18){dragging=i;return;}
+    }
+    panning=true;panStart={x:mx-canvasOffX,y:my-canvasOffY};
+  });
+  canvas.addEventListener('mousemove',e=>{
+    const rect=canvas.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+    if(dragging!==null){
+      const [vx,vy]=fromCanvas(mx,my);
+      vectors[dragging].x=Math.round(vx*4)/4;
+      vectors[dragging].y=Math.round(vy*4)/4;
+      buildVectorInputs();draw2D();updateProperties();
+    }else if(panning){
+      canvasOffX=mx-panStart.x;canvasOffY=my-panStart.y;
+      draw2D();
+    }
+  });
+  canvas.addEventListener('mouseup',()=>{dragging=null;panning=false;});
+  canvas.addEventListener('mouseleave',()=>{dragging=null;panning=false;});
+  canvas.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const factor = e.deltaY<0?1.1:0.9;
+    canvasScale = Math.max(10,Math.min(150,canvasScale*factor));
+    draw2D();
+  },{passive:false});
+
+  // Touch
+  canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    const rect=canvas.getBoundingClientRect();
+    const t=e.touches[0];
+    const mx=t.clientX-rect.left, my=t.clientY-rect.top;
+    for(let i=0;i<vectors.length;i++){
+      const [tx,ty]=toCanvas(vectors[i].x,vectors[i].y);
+      if(Math.hypot(mx-tx,my-ty)<25){dragging=i;return;}
+    }
+    panning=true;panStart={x:mx-canvasOffX,y:my-canvasOffY};
+  },{passive:false});
+  canvas.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    const rect=canvas.getBoundingClientRect();
+    const t=e.touches[0];
+    const mx=t.clientX-rect.left, my=t.clientY-rect.top;
+    if(dragging!==null){
+      const [vx,vy]=fromCanvas(mx,my);
+      vectors[dragging].x=Math.round(vx*4)/4;
+      vectors[dragging].y=Math.round(vy*4)/4;
+      buildVectorInputs();draw2D();updateProperties();
+    }else if(panning){
+      canvasOffX=mx-panStart.x;canvasOffY=my-panStart.y;draw2D();
+    }
+  },{passive:false});
+  canvas.addEventListener('touchend',()=>{dragging=null;panning=false;});
+
+  window.addEventListener('resize',()=>{if(dim===2) draw2D();});
+}
+
+// ===== 3D PLOTLY =====
+function draw3D(){
+  const traces = [];
+  vectors.forEach((v,i)=>{
+    const col = COLORS[v.name];
+    // Line from origin to tip
+    traces.push({
+      type:'scatter3d', mode:'lines',
+      x:[0,v.x], y:[0,v.y], z:[0,v.z],
+      line:{color:col,width:6},
+      name:v.name, showlegend:true
+    });
+    // Cone for arrowhead
+    traces.push({
+      type:'cone',
+      x:[v.x], y:[v.y], z:[v.z],
+      u:[v.x], v:[v.y], w:[v.z],
+      sizemode:'absolute', sizeref:0.3,
+      colorscale:[[0,col],[1,col]], showscale:false,
+      name:'', showlegend:false
+    });
+  });
+
+  // Result vector based on current op
+  const a=vectors[0], b=vectors[1]||{x:0,y:0,z:0};
+  if(currentOp==='add' && vectors.length>=2){
+    const r={x:a.x+b.x,y:a.y+b.y,z:a.z+b.z};
+    traces.push({type:'scatter3d',mode:'lines',x:[0,r.x],y:[0,r.y],z:[0,r.z],line:{color:'#22c55e',width:4,dash:'dash'},name:'A+B'});
+    traces.push({type:'cone',x:[r.x],y:[r.y],z:[r.z],u:[r.x],v:[r.y],w:[r.z],sizemode:'absolute',sizeref:0.25,colorscale:[[0,'#22c55e'],[1,'#22c55e']],showscale:false,showlegend:false});
+  }
+  if(currentOp==='sub' && vectors.length>=2){
+    const r={x:a.x-b.x,y:a.y-b.y,z:a.z-b.z};
+    traces.push({type:'scatter3d',mode:'lines',x:[0,r.x],y:[0,r.y],z:[0,r.z],line:{color:'#ef4444',width:4,dash:'dash'},name:'A-B'});
+    traces.push({type:'cone',x:[r.x],y:[r.y],z:[r.z],u:[r.x],v:[r.y],w:[r.z],sizemode:'absolute',sizeref:0.25,colorscale:[[0,'#ef4444'],[1,'#ef4444']],showscale:false,showlegend:false});
+  }
+  if(currentOp==='cross' && vectors.length>=2){
+    const cx=a.y*b.z-a.z*b.y, cy=a.z*b.x-a.x*b.z, cz=a.x*b.y-a.y*b.x;
+    traces.push({type:'scatter3d',mode:'lines',x:[0,cx],y:[0,cy],z:[0,cz],line:{color:'#facc15',width:4,dash:'dash'},name:'A x B'});
+    traces.push({type:'cone',x:[cx],y:[cy],z:[cz],u:[cx],v:[cy],w:[cz],sizemode:'absolute',sizeref:0.25,colorscale:[[0,'#facc15'],[1,'#facc15']],showscale:false,showlegend:false});
+    // Parallelogram
+    traces.push({type:'mesh3d',x:[0,a.x,a.x+b.x,b.x],y:[0,a.y,a.y+b.y,b.y],z:[0,a.z,a.z+b.z,b.z],
+      i:[0,0],j:[1,2],k:[2,3],opacity:0.15,color:'#facc15',name:'',showlegend:false});
+  }
+  if(currentOp==='scalar'){
+    const r={x:a.x*scalarK,y:a.y*scalarK,z:a.z*scalarK};
+    traces.push({type:'scatter3d',mode:'lines',x:[0,r.x],y:[0,r.y],z:[0,r.z],line:{color:'#facc15',width:4,dash:'dash'},name:'kA'});
+  }
+
+  const layout = {
+    scene:{
+      xaxis:{title:'X',color:'#555',gridcolor:'#1a1a30',zerolinecolor:'#444',backgroundcolor:'#080814'},
+      yaxis:{title:'Y',color:'#555',gridcolor:'#1a1a30',zerolinecolor:'#444',backgroundcolor:'#080814'},
+      zaxis:{title:'Z',color:'#555',gridcolor:'#1a1a30',zerolinecolor:'#444',backgroundcolor:'#080814'},
+      bgcolor:'#080814'
+    },
+    paper_bgcolor:'#080814',plot_bgcolor:'#080814',
+    font:{family:'Poppins',color:'#94a3b8'},
+    legend:{font:{color:'#e8e8ff'},bgcolor:'rgba(17,17,37,0.8)'},
+    margin:{l:0,r:0,t:0,b:0}
+  };
+  Plotly.react('plot3d', traces, layout, {responsive:true});
+}
+
+// ===== COMPUTATION =====
+function fmt(n){return Number.isInteger(n)?n.toString():n.toFixed(4).replace(/0+$/,'').replace(/\.$/,'');}
+
+function compute(){
+  const a=vectors[0], b=vectors[1]||{x:0,y:0,z:0};
+  const steps = [];
+  const is3 = dim===3;
+
+  function vecStr(v,name){
+    return is3?`\\vec{${name}}=(${fmt(v.x)},\\,${fmt(v.y)},\\,${fmt(v.z)})`
+              :`\\vec{${name}}=(${fmt(v.x)},\\,${fmt(v.y)})`;
+  }
+  function mag(v){return Math.sqrt(v.x*v.x+v.y*v.y+(is3?v.z*v.z:0));}
+
+  if(currentOp==='add'){
+    const r={x:a.x+b.x, y:a.y+b.y, z:a.z+b.z};
+    steps.push({label:'FORMULA',tex:`$\\vec{A}+\\vec{B}=(a_x+b_x,\\;a_y+b_y${is3?',\\;a_z+b_z':''})$`});
+    steps.push({label:'GIVEN',tex:`$${vecStr(a,'A')},\\quad ${vecStr(b,'B')}$`});
+    steps.push({label:'SUBSTITUTE',tex:is3
+      ?`$=(${fmt(a.x)}+${fmt(b.x)},\\;${fmt(a.y)}+${fmt(b.y)},\\;${fmt(a.z)}+${fmt(b.z)})$`
+      :`$=(${fmt(a.x)}+${fmt(b.x)},\\;${fmt(a.y)}+${fmt(b.y)})$`});
+    steps.push({label:'RESULT',tex:`$\\vec{A}+\\vec{B}=${is3?`(${fmt(r.x)},\\,${fmt(r.y)},\\,${fmt(r.z)})`:`(${fmt(r.x)},\\,${fmt(r.y)})`}$`,isResult:true});
+  }
+
+  if(currentOp==='sub'){
+    const r={x:a.x-b.x, y:a.y-b.y, z:a.z-b.z};
+    steps.push({label:'FORMULA',tex:`$\\vec{A}-\\vec{B}=(a_x-b_x,\\;a_y-b_y${is3?',\\;a_z-b_z':''})$`});
+    steps.push({label:'GIVEN',tex:`$${vecStr(a,'A')},\\quad ${vecStr(b,'B')}$`});
+    steps.push({label:'SUBSTITUTE',tex:is3
+      ?`$=(${fmt(a.x)}-${fmt(b.x)},\\;${fmt(a.y)}-${fmt(b.y)},\\;${fmt(a.z)}-${fmt(b.z)})$`
+      :`$=(${fmt(a.x)}-${fmt(b.x)},\\;${fmt(a.y)}-${fmt(b.y)})$`});
+    steps.push({label:'RESULT',tex:`$\\vec{A}-\\vec{B}=${is3?`(${fmt(r.x)},\\,${fmt(r.y)},\\,${fmt(r.z)})`:`(${fmt(r.x)},\\,${fmt(r.y)})`}$`,isResult:true});
+  }
+
+  if(currentOp==='scalar'){
+    const k=scalarK;
+    const r={x:a.x*k, y:a.y*k, z:a.z*k};
+    steps.push({label:'FORMULA',tex:`$k\\vec{A}=(k\\,a_x,\\;k\\,a_y${is3?',\\;k\\,a_z':''})$`});
+    steps.push({label:'GIVEN',tex:`$k=${fmt(k)},\\quad ${vecStr(a,'A')}$`});
+    steps.push({label:'SUBSTITUTE',tex:is3
+      ?`$=(${fmt(k)}\\cdot${fmt(a.x)},\\;${fmt(k)}\\cdot${fmt(a.y)},\\;${fmt(k)}\\cdot${fmt(a.z)})$`
+      :`$=(${fmt(k)}\\cdot${fmt(a.x)},\\;${fmt(k)}\\cdot${fmt(a.y)})$`});
+    steps.push({label:'RESULT',tex:`$k\\vec{A}=${is3?`(${fmt(r.x)},\\,${fmt(r.y)},\\,${fmt(r.z)})`:`(${fmt(r.x)},\\,${fmt(r.y)})`}$`,isResult:true});
+  }
+
+  if(currentOp==='dot'){
+    const d = a.x*b.x + a.y*b.y + (is3?a.z*b.z:0);
+    steps.push({label:'FORMULA',tex:`$\\vec{A}\\cdot\\vec{B}=a_x b_x + a_y b_y${is3?'+ a_z b_z':''}$`});
+    steps.push({label:'GIVEN',tex:`$${vecStr(a,'A')},\\quad ${vecStr(b,'B')}$`});
+    steps.push({label:'SUBSTITUTE',tex:is3
+      ?`$=(${fmt(a.x)})(${fmt(b.x)})+(${fmt(a.y)})(${fmt(b.y)})+(${fmt(a.z)})(${fmt(b.z)})$`
+      :`$=(${fmt(a.x)})(${fmt(b.x)})+(${fmt(a.y)})(${fmt(b.y)})$`});
+    steps.push({label:'COMPUTE',tex:`$=${fmt(a.x*b.x)}+${fmt(a.y*b.y)}${is3?'+'+fmt(a.z*b.z):''}$`});
+    steps.push({label:'RESULT',tex:`$\\vec{A}\\cdot\\vec{B}=${fmt(d)}$`,isResult:true});
+    const mA=mag(a),mB=mag(b);
+    if(mA>0&&mB>0){
+      const cosT=d/(mA*mB);
+      const theta=Math.acos(Math.max(-1,Math.min(1,cosT)))*180/Math.PI;
+      steps.push({label:'GEOMETRIC MEANING',tex:`$\\vec{A}\\cdot\\vec{B}=|\\vec{A}||\\vec{B}|\\cos\\theta \\implies \\theta\\approx ${fmt(theta)}^\\circ$<br><span style="color:var(--muted);font-size:.82rem">${Math.abs(d)<1e-9?'The vectors are perpendicular!':d>0?'Acute angle between vectors':'Obtuse angle between vectors'}</span>`});
+    }
+  }
+
+  if(currentOp==='cross' && is3){
+    const cx=a.y*b.z-a.z*b.y, cy=a.z*b.x-a.x*b.z, cz=a.x*b.y-a.y*b.x;
+    steps.push({label:'FORMULA',tex:`$\\vec{A}\\times\\vec{B}=\\begin{vmatrix}\\hat{i}&\\hat{j}&\\hat{k}\\\\a_x&a_y&a_z\\\\b_x&b_y&b_z\\end{vmatrix}$`});
+    steps.push({label:'GIVEN',tex:`$${vecStr(a,'A')},\\quad ${vecStr(b,'B')}$`});
+    steps.push({label:'EXPAND',tex:`$=(a_y b_z - a_z b_y)\\hat{i}-(a_x b_z - a_z b_x)\\hat{j}+(a_x b_y - a_y b_x)\\hat{k}$`});
+    steps.push({label:'SUBSTITUTE',tex:`$=(${fmt(a.y)}\\cdot${fmt(b.z)}-${fmt(a.z)}\\cdot${fmt(b.y)})\\hat{i}-(${fmt(a.x)}\\cdot${fmt(b.z)}-${fmt(a.z)}\\cdot${fmt(b.x)})\\hat{j}+(${fmt(a.x)}\\cdot${fmt(b.y)}-${fmt(a.y)}\\cdot${fmt(b.x)})\\hat{k}$`});
+    steps.push({label:'RESULT',tex:`$\\vec{A}\\times\\vec{B}=(${fmt(cx)},\\,${fmt(cy)},\\,${fmt(cz)})$`,isResult:true});
+    const areaMag = Math.sqrt(cx*cx+cy*cy+cz*cz);
+    steps.push({label:'PARALLELOGRAM AREA',tex:`$|\\vec{A}\\times\\vec{B}|=${fmt(areaMag)}$`});
+  }
+
+  if(currentOp==='mag'){
+    const m=mag(a);
+    steps.push({label:'FORMULA',tex:`$|\\vec{A}|=\\sqrt{a_x^2+a_y^2${is3?'+a_z^2':''}}$`});
+    steps.push({label:'GIVEN',tex:`$${vecStr(a,'A')}$`});
+    steps.push({label:'SUBSTITUTE',tex:is3
+      ?`$=\\sqrt{${fmt(a.x)}^2+${fmt(a.y)}^2+${fmt(a.z)}^2}$`
+      :`$=\\sqrt{${fmt(a.x)}^2+${fmt(a.y)}^2}$`});
+    steps.push({label:'COMPUTE',tex:is3
+      ?`$=\\sqrt{${fmt(a.x*a.x)}+${fmt(a.y*a.y)}+${fmt(a.z*a.z)}}=\\sqrt{${fmt(a.x*a.x+a.y*a.y+a.z*a.z)}}$`
+      :`$=\\sqrt{${fmt(a.x*a.x)}+${fmt(a.y*a.y)}}=\\sqrt{${fmt(a.x*a.x+a.y*a.y)}}$`});
+    steps.push({label:'RESULT',tex:`$|\\vec{A}|=${fmt(m)}$`,isResult:true});
+  }
+
+  if(currentOp==='unit'){
+    const m=mag(a);
+    if(m===0){steps.push({label:'ERROR',tex:'The zero vector has no unit vector.'});
+    }else{
+      const ux=a.x/m,uy=a.y/m,uz=a.z/m;
+      steps.push({label:'FORMULA',tex:`$\\hat{A}=\\dfrac{\\vec{A}}{|\\vec{A}|}$`});
+      steps.push({label:'MAGNITUDE',tex:`$|\\vec{A}|=${fmt(m)}$`});
+      steps.push({label:'COMPUTE',tex:is3
+        ?`$\\hat{A}=\\dfrac{1}{${fmt(m)}}(${fmt(a.x)},\\,${fmt(a.y)},\\,${fmt(a.z)})$`
+        :`$\\hat{A}=\\dfrac{1}{${fmt(m)}}(${fmt(a.x)},\\,${fmt(a.y)})$`});
+      steps.push({label:'RESULT',tex:`$\\hat{A}=${is3?`(${fmt(ux)},\\,${fmt(uy)},\\,${fmt(uz)})`:`(${fmt(ux)},\\,${fmt(uy)})`}$`,isResult:true});
+      steps.push({label:'VERIFY',tex:`$|\\hat{A}|=${fmt(Math.sqrt(ux*ux+uy*uy+uz*uz))} = 1 \\;\\checkmark$`});
+    }
+  }
+
+  if(currentOp==='angle'){
+    const mA=mag(a),mB=mag(b);
+    if(mA===0||mB===0){steps.push({label:'ERROR',tex:'Cannot compute angle with a zero vector.'});
+    }else{
+      const d=a.x*b.x+a.y*b.y+(is3?a.z*b.z:0);
+      const cosT=d/(mA*mB);
+      const theta=Math.acos(Math.max(-1,Math.min(1,cosT)));
+      steps.push({label:'FORMULA',tex:`$\\theta=\\arccos\\left(\\dfrac{\\vec{A}\\cdot\\vec{B}}{|\\vec{A}|\\,|\\vec{B}|}\\right)$`});
+      steps.push({label:'DOT PRODUCT',tex:`$\\vec{A}\\cdot\\vec{B}=${fmt(d)}$`});
+      steps.push({label:'MAGNITUDES',tex:`$|\\vec{A}|=${fmt(mA)},\\quad |\\vec{B}|=${fmt(mB)}$`});
+      steps.push({label:'SUBSTITUTE',tex:`$\\theta=\\arccos\\left(\\dfrac{${fmt(d)}}{${fmt(mA)}\\cdot${fmt(mB)}}\\right)=\\arccos(${fmt(cosT)})$`});
+      steps.push({label:'RESULT',tex:`$\\theta=${fmt(theta*180/Math.PI)}^\\circ \\approx ${fmt(theta)}\\text{ rad}$`,isResult:true});
+    }
+  }
+
+  if(currentOp==='proj'){
+    const mB2=b.x*b.x+b.y*b.y+(is3?b.z*b.z:0);
+    if(mB2===0){steps.push({label:'ERROR',tex:'Cannot project onto the zero vector.'});
+    }else{
+      const d=a.x*b.x+a.y*b.y+(is3?a.z*b.z:0);
+      const s=d/mB2;
+      const px=s*b.x, py=s*b.y, pz=s*b.z;
+      const scalarProj=d/Math.sqrt(mB2);
+      steps.push({label:'FORMULA',tex:`$\\text{proj}_{\\vec{B}}\\vec{A}=\\dfrac{\\vec{A}\\cdot\\vec{B}}{|\\vec{B}|^2}\\,\\vec{B}$`});
+      steps.push({label:'DOT PRODUCT',tex:`$\\vec{A}\\cdot\\vec{B}=${fmt(d)}$`});
+      steps.push({label:'|B|^2',tex:`$|\\vec{B}|^2=${fmt(mB2)}$`});
+      steps.push({label:'SCALAR FACTOR',tex:`$\\dfrac{\\vec{A}\\cdot\\vec{B}}{|\\vec{B}|^2}=\\dfrac{${fmt(d)}}{${fmt(mB2)}}=${fmt(s)}$`});
+      steps.push({label:'RESULT',tex:`$\\text{proj}_{\\vec{B}}\\vec{A}=${is3?`(${fmt(px)},\\,${fmt(py)},\\,${fmt(pz)})`:`(${fmt(px)},\\,${fmt(py)})`}$`,isResult:true});
+      steps.push({label:'SCALAR PROJECTION',tex:`$\\text{comp}_{\\vec{B}}\\vec{A}=\\dfrac{\\vec{A}\\cdot\\vec{B}}{|\\vec{B}|}=${fmt(scalarProj)}$`});
+    }
+  }
+
+  if(currentOp==='area' && is3){
+    const cx=a.y*b.z-a.z*b.y, cy=a.z*b.x-a.x*b.z, cz=a.x*b.y-a.y*b.x;
+    const areaMag=Math.sqrt(cx*cx+cy*cy+cz*cz);
+    steps.push({label:'FORMULA',tex:`$\\text{Area}=|\\vec{A}\\times\\vec{B}|$`});
+    steps.push({label:'CROSS PRODUCT',tex:`$\\vec{A}\\times\\vec{B}=(${fmt(cx)},\\,${fmt(cy)},\\,${fmt(cz)})$`});
+    steps.push({label:'MAGNITUDE',tex:`$=\\sqrt{${fmt(cx)}^2+${fmt(cy)}^2+${fmt(cz)}^2}=\\sqrt{${fmt(cx*cx+cy*cy+cz*cz)}}$`});
+    steps.push({label:'RESULT',tex:`$\\text{Area}=${fmt(areaMag)}\\text{ sq. units}$`,isResult:true});
+  }
+
+  renderSteps(steps);
+  if(dim===2) draw2D(); else draw3D();
+}
+
+function renderSteps(steps){
+  const c = document.getElementById('stepsContainer');
+  c.innerHTML = '';
+  steps.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className = 'step-card' + (s.isResult?' result-card':'');
+    div.innerHTML = `<div class="step-num">${s.label}</div><div class="step-body">${s.tex}</div>`;
+    c.appendChild(div);
+    setTimeout(()=>div.classList.add('show'), 80*(i+1));
+  });
+  // Re-typeset MathJax
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise([c]).catch(()=>{});
+  }
+}
+
+// ===== PROPERTIES =====
+function updateProperties(){
+  const c = document.getElementById('propsContent');
+  const is3 = dim===3;
+  let html = '<table class="prop-table"><thead><tr><th>Vector</th><th>Components</th><th>|V|</th><th>Direction</th></tr></thead><tbody>';
+  vectors.forEach(v=>{
+    const m = Math.sqrt(v.x*v.x+v.y*v.y+(is3?v.z*v.z:0));
+    let dir='';
+    if(m>0){
+      if(is3){
+        const alpha=Math.acos(v.x/m)*180/Math.PI;
+        const beta=Math.acos(v.y/m)*180/Math.PI;
+        const gamma=Math.acos(v.z/m)*180/Math.PI;
+        dir=`&alpha;=${fmt(alpha)}&deg; &beta;=${fmt(beta)}&deg; &gamma;=${fmt(gamma)}&deg;`;
+      }else{
+        const angle=Math.atan2(v.y,v.x)*180/Math.PI;
+        dir=`${fmt(angle)}&deg;`;
+      }
+    }
+    html+=`<tr><td style="color:${COLORS[v.name]};font-weight:700">${v.name}</td>
+      <td>${is3?`(${fmt(v.x)}, ${fmt(v.y)}, ${fmt(v.z)})`:`(${fmt(v.x)}, ${fmt(v.y)})`}</td>
+      <td>${fmt(m)}</td><td style="font-size:.72rem">${dir}</td></tr>`;
+  });
+  html += '</tbody></table>';
+
+  // Checks between A and B
+  if(vectors.length>=2){
+    const a=vectors[0],b=vectors[1];
+    const dot=a.x*b.x+a.y*b.y+(is3?a.z*b.z:0);
+    const mA=Math.sqrt(a.x*a.x+a.y*a.y+(is3?a.z*a.z:0));
+    const mB=Math.sqrt(b.x*b.x+b.y*b.y+(is3?b.z*b.z:0));
+
+    const isPerp = Math.abs(dot)<1e-9 && mA>0 && mB>0;
+    const isParallel = mA>0 && mB>0 && Math.abs(Math.abs(dot)-(mA*mB))<1e-6;
+
+    html += '<div style="margin-top:12px">';
+    html += `<span class="check-badge ${isPerp?'check-yes':'check-no'}">${isPerp?'&#10003;':'&#10007;'} Perpendicular</span>`;
+    html += `<span class="check-badge ${isParallel?'check-yes':'check-no'}">${isParallel?'&#10003;':'&#10007;'} Parallel</span>`;
+
+    // Linear independence (for 2D: det != 0 of 2x2; for 3D with 2 vecs: cross product != 0)
+    let linIndep = false;
+    if(is3){
+      const cx=a.y*b.z-a.z*b.y, cy=a.z*b.x-a.x*b.z, cz=a.x*b.y-a.y*b.x;
+      linIndep = Math.sqrt(cx*cx+cy*cy+cz*cz)>1e-9;
+    }else{
+      linIndep = Math.abs(a.x*b.y - a.y*b.x)>1e-9;
+    }
+    html += `<span class="check-badge ${linIndep?'check-yes':'check-no'}">${linIndep?'&#10003;':'&#10007;'} Linearly Independent</span>`;
+    html += '</div>';
+  }
+  c.innerHTML = html;
+}
+
+// ===== INTERACTIVE DEMOS =====
+document.querySelectorAll('.demo-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const d = card.dataset.demo;
+    if(d==='parallelogram'){
+      vectors=[{name:'A',x:3,y:1,z:1},{name:'B',x:1,y:3,z:1}];
+      selectOp('add');
+    }
+    if(d==='perpendicular'){
+      vectors=[{name:'A',x:3,y:0,z:0},{name:'B',x:0,y:2,z:0}];
+      selectOp('dot');
+    }
+    if(d==='crossdir'){
+      dim=3;
+      document.querySelectorAll('#dimToggle button').forEach(b=>{b.classList.toggle('active',b.dataset.dim==='3');});
+      document.querySelectorAll('.z-comp').forEach(el=>el.style.display='');
+      document.querySelectorAll('[data-op="cross"],[data-op="area"]').forEach(el=>el.style.display='');
+      document.querySelectorAll('.preset-k').forEach(el=>el.style.display='');
+      document.querySelectorAll('[data-demo="crossdir"]').forEach(el=>el.style.display='');
+      canvas.style.display='none';plot3d.style.display='block';
+      vectors=[{name:'A',x:2,y:0,z:0},{name:'B',x:0,y:2,z:0}];
+      selectOp('cross');
+    }
+    if(d==='projection'){
+      vectors=[{name:'A',x:3,y:3,z:0},{name:'B',x:4,y:1,z:0}];
+      selectOp('proj');
+    }
+    if(d==='basis'){
+      vectors=[{name:'A',x:3,y:2,z:dim===3?1:0},{name:'B',x:1,y:0,z:0},{name:'C',x:0,y:1,z:0}];
+      if(dim===3) vectors.push({name:'D',x:0,y:0,z:1});
+      selectOp('add');
+    }
+    buildVectorInputs();
+    compute();
+    if(dim===2) draw2D(); else draw3D();
+    updateProperties();
+  });
+});
+
+// ===== COLLAPSIBLE =====
+function toggleCollapsible(header){
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ===== BACK TO TOP =====
+window.addEventListener('scroll',()=>{
+  document.getElementById('backToTop').classList.toggle('show',window.scrollY>300);
+});
+document.getElementById('backToTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// ===== START =====
+init();
+</script>
+</body>
+</html>
