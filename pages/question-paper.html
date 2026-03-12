@@ -341,7 +341,7 @@
 <div id="footer-container"></div>
 <div id="backToTop">🔝</div>
 <script>
-  fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+  fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})});
   fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
   const btt=document.getElementById('backToTop');
   window.addEventListener('scroll',()=>btt.style.display=window.scrollY>300?'flex':'none');

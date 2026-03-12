@@ -1269,7 +1269,7 @@
 <button id="backToTop" aria-label="Back to top">↑</button>
 
 <script>
-  fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+  fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})});
   fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
 
   /* -- Dual Filter: Level + Subject -- */

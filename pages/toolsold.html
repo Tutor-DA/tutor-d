@@ -1259,7 +1259,7 @@ window.addEventListener('DOMContentLoaded', () => {
   buildMats();
 });
 
-fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})}).catch(()=>{});
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
 </script>
 </body>

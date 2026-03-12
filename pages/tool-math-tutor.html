@@ -276,7 +276,46 @@
 <body>
 <div class="stars"></div>
 <div id="header-container"></div>
-<style>.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px}.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border,#1e1e3a);border-radius:10px;color:var(--cyan,#00e5ff);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s ease;backdrop-filter:blur(6px)}.back-nav a:hover{border-color:var(--cyan,#00e5ff);background:rgba(0,229,255,.08);transform:translateX(-4px)}.back-nav a .arrow{font-size:1.2rem;transition:transform .3s}.back-nav a:hover .arrow{transform:translateX(-4px)}</style>
+<style>.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px}.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border,#1e1e3a);border-radius:10px;color:var(--cyan,#00e5ff);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s ease;backdrop-filter:blur(6px)}.back-nav a:hover{border-color:var(--cyan,#00e5ff);background:rgba(0,229,255,.08);transform:translateX(-4px)}.back-nav a .arrow{font-size:1.2rem;transition:transform .3s}.back-nav a:hover .arrow{transform:translateX(-4px)}/* == Mobile Responsive == */
+canvas{max-width:100%;height:auto}
+@media(max-width:768px){.wrapper{padding:20px 14px}h1{font-size:1.5rem!important}.card{padding:16px}.tabs{gap:4px}.tab{padding:8px 12px;font-size:.78rem}.row{flex-direction:column;gap:8px}.row>*{width:100%}select,input[type=number],input[type=text]{width:100%;max-width:100%}.btn{padding:8px 16px;font-size:.8rem;width:100%}.btn-primary{width:100%}}
+@media(max-width:480px){.wrapper{padding:16px 10px}.subtitle{font-size:.8rem}h1{font-size:1.3rem!important}.card{padding:12px;border-radius:10px}.tabs{gap:3px}.tab{padding:7px 10px;font-size:.72rem;border-radius:8px}.back-nav{margin:12px auto 0;padding:0 10px}.back-nav a{padding:8px 14px;font-size:.82rem}.result-box{padding:12px;font-size:.8rem}.info{font-size:.75rem}}
+@media(max-width:380px){h1{font-size:1.1rem!important}.card{padding:10px}.tab{padding:6px 8px;font-size:.68rem}}
+
+/* == Math Tutor Mobile Fixes == */
+@media(max-width:768px){
+  .chat-container{max-height:75vh;min-height:350px}
+  .messages-area{padding:14px 10px}
+  .msg-bubble{max-width:92%;padding:10px 12px;font-size:.85rem;line-height:1.6}
+  .msg-bubble pre{padding:10px 12px;font-size:.76rem;margin:8px 0}
+  .msg-avatar{width:28px;height:28px;font-size:.9rem}
+  .input-area{padding:10px 12px 12px}
+  .input-row{gap:8px}
+  .input-row textarea{padding:10px 12px;font-size:.85rem;min-height:42px;border-radius:10px}
+  .send-btn{padding:10px 14px;border-radius:10px}
+  .send-btn svg{width:18px;height:18px}
+  .suggestions{gap:6px}
+  .suggestion-btn{font-size:.72rem;padding:5px 10px}
+  .chat-toolbar{padding:8px 10px;gap:6px}
+  .chat-toolbar .toolbar-left{gap:8px}
+  .hint-toggle{font-size:.75rem;gap:5px}
+  .hint-toggle .toggle-track{width:34px;height:18px;border-radius:9px}
+  .hint-toggle .toggle-track::after{width:12px;height:12px;top:3px;left:3px}
+  .hint-toggle .toggle-track.on::after{transform:translateX(16px)}
+  .toolbar-btn{font-size:.7rem;padding:5px 7px}
+  .settings-panel{padding:16px}
+  .settings-panel h3{font-size:.85rem}
+  .settings-field input,.settings-field select{padding:8px 10px;font-size:.82rem}
+  .settings-save{padding:9px 18px;font-size:.8rem}
+}
+@media(max-width:480px){
+  .chat-container{max-height:70vh;min-height:300px}
+  .msg-bubble{max-width:95%}
+  .suggestion-btn{font-size:.68rem;padding:4px 8px}
+  .toolbar-btn{font-size:.65rem;padding:4px 6px;gap:3px}
+}
+
+</style>
 <div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','teach')"><span class="arrow">←</span> Back to Teaching Tools</a></div>
 
 <div class="wrapper">
@@ -694,7 +733,7 @@ if (btt) {
 }
 
 // ── Load header/footer ──
-fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})}).catch(()=>{});
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
 </script>
 </body>

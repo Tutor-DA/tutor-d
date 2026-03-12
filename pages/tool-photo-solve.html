@@ -247,7 +247,53 @@
 <body>
 <div class="stars"></div>
 <div id="header-container"></div>
-<style>.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px}.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border,#1e1e3a);border-radius:10px;color:var(--cyan,#00e5ff);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s ease;backdrop-filter:blur(6px)}.back-nav a:hover{border-color:var(--cyan,#00e5ff);background:rgba(0,229,255,.08);transform:translateX(-4px)}.back-nav a .arrow{font-size:1.2rem;transition:transform .3s}.back-nav a:hover .arrow{transform:translateX(-4px)}</style>
+<style>.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px}.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border,#1e1e3a);border-radius:10px;color:var(--cyan,#00e5ff);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s ease;backdrop-filter:blur(6px)}.back-nav a:hover{border-color:var(--cyan,#00e5ff);background:rgba(0,229,255,.08);transform:translateX(-4px)}.back-nav a .arrow{font-size:1.2rem;transition:transform .3s}.back-nav a:hover .arrow{transform:translateX(-4px)}/* == Mobile Responsive == */
+canvas{max-width:100%;height:auto}
+@media(max-width:768px){.wrapper{padding:20px 14px}h1{font-size:1.5rem!important}.card{padding:16px}.tabs{gap:4px}.tab{padding:8px 12px;font-size:.78rem}.row{flex-direction:column;gap:8px}.row>*{width:100%}select,input[type=number],input[type=text]{width:100%;max-width:100%}.btn{padding:8px 16px;font-size:.8rem;width:100%}.btn-primary{width:100%}}
+@media(max-width:480px){.wrapper{padding:16px 10px}.subtitle{font-size:.8rem}h1{font-size:1.3rem!important}.card{padding:12px;border-radius:10px}.tabs{gap:3px}.tab{padding:7px 10px;font-size:.72rem;border-radius:8px}.back-nav{margin:12px auto 0;padding:0 10px}.back-nav a{padding:8px 14px;font-size:.82rem}.result-box{padding:12px;font-size:.8rem}.info{font-size:.75rem}}
+@media(max-width:380px){h1{font-size:1.1rem!important}.card{padding:10px}.tab{padding:6px 8px;font-size:.68rem}}
+
+/* == Photo-to-Solution Mobile Fixes == */
+@media(max-width:768px){
+  .input-tabs{flex-direction:row}
+  .input-tab{padding:10px 12px;font-size:.72rem;letter-spacing:.04em}
+  .tab-panel{padding:18px 14px}
+  .upload-zone{min-height:140px;padding:20px 14px;gap:10px}
+  .upload-zone .icon{font-size:2.2rem}
+  .upload-zone p{font-size:.85rem}
+  .upload-zone .formats{font-size:.72rem}
+  .upload-btns{gap:8px}
+  .upload-btn{padding:8px 16px;font-size:.82rem}
+  .preview-container img{max-height:220px}
+  .ocr-textarea{font-size:.82rem;padding:12px;min-height:80px}
+  .manual-textarea{font-size:.85rem;padding:12px;min-height:120px}
+  .stepper{gap:0;margin-bottom:20px}
+  .step-circle{width:32px;height:32px;font-size:.85rem}
+  .step-line{width:16px}
+  .step-label{font-size:.58rem;max-width:60px}
+  .solve-btn{padding:12px 28px;font-size:.85rem;width:100%}
+  .step-card{padding:14px 16px;font-size:.88rem}
+  .step-card .step-num{font-size:.68rem}
+  .final-answer-box{padding:16px 18px}
+  .final-answer-box .answer{font-size:1rem}
+  .solution-header h2{font-size:1rem}
+  .copy-btn{padding:6px 12px;font-size:.75rem}
+  .settings-panel{width:92%;padding:20px}
+  .settings-panel input,.settings-panel select{font-size:.8rem;padding:8px 10px}
+  .settings-toggle{width:42px;height:42px;font-size:1.1rem;bottom:70px;right:14px}
+}
+@media(max-width:480px){
+  .upload-zone{min-height:120px;padding:16px 10px}
+  .upload-zone .icon{font-size:1.8rem}
+  .upload-btn{padding:7px 14px;font-size:.78rem}
+  .step-circle{width:28px;height:28px;font-size:.78rem}
+  .step-line{width:12px}
+  .step-label{font-size:.52rem}
+  .solve-btn{padding:10px 20px;font-size:.8rem}
+  .step-card{padding:12px 14px;font-size:.82rem}
+}
+
+</style>
 <div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','teach')"><span class="arrow">←</span> Back to Teaching Tools</a></div>
 
 <div class="wrapper">
@@ -703,7 +749,7 @@ if (btt) {
 }
 
 /* ── Load header / footer ──────────────────── */
-fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})}).catch(()=>{});
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
 </script>
 </body>

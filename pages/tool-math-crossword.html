@@ -58,6 +58,14 @@ h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background
   .cw-cell{width:36px;height:36px;font-size:1rem}
   .clue-panel{max-height:300px}
 }
+/* == Mobile Responsive == */
+canvas{max-width:100%;height:auto}
+@media(max-width:768px){.wrapper{padding:20px 14px}h1{font-size:1.5rem!important}.card{padding:16px}.tabs{gap:4px}.tab{padding:8px 12px;font-size:.78rem}.row{flex-direction:column;gap:8px}.row>*{width:100%}select,input[type=number],input[type=text]{width:100%;max-width:100%}.btn{padding:8px 16px;font-size:.8rem;width:100%}.btn-primary{width:100%}}
+@media(max-width:480px){.wrapper{padding:16px 10px}.subtitle{font-size:.8rem}h1{font-size:1.3rem!important}.card{padding:12px;border-radius:10px}.tabs{gap:3px}.tab{padding:7px 10px;font-size:.72rem;border-radius:8px}.back-nav{margin:12px auto 0;padding:0 10px}.back-nav a{padding:8px 14px;font-size:.82rem}.result-box{padding:12px;font-size:.8rem}.info{font-size:.75rem}}
+@media(max-width:380px){h1{font-size:1.1rem!important}.card{padding:10px}.tab{padding:6px 8px;font-size:.68rem}}
+@media(max-width:700px){.game-layout{grid-template-columns:1fr}.clue-panel{max-height:200px;overflow-y:auto}}
+@media(max-width:480px){.cw-cell{width:28px;height:28px;font-size:.8rem}}
+
 </style>
 </head>
 <body>
@@ -104,7 +112,7 @@ h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background
 <div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
 
 <script>
-fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})}).catch(()=>{});
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
 
 let grid=[],clues=[],size=10,hintsLeft=3,timerInterval=null,seconds=0;

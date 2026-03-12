@@ -323,10 +323,63 @@
     @keyframes slideIn  { from { transform: translateX(120%); opacity: 0; } to { transform: none; opacity: 1; } }
     @keyframes slideOut { to   { transform: translateX(120%); opacity: 0; } }
 
+    @media (max-width: 768px) {
+      .games-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+      .player-bar { padding: 12px 16px; }
+      .stat-chip { padding: 5px 10px; font-size: .8rem; }
+      .modal-box { max-width: 95vw; padding: 24px 18px; }
+      .game-card-header { padding: 16px 16px 12px; }
+      .game-card-body { padding: 0 16px 16px; }
+      .game-meta { padding: 0 16px 12px; }
+    }
     @media (max-width: 540px) {
-      .modal-box { padding: 22px 18px; }
+      .modal-box { padding: 20px 14px; }
       .answer-opts { grid-template-columns: 1fr; }
       .games-grid { grid-template-columns: 1fr; }
+      .games-hero { padding: 36px 16px 24px; }
+      .games-hero p { font-size: .9rem; }
+      .player-bar { flex-direction: column; gap: 8px; padding: 12px; }
+      .player-name-section input { width: 100%; max-width: 200px; min-height: 44px; }
+      .player-name-section button { min-height: 44px; }
+      .score-item .s-val { font-size: 1.2rem; }
+      .leaderboard-section { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .lb-table th { padding: 6px 8px; font-size: .7rem; }
+      .lb-table td { padding: 8px 10px; font-size: .82rem; }
+      .games-hero .eyebrow { font-size: .85rem; }
+      .badge-pill { font-size: .8rem; padding: 4px 12px; }
+      .fraction-display { font-size: 1.6rem; gap: 16px; }
+      .number-grid { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+      .num-tile { font-size: .8rem; }
+      .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+      .mem-card { font-size: .7rem; }
+      .badges-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+      .badge-card { padding: 12px 8px; }
+      .badge-card .badge-emoji { font-size: 1.8rem; }
+      .result-emoji { font-size: 2.5rem; }
+      .result-title { font-size: 1.2rem; }
+      .toast { max-width: 260px; font-size: .8rem; padding: 10px 14px; }
+      #toast-container { bottom: 12px; right: 12px; }
+    }
+    @media (max-width: 380px) {
+      .games-hero h1 { font-size: 1.6rem; }
+      .modal-box { padding: 16px 10px; border-radius: 12px; }
+      .modal-box h2 { font-size: 1.1rem; }
+      .question-box { padding: 16px; }
+      .opt-btn { padding: 10px; font-size: .9rem; }
+      .action-btn { padding: 10px; font-size: .9rem; }
+      .answer-input { font-size: 1.1rem; padding: 10px 12px; }
+      .game-score-row { flex-wrap: wrap; gap: 8px; justify-content: center; }
+      .number-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+      .num-tile { font-size: .7rem; border-radius: 6px; }
+      .memory-grid { gap: 4px; }
+      .mem-card { border-radius: 6px; font-size: .65rem; }
+      .mem-card::before { font-size: .9rem; }
+      .player-name-section input { width: 100%; max-width: 160px; font-size: .8rem; }
+      .stat-chip { font-size: .75rem; padding: 4px 8px; }
+      .games-wrapper { padding: 0 12px 40px; }
+      .fraction-display { gap: 10px; font-size: 1.4rem; }
+      #toast-container { bottom: 10px; right: 10px; left: 10px; }
+      .toast { max-width: 100%; }
     }
 
     .guess-hint { background: #1a1a35; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 14px; min-height: 50px; font-size: 1rem; color: var(--muted); }
@@ -3111,7 +3164,7 @@ if(btt){ window.addEventListener('scroll',()=>btt.style.display=window.scrollY>3
 
 /* ─── Init ─── */
 updateUI();
-fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h);
+fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})});
 fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h);
 </script>
 </body>
