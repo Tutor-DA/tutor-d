@@ -327,21 +327,47 @@
       .games-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
       .player-bar { padding: 12px 16px; }
       .stat-chip { padding: 5px 10px; font-size: .8rem; }
-      .modal-box { max-width: 95vw; padding: 24px 18px; }
+      .modal-overlay { padding: 10px; align-items: flex-start; padding-top: 5vh; }
+      .modal-box { max-width: 95vw; padding: 24px 18px; max-height: 85vh; }
+      .modal-close { top: 10px; right: 14px; font-size: 1.6rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
       .game-card-header { padding: 16px 16px 12px; }
       .game-card-body { padding: 0 16px 16px; }
       .game-meta { padding: 0 16px 12px; }
+      .game-score-row { gap: 10px; flex-wrap: wrap; justify-content: center; }
+      .score-item .s-val { font-size: 1.3rem; }
+      .diff-select { flex-wrap: wrap; gap: 6px; }
+      .diff-btn { padding: 8px 14px; font-size: .8rem; min-height: 44px; }
+      .question-box { padding: 18px 14px; }
+      .question-text { font-size: clamp(1.2rem, 4vw, 1.8rem); }
+      .answer-input { font-size: 1.1rem; padding: 12px; min-height: 48px; }
+      .opt-btn { padding: 12px; font-size: .95rem; min-height: 48px; }
+      .action-btn { min-height: 48px; font-size: .95rem; }
+      .result-emoji { font-size: 3rem; }
+      .result-title { font-size: 1.3rem; }
+      .xp-earned-badge { font-size: 1rem; padding: 8px 20px; }
+      .number-grid { gap: 6px; }
+      .num-tile { font-size: .9rem; border-radius: 8px; }
+      .memory-grid { gap: 6px; }
+      .mem-card { font-size: .75rem; border-radius: 8px; }
+      .mem-info { gap: 8px; }
+      .mem-stat .ms-val { font-size: 1.1rem; }
+      .bodmas-expr { font-size: clamp(1rem, 3.5vw, 1.5rem); }
+      .pct-visual { padding: 12px; }
     }
     @media (max-width: 540px) {
-      .modal-box { padding: 20px 14px; }
-      .answer-opts { grid-template-columns: 1fr; }
+      .modal-overlay { padding: 6px; padding-top: 3vh; }
+      .modal-box { padding: 18px 14px; max-height: 88vh; border-radius: 14px; }
+      .modal-box h2 { font-size: 1.15rem; padding-right: 30px; }
+      .modal-box .subtitle { font-size: .82rem; margin-bottom: 16px; }
+      .answer-opts { grid-template-columns: 1fr 1fr; gap: 8px; }
       .games-grid { grid-template-columns: 1fr; }
       .games-hero { padding: 36px 16px 24px; }
       .games-hero p { font-size: .9rem; }
       .player-bar { flex-direction: column; gap: 8px; padding: 12px; }
       .player-name-section input { width: 100%; max-width: 200px; min-height: 44px; }
       .player-name-section button { min-height: 44px; }
-      .score-item .s-val { font-size: 1.2rem; }
+      .score-item .s-val { font-size: 1.1rem; }
+      .score-item .s-label { font-size: .65rem; }
       .leaderboard-section { overflow-x: auto; -webkit-overflow-scrolling: touch; }
       .lb-table th { padding: 6px 8px; font-size: .7rem; }
       .lb-table td { padding: 8px 10px; font-size: .82rem; }
@@ -349,35 +375,62 @@
       .badge-pill { font-size: .8rem; padding: 4px 12px; }
       .fraction-display { font-size: 1.6rem; gap: 16px; }
       .number-grid { grid-template-columns: repeat(5, 1fr); gap: 5px; }
-      .num-tile { font-size: .8rem; }
+      .num-tile { font-size: .8rem; min-height: 40px; }
       .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 5px; }
-      .mem-card { font-size: .7rem; }
+      .mem-card { font-size: .7rem; min-height: 50px; }
       .badges-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
       .badge-card { padding: 12px 8px; }
       .badge-card .badge-emoji { font-size: 1.8rem; }
       .result-emoji { font-size: 2.5rem; }
-      .result-title { font-size: 1.2rem; }
+      .result-title { font-size: 1.15rem; }
+      .result-sub { font-size: .85rem; }
+      .xp-earned-badge { font-size: .9rem; padding: 6px 16px; }
+      .diff-select { gap: 5px; }
+      .diff-btn { padding: 7px 12px; font-size: .78rem; }
+      .question-box { padding: 14px 10px; margin-bottom: 14px; }
+      .progress-track { height: 5px; margin-bottom: 14px; }
+      .feedback-msg { font-size: .9rem; min-height: 24px; }
       .toast { max-width: 260px; font-size: .8rem; padding: 10px 14px; }
       #toast-container { bottom: 12px; right: 12px; }
     }
     @media (max-width: 380px) {
+      .modal-overlay { padding: 4px; padding-top: 2vh; }
+      .modal-box { padding: 14px 10px; border-radius: 12px; max-height: 90vh; }
+      .modal-box h2 { font-size: 1rem; }
+      .modal-box .subtitle { font-size: .75rem; margin-bottom: 12px; }
+      .modal-close { top: 8px; right: 10px; font-size: 1.4rem; }
       .games-hero h1 { font-size: 1.6rem; }
-      .modal-box { padding: 16px 10px; border-radius: 12px; }
-      .modal-box h2 { font-size: 1.1rem; }
-      .question-box { padding: 16px; }
-      .opt-btn { padding: 10px; font-size: .9rem; }
-      .action-btn { padding: 10px; font-size: .9rem; }
-      .answer-input { font-size: 1.1rem; padding: 10px 12px; }
-      .game-score-row { flex-wrap: wrap; gap: 8px; justify-content: center; }
+      .question-box { padding: 12px 8px; }
+      .question-text { font-size: clamp(1rem, 3.5vw, 1.4rem); }
+      .opt-btn { padding: 10px 8px; font-size: .85rem; min-height: 44px; }
+      .answer-opts { gap: 6px; }
+      .action-btn { padding: 10px; font-size: .88rem; min-height: 44px; }
+      .answer-input { font-size: 1rem; padding: 10px; min-height: 44px; }
+      .game-score-row { gap: 6px; }
+      .score-item .s-val { font-size: 1rem; }
+      .score-item .s-label { font-size: .6rem; }
       .number-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
-      .num-tile { font-size: .7rem; border-radius: 6px; }
+      .num-tile { font-size: .7rem; border-radius: 6px; min-height: 36px; }
       .memory-grid { gap: 4px; }
-      .mem-card { border-radius: 6px; font-size: .65rem; }
+      .mem-card { border-radius: 6px; font-size: .6rem; min-height: 44px; }
       .mem-card::before { font-size: .9rem; }
+      .mem-info { flex-wrap: wrap; gap: 6px; justify-content: center; }
+      .mem-stat .ms-val { font-size: 1rem; }
       .player-name-section input { width: 100%; max-width: 160px; font-size: .8rem; }
       .stat-chip { font-size: .75rem; padding: 4px 8px; }
       .games-wrapper { padding: 0 12px 40px; }
-      .fraction-display { gap: 10px; font-size: 1.4rem; }
+      .fraction-display { gap: 10px; font-size: 1.3rem; }
+      .frac span { font-size: .9em; }
+      .diff-select { gap: 4px; }
+      .diff-btn { padding: 6px 10px; font-size: .72rem; min-height: 40px; }
+      .result-emoji { font-size: 2rem; margin-bottom: 6px; }
+      .result-title { font-size: 1rem; }
+      .result-sub { font-size: .78rem; margin: 6px 0 14px; }
+      .xp-earned-badge { font-size: .85rem; padding: 6px 14px; margin-bottom: 14px; }
+      .bodmas-expr { font-size: clamp(.9rem, 3vw, 1.3rem); }
+      .int-expr { font-size: clamp(1rem, 3.5vw, 1.5rem); }
+      .pct-visual { padding: 10px; }
+      .pct-bar-wrap { height: 10px; }
       #toast-container { bottom: 10px; right: 10px; left: 10px; }
       .toast { max-width: 100%; }
     }
