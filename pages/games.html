@@ -172,28 +172,33 @@
 
     .modal-overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.85); z-index: 1000;
-      align-items: center; justify-content: center; padding: 16px;
+      background: rgba(0,0,0,.88); z-index: 1000;
+      align-items: flex-start; justify-content: center;
+      padding: 20px 12px; overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
     .modal-overlay.open { display: flex; }
+    body.modal-open { overflow: hidden !important; position: fixed; width: 100%; left: 0; }
 
     .modal-box {
       background: var(--card-bg); border: 1px solid #3a3a5a;
       border-radius: 18px; width: 100%; max-width: 520px;
-      max-height: 90vh; overflow-y: auto;
-      padding: 32px; position: relative;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 32px; position: relative; margin: auto 0;
       animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+      flex-shrink: 0;
     }
     @keyframes popIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .modal-close {
-      position: absolute; top: 16px; right: 20px;
-      background: none; border: none; color: var(--muted);
-      font-size: 1.4rem; cursor: pointer; transition: color .2s;
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(255,255,255,.08); border: none; color: #fff;
+      font-size: 1.5rem; cursor: pointer; transition: all .2s;
+      width: 44px; height: 44px; display: flex; align-items: center;
+      justify-content: center; border-radius: 50%; z-index: 2;
     }
-    .modal-close:hover { color: var(--text); }
+    .modal-close:hover { color: var(--text); background: rgba(255,255,255,.15); }
 
-    .modal-box h2 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 6px; color: var(--orange); }
+    .modal-box h2 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 6px; color: var(--orange); padding-right: 44px; }
     .modal-box .subtitle { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
 
     .game-score-row { display: flex; justify-content: space-between; margin-bottom: 18px; }
@@ -327,9 +332,8 @@
       .games-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
       .player-bar { padding: 12px 16px; }
       .stat-chip { padding: 5px 10px; font-size: .8rem; }
-      .modal-overlay { padding: 10px; align-items: flex-start; padding-top: 5vh; }
-      .modal-box { max-width: 95vw; padding: 24px 18px; max-height: 85vh; }
-      .modal-close { top: 10px; right: 14px; font-size: 1.6rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+      .modal-overlay { padding: 8px; }
+      .modal-box { max-width: 96vw; padding: 22px 16px; }
       .game-card-header { padding: 16px 16px 12px; }
       .game-card-body { padding: 0 16px 16px; }
       .game-meta { padding: 0 16px 12px; }
@@ -337,28 +341,19 @@
       .score-item .s-val { font-size: 1.3rem; }
       .diff-select { flex-wrap: wrap; gap: 6px; }
       .diff-btn { padding: 8px 14px; font-size: .8rem; min-height: 44px; }
-      .question-box { padding: 18px 14px; }
-      .question-text { font-size: clamp(1.2rem, 4vw, 1.8rem); }
-      .answer-input { font-size: 1.1rem; padding: 12px; min-height: 48px; }
       .opt-btn { padding: 12px; font-size: .95rem; min-height: 48px; }
       .action-btn { min-height: 48px; font-size: .95rem; }
-      .result-emoji { font-size: 3rem; }
-      .result-title { font-size: 1.3rem; }
-      .xp-earned-badge { font-size: 1rem; padding: 8px 20px; }
-      .number-grid { gap: 6px; }
-      .num-tile { font-size: .9rem; border-radius: 8px; }
-      .memory-grid { gap: 6px; }
-      .mem-card { font-size: .75rem; border-radius: 8px; }
-      .mem-info { gap: 8px; }
-      .mem-stat .ms-val { font-size: 1.1rem; }
-      .bodmas-expr { font-size: clamp(1rem, 3.5vw, 1.5rem); }
-      .pct-visual { padding: 12px; }
     }
     @media (max-width: 540px) {
-      .modal-overlay { padding: 6px; padding-top: 3vh; }
-      .modal-box { padding: 18px 14px; max-height: 88vh; border-radius: 14px; }
-      .modal-box h2 { font-size: 1.15rem; padding-right: 30px; }
+      .modal-overlay { padding: 0; }
+      .modal-box {
+        max-width: 100vw; width: 100vw; min-height: 100vh;
+        border-radius: 0; padding: 20px 16px 32px;
+        margin: 0; flex-shrink: 0;
+      }
+      .modal-box h2 { font-size: 1.15rem; padding-right: 50px; }
       .modal-box .subtitle { font-size: .82rem; margin-bottom: 16px; }
+      .modal-close { top: 14px; right: 14px; }
       .answer-opts { grid-template-columns: 1fr 1fr; gap: 8px; }
       .games-grid { grid-template-columns: 1fr; }
       .games-hero { padding: 36px 16px 24px; }
@@ -375,9 +370,9 @@
       .badge-pill { font-size: .8rem; padding: 4px 12px; }
       .fraction-display { font-size: 1.6rem; gap: 16px; }
       .number-grid { grid-template-columns: repeat(5, 1fr); gap: 5px; }
-      .num-tile { font-size: .8rem; min-height: 40px; }
-      .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 5px; }
-      .mem-card { font-size: .7rem; min-height: 50px; }
+      .num-tile { font-size: .85rem; min-height: 44px; }
+      .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .mem-card { font-size: .72rem; min-height: 52px; }
       .badges-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
       .badge-card { padding: 12px 8px; }
       .badge-card .badge-emoji { font-size: 1.8rem; }
@@ -387,21 +382,22 @@
       .xp-earned-badge { font-size: .9rem; padding: 6px 16px; }
       .diff-select { gap: 5px; }
       .diff-btn { padding: 7px 12px; font-size: .78rem; }
-      .question-box { padding: 14px 10px; margin-bottom: 14px; }
+      .question-box { padding: 16px 12px; margin-bottom: 14px; }
+      .question-text { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+      .answer-input { font-size: 1.1rem; padding: 12px; min-height: 48px; }
       .progress-track { height: 5px; margin-bottom: 14px; }
       .feedback-msg { font-size: .9rem; min-height: 24px; }
       .toast { max-width: 260px; font-size: .8rem; padding: 10px 14px; }
       #toast-container { bottom: 12px; right: 12px; }
     }
     @media (max-width: 380px) {
-      .modal-overlay { padding: 4px; padding-top: 2vh; }
-      .modal-box { padding: 14px 10px; border-radius: 12px; max-height: 90vh; }
+      .modal-box { padding: 16px 12px 28px; }
       .modal-box h2 { font-size: 1rem; }
       .modal-box .subtitle { font-size: .75rem; margin-bottom: 12px; }
-      .modal-close { top: 8px; right: 10px; font-size: 1.4rem; }
+      .modal-close { top: 10px; right: 10px; width: 40px; height: 40px; font-size: 1.3rem; }
       .games-hero h1 { font-size: 1.6rem; }
       .question-box { padding: 12px 8px; }
-      .question-text { font-size: clamp(1rem, 3.5vw, 1.4rem); }
+      .question-text { font-size: clamp(1rem, 4vw, 1.5rem); }
       .opt-btn { padding: 10px 8px; font-size: .85rem; min-height: 44px; }
       .answer-opts { gap: 6px; }
       .action-btn { padding: 10px; font-size: .88rem; min-height: 44px; }
@@ -410,9 +406,9 @@
       .score-item .s-val { font-size: 1rem; }
       .score-item .s-label { font-size: .6rem; }
       .number-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
-      .num-tile { font-size: .7rem; border-radius: 6px; min-height: 36px; }
+      .num-tile { font-size: .72rem; border-radius: 6px; min-height: 38px; }
       .memory-grid { gap: 4px; }
-      .mem-card { border-radius: 6px; font-size: .6rem; min-height: 44px; }
+      .mem-card { border-radius: 6px; font-size: .62rem; min-height: 46px; }
       .mem-card::before { font-size: .9rem; }
       .mem-info { flex-wrap: wrap; gap: 6px; justify-content: center; }
       .mem-stat .ms-val { font-size: 1rem; }
@@ -1722,8 +1718,19 @@ function toast(msg, color='#ff8c00') {
   setTimeout(() => el.remove(), 3200);
 }
 
-function openGame(id)  { document.getElementById('modal-'+id).classList.add('open'); }
-function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
+let _scrollY = 0;
+function openGame(id) {
+  _scrollY = window.scrollY;
+  document.body.classList.add('modal-open');
+  document.body.style.top = `-${_scrollY}px`;
+  document.getElementById('modal-'+id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById('modal-'+id).classList.remove('open');
+  document.body.classList.remove('modal-open');
+  document.body.style.top = '';
+  window.scrollTo(0, _scrollY);
+}
 
 const diffSettings = { sprint:'easy', integer:'easy', division:'easy' };
 function setDiff(game, val, btn) {
