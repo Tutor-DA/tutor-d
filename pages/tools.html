@@ -1303,6 +1303,17 @@ function switchCategory(cat, btn) {
   btn.classList.add(cat === 'learn' ? 'active-learn' : 'active-teach');
 }
 
+// Auto-switch to correct category when returning from a tool page
+(function() {
+  var savedCat = sessionStorage.getItem('toolCat');
+  if (savedCat) {
+    sessionStorage.removeItem('toolCat');
+    var btns = document.querySelectorAll('.cat-toggle-btn');
+    var targetBtn = savedCat === 'teach' ? btns[1] : btns[0];
+    if (targetBtn) switchCategory(savedCat, targetBtn);
+  }
+})();
+
 function switchTool(id) {
   // Hide the card grid, show the panels wrapper
   document.getElementById('learn-tool-panels').style.display = 'block';
