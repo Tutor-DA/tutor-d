@@ -467,6 +467,79 @@
   <div class="category-section active" id="section-learn">
 
   <!-- Learning Tool Cards Grid -->
+  <div class="teach-section-label">📄 Generators &amp; Practice</div>
+  <div class="teach-grid">
+    <div class="teach-card" style="cursor:pointer" onclick="switchTool('worksheet');scrollToPanel();">
+      <span class="tc-icon">📄</span>
+      <div class="tc-title">Worksheet Generator</div>
+      <div class="tc-desc">Select grade, topic, and difficulty — generate a beautifully formatted printable worksheet with answer key.</div>
+      <div class="tc-tags"><span class="tc-tag">Print Ready</span><span class="tc-tag">Answer Key</span><span class="tc-tag">Multi-Grade</span></div>
+    </div>
+    <a href="tool-times-table.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">✖</span>
+      <div class="tc-title">Times Table Trainer</div>
+      <div class="tc-desc">Interactive 12x12 grid, speed rounds, boss battles, match pairs memory game, achievements, and mastery heatmap.</div>
+      <div class="tc-tags"><span class="tc-tag">Boss Battle</span><span class="tc-tag">Speed Round</span><span class="tc-tag">Achievements</span></div>
+    </a>
+    <a href="tool-flashcard-drill.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🃏</span>
+      <div class="tc-title">Flashcard Drill</div>
+      <div class="tc-desc">Spaced repetition flashcards with SM-2 algorithm. 96 built-in cards across 6 topics. Track mastery, create custom decks.</div>
+      <div class="tc-tags"><span class="tc-tag">Spaced Repetition</span><span class="tc-tag">6 Topics</span><span class="tc-tag">Custom Decks</span></div>
+    </a>
+    <a href="tool-math-bingo.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🎯</span>
+      <div class="tc-title">Math Bingo</div>
+      <div class="tc-desc">Generate bingo cards with math problems. Self-checking answers, teacher caller system, win detection, and classroom print mode.</div>
+      <div class="tc-tags"><span class="tc-tag">Classroom</span><span class="tc-tag">Printable</span><span class="tc-tag">4 Difficulties</span></div>
+    </a>
+    <a href="tool-probability-sim.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🎲</span>
+      <div class="tc-title">Probability Simulator</div>
+      <div class="tc-desc">7 interactive simulations: coin flip, dice roll, card draw, Monty Hall, birthday paradox, random walk, and custom spinner.</div>
+      <div class="tc-tags"><span class="tc-tag">7 Simulations</span><span class="tc-tag">Convergence</span><span class="tc-tag">Charts</span></div>
+    </a>
+    <a href="tool-peer-challenge.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🏆</span>
+      <div class="tc-title">Peer Challenge</div>
+      <div class="tc-desc">60-second timed math challenges with streak multipliers, leaderboard, personal bests, and multiple difficulty levels.</div>
+      <div class="tc-tags"><span class="tc-tag">Timed</span><span class="tc-tag">Leaderboard</span><span class="tc-tag">Streaks</span></div>
+    </a>
+    <a href="tool-live-quiz.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🎮</span>
+      <div class="tc-title">Live Quiz Game</div>
+      <div class="tc-desc">Kahoot-style multiplayer quiz via PeerJS. Host on projector, players join on phones. Speed scoring, podium, sound effects.</div>
+      <div class="tc-tags"><span class="tc-tag">Multiplayer</span><span class="tc-tag">Real-Time</span><span class="tc-tag">Solo Mode</span></div>
+    </a>
+    <a href="tool-speed-math.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">⚡</span>
+      <div class="tc-title">Speed Math Sprint</div>
+      <div class="tc-desc">60-second rapid-fire arithmetic with progressive difficulty. Daily challenges, accuracy tracking, global-style leaderboard.</div>
+      <div class="tc-tags"><span class="tc-tag">60 Seconds</span><span class="tc-tag">Daily Challenge</span><span class="tc-tag">Progressive</span></div>
+    </a>
+    <a href="tool-math-crossword.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🧩</span>
+      <div class="tc-title">Math Crossword</div>
+      <div class="tc-desc">Crossword puzzles where clues are math problems. Auto-generated grids, 3 difficulty levels, timer, and hint system.</div>
+      <div class="tc-tags"><span class="tc-tag">Auto-Generated</span><span class="tc-tag">3 Levels</span><span class="tc-tag">Hints</span></div>
+    </a>
+    <a href="tool-mental-math.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🧠</span>
+      <div class="tc-title">Mental Math Trainer</div>
+      <div class="tc-desc">Train mental math with Vedic math tricks, estimation challenges, and progressive brain workouts. Track improvement over time.</div>
+      <div class="tc-tags"><span class="tc-tag">Vedic Math</span><span class="tc-tag">Estimation</span><span class="tc-tag">Brain Training</span></div>
+    </a>
+  </div>
+
   <div class="teach-section-label">🔧 Calculators &amp; Converters</div>
   <div class="teach-grid">
     <div class="teach-card" style="cursor:pointer" onclick="switchTool('unit');scrollToPanel();">
@@ -507,6 +580,55 @@
       <div class="tc-desc">Prime factorization with animated tree, GCD/LCM via Euclidean algorithm, Sieve of Eratosthenes, modular arithmetic, and divisibility tests.</div>
       <div class="tc-tags"><span class="tc-tag">Factor Tree</span><span class="tc-tag">Sieve</span><span class="tc-tag">Modular</span></div>
     </a>
+    <a href="tool-equation-solver.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🔍</span>
+      <div class="tc-title">Equation Solver</div>
+      <div class="tc-desc">Solve linear, quadratic, systems of equations, and inequalities with step-by-step working, multiple methods, and graphing.</div>
+      <div class="tc-tags"><span class="tc-tag">Step-by-Step</span><span class="tc-tag">Graphing</span><span class="tc-tag">5 Types</span></div>
+    </a>
+    <a href="tool-derivative-calc.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">d/dx</span>
+      <div class="tc-title">Derivative Calculator</div>
+      <div class="tc-desc">Symbolic differentiation with step-by-step rules, graph of f(x) and f'(x), tangent line evaluator, up to 5th order.</div>
+      <div class="tc-tags"><span class="tc-tag">Step-by-Step</span><span class="tc-tag">Graphing</span><span class="tc-tag">Tangent Line</span></div>
+    </a>
+    <a href="tool-integral-calc.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">∫</span>
+      <div class="tc-title">Integral Calculator</div>
+      <div class="tc-desc">Symbolic integration with rule-based engine. Power, trig, exponential, u-sub, by parts. Definite integrals with shaded area graph.</div>
+      <div class="tc-tags"><span class="tc-tag">Step-by-Step</span><span class="tc-tag">Area Graph</span><span class="tc-tag">12 Patterns</span></div>
+    </a>
+    <a href="tool-poly-division.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">÷</span>
+      <div class="tc-title">Polynomial Division</div>
+      <div class="tc-desc">Long division and synthetic division with animated steps. Remainder/factor theorems, rational root finder, and complete factorization.</div>
+      <div class="tc-tags"><span class="tc-tag">Long Division</span><span class="tc-tag">Synthetic</span><span class="tc-tag">Factor Theorem</span></div>
+    </a>
+    <a href="tool-ratio-proportion.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">⚖</span>
+      <div class="tc-title">Ratio &amp; Proportion</div>
+      <div class="tc-desc">Solve proportions, simplify ratios, divide quantities in given ratios, golden ratio explorer, and recipe scaler.</div>
+      <div class="tc-tags"><span class="tc-tag">Cross Multiply</span><span class="tc-tag">Golden Ratio</span><span class="tc-tag">Recipe Scaler</span></div>
+    </a>
+    <a href="tool-coordinate-geo.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">📍</span>
+      <div class="tc-title">Coordinate Geometry</div>
+      <div class="tc-desc">Distance, midpoint, slope, line equations, circle equations, intersection points — all plotted live on an interactive grid.</div>
+      <div class="tc-tags"><span class="tc-tag">Interactive Grid</span><span class="tc-tag">Lines &amp; Circles</span><span class="tc-tag">Step-by-Step</span></div>
+    </a>
+    <a href="tool-inequality-grapher.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">≤</span>
+      <div class="tc-title">Inequality Grapher</div>
+      <div class="tc-desc">Graph linear and quadratic inequalities in 2D with shaded feasible regions. Number line for 1D. Systems of inequalities.</div>
+      <div class="tc-tags"><span class="tc-tag">2D Shading</span><span class="tc-tag">Number Line</span><span class="tc-tag">Systems</span></div>
+    </a>
   </div>
 
   <div class="teach-section-label">📈 Graphing &amp; Visualization</div>
@@ -517,6 +639,13 @@
       <div class="tc-desc">Plot up to 4 functions simultaneously with custom view window. Presets for common functions like x², sin(x), 1/x.</div>
       <div class="tc-tags"><span class="tc-tag">Multi-Function</span><span class="tc-tag">Canvas</span></div>
     </div>
+    <a href="tool-graph-3d.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🌐</span>
+      <div class="tc-title">3D Function Visualizer</div>
+      <div class="tc-desc">Plot 3D surfaces z=f(x,y) with Plotly.js. 12 presets, multi-surface mode, partial derivatives, 7 color schemes.</div>
+      <div class="tc-tags"><span class="tc-tag">3D Surfaces</span><span class="tc-tag">12 Presets</span><span class="tc-tag">Derivatives</span></div>
+    </a>
     <a href="tool-trig-explorer.html" class="teach-card" style="text-decoration:none;color:inherit;">
       <span class="teach-status live">Try Now</span>
       <span class="tc-icon">∿</span>
@@ -545,16 +674,76 @@
       <div class="tc-desc">Interactive Venn diagrams for 2-3 sets. Union, intersection, complement, De Morgan's laws verification, and arbitrary expression evaluator.</div>
       <div class="tc-tags"><span class="tc-tag">Venn Diagrams</span><span class="tc-tag">De Morgan</span><span class="tc-tag">Expression Parser</span></div>
     </a>
-  </div>
-
-  <div class="teach-section-label">📄 Generators</div>
-  <div class="teach-grid">
-    <div class="teach-card" style="cursor:pointer" onclick="switchTool('worksheet');scrollToPanel();">
-      <span class="tc-icon">📄</span>
-      <div class="tc-title">Worksheet Generator</div>
-      <div class="tc-desc">Select grade, topic, and difficulty — generate a beautifully formatted printable worksheet with answer key.</div>
-      <div class="tc-tags"><span class="tc-tag">Print Ready</span><span class="tc-tag">Answer Key</span><span class="tc-tag">Multi-Grade</span></div>
-    </div>
+    <a href="tool-geometry-playground.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🔺</span>
+      <div class="tc-title">Geometry Playground</div>
+      <div class="tc-desc">Construct points, lines, circles, polygons. Measure distances, angles, areas. 5 interactive theorem demos with live formulas.</div>
+      <div class="tc-tags"><span class="tc-tag">Construction</span><span class="tc-tag">Theorems</span><span class="tc-tag">Interactive</span></div>
+    </a>
+    <a href="tool-complex-numbers.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">ℂ</span>
+      <div class="tc-title">Complex Numbers</div>
+      <div class="tc-desc">Argand diagram, rectangular/polar/exponential forms, operations with step-by-step, roots of unity, Euler's formula visualization.</div>
+      <div class="tc-tags"><span class="tc-tag">Argand Diagram</span><span class="tc-tag">Euler's Formula</span><span class="tc-tag">Operations</span></div>
+    </a>
+    <a href="tool-vector-calc.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">→</span>
+      <div class="tc-title">Vector Calculator</div>
+      <div class="tc-desc">2D/3D vector operations: add, subtract, dot/cross product, magnitude, projection. Interactive draggable visualizations.</div>
+      <div class="tc-tags"><span class="tc-tag">2D &amp; 3D</span><span class="tc-tag">10 Operations</span><span class="tc-tag">Draggable</span></div>
+    </a>
+    <a href="tool-sequence-analyzer.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">1,1,2,3</span>
+      <div class="tc-title">Sequence Analyzer</div>
+      <div class="tc-desc">Detect arithmetic, geometric, quadratic, Fibonacci patterns. Series sums, convergence tests, famous sequences, and practice mode.</div>
+      <div class="tc-tags"><span class="tc-tag">Pattern Detection</span><span class="tc-tag">Convergence</span><span class="tc-tag">Practice</span></div>
+    </a>
+    <a href="tool-base-converter.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">01</span>
+      <div class="tc-title">Number Base Explorer</div>
+      <div class="tc-desc">Convert between binary, octal, decimal, hex with step-by-step. Bit visualizer, base arithmetic, ASCII table, and practice mode.</div>
+      <div class="tc-tags"><span class="tc-tag">7 Tabs</span><span class="tc-tag">Bit Visualizer</span><span class="tc-tag">ASCII</span></div>
+    </a>
+    <a href="tool-formula-sheet.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">📋</span>
+      <div class="tc-title">Formula Sheet Builder</div>
+      <div class="tc-desc">Drag-and-drop formula cards from 6 categories. Build custom cheat sheets, add personal notes, export as PDF.</div>
+      <div class="tc-tags"><span class="tc-tag">Drag &amp; Drop</span><span class="tc-tag">PDF Export</span><span class="tc-tag">60+ Formulas</span></div>
+    </a>
+    <a href="tool-truth-table.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">⊤⊥</span>
+      <div class="tc-title">Truth Table Generator</div>
+      <div class="tc-desc">Generate truth tables for logical expressions. AND, OR, NOT, XOR, NAND, NOR, implication. Circuit diagram visualization.</div>
+      <div class="tc-tags"><span class="tc-tag">Logic Gates</span><span class="tc-tag">Expressions</span><span class="tc-tag">Circuits</span></div>
+    </a>
+    <a href="tool-math-dictionary.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">📖</span>
+      <div class="tc-title">Math Dictionary</div>
+      <div class="tc-desc">300+ math terms with definitions, formulas, visual examples, and related concepts. Search, browse by topic, or explore A-Z.</div>
+      <div class="tc-tags"><span class="tc-tag">300+ Terms</span><span class="tc-tag">Visual Examples</span><span class="tc-tag">A-Z Browse</span></div>
+    </a>
+    <a href="tool-pattern-finder.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🔮</span>
+      <div class="tc-title">Pattern Finder</div>
+      <div class="tc-desc">Explore visual number patterns: Pascal's triangle, Fibonacci spiral, magic squares, number grids, and fractal generators.</div>
+      <div class="tc-tags"><span class="tc-tag">Pascal's Triangle</span><span class="tc-tag">Fractals</span><span class="tc-tag">Magic Squares</span></div>
+    </a>
+    <a href="tool-math-timeline.html" class="teach-card" style="text-decoration:none;color:inherit;">
+      <span class="teach-status live">Try Now</span>
+      <span class="tc-icon">🕰</span>
+      <div class="tc-title">Math History Timeline</div>
+      <div class="tc-desc">Interactive timeline of mathematical discoveries from ancient civilizations to modern breakthroughs. Mathematician bios and key theorems.</div>
+      <div class="tc-tags"><span class="tc-tag">Interactive</span><span class="tc-tag">50+ Events</span><span class="tc-tag">Bios</span></div>
+    </a>
   </div>
 
   <!-- Tool Panels (hidden by default, shown when card clicked) -->

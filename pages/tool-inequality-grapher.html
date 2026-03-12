@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Inequality Grapher | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/><link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>MathJax={tex:{inlineMath:[['$','$']]},startup:{typeset:false}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1000px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.tabs{display:flex;gap:6px;margin-bottom:20px}
+.tab-btn{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-family:Poppins;font-size:.85rem;cursor:pointer;transition:all .3s;text-align:center}
+.tab-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.input-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:end}
+.input-group{flex:1;min-width:150px}
+.input-group label{display:block;font-size:.75rem;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.input-group input{width:100%;padding:10px;background:rgba(17,17,37,.8);border:1px solid var(--border);border-radius:8px;color:#e8e8ff;font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none}
+.input-group input:focus{border-color:var(--cyan)}
+.btn{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:Poppins;font-size:.85rem;cursor:pointer;transition:all .2s;margin:2px}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border:none;font-weight:600}
+canvas{background:#0a0a18;border-radius:12px;border:1px solid var(--border);display:block;width:100%;margin-top:12px}
+.examples{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.ex-chip{padding:6px 12px;border:1px solid var(--border);border-radius:20px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace}
+.ex-chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.step{padding:8px;margin:6px 0;border-left:3px solid var(--cyan);background:rgba(0,229,255,.03);border-radius:0 8px 8px 0;font-size:.82rem}
+@media(max-width:600px){h1{font-size:1.5rem}.tabs{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+<div class="wrapper">
+<h1>≤ Inequality Grapher</h1>
+<p class="subtitle">Graph inequalities on number lines and coordinate planes</p>
+<div class="tabs">
+  <button class="tab-btn active" onclick="sw('1d',this)">Number Line (1D)</button>
+  <button class="tab-btn" onclick="sw('2d',this)">2D Inequalities</button>
+  <button class="tab-btn" onclick="sw('sys',this)">Systems & LP</button>
+</div>
+
+<!-- 1D -->
+<div class="tab-content active" id="tab-1d">
+<div class="card">
+  <div class="examples">
+    <span class="ex-chip" onclick="document.getElementById('ineq1d').value='x > 3';graph1D()">x > 3</span>
+    <span class="ex-chip" onclick="document.getElementById('ineq1d').value='x <= -2';graph1D()">x ≤ -2</span>
+    <span class="ex-chip" onclick="document.getElementById('ineq1d').value='-1 < x <= 5';graph1D()">-1 < x ≤ 5</span>
+    <span class="ex-chip" onclick="document.getElementById('ineq1d').value='2x + 1 > 7';graph1D()">2x + 1 > 7</span>
+  </div>
+  <div class="input-row">
+    <div class="input-group"><label>Inequality</label><input id="ineq1d" value="x > 3" placeholder="e.g. x > 3, -1 < x <= 5"></div>
+    <button class="btn btn-primary" onclick="graph1D()">Graph</button>
+  </div>
+  <canvas id="canvas1d" width="700" height="120"></canvas>
+  <div id="result1d" style="margin-top:12px"></div>
+</div>
+</div>
+
+<!-- 2D -->
+<div class="tab-content" id="tab-2d">
+<div class="card">
+  <div class="examples">
+    <span class="ex-chip" onclick="document.getElementById('ineq2d').value='y > 2x + 1';graph2D()">y > 2x + 1</span>
+    <span class="ex-chip" onclick="document.getElementById('ineq2d').value='y <= -x + 3';graph2D()">y ≤ -x + 3</span>
+    <span class="ex-chip" onclick="document.getElementById('ineq2d').value='y >= x^2 - 4';graph2D()">y ≥ x² - 4</span>
+  </div>
+  <div class="input-row">
+    <div class="input-group"><label>Inequality</label><input id="ineq2d" value="y > 2x + 1" placeholder="e.g. y > 2x + 1"></div>
+    <button class="btn btn-primary" onclick="graph2D()">Graph</button>
+  </div>
+  <canvas id="canvas2d" width="600" height="600"></canvas>
+</div>
+</div>
+
+<!-- Systems -->
+<div class="tab-content" id="tab-sys">
+<div class="card">
+  <div class="examples">
+    <span class="ex-chip" onclick="setSys()">x+y≤10, x≥0, y≥0, 2x+y≤14</span>
+  </div>
+  <div id="sys-inputs">
+    <div class="input-row"><div class="input-group"><label>Inequality 1</label><input class="sys-ineq" value="x + y <= 10"></div></div>
+    <div class="input-row"><div class="input-group"><label>Inequality 2</label><input class="sys-ineq" value="2x + y <= 14"></div></div>
+    <div class="input-row"><div class="input-group"><label>Inequality 3</label><input class="sys-ineq" value="x >= 0"></div></div>
+    <div class="input-row"><div class="input-group"><label>Inequality 4</label><input class="sys-ineq" value="y >= 0"></div></div>
+  </div>
+  <div class="input-row">
+    <div class="input-group"><label>Objective (optional)</label><input id="objective" value="3x + 2y" placeholder="e.g. 3x + 2y"></div>
+    <button class="btn btn-primary" onclick="graphSystem()">Graph System</button>
+  </div>
+  <canvas id="canvasSys" width="600" height="600"></canvas>
+  <div id="sys-result" style="margin-top:12px"></div>
+</div>
+</div>
+</div>
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+function sw(id,btn){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active')}
+
+// 1D Number Line
+function graph1D(){
+  const expr=document.getElementById('ineq1d').value.trim();
+  const c=document.getElementById('canvas1d');const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const ox=350,scale=30,y=60;
+  // Draw number line
+  ctx.strokeStyle='rgba(148,163,184,.5)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(20,y);ctx.lineTo(680,y);ctx.stroke();
+  // Ticks
+  ctx.fillStyle='rgba(148,163,184,.6)';ctx.font='11px JetBrains Mono';ctx.textAlign='center';
+  for(let i=-10;i<=10;i++){const x=ox+i*scale;ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x,y+6);ctx.stroke();ctx.fillText(i,x,y+20)}
+  // Parse simple inequalities
+  let bounds=parseInequality(expr);
+  if(!bounds)return;
+  // Draw shading
+  ctx.fillStyle='rgba(0,229,255,.2)';
+  if(bounds.type==='gt'){
+    ctx.fillRect(ox+bounds.val*scale,y-15,680-(ox+bounds.val*scale),30);
+    drawCircle(ctx,ox+bounds.val*scale,y,6,bounds.strict);
+  }else if(bounds.type==='lt'){
+    ctx.fillRect(20,y-15,(ox+bounds.val*scale)-20,30);
+    drawCircle(ctx,ox+bounds.val*scale,y,6,bounds.strict);
+  }else if(bounds.type==='range'){
+    const x1=ox+bounds.lo*scale,x2=ox+bounds.hi*scale;
+    ctx.fillRect(x1,y-15,x2-x1,30);
+    drawCircle(ctx,x1,y,6,bounds.loStrict);
+    drawCircle(ctx,x2,y,6,bounds.hiStrict);
+  }
+  document.getElementById('result1d').innerHTML='<div class="step">Solution: '+expr+'</div>';
+}
+
+function parseInequality(expr){
+  expr=expr.replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/\s+/g,'');
+  // Range: a < x <= b
+  let m=expr.match(/(-?[\d.]+)([<>]=?)x([<>]=?)(-?[\d.]+)/);
+  if(m)return{type:'range',lo:parseFloat(m[1]),loStrict:!m[2].includes('='),hi:parseFloat(m[4]),hiStrict:!m[3].includes('=')};
+  // Simple: x > a, x >= a
+  m=expr.match(/x\s*([<>]=?)\s*(-?[\d.]+)/);
+  if(m){const v=parseFloat(m[2]);if(m[1].includes('>'))return{type:'gt',val:v,strict:!m[1].includes('=')};return{type:'lt',val:v,strict:!m[1].includes('=')};}
+  // Linear: ax + b > c
+  m=expr.match(/(-?[\d.]*)x\s*([+-]\s*[\d.]+)\s*([<>]=?)\s*(-?[\d.]+)/);
+  if(m){const a=parseFloat(m[1]||'1'),b=parseFloat(m[2].replace(/\s/g,'')),c=parseFloat(m[4]);const val=(c-b)/a;const flip=a<0;const op=m[3];if(op.includes('>')&&!flip||op.includes('<')&&flip)return{type:'gt',val,strict:!op.includes('=')};return{type:'lt',val,strict:!op.includes('=')};}
+  return null;
+}
+
+function drawCircle(ctx,x,y,r,open){
+  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+  if(open){ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#0a0a18';ctx.fill()}
+  else{ctx.fillStyle='#00e5ff';ctx.fill()}
+}
+
+// 2D
+function graph2D(){
+  const expr=document.getElementById('ineq2d').value.trim();
+  const c=document.getElementById('canvas2d');const ctx=c.getContext('2d');
+  const w=c.width,h=c.height,ox=w/2,oy=h/2,s=30;
+  ctx.clearRect(0,0,w,h);
+  // Grid
+  ctx.strokeStyle='rgba(30,30,58,.5)';ctx.lineWidth=1;
+  for(let i=-10;i<=10;i++){ctx.beginPath();ctx.moveTo(ox+i*s,0);ctx.lineTo(ox+i*s,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,oy-i*s);ctx.lineTo(w,oy-i*s);ctx.stroke()}
+  ctx.strokeStyle='rgba(148,163,184,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(w,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+  // Parse and shade
+  const parsed=parse2D(expr);
+  if(!parsed)return;
+  // Shade using pixel sampling
+  const imgData=ctx.getImageData(0,0,w,h);
+  for(let px=0;px<w;px+=2){
+    for(let py=0;py<h;py+=2){
+      const x=(px-ox)/s,y=(oy-py)/s;
+      const yVal=parsed.fn(x);
+      let inRegion=false;
+      if(parsed.op==='>')inRegion=y>yVal;
+      else if(parsed.op==='>=')inRegion=y>=yVal;
+      else if(parsed.op==='<')inRegion=y<yVal;
+      else if(parsed.op==='<=')inRegion=y<=yVal;
+      if(inRegion){
+        const idx=(py*w+px)*4;
+        imgData.data[idx]=0;imgData.data[idx+1]=229;imgData.data[idx+2]=255;imgData.data[idx+3]=40;
+        const idx2=(py*w+px+1)*4;
+        imgData.data[idx2]=0;imgData.data[idx2+1]=229;imgData.data[idx2+2]=255;imgData.data[idx2+3]=40;
+      }
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  // Redraw axes on top
+  ctx.strokeStyle='rgba(148,163,184,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(w,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+  // Draw boundary
+  ctx.beginPath();ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;
+  if(parsed.op==='>'||parsed.op==='<')ctx.setLineDash([6,4]);else ctx.setLineDash([]);
+  for(let px=0;px<w;px++){
+    const x=(px-ox)/s;const yVal=parsed.fn(x);const py=oy-yVal*s;
+    if(px===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.stroke();ctx.setLineDash([]);
+}
+
+function parse2D(expr){
+  expr=expr.replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/\s+/g,'');
+  const m=expr.match(/y\s*([<>]=?)\s*(.+)/);
+  if(!m)return null;
+  const op=m[1];let fnStr=m[2].replace(/\^/g,'**').replace(/(\d)(x)/g,'$1*$2');
+  try{const fn=new Function('x','return '+fnStr);fn(1);return{op,fn}}catch(e){return null}
+}
+
+// Systems
+function setSys(){
+  const inputs=document.querySelectorAll('.sys-ineq');
+  const vals=['x + y <= 10','2x + y <= 14','x >= 0','y >= 0'];
+  inputs.forEach((inp,i)=>{if(vals[i])inp.value=vals[i]});
+}
+
+function graphSystem(){
+  const inputs=document.querySelectorAll('.sys-ineq');
+  const ineqs=[];
+  inputs.forEach(inp=>{if(inp.value.trim())ineqs.push(inp.value.trim())});
+
+  const c=document.getElementById('canvasSys');const ctx=c.getContext('2d');
+  const w=c.width,h=c.height,ox=w/2,oy=h/2,s=30;
+  ctx.clearRect(0,0,w,h);
+  // Grid
+  ctx.strokeStyle='rgba(30,30,58,.5)';ctx.lineWidth=1;
+  for(let i=-10;i<=10;i++){ctx.beginPath();ctx.moveTo(ox+i*s,0);ctx.lineTo(ox+i*s,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,oy-i*s);ctx.lineTo(w,oy-i*s);ctx.stroke()}
+  ctx.strokeStyle='rgba(148,163,184,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(w,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+
+  const parsedIneqs=ineqs.map(parseSysIneq).filter(Boolean);
+  // Shade feasible
+  const imgData=ctx.getImageData(0,0,w,h);
+  for(let px=0;px<w;px+=2){
+    for(let py=0;py<h;py+=2){
+      const x=(px-ox)/s,y=(oy-py)/s;
+      let feasible=true;
+      for(const iq of parsedIneqs){
+        const lhs=iq.a*x+iq.b*y;
+        if(iq.op==='<='){if(lhs>iq.c+.001)feasible=false}
+        else if(iq.op==='>='){if(lhs<iq.c-.001)feasible=false}
+        else if(iq.op==='<'){if(lhs>=iq.c)feasible=false}
+        else if(iq.op==='>'){if(lhs<=iq.c)feasible=false}
+      }
+      if(feasible){
+        const idx=(py*w+px)*4;
+        imgData.data[idx]=0;imgData.data[idx+1]=229;imgData.data[idx+2]=255;imgData.data[idx+3]=50;
+      }
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+  // Redraw axes
+  ctx.strokeStyle='rgba(148,163,184,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(w,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+  // Draw lines
+  const colors=['#00e5ff','#a855f7','#ec4899','#facc15'];
+  parsedIneqs.forEach((iq,i)=>{
+    ctx.strokeStyle=colors[i%4];ctx.lineWidth=2;
+    if(iq.op==='>'||iq.op==='<')ctx.setLineDash([6,4]);else ctx.setLineDash([]);
+    ctx.beginPath();
+    if(Math.abs(iq.b)>.001){
+      for(let px=0;px<w;px++){const x=(px-ox)/s;const y=(iq.c-iq.a*x)/iq.b;const py=oy-y*s;if(px===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}
+    }else{
+      const x=iq.c/iq.a;const px=ox+x*s;ctx.moveTo(px,0);ctx.lineTo(px,h);
+    }
+    ctx.stroke();ctx.setLineDash([]);
+  });
+
+  // Find corner points & optimize
+  let html='';
+  const obj=document.getElementById('objective').value.trim();
+  if(obj&&parsedIneqs.length>=2){
+    const corners=findCorners(parsedIneqs);
+    if(corners.length){
+      html+='<div class="step">Corner points: '+corners.map(c=>'('+c.x.toFixed(1)+', '+c.y.toFixed(1)+')').join(', ')+'</div>';
+      // Plot corners
+      corners.forEach(pt=>{
+        const px=ox+pt.x*s,py=oy-pt.y*s;
+        ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fillStyle='var(--gold)';ctx.fill();
+      });
+      // Evaluate objective
+      const om=obj.replace(/\s+/g,'').match(/(-?[\d.]*)x\s*([+-]\s*[\d.]*)y/);
+      if(om){
+        const ca=parseFloat(om[1]||'1'),cb=parseFloat(om[2].replace(/\s/g,'')||'1');
+        let best=null,bestVal=-Infinity;
+        corners.forEach(pt=>{const v=ca*pt.x+cb*pt.y;if(v>bestVal){bestVal=v;best=pt}});
+        html+='<div class="step" style="border-color:var(--gold)">Maximize '+obj+' = <strong>'+bestVal.toFixed(2)+'</strong> at ('+best.x.toFixed(1)+', '+best.y.toFixed(1)+')</div>';
+      }
+    }
+  }
+  document.getElementById('sys-result').innerHTML=html;
+}
+
+function parseSysIneq(expr){
+  expr=expr.replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/\s+/g,'');
+  // ax + by op c
+  let a=0,b=0,c=0,op='<=';
+  const m=expr.match(/^(.+?)(<=|>=|<|>)(.+)$/);
+  if(!m)return null;
+  op=m[2];c=parseFloat(m[3]);
+  const lhs=m[1];
+  const xm=lhs.match(/(-?[\d.]*)x/);if(xm)a=parseFloat(xm[1]||'1')||(xm[1]==='-'?-1:1);
+  const ym=lhs.match(/(-?[\d.]*)y/);if(ym)b=parseFloat(ym[1]||'1')||(ym[1]==='-'?-1:1);
+  return{a,b,c,op};
+}
+
+function findCorners(ineqs){
+  const corners=[];
+  for(let i=0;i<ineqs.length;i++){
+    for(let j=i+1;j<ineqs.length;j++){
+      const{a:a1,b:b1,c:c1}=ineqs[i];
+      const{a:a2,b:b2,c:c2}=ineqs[j];
+      const det=a1*b2-a2*b1;
+      if(Math.abs(det)<.001)continue;
+      const x=(c1*b2-c2*b1)/det;
+      const y=(a1*c2-a2*c1)/det;
+      // Check feasibility
+      let feasible=true;
+      for(const iq of ineqs){
+        const lhs=iq.a*x+iq.b*y;
+        if(iq.op==='<='&&lhs>iq.c+.01)feasible=false;
+        if(iq.op==='>='&&lhs<iq.c-.01)feasible=false;
+      }
+      if(feasible)corners.push({x,y});
+    }
+  }
+  return corners;
+}
+
+graph1D();
+</script>
+</body>
+</html>

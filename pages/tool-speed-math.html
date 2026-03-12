@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Speed Math Sprint | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/>
+<link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent),radial-gradient(1px 1px at 90px 40px,#ffffff22,transparent),radial-gradient(1px 1px at 130px 80px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:900px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2.2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:30px;font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:20px}
+.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.setup-label{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.mode-btns,.diff-btns{display:flex;gap:8px;flex-wrap:wrap}
+.mode-btn,.diff-btn{flex:1;min-width:100px;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:'Poppins',sans-serif;font-size:.85rem;cursor:pointer;transition:all .3s;text-align:center}
+.mode-btn.active{border-color:var(--cyan);background:rgba(0,229,255,.1);color:var(--cyan)}
+.diff-btn.active{border-color:var(--purple);background:rgba(168,85,247,.1);color:var(--purple)}
+.mode-btn:hover,.diff-btn:hover{border-color:var(--cyan)}
+.start-btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:transform .2s}
+.start-btn:hover{transform:scale(1.02)}
+/* Game screen */
+#game-screen{display:none}
+.game-hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.hud-item{text-align:center}
+.hud-label{font-size:.7rem;color:var(--muted);text-transform:uppercase}
+.hud-value{font-family:'Orbitron',sans-serif;font-size:1.4rem;color:var(--cyan)}
+.timer-wrap{position:relative;width:120px;height:120px;margin:0 auto 20px}
+.timer-svg{transform:rotate(-90deg)}
+.timer-circle{fill:none;stroke:var(--border);stroke-width:6}
+.timer-progress{fill:none;stroke:var(--cyan);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .3s,stroke .3s}
+.timer-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:1.8rem;color:var(--cyan)}
+.problem-display{text-align:center;font-family:'Orbitron',sans-serif;font-size:3rem;margin:20px 0;min-height:80px;display:flex;align-items:center;justify-content:center}
+.answer-input{display:block;width:200px;margin:0 auto 20px;padding:14px;background:rgba(17,17,37,.8);border:2px solid var(--border);border-radius:12px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:1.5rem;text-align:center;outline:none;transition:border-color .3s}
+.answer-input:focus{border-color:var(--cyan)}
+.streak-display{text-align:center;font-size:1.2rem;min-height:30px;margin-bottom:10px}
+.combo{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:.9rem}
+.lives{text-align:center;font-size:1.5rem;margin-bottom:10px}
+/* Floating points */
+.float-points{position:absolute;font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.2rem;pointer-events:none;animation:floatUp 1s ease-out forwards;z-index:10}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.3)}}
+/* Flash effects */
+.flash-correct{animation:flashGreen .4s}
+@keyframes flashGreen{0%{background:rgba(34,197,94,.3)}100%{background:transparent}}
+.flash-wrong{animation:flashRed .4s}
+@keyframes flashRed{0%{background:rgba(239,68,68,.3);transform:translateX(-5px)}25%{transform:translateX(5px)}50%{transform:translateX(-5px)}75%{transform:translateX(5px)}100%{background:transparent;transform:translateX(0)}}
+/* Results */
+#result-screen{display:none}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.result-item{background:rgba(0,229,255,.05);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.result-item .val{font-family:'Orbitron',sans-serif;font-size:1.5rem;color:var(--cyan)}
+.result-item .lbl{font-size:.75rem;color:var(--muted);margin-top:4px}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.btn{padding:12px 28px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:'Poppins',sans-serif;font-size:.9rem;cursor:pointer;transition:all .3s}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border:none;font-weight:600}
+/* Calendar */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:.75rem;background:rgba(17,17,37,.5);border:1px solid var(--border);color:var(--muted)}
+.cal-day.completed{background:rgba(0,229,255,.15);border-color:var(--cyan);color:var(--cyan)}
+.cal-day.today{border-color:var(--gold);color:var(--gold)}
+.cal-header{font-size:.7rem;color:var(--muted);text-align:center;padding:4px}
+/* Leaderboard */
+.lb-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.lb-table th{text-align:left;color:var(--muted);font-size:.7rem;text-transform:uppercase;padding:8px;border-bottom:1px solid var(--border)}
+.lb-table td{padding:8px;border-bottom:1px solid rgba(30,30,58,.5)}
+.lb-table .rank{color:var(--gold);font-family:'Orbitron',sans-serif}
+@media(max-width:600px){
+  h1{font-size:1.5rem}
+  .setup-grid{grid-template-columns:1fr}
+  .problem-display{font-size:2rem}
+  .result-grid{grid-template-columns:1fr 1fr}
+  .timer-wrap{width:90px;height:90px}
+  .timer-text{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+
+<div class="wrapper">
+<h1>⚡ Speed Math Sprint</h1>
+<p class="subtitle">How fast is your mental math? Race against the clock!</p>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+<div class="card">
+  <div class="setup-grid">
+    <div>
+      <div class="setup-label">Game Mode</div>
+      <div class="mode-btns">
+        <button class="mode-btn active" onclick="setMode('classic',this)">🕐 Classic<br><small>60 seconds</small></button>
+        <button class="mode-btn" onclick="setMode('marathon',this)">❤️ Marathon<br><small>3 lives</small></button>
+        <button class="mode-btn" onclick="setMode('daily',this)">📅 Daily<br><small>Same for all</small></button>
+      </div>
+    </div>
+    <div>
+      <div class="setup-label">Difficulty</div>
+      <div class="diff-btns">
+        <button class="diff-btn active" onclick="setDiff('easy',this)">Easy</button>
+        <button class="diff-btn" onclick="setDiff('medium',this)">Medium</button>
+        <button class="diff-btn" onclick="setDiff('hard',this)">Hard</button>
+        <button class="diff-btn" onclick="setDiff('expert',this)">Expert</button>
+      </div>
+    </div>
+  </div>
+  <button class="start-btn" onclick="startGame()">START SPRINT</button>
+</div>
+
+<!-- Personal Bests -->
+<div class="card" id="pb-card">
+  <div class="setup-label">🏆 Personal Bests</div>
+  <table class="lb-table" id="pb-table"><thead><tr><th>Mode</th><th>Difficulty</th><th>Score</th><th>Accuracy</th></tr></thead><tbody id="pb-body"></tbody></table>
+</div>
+
+<!-- Daily Calendar -->
+<div class="card" id="daily-card" style="display:none">
+  <div class="setup-label">📅 Daily Challenge Calendar</div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:6px">
+    <div class="cal-header">Sun</div><div class="cal-header">Mon</div><div class="cal-header">Tue</div><div class="cal-header">Wed</div><div class="cal-header">Thu</div><div class="cal-header">Fri</div><div class="cal-header">Sat</div>
+  </div>
+  <div class="calendar-grid" id="calendar"></div>
+</div>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen">
+<div class="card" id="game-card" style="position:relative;overflow:hidden">
+  <div class="game-hud">
+    <div class="hud-item"><div class="hud-label">Score</div><div class="hud-value" id="hud-score">0</div></div>
+    <div class="hud-item"><div class="hud-label">Correct</div><div class="hud-value" id="hud-correct">0</div></div>
+    <div class="hud-item"><div class="hud-label">Wrong</div><div class="hud-value" id="hud-wrong" style="color:var(--pink)">0</div></div>
+    <div class="hud-item" id="hud-lives-wrap" style="display:none"><div class="hud-label">Lives</div><div class="hud-value" id="hud-lives">❤️❤️❤️</div></div>
+  </div>
+  <div class="timer-wrap" id="timer-wrap">
+    <svg class="timer-svg" width="120" height="120" viewBox="0 0 120 120">
+      <circle class="timer-circle" cx="60" cy="60" r="54"/>
+      <circle class="timer-progress" id="timer-ring" cx="60" cy="60" r="54" stroke-dasharray="339.292" stroke-dashoffset="0"/>
+    </svg>
+    <div class="timer-text" id="timer-text">60</div>
+  </div>
+  <div class="streak-display" id="streak-display"></div>
+  <div class="problem-display" id="problem"></div>
+  <input type="text" class="answer-input" id="answer-input" autocomplete="off" inputmode="numeric" placeholder="?">
+  <div class="combo" id="combo"></div>
+</div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen">
+<div class="card">
+  <h2 style="text-align:center;font-family:Orbitron;color:var(--gold);margin-bottom:20px" id="result-title">🎉 Sprint Complete!</h2>
+  <div class="result-grid">
+    <div class="result-item"><div class="val" id="r-score">0</div><div class="lbl">Score</div></div>
+    <div class="result-item"><div class="val" id="r-correct">0</div><div class="lbl">Correct</div></div>
+    <div class="result-item"><div class="val" id="r-accuracy">0%</div><div class="lbl">Accuracy</div></div>
+    <div class="result-item"><div class="val" id="r-ppm">0</div><div class="lbl">Problems/Min</div></div>
+    <div class="result-item"><div class="val" id="r-streak">0</div><div class="lbl">Best Streak</div></div>
+    <div class="result-item"><div class="val" id="r-time">0s</div><div class="lbl">Time</div></div>
+  </div>
+  <div id="new-best" style="text-align:center;color:var(--gold);font-family:Orbitron;font-size:1.2rem;display:none">🏆 NEW PERSONAL BEST!</div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="startGame()">Play Again</button>
+    <button class="btn" onclick="showSetup()">Change Settings</button>
+  </div>
+</div>
+</div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7;transition:opacity .3s">🔝</div>
+
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+let mode='classic',diff='easy',score=0,correct=0,wrong=0,streak=0,bestStreak=0,combo=1;
+let timeLeft=60,timer=null,lives=3,problems=[],probIdx=0,totalAnswered=0,gameStart=0;
+let currentAnswer=0,progressLevel=0;
+
+const audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+function beep(freq,dur,type='sine'){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=.15;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur/1000);o.stop(audioCtx.currentTime+dur/1000)}
+function sndCorrect(){beep(660,80);setTimeout(()=>beep(880,80),80)}
+function sndWrong(){beep(200,150,'square')}
+function sndTick(){beep(880,30)}
+function sndFanfare(){beep(523,100);setTimeout(()=>beep(659,100),100);setTimeout(()=>beep(784,100),200);setTimeout(()=>beep(1047,200),300)}
+
+function setMode(m,btn){mode=m;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('daily-card').style.display=m==='daily'?'block':'none';if(m==='daily')renderCalendar()}
+function setDiff(d,btn){diff=d;document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+
+function genProblem(level){
+  let a,b,op,ans,text;
+  const l=Math.min(level,20);
+  if(diff==='easy'){
+    a=randInt(1+l,10+l*2);b=randInt(1,10+l);
+    if(Math.random()<.5){op='+';ans=a+b;text=a+' + '+b}
+    else{if(a<b)[a,b]=[b,a];op='-';ans=a-b;text=a+' − '+b}
+  }else if(diff==='medium'){
+    a=randInt(2+Math.floor(l/3),12);b=randInt(2,12);
+    if(Math.random()<.6){ans=a*b;text=a+' × '+b}
+    else{ans=a;text=(a*b)+' ÷ '+b}
+  }else if(diff==='hard'){
+    const ops=['+','-','×','÷'];op=ops[randInt(0,3)];
+    if(op==='+'){a=randInt(10+l*5,50+l*10);b=randInt(10,50+l*5);ans=a+b;text=a+' + '+b}
+    else if(op==='-'){a=randInt(30+l*5,100+l*10);b=randInt(10,a);ans=a-b;text=a+' − '+b}
+    else if(op==='×'){a=randInt(3+l,15+l);b=randInt(2,12);ans=a*b;text=a+' × '+b}
+    else{b=randInt(2,12);ans=randInt(2+l,20+l);a=ans*b;text=a+' ÷ '+b}
+  }else{
+    const r=Math.random();
+    if(r<.3){a=randInt(4+l,20+l);ans=a*a;text=a+'²'}
+    else if(r<.5){a=randInt(2,15);ans=a;text='√'+a*a}
+    else if(r<.7){a=randInt(2+l,10+l);b=randInt(2,8);const c=randInt(1,10);ans=a+b*c;text=a+' + '+b+' × '+c}
+    else{a=randInt(3+l,12+l);b=randInt(2,6);const c=randInt(1,5);ans=a*b-c;text=a+' × '+b+' − '+c}
+  }
+  return{text,answer:ans}
+}
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function seededRand(seed){return function(){seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+
+function startGame(){
+  score=0;correct=0;wrong=0;streak=0;bestStreak=0;combo=1;progressLevel=0;totalAnswered=0;lives=3;
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('game-screen').style.display='block';
+  document.getElementById('hud-score').textContent='0';
+  document.getElementById('hud-correct').textContent='0';
+  document.getElementById('hud-wrong').textContent='0';
+  document.getElementById('streak-display').textContent='';
+  document.getElementById('combo').textContent='';
+
+  if(mode==='marathon'){
+    document.getElementById('hud-lives-wrap').style.display='block';
+    document.getElementById('timer-wrap').style.display='none';
+    updateLives();
+  }else{
+    document.getElementById('hud-lives-wrap').style.display='none';
+    document.getElementById('timer-wrap').style.display='block';
+    timeLeft=60;
+    updateTimer();
+  }
+
+  if(mode==='daily'){
+    const today=new Date().toISOString().slice(0,10);
+    const seed=parseInt(today.replace(/-/g,''));
+    const rng=seededRand(seed);
+    Math.random=rng;
+  }
+
+  gameStart=Date.now();
+  nextProblem();
+
+  if(mode!=='marathon'){
+    timer=setInterval(()=>{
+      timeLeft--;updateTimer();
+      if(timeLeft<=5&&timeLeft>0)sndTick();
+      if(timeLeft<=0){clearInterval(timer);endGame()}
+    },1000);
+  }
+
+  const inp=document.getElementById('answer-input');
+  inp.value='';inp.focus();
+  inp.onkeydown=function(e){
+    if(e.key==='Enter'){checkAnswer()}
+    if(e.key==='-'&&this.value.length===0)return;
+    if(!/[\d\-]/.test(e.key)&&!['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(e.key))e.preventDefault();
+  };
+}
+
+function updateTimer(){
+  const pct=timeLeft/60;
+  const ring=document.getElementById('timer-ring');
+  ring.style.strokeDashoffset=339.292*(1-pct);
+  ring.style.stroke=timeLeft<=10?'var(--pink)':timeLeft<=20?'var(--gold)':'var(--cyan)';
+  document.getElementById('timer-text').textContent=timeLeft;
+}
+
+function updateLives(){document.getElementById('hud-lives').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives)}
+
+function nextProblem(){
+  const p=genProblem(progressLevel);
+  currentAnswer=p.answer;
+  document.getElementById('problem').textContent=p.text+' = ?';
+}
+
+function checkAnswer(){
+  const inp=document.getElementById('answer-input');
+  const val=parseInt(inp.value);
+  inp.value='';
+  if(isNaN(val))return;
+  totalAnswered++;
+
+  if(val===currentAnswer){
+    correct++;streak++;progressLevel++;
+    if(streak>bestStreak)bestStreak=streak;
+    if(streak>=10)combo=3;else if(streak>=5)combo=2;else if(streak>=3)combo=1.5;else combo=1;
+    const pts=Math.round(10*combo);
+    score+=pts;
+    sndCorrect();
+    showFloat('+'+pts,true);
+    document.getElementById('game-card').classList.add('flash-correct');
+    setTimeout(()=>document.getElementById('game-card').classList.remove('flash-correct'),400);
+    document.getElementById('streak-display').textContent=streak>=3?'🔥'.repeat(Math.min(streak,10))+' '+streak+' streak!':'';
+    document.getElementById('combo').textContent=combo>1?'COMBO x'+combo:'';
+  }else{
+    wrong++;streak=0;combo=1;
+    if(mode==='marathon'){lives--;updateLives();if(lives<=0){endGame();return}}
+    sndWrong();
+    showFloat(currentAnswer,false);
+    document.getElementById('game-card').classList.add('flash-wrong');
+    setTimeout(()=>document.getElementById('game-card').classList.remove('flash-wrong'),400);
+    document.getElementById('streak-display').textContent='';
+    document.getElementById('combo').textContent='';
+    if(progressLevel>0)progressLevel--;
+  }
+
+  document.getElementById('hud-score').textContent=score;
+  document.getElementById('hud-correct').textContent=correct;
+  document.getElementById('hud-wrong').textContent=wrong;
+  nextProblem();
+  inp.focus();
+}
+
+function showFloat(text,isCorrect){
+  const el=document.createElement('div');
+  el.className='float-points';
+  el.style.color=isCorrect?'var(--cyan)':'var(--pink)';
+  el.textContent=isCorrect?text:'✗ '+text;
+  el.style.left='50%';el.style.top='40%';el.style.transform='translateX(-50%)';
+  document.getElementById('game-card').appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+
+function endGame(){
+  if(timer)clearInterval(timer);
+  if(mode==='daily'){Math.random=Math.random}
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+
+  const elapsed=((Date.now()-gameStart)/1000).toFixed(1);
+  const accuracy=totalAnswered?Math.round(correct/totalAnswered*100):0;
+  const ppm=elapsed>0?(correct/(elapsed/60)).toFixed(1):0;
+
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-correct').textContent=correct;
+  document.getElementById('r-accuracy').textContent=accuracy+'%';
+  document.getElementById('r-ppm').textContent=ppm;
+  document.getElementById('r-streak').textContent=bestStreak;
+  document.getElementById('r-time').textContent=elapsed+'s';
+
+  // Save personal best
+  const key='speedmath_pb';
+  let pb=JSON.parse(localStorage.getItem(key)||'{}');
+  const pbKey=mode+'_'+diff;
+  const isNew=!pb[pbKey]||score>pb[pbKey].score;
+  if(isNew){
+    pb[pbKey]={score,accuracy,correct,streak:bestStreak,date:new Date().toISOString().slice(0,10)};
+    localStorage.setItem(key,JSON.stringify(pb));
+    document.getElementById('new-best').style.display='block';
+    sndFanfare();
+  }else{
+    document.getElementById('new-best').style.display='none';
+  }
+
+  // Daily tracking
+  if(mode==='daily'){
+    const today=new Date().toISOString().slice(0,10);
+    let daily=JSON.parse(localStorage.getItem('speedmath_daily')||'{}');
+    if(!daily[today]||score>daily[today])daily[today]=score;
+    localStorage.setItem('speedmath_daily',JSON.stringify(daily));
+  }
+
+  renderPB();
+}
+
+function showSetup(){
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('setup-screen').style.display='block';
+  if(timer)clearInterval(timer);
+  renderPB();
+}
+
+function renderPB(){
+  const pb=JSON.parse(localStorage.getItem('speedmath_pb')||'{}');
+  const body=document.getElementById('pb-body');
+  body.innerHTML='';
+  const modes={classic:'Classic',marathon:'Marathon',daily:'Daily'};
+  const diffs=['easy','medium','hard','expert'];
+  for(const m of Object.keys(modes)){
+    for(const d of diffs){
+      const k=m+'_'+d;
+      if(pb[k]){
+        body.innerHTML+='<tr><td>'+modes[m]+'</td><td style="text-transform:capitalize">'+d+'</td><td class="rank">'+pb[k].score+'</td><td>'+pb[k].accuracy+'%</td></tr>';
+      }
+    }
+  }
+  if(!body.innerHTML)body.innerHTML='<tr><td colspan="4" style="color:var(--muted);text-align:center">No records yet. Play to set your first!</td></tr>';
+}
+
+function renderCalendar(){
+  const cal=document.getElementById('calendar');
+  const daily=JSON.parse(localStorage.getItem('speedmath_daily')||'{}');
+  const now=new Date();
+  const year=now.getFullYear(),month=now.getMonth();
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const today=now.getDate();
+  let html='';
+  for(let i=0;i<firstDay;i++)html+='<div class="cal-day" style="opacity:.2"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const done=daily[dateStr];
+    const isToday=d===today;
+    html+='<div class="cal-day'+(done?' completed':'')+(isToday?' today':'')+'">'+d+(done?'<br><small>'+done+'</small>':'')+'</div>';
+  }
+  cal.innerHTML=html;
+}
+
+renderPB();
+</script>
+</body>
+</html>

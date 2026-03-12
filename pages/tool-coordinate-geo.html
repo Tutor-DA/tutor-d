@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Coordinate Geometry | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/><link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>MathJax={tex:{inlineMath:[['$','$']]},startup:{typeset:false}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1200px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.layout{display:grid;grid-template-columns:200px 1fr 300px;gap:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.op-btn{display:block;width:100%;padding:10px;margin-bottom:6px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);font-family:Poppins,sans-serif;font-size:.78rem;cursor:pointer;text-align:left;transition:all .2s}
+.op-btn:hover,.op-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+canvas{background:#0a0a18;border-radius:12px;border:1px solid var(--border);cursor:crosshair;display:block;width:100%}
+.point-list{font-size:.8rem;max-height:200px;overflow-y:auto}
+.point-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(30,30,58,.5)}
+.result-panel{font-size:.85rem}
+.step{padding:8px;margin:6px 0;border-left:3px solid var(--cyan);background:rgba(0,229,255,.03);border-radius:0 8px 8px 0;font-size:.82rem}
+.btn{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:transparent;color:#e8e8ff;font-family:Poppins,sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s;margin:2px}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.status-bar{font-size:.75rem;color:var(--muted);margin-top:6px;font-family:'JetBrains Mono',monospace}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.card{margin-bottom:8px}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+<div class="wrapper">
+<h1>📍 Coordinate Geometry</h1>
+<p class="subtitle">Plot points, measure distances, find equations — all interactive</p>
+<div class="layout">
+<!-- Operations -->
+<div>
+  <div class="card">
+    <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Operations</div>
+    <button class="op-btn active" onclick="setOp('place',this)">📍 Place Points</button>
+    <button class="op-btn" onclick="setOp('distance',this)">📏 Distance</button>
+    <button class="op-btn" onclick="setOp('midpoint',this)">⊙ Midpoint</button>
+    <button class="op-btn" onclick="setOp('slope',this)">📐 Slope</button>
+    <button class="op-btn" onclick="setOp('line',this)">─ Line Equation</button>
+    <button class="op-btn" onclick="setOp('parallel',this)">∥ Parallel Line</button>
+    <button class="op-btn" onclick="setOp('perpendicular',this)">⊥ Perpendicular</button>
+    <button class="op-btn" onclick="setOp('circle',this)">◯ Circle</button>
+    <button class="op-btn" onclick="setOp('area',this)">△ Polygon Area</button>
+  </div>
+  <div class="card">
+    <button class="btn" onclick="undoPoint()">↩ Undo</button>
+    <button class="btn" onclick="clearAll()">🗑 Clear</button>
+  </div>
+  <div class="card point-list" id="point-list"></div>
+</div>
+
+<!-- Canvas -->
+<div>
+  <canvas id="canvas" width="600" height="600"></canvas>
+  <div class="status-bar" id="status">Click to place points</div>
+</div>
+
+<!-- Results -->
+<div>
+  <div class="card result-panel" id="result-panel">
+    <div style="color:var(--muted);text-align:center">Select an operation and click points on the grid</div>
+  </div>
+</div>
+</div>
+</div>
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let points=[],op='place',scale=30,offsetX=300,offsetY=300,dragging=null;
+const labels='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function toScreen(x,y){return[offsetX+x*scale,offsetY-y*scale]}
+function toWorld(sx,sy){return[Math.round((sx-offsetX)/scale*2)/2,Math.round((offsetY-sy)/scale*2)/2]}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // Grid
+  ctx.strokeStyle='rgba(30,30,58,.6)';ctx.lineWidth=1;
+  for(let x=offsetX%scale;x<canvas.width;x+=scale){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke()}
+  for(let y=offsetY%scale;y<canvas.height;y+=scale){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke()}
+  // Axes
+  ctx.strokeStyle='rgba(148,163,184,.4)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,offsetY);ctx.lineTo(canvas.width,offsetY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(offsetX,0);ctx.lineTo(offsetX,canvas.height);ctx.stroke();
+  // Labels
+  ctx.fillStyle='rgba(148,163,184,.5)';ctx.font='10px JetBrains Mono';ctx.textAlign='center';
+  for(let i=-10;i<=10;i++){if(i===0)continue;const[sx]=toScreen(i,0);ctx.fillText(i,sx,offsetY+14)}
+  ctx.textAlign='right';
+  for(let i=-10;i<=10;i++){if(i===0)continue;const[,sy]=toScreen(0,i);ctx.fillText(i,offsetX-6,sy+4)}
+  // Points
+  points.forEach((p,i)=>{
+    const[sx,sy]=toScreen(p.x,p.y);
+    ctx.beginPath();ctx.arc(sx,sy,6,0,Math.PI*2);ctx.fillStyle='#00e5ff';ctx.fill();
+    ctx.fillStyle='#e8e8ff';ctx.font='bold 12px Poppins';ctx.textAlign='center';
+    ctx.fillText(labels[i]||'?',sx,sy-10);
+    ctx.fillStyle='rgba(148,163,184,.7)';ctx.font='10px JetBrains Mono';
+    ctx.fillText('('+p.x+','+p.y+')',sx,sy+18);
+  });
+}
+
+canvas.addEventListener('click',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const sx=e.clientX-rect.left;const sy=e.clientY-rect.top;
+  const[wx,wy]=toWorld(sx,sy);
+  if(op==='place'){
+    points.push({x:wx,y:wy});
+    updatePointList();draw();
+  }else{
+    // For operations, we need 2 points minimum
+    points.push({x:wx,y:wy});
+    updatePointList();draw();
+    runOperation();
+  }
+});
+
+canvas.addEventListener('mousemove',e=>{
+  const rect=canvas.getBoundingClientRect();
+  const[wx,wy]=toWorld(e.clientX-rect.left,e.clientY-rect.top);
+  document.getElementById('status').textContent='('+wx+', '+wy+') | '+op+' mode | '+points.length+' points';
+});
+
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  scale=Math.max(10,Math.min(80,scale+(e.deltaY>0?-2:2)));
+  draw();
+});
+
+function setOp(o,btn){op=o;document.querySelectorAll('.op-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('result-panel').innerHTML='<div style="color:var(--muted)">Click points for '+o+'</div>'}
+
+function updatePointList(){
+  document.getElementById('point-list').innerHTML=points.map((p,i)=>'<div class="point-item"><span style="color:var(--cyan)">'+labels[i]+'</span><span>('+p.x+', '+p.y+')</span></div>').join('');
+}
+
+function undoPoint(){points.pop();updatePointList();draw()}
+function clearAll(){points=[];updatePointList();draw();document.getElementById('result-panel').innerHTML=''}
+
+function runOperation(){
+  const n=points.length;
+  let html='';
+  if(op==='distance'&&n>=2){
+    const a=points[n-2],b=points[n-1];
+    const d=Math.sqrt((b.x-a.x)**2+(b.y-a.y)**2);
+    html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">📏 Distance</h3>';
+    html+='<div class="step">$d = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$</div>';
+    html+='<div class="step">$= \\sqrt{('+(b.x)+'-'+(a.x)+')^2+('+(b.y)+'-'+(a.y)+')^2}$</div>';
+    html+='<div class="step">$= \\sqrt{'+(b.x-a.x)+'²+'+(b.y-a.y)+'²} = \\sqrt{'+((b.x-a.x)**2+(b.y-a.y)**2)+'}$</div>';
+    html+='<div style="text-align:center;font-family:Orbitron;font-size:1.2rem;color:var(--gold);margin:12px 0">d ≈ '+Math.round(d*1000)/1000+'</div>';
+    // Draw line
+    const[sx1,sy1]=toScreen(a.x,a.y);const[sx2,sy2]=toScreen(b.x,b.y);
+    ctx.beginPath();ctx.moveTo(sx1,sy1);ctx.lineTo(sx2,sy2);ctx.strokeStyle='var(--gold)';ctx.lineWidth=2;ctx.stroke();
+  }else if(op==='midpoint'&&n>=2){
+    const a=points[n-2],b=points[n-1];
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">⊙ Midpoint</h3>';
+    html+='<div class="step">$M = \\left(\\frac{x_1+x_2}{2}, \\frac{y_1+y_2}{2}\\right)$</div>';
+    html+='<div class="step">$= \\left(\\frac{'+a.x+'+'+b.x+'}{2}, \\frac{'+a.y+'+'+b.y+'}{2}\\right)$</div>';
+    html+='<div style="text-align:center;font-family:Orbitron;font-size:1.2rem;color:var(--gold);margin:12px 0">M = ('+mx+', '+my+')</div>';
+    const[smx,smy]=toScreen(mx,my);
+    ctx.beginPath();ctx.arc(smx,smy,5,0,Math.PI*2);ctx.fillStyle='var(--gold)';ctx.fill();
+  }else if(op==='slope'&&n>=2){
+    const a=points[n-2],b=points[n-1];
+    const rise=b.y-a.y,run=b.x-a.x;
+    const m=run===0?'undefined':Math.round(rise/run*1000)/1000;
+    html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">📐 Slope</h3>';
+    html+='<div class="step">$m = \\frac{y_2-y_1}{x_2-x_1} = \\frac{'+rise+'}{'+run+'}$</div>';
+    html+='<div style="text-align:center;font-family:Orbitron;font-size:1.2rem;color:var(--gold);margin:12px 0">m = '+m+'</div>';
+    // Draw slope triangle
+    const[sx1,sy1]=toScreen(a.x,a.y);const[sx2,sy2]=toScreen(b.x,b.y);const[sx3,sy3]=toScreen(b.x,a.y);
+    ctx.setLineDash([4,4]);ctx.strokeStyle='var(--pink)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(sx1,sy1);ctx.lineTo(sx3,sy3);ctx.lineTo(sx2,sy2);ctx.stroke();
+    ctx.setLineDash([]);
+  }else if(op==='line'&&n>=2){
+    const a=points[n-2],b=points[n-1];
+    const rise=b.y-a.y,run=b.x-a.x;
+    if(run===0){html='<div class="step">Vertical line: x = '+a.x+'</div>'}
+    else{
+      const m=rise/run;const c=a.y-m*a.x;
+      html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">Line Equation</h3>';
+      html+='<div class="step">Slope-intercept: $y = '+Math.round(m*100)/100+'x '+(c>=0?'+ ':'')+Math.round(c*100)/100+'$</div>';
+      html+='<div class="step">Point-slope: $y - '+a.y+' = '+Math.round(m*100)/100+'(x - '+a.x+')$</div>';
+      // Draw extended line
+      const x1=-15,x2=15;const y1=m*x1+c,y2=m*x2+c;
+      const[sx1,sy1]=toScreen(x1,y1);const[sx2,sy2]=toScreen(x2,y2);
+      ctx.beginPath();ctx.moveTo(sx1,sy1);ctx.lineTo(sx2,sy2);ctx.strokeStyle='rgba(0,229,255,.5)';ctx.lineWidth=1.5;ctx.stroke();
+    }
+  }else if(op==='circle'&&n>=2){
+    const center=points[n-2],edge=points[n-1];
+    const r=Math.sqrt((edge.x-center.x)**2+(edge.y-center.y)**2);
+    html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">◯ Circle</h3>';
+    html+='<div class="step">Center: ('+center.x+', '+center.y+')</div>';
+    html+='<div class="step">Radius: '+Math.round(r*1000)/1000+'</div>';
+    html+='<div class="step">$(x-'+center.x+')^2+(y-'+center.y+')^2='+Math.round(r*r*100)/100+'$</div>';
+    const[sx,sy]=toScreen(center.x,center.y);
+    ctx.beginPath();ctx.arc(sx,sy,r*scale,0,Math.PI*2);ctx.strokeStyle='var(--purple)';ctx.lineWidth=2;ctx.stroke();
+  }else if(op==='area'&&n>=3){
+    let area=0;
+    for(let i=0;i<n;i++){const j=(i+1)%n;area+=points[i].x*points[j].y-points[j].x*points[i].y}
+    area=Math.abs(area)/2;
+    html='<h3 style="color:var(--cyan);font-size:.85rem;margin-bottom:8px">△ Polygon Area (Shoelace)</h3>';
+    html+='<div class="step">$A = \\frac{1}{2}|\\sum(x_i y_{i+1} - x_{i+1} y_i)|$</div>';
+    html+='<div style="text-align:center;font-family:Orbitron;font-size:1.2rem;color:var(--gold);margin:12px 0">Area = '+Math.round(area*1000)/1000+'</div>';
+    // Draw polygon
+    ctx.beginPath();const[fx,fy]=toScreen(points[0].x,points[0].y);ctx.moveTo(fx,fy);
+    for(let i=1;i<n;i++){const[sx,sy]=toScreen(points[i].x,points[i].y);ctx.lineTo(sx,sy)}
+    ctx.closePath();ctx.fillStyle='rgba(168,85,247,.15)';ctx.fill();ctx.strokeStyle='var(--purple)';ctx.lineWidth=2;ctx.stroke();
+  }else{
+    html='<div style="color:var(--muted);font-size:.85rem">Need '+(op==='area'?'3+':'2')+' points for '+op+'</div>';
+  }
+  document.getElementById('result-panel').innerHTML=html;
+  if(window.MathJax)MathJax.typesetPromise();
+}
+
+draw();
+</script>
+</body>
+</html>

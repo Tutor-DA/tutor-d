@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Math Crossword | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/>
+<link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent),radial-gradient(1px 1px at 90px 40px,#ffffff22,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1100px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:24px;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.setup-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;align-items:end}
+.setup-group{flex:1;min-width:120px}
+.setup-group label{display:block;font-size:.75rem;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.setup-group select{width:100%;padding:10px;background:rgba(17,17,37,.8);border:1px solid var(--border);border-radius:8px;color:#e8e8ff;font-family:Poppins,sans-serif;font-size:.85rem}
+.gen-btn{padding:12px 32px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .2s}
+.gen-btn:hover{transform:scale(1.03)}
+.game-layout{display:grid;grid-template-columns:1fr 280px;gap:20px}
+.grid-wrap{display:flex;justify-content:center}
+.cw-grid{display:inline-grid;gap:2px;background:var(--border);border:2px solid var(--border);border-radius:8px;overflow:hidden}
+.cw-cell{width:44px;height:44px;position:relative;background:var(--card);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:1.2rem;cursor:pointer;transition:background .2s}
+.cw-cell.black{background:#0d0d1a;cursor:default}
+.cw-cell.active{background:rgba(0,229,255,.15)}
+.cw-cell.word-highlight{background:rgba(168,85,247,.1)}
+.cw-cell.correct{background:rgba(34,197,94,.15);color:#22c55e}
+.cw-cell.wrong{background:rgba(239,68,68,.15);color:#ef4444}
+.cw-cell .cell-num{position:absolute;top:1px;left:3px;font-size:.55rem;color:var(--muted)}
+.cw-cell input{width:100%;height:100%;background:transparent;border:none;color:#e8e8ff;font-family:'JetBrains Mono',monospace;font-size:1.2rem;text-align:center;outline:none;padding:0}
+.clue-panel{max-height:500px;overflow-y:auto}
+.clue-section{margin-bottom:16px}
+.clue-section h3{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--cyan);margin-bottom:8px;text-transform:uppercase}
+.clue-item{padding:6px 10px;border-radius:6px;cursor:pointer;font-size:.82rem;margin-bottom:4px;transition:background .2s;display:flex;gap:8px}
+.clue-item:hover{background:rgba(0,229,255,.1)}
+.clue-item.active{background:rgba(0,229,255,.15);color:var(--cyan)}
+.clue-item .clue-num{font-weight:600;color:var(--purple);min-width:20px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tool-btn{padding:8px 16px;border:1px solid var(--border);border-radius:8px;background:transparent;color:#e8e8ff;font-family:Poppins,sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s}
+.tool-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.timer-display{font-family:'Orbitron',sans-serif;color:var(--gold);font-size:1rem;display:flex;align-items:center;gap:6px;margin-left:auto}
+.stats-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.stat{text-align:center;padding:10px 16px;background:rgba(0,229,255,.05);border:1px solid var(--border);border-radius:8px}
+.stat .val{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:var(--cyan)}
+.stat .lbl{font-size:.7rem;color:var(--muted)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--pink);color:var(--pink);padding:12px 24px;border-radius:10px;font-size:.85rem;z-index:999;transition:transform .3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){
+  .game-layout{grid-template-columns:1fr}
+  .cw-cell{width:36px;height:36px;font-size:1rem}
+  .clue-panel{max-height:300px}
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+
+<div class="wrapper">
+<h1>🧩 Math Crossword</h1>
+<p class="subtitle">Solve crossword puzzles where clues are math problems!</p>
+
+<div class="card">
+  <div class="setup-row">
+    <div class="setup-group"><label>Grid Size</label><select id="sel-size"><option value="8">8 × 8</option><option value="10" selected>10 × 10</option><option value="12">12 × 12</option></select></div>
+    <div class="setup-group"><label>Difficulty</label><select id="sel-diff"><option value="easy">Easy (Basic +/−)</option><option value="medium" selected>Medium (× / ÷)</option><option value="hard">Hard (Multi-step)</option></select></div>
+    <button class="gen-btn" onclick="generatePuzzle()">🧩 Generate Puzzle</button>
+  </div>
+</div>
+
+<div id="game-area" style="display:none">
+  <div class="toolbar">
+    <button class="tool-btn" onclick="checkPuzzle()">✓ Check</button>
+    <button class="tool-btn" onclick="revealCell()">💡 Reveal Cell (<span id="hints-left">3</span>)</button>
+    <button class="tool-btn" onclick="revealAll()">👁 Reveal All</button>
+    <button class="tool-btn" onclick="generatePuzzle()">🔄 New Puzzle</button>
+    <div class="timer-display">⏱ <span id="timer">0:00</span></div>
+  </div>
+
+  <div class="game-layout">
+    <div class="grid-wrap"><div class="cw-grid" id="cw-grid"></div></div>
+    <div class="card clue-panel" id="clue-panel"></div>
+  </div>
+
+  <div class="stats-row" id="stats-row" style="display:none">
+    <div class="stat"><div class="val" id="s-solved">0</div><div class="lbl">Puzzles Solved</div></div>
+    <div class="stat"><div class="val" id="s-best">--</div><div class="lbl">Best Time</div></div>
+    <div class="stat"><div class="val" id="s-accuracy">0%</div><div class="lbl">Avg Accuracy</div></div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+let grid=[],clues=[],size=10,hintsLeft=3,timerInterval=null,seconds=0;
+let activeCell=null,activeDir='across';
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+
+function genProblems(diff,count){
+  const problems=[];
+  const used=new Set();
+  while(problems.length<count){
+    let q,a;
+    if(diff==='easy'){
+      const x=randInt(1,20),y=randInt(1,20);
+      if(Math.random()<.5){a=x+y;q=x+' + '+y}else{const big=Math.max(x,y),sm=Math.min(x,y);a=big-sm;q=big+' − '+sm}
+    }else if(diff==='medium'){
+      if(Math.random()<.5){const x=randInt(2,12),y=randInt(2,12);a=x*y;q=x+' × '+y}
+      else{const y=randInt(2,12),a2=randInt(2,12);a=a2;q=(a2*y)+' ÷ '+y}
+    }else{
+      const r=Math.random();
+      if(r<.25){const x=randInt(3,15);a=x*x;q=x+'²'}
+      else if(r<.5){const x=randInt(2,12),y=randInt(2,8),z=randInt(1,10);a=x*y+z;q=x+' × '+y+' + '+z}
+      else if(r<.75){const x=randInt(10,50),y=randInt(5,30);a=x+y;q=x+' + '+y}
+      else{const x=randInt(3,12);a=x;q='√'+(x*x)}
+    }
+    const s=String(a);
+    if(a>=0&&a<=9999&&!used.has(a)&&s.length>=1){used.add(a);problems.push({question:q,answer:s})}
+  }
+  return problems.sort((a,b)=>b.answer.length-a.answer.length);
+}
+
+function generatePuzzle(){
+  size=parseInt(document.getElementById('sel-size').value);
+  const diff=document.getElementById('sel-diff').value;
+  hintsLeft=3;
+  document.getElementById('hints-left').textContent=hintsLeft;
+
+  grid=Array.from({length:size},()=>Array(size).fill(null));
+  clues=[];
+
+  const problems=genProblems(diff,60);
+  // Place words
+  let placed=0;
+  for(const p of problems){
+    if(placed>=size*2)break;
+    if(tryPlace(p))placed++;
+  }
+
+  renderGrid();
+  renderClues();
+  startTimer();
+  document.getElementById('game-area').style.display='block';
+}
+
+function tryPlace(prob){
+  const word=prob.answer;
+  const len=word.length;
+  if(len>size)return false;
+
+  // Try to intersect with existing
+  for(let attempts=0;attempts<100;attempts++){
+    const dir=Math.random()<.5?'across':'down';
+    let r,c;
+    if(dir==='across'){
+      r=randInt(0,size-1);c=randInt(0,size-len);
+    }else{
+      r=randInt(0,size-len);c=randInt(0,size-1);
+    }
+    if(canPlace(word,r,c,dir)){
+      placeWord(word,r,c,dir);
+      clues.push({num:clues.length+1,dir,row:r,col:c,len,question:prob.question,answer:word});
+      return true;
+    }
+  }
+  return false;
+}
+
+function canPlace(word,r,c,dir){
+  const len=word.length;
+  for(let i=0;i<len;i++){
+    const cr=dir==='across'?r:r+i;
+    const cc=dir==='across'?c+i:c;
+    if(cr>=size||cc>=size)return false;
+    if(grid[cr][cc]!==null&&grid[cr][cc]!==word[i])return false;
+    // Check adjacency
+    if(dir==='across'){
+      if(i===0&&cc>0&&grid[cr][cc-1]!==null)return false;
+      if(i===len-1&&cc<size-1&&grid[cr][cc+1]!==null)return false;
+      if(grid[cr][cc]===null){
+        if(cr>0&&grid[cr-1][cc]!==null)return false;
+        if(cr<size-1&&grid[cr+1][cc]!==null)return false;
+      }
+    }else{
+      if(i===0&&cr>0&&grid[cr-1][cc]!==null)return false;
+      if(i===len-1&&cr<size-1&&grid[cr+1][cc]!==null)return false;
+      if(grid[cr][cc]===null){
+        if(cc>0&&grid[cr][cc-1]!==null)return false;
+        if(cc<size-1&&grid[cr][cc+1]!==null)return false;
+      }
+    }
+  }
+  return true;
+}
+
+function placeWord(word,r,c,dir){
+  for(let i=0;i<word.length;i++){
+    const cr=dir==='across'?r:r+i;
+    const cc=dir==='across'?c+i:c;
+    grid[cr][cc]=word[i];
+  }
+}
+
+function renderGrid(){
+  const g=document.getElementById('cw-grid');
+  g.style.gridTemplateColumns='repeat('+size+',44px)';
+  // Assign numbers
+  const nums={};
+  let n=1;
+  clues.forEach(cl=>{const k=cl.row+','+cl.col;if(!nums[k])nums[k]=n++;cl.num=nums[k]});
+
+  let html='';
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
+      if(grid[r][c]===null){
+        html+='<div class="cw-cell black"></div>';
+      }else{
+        const k=r+','+c;
+        const num=nums[k]?'<span class="cell-num">'+nums[k]+'</span>':'';
+        html+='<div class="cw-cell" data-r="'+r+'" data-c="'+c+'" onclick="selectCell('+r+','+c+')">'+num+'<input maxlength="1" data-r="'+r+'" data-c="'+c+'" oninput="onInput(this,'+r+','+c+')" onfocus="selectCell('+r+','+c+')"></div>';
+      }
+    }
+  }
+  g.innerHTML=html;
+}
+
+function renderClues(){
+  const panel=document.getElementById('clue-panel');
+  const across=clues.filter(c=>c.dir==='across').sort((a,b)=>a.num-b.num);
+  const down=clues.filter(c=>c.dir==='down').sort((a,b)=>a.num-b.num);
+  let html='<div class="clue-section"><h3>→ Across</h3>';
+  across.forEach(cl=>{html+='<div class="clue-item" data-num="'+cl.num+'" data-dir="across" onclick="jumpToClue('+cl.row+','+cl.col+\',\\\'across\\\'\'+')""><span class="clue-num">'+cl.num+'.</span><span>'+cl.question+'</span></div>'});
+  html+='</div><div class="clue-section"><h3>↓ Down</h3>';
+  down.forEach(cl=>{html+='<div class="clue-item" data-num="'+cl.num+'" data-dir="down" onclick="jumpToClue('+cl.row+','+cl.col+',\\\'down\\\')""><span class="clue-num">'+cl.num+'.</span><span>'+cl.question+'</span></div>'});
+  html+='</div>';
+  panel.innerHTML=html;
+}
+
+function selectCell(r,c){
+  activeCell={r,c};
+  document.querySelectorAll('.cw-cell').forEach(el=>el.classList.remove('active','word-highlight'));
+  const cell=document.querySelector('.cw-cell[data-r="'+r+'"][data-c="'+c+'"]');
+  if(cell)cell.classList.add('active');
+  // Highlight word
+  const clue=findClue(r,c,activeDir)||findClue(r,c,activeDir==='across'?'down':'across');
+  if(clue){
+    activeDir=clue.dir;
+    for(let i=0;i<clue.len;i++){
+      const hr=clue.dir==='across'?clue.row:clue.row+i;
+      const hc=clue.dir==='across'?clue.col+i:clue.col;
+      const hcell=document.querySelector('.cw-cell[data-r="'+hr+'"][data-c="'+hc+'"]');
+      if(hcell)hcell.classList.add('word-highlight');
+    }
+  }
+}
+
+function findClue(r,c,dir){
+  return clues.find(cl=>{
+    if(cl.dir!==dir)return false;
+    for(let i=0;i<cl.len;i++){
+      const cr=cl.dir==='across'?cl.row:cl.row+i;
+      const cc=cl.dir==='across'?cl.col+i:cl.col;
+      if(cr===r&&cc===c)return true;
+    }
+    return false;
+  });
+}
+
+function jumpToClue(r,c,dir){activeDir=dir;selectCell(r,c);const inp=document.querySelector('input[data-r="'+r+'"][data-c="'+c+'"]');if(inp)inp.focus()}
+
+function onInput(inp,r,c){
+  if(inp.value&&!/^\d$/.test(inp.value)){inp.value='';return}
+  if(inp.value){
+    // Move to next cell in direction
+    const nr=activeDir==='down'?r+1:r;
+    const nc=activeDir==='across'?c+1:c;
+    const next=document.querySelector('input[data-r="'+nr+'"][data-c="'+nc+'"]');
+    if(next)next.focus();
+  }
+}
+
+function checkPuzzle(){
+  let correct=0,total=0;
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
+      if(grid[r][c]!==null){
+        total++;
+        const inp=document.querySelector('input[data-r="'+r+'"][data-c="'+c+'"]');
+        const cell=document.querySelector('.cw-cell[data-r="'+r+'"][data-c="'+c+'"]');
+        if(inp&&cell){
+          cell.classList.remove('correct','wrong');
+          if(inp.value===grid[r][c]){cell.classList.add('correct');correct++}
+          else if(inp.value){cell.classList.add('wrong')}
+        }
+      }
+    }
+  }
+  if(correct===total){
+    stopTimer();
+    showToast('🎉 Puzzle Complete! Time: '+formatTime(seconds));
+    saveStats(true,correct/total);
+  }else{
+    showToast(correct+'/'+total+' correct');
+  }
+}
+
+function revealCell(){
+  if(hintsLeft<=0){showToast('No hints left!');return}
+  if(!activeCell)return;
+  const{r,c}=activeCell;
+  if(grid[r][c]===null)return;
+  const inp=document.querySelector('input[data-r="'+r+'"][data-c="'+c+'"]');
+  if(inp){inp.value=grid[r][c];hintsLeft--;document.getElementById('hints-left').textContent=hintsLeft}
+}
+
+function revealAll(){
+  for(let r=0;r<size;r++){
+    for(let c=0;c<size;c++){
+      if(grid[r][c]!==null){
+        const inp=document.querySelector('input[data-r="'+r+'"][data-c="'+c+'"]');
+        if(inp)inp.value=grid[r][c];
+        const cell=document.querySelector('.cw-cell[data-r="'+r+'"][data-c="'+c+'"]');
+        if(cell)cell.classList.add('correct');
+      }
+    }
+  }
+  stopTimer();
+}
+
+function startTimer(){if(timerInterval)clearInterval(timerInterval);seconds=0;document.getElementById('timer').textContent='0:00';timerInterval=setInterval(()=>{seconds++;document.getElementById('timer').textContent=formatTime(seconds)},1000)}
+function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null}}
+function formatTime(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+
+function saveStats(solved,accuracy){
+  let stats=JSON.parse(localStorage.getItem('cw_stats')||'{"solved":0,"bestTime":null,"totalAcc":0,"games":0}');
+  if(solved)stats.solved++;
+  stats.games++;
+  stats.totalAcc+=accuracy;
+  if(solved&&(!stats.bestTime||seconds<stats.bestTime))stats.bestTime=seconds;
+  localStorage.setItem('cw_stats',JSON.stringify(stats));
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+</script>
+</body>
+</html>

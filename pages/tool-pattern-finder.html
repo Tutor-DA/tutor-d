@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pattern Finder | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/><link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1100px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.tab{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-family:Poppins;font-size:.85rem;cursor:pointer;transition:all .2s}
+.tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.tab.active{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border-color:transparent;font-weight:600}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.pane{display:none}.pane.active{display:block}
+canvas{background:#0a0a18;border-radius:10px;border:1px solid var(--border);display:block;margin:0 auto}
+.btn{padding:10px 24px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:Poppins;font-size:.85rem;cursor:pointer;transition:all .2s;margin:4px}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border:none;font-weight:600}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+label{color:var(--muted);font-size:.85rem;margin-right:4px}
+select,input[type=number]{padding:8px 12px;background:rgba(17,17,37,.8);border:1.5px solid var(--border);border-radius:8px;color:#e8e8ff;font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none}
+select:focus,input[type=number]:focus{border-color:var(--cyan)}
+.sequence-input{width:100%;padding:12px;background:rgba(17,17,37,.8);border:2px solid var(--border);border-radius:10px;color:#e8e8ff;font-family:'JetBrains Mono',monospace;font-size:1rem;outline:none}
+.sequence-input:focus{border-color:var(--cyan)}
+.result-box{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:16px;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.8}
+.grid-container{display:flex;justify-content:center;margin:16px 0}
+.grid-table{border-collapse:collapse}
+.grid-table td{width:36px;height:36px;text-align:center;border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.8rem;transition:all .2s}
+.grid-table td.highlight{background:rgba(0,229,255,.15);color:var(--cyan);font-weight:600}
+.grid-table td.highlight2{background:rgba(168,85,247,.15);color:var(--purple);font-weight:600}
+.grid-table td.highlight3{background:rgba(236,72,153,.15);color:var(--pink);font-weight:600}
+.fractal-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.info{color:var(--muted);font-size:.82rem;line-height:1.6;margin-top:8px}
+@media(max-width:600px){h1{font-size:1.5rem}.tabs{gap:4px}.tab{padding:8px 14px;font-size:.8rem}.grid-table td{width:28px;height:28px;font-size:.7rem}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+<div class="wrapper">
+<h1>🔍 Pattern Finder</h1>
+<p class="subtitle">Explore Pascal's Triangle, Fibonacci, Magic Squares, Number Grids & Fractals</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab(0)">Pascal's Triangle</button>
+  <button class="tab" onclick="switchTab(1)">Fibonacci Spiral</button>
+  <button class="tab" onclick="switchTab(2)">Magic Squares</button>
+  <button class="tab" onclick="switchTab(3)">Number Grid</button>
+  <button class="tab" onclick="switchTab(4)">Fractals</button>
+</div>
+
+<!-- Pascal's Triangle -->
+<div class="pane active" id="pane0">
+<div class="card">
+  <div class="row">
+    <label>Rows:</label>
+    <input type="number" id="pascalRows" value="10" min="1" max="20" style="width:70px">
+    <button class="btn btn-primary" onclick="drawPascal()">Draw</button>
+    <label style="margin-left:16px">Highlight:</label>
+    <select id="pascalHighlight" onchange="drawPascal()">
+      <option value="none">None</option>
+      <option value="even">Even Numbers</option>
+      <option value="mult3">Multiples of 3</option>
+      <option value="mult5">Multiples of 5</option>
+      <option value="prime">Primes</option>
+      <option value="fib">Fibonacci Numbers</option>
+    </select>
+  </div>
+  <canvas id="pascalCanvas" width="900" height="500"></canvas>
+  <div class="info">
+    <strong style="color:var(--cyan)">Hidden Patterns:</strong> Each row sums to 2ⁿ. Diagonals contain natural numbers, triangular numbers, tetrahedral numbers. Highlighting multiples reveals Sierpinski-like fractal patterns.
+  </div>
+</div>
+</div>
+
+<!-- Fibonacci Spiral -->
+<div class="pane" id="pane1">
+<div class="card">
+  <div class="row">
+    <label>Terms:</label>
+    <input type="number" id="fibTerms" value="12" min="2" max="20" style="width:70px">
+    <button class="btn btn-primary" onclick="drawFibSpiral()">Draw Spiral</button>
+    <button class="btn" onclick="showFibSequence()">Show Sequence</button>
+  </div>
+  <canvas id="fibCanvas" width="700" height="500"></canvas>
+  <div id="fibInfo" class="result-box" style="display:none"></div>
+  <div class="info">
+    <strong style="color:var(--gold)">Golden Ratio:</strong> The ratio of consecutive Fibonacci numbers converges to φ ≈ 1.6180339887... The spiral approximates a logarithmic spiral found in shells, galaxies, and hurricanes.
+  </div>
+</div>
+</div>
+
+<!-- Magic Squares -->
+<div class="pane" id="pane2">
+<div class="card">
+  <div class="row">
+    <label>Size:</label>
+    <select id="magicSize">
+      <option value="3">3×3</option>
+      <option value="4">4×4</option>
+      <option value="5" selected>5×5</option>
+      <option value="7">7×7</option>
+    </select>
+    <button class="btn btn-primary" onclick="generateMagic()">Generate</button>
+    <span id="magicConstant" style="color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-left:16px"></span>
+  </div>
+  <div class="grid-container" id="magicGrid"></div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" onclick="highlightMagic('row')">Highlight Rows</button>
+    <button class="btn" onclick="highlightMagic('col')">Highlight Columns</button>
+    <button class="btn" onclick="highlightMagic('diag')">Highlight Diagonals</button>
+    <button class="btn" onclick="highlightMagic('none')">Clear</button>
+  </div>
+  <div class="info">
+    <strong style="color:var(--purple)">Magic Constant:</strong> For an n×n magic square with numbers 1 to n², the magic constant = n(n²+1)/2. Every row, column, and main diagonal sums to this value.
+  </div>
+</div>
+</div>
+
+<!-- Number Grid (Sieve / Patterns) -->
+<div class="pane" id="pane3">
+<div class="card">
+  <div class="row">
+    <label>Grid:</label>
+    <select id="gridSize">
+      <option value="10">10×10 (1-100)</option>
+      <option value="12">12×12 (1-144)</option>
+      <option value="15">15×15 (1-225)</option>
+    </select>
+    <label style="margin-left:12px">Highlight:</label>
+    <select id="gridPattern" onchange="drawNumberGrid()">
+      <option value="primes">Prime Numbers</option>
+      <option value="squares">Perfect Squares</option>
+      <option value="triangular">Triangular Numbers</option>
+      <option value="mult">Multiples of...</option>
+      <option value="even">Even Numbers</option>
+      <option value="odd">Odd Numbers</option>
+    </select>
+    <input type="number" id="gridMult" value="7" min="2" max="50" style="width:60px;display:none">
+    <button class="btn btn-primary" onclick="drawNumberGrid()">Apply</button>
+  </div>
+  <div class="grid-container" id="numberGrid"></div>
+  <div id="gridStats" class="result-box" style="display:none"></div>
+</div>
+</div>
+
+<!-- Fractals -->
+<div class="pane" id="pane4">
+<div class="card">
+  <div class="fractal-controls">
+    <label>Fractal:</label>
+    <select id="fractalType" onchange="drawFractal()">
+      <option value="sierpinski">Sierpinski Triangle</option>
+      <option value="koch">Koch Snowflake</option>
+      <option value="tree">Fractal Tree</option>
+      <option value="cantor">Cantor Set</option>
+      <option value="dragon">Dragon Curve</option>
+    </select>
+    <label>Depth:</label>
+    <input type="number" id="fractalDepth" value="5" min="0" max="10" style="width:60px">
+    <button class="btn btn-primary" onclick="drawFractal()">Draw</button>
+    <button class="btn" onclick="animateFractal()">Animate</button>
+  </div>
+  <canvas id="fractalCanvas" width="700" height="500"></canvas>
+  <div id="fractalInfo" class="info"></div>
+</div>
+</div>
+
+</div>
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+// Tab switching
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.pane').forEach((p,j)=>p.classList.toggle('active',j===i));
+}
+
+// Show/hide multiples input
+document.getElementById('gridPattern').addEventListener('change',function(){
+  document.getElementById('gridMult').style.display=this.value==='mult'?'inline-block':'none';
+});
+
+// ============ PASCAL'S TRIANGLE ============
+function isPrime(n){if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true}
+const fibSet=new Set([0,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181]);
+
+function drawPascal(){
+  const rows=parseInt(document.getElementById('pascalRows').value)||10;
+  const highlight=document.getElementById('pascalHighlight').value;
+  const canvas=document.getElementById('pascalCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const triangle=[];
+  for(let r=0;r<rows;r++){
+    triangle[r]=[];
+    for(let c=0;c<=r;c++){
+      triangle[r][c]=c===0||c===r?1:triangle[r-1][c-1]+triangle[r-1][c];
+    }
+  }
+
+  const cellSize=Math.min(40,W/(rows+1),H/(rows+2));
+  const startY=20;
+
+  for(let r=0;r<rows;r++){
+    const rowWidth=(r+1)*cellSize;
+    const startX=(W-rowWidth)/2+cellSize/2;
+    for(let c=0;c<=r;c++){
+      const x=startX+c*cellSize;
+      const y=startY+r*cellSize;
+      const val=triangle[r][c];
+
+      let bg='transparent',fg='#e8e8ff';
+      if(highlight==='even'&&val%2===0){bg='rgba(0,229,255,.2)';fg='#00e5ff'}
+      else if(highlight==='mult3'&&val%3===0){bg='rgba(168,85,247,.2)';fg='#a855f7'}
+      else if(highlight==='mult5'&&val%5===0){bg='rgba(250,204,21,.2)';fg='#facc15'}
+      else if(highlight==='prime'&&isPrime(val)){bg='rgba(236,72,153,.2)';fg='#ec4899'}
+      else if(highlight==='fib'&&fibSet.has(val)){bg='rgba(34,197,94,.2)';fg='#22c55e'}
+
+      if(bg!=='transparent'){
+        ctx.fillStyle=bg;
+        ctx.beginPath();ctx.arc(x,y,cellSize/2-2,0,Math.PI*2);ctx.fill();
+      }
+
+      ctx.fillStyle=fg;
+      ctx.font=`${Math.min(12,cellSize/2.5)}px JetBrains Mono`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(val>999?'…':val,x,y);
+    }
+  }
+}
+
+// ============ FIBONACCI SPIRAL ============
+function drawFibSpiral(){
+  const n=parseInt(document.getElementById('fibTerms').value)||12;
+  const canvas=document.getElementById('fibCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const fib=[1,1];
+  for(let i=2;i<n;i++)fib.push(fib[i-1]+fib[i-2]);
+
+  const maxFib=fib[fib.length-1];
+  const scale=Math.min(W,H)*0.4/maxFib;
+
+  let x=W/2,y=H/2;
+  const dirs=[[1,0],[0,1],[-1,0],[0,-1]]; // right, down, left, up
+  const colors=['#00e5ff','#a855f7','#ec4899','#facc15','#22c55e','#f97316'];
+
+  for(let i=0;i<fib.length;i++){
+    const s=fib[i]*scale;
+    const d=dirs[i%4];
+
+    // Draw square
+    ctx.strokeStyle=colors[i%colors.length];
+    ctx.lineWidth=1.5;
+    ctx.globalAlpha=0.4;
+
+    let sx=x,sy=y;
+    if(d[0]===-1)sx=x-s;
+    if(d[1]===-1)sy=y-s;
+
+    ctx.strokeRect(sx,sy,s,s);
+
+    // Draw arc
+    ctx.globalAlpha=1;
+    ctx.lineWidth=2.5;
+    ctx.beginPath();
+    let cx,cy,startA,endA;
+
+    switch(i%4){
+      case 0:cx=sx;cy=sy+s;startA=-Math.PI/2;endA=0;break;
+      case 1:cx=sx;cy=sy;startA=0;endA=Math.PI/2;break;
+      case 2:cx=sx+s;cy=sy;startA=Math.PI/2;endA=Math.PI;break;
+      case 3:cx=sx+s;cy=sy+s;startA=Math.PI;endA=3*Math.PI/2;break;
+    }
+    ctx.arc(cx,cy,s,startA,endA);
+    ctx.stroke();
+
+    // Move position for next square
+    switch(i%4){
+      case 0:x+=s;break;
+      case 1:y+=s;break;
+      case 2:x-=fib[i]*scale;break;
+      case 3:y-=fib[i]*scale;break;
+    }
+  }
+  ctx.globalAlpha=1;
+
+  // Label
+  ctx.fillStyle='var(--muted)';
+  ctx.font='12px Poppins';
+  ctx.textAlign='left';
+  ctx.fillText('Fibonacci: '+fib.join(', '),10,H-10);
+}
+
+function showFibSequence(){
+  const n=parseInt(document.getElementById('fibTerms').value)||12;
+  const fib=[1,1];
+  for(let i=2;i<n;i++)fib.push(fib[i-1]+fib[i-2]);
+
+  let html='<strong style="color:var(--gold)">Fibonacci Sequence:</strong> '+fib.join(', ')+'<br>';
+  html+='<br><strong style="color:var(--cyan)">Ratios (approaching φ):</strong><br>';
+  for(let i=1;i<Math.min(n,10);i++){
+    const ratio=(fib[i]/fib[i-1]).toFixed(8);
+    html+=`F(${i+1})/F(${i}) = ${fib[i]}/${fib[i-1]} = ${ratio}<br>`;
+  }
+  html+='<br>φ = 1.61803398...';
+
+  const info=document.getElementById('fibInfo');
+  info.style.display='block';
+  info.innerHTML=html;
+}
+
+// ============ MAGIC SQUARES ============
+let currentMagic=[];
+
+function generateMagic(){
+  const n=parseInt(document.getElementById('magicSize').value);
+  currentMagic=[];
+
+  if(n%2===1){
+    // Odd order - Siamese method
+    const sq=Array.from({length:n},()=>Array(n).fill(0));
+    let r=0,c=Math.floor(n/2);
+    for(let num=1;num<=n*n;num++){
+      sq[r][c]=num;
+      let nr=(r-1+n)%n,nc=(c+1)%n;
+      if(sq[nr][nc]!==0){nr=(r+1)%n;nc=c}
+      r=nr;c=nc;
+    }
+    currentMagic=sq;
+  } else if(n%4===0){
+    // Doubly even - swap method
+    const sq=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>r*n+c+1));
+    for(let r=0;r<n;r++){
+      for(let c=0;c<n;c++){
+        const ri=r%4,ci=c%4;
+        if((ri===0||ri===3)&&(ci===0||ci===3))sq[r][c]=n*n+1-sq[r][c];
+        else if((ri===1||ri===2)&&(ci===1||ci===2))sq[r][c]=n*n+1-sq[r][c];
+      }
+    }
+    currentMagic=sq;
+  } else {
+    // Singly even (n=6,10,...) - LUX method simplified, use a known 4x4 for base
+    // Fallback: generate odd-based and adjust
+    const half=n/2;
+    const subSq=generateOddMagic(half);
+    const sq=Array.from({length:n},()=>Array(n).fill(0));
+    const offsets=[0,half*half,2*half*half,3*half*half];
+    // quadrants
+    for(let r=0;r<half;r++){
+      for(let c=0;c<half;c++){
+        sq[r][c]=subSq[r][c]+offsets[0];
+        sq[r][c+half]=subSq[r][c]+offsets[2];
+        sq[r+half][c]=subSq[r][c]+offsets[3];
+        sq[r+half][c+half]=subSq[r][c]+offsets[1];
+      }
+    }
+    // Swap columns
+    const k=Math.floor((n-2)/4);
+    for(let r=0;r<half;r++){
+      for(let c=0;c<k;c++){
+        const cc=r===Math.floor(half/2)?c+1:c;
+        if(cc<half){const t=sq[r][cc];sq[r][cc]=sq[r+half][cc];sq[r+half][cc]=t}
+      }
+      for(let c=n-Math.floor((n-2)/4)+2;c<n;c++){
+        if(c<n){const t=sq[r][c];sq[r][c]=sq[r+half][c];sq[r+half][c]=t}
+      }
+    }
+    currentMagic=sq;
+  }
+
+  const mc=n*(n*n+1)/2;
+  document.getElementById('magicConstant').textContent='Magic Constant: '+mc;
+  renderMagicGrid();
+}
+
+function generateOddMagic(n){
+  const sq=Array.from({length:n},()=>Array(n).fill(0));
+  let r=0,c=Math.floor(n/2);
+  for(let num=1;num<=n*n;num++){
+    sq[r][c]=num;
+    let nr=(r-1+n)%n,nc=(c+1)%n;
+    if(sq[nr][nc]!==0){nr=(r+1)%n;nc=c}
+    r=nr;c=nc;
+  }
+  return sq;
+}
+
+function renderMagicGrid(highlights={}){
+  const n=currentMagic.length;
+  if(!n)return;
+  let html='<table class="grid-table">';
+  for(let r=0;r<n;r++){
+    html+='<tr>';
+    for(let c=0;c<n;c++){
+      const key=r+','+c;
+      const cls=highlights[key]||'';
+      html+=`<td class="${cls}">${currentMagic[r][c]}</td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</table>';
+  document.getElementById('magicGrid').innerHTML=html;
+}
+
+function highlightMagic(type){
+  const n=currentMagic.length;
+  const h={};
+  if(type==='row'){
+    for(let r=0;r<n;r++){
+      const cls=['highlight','highlight2','highlight3'][r%3];
+      for(let c=0;c<n;c++)h[r+','+c]=cls;
+    }
+  } else if(type==='col'){
+    for(let c=0;c<n;c++){
+      const cls=['highlight','highlight2','highlight3'][c%3];
+      for(let r=0;r<n;r++)h[r+','+c]=cls;
+    }
+  } else if(type==='diag'){
+    for(let i=0;i<n;i++){h[i+','+i]='highlight';h[i+','+(n-1-i)]='highlight2'}
+  }
+  renderMagicGrid(h);
+}
+
+// ============ NUMBER GRID ============
+function drawNumberGrid(){
+  const cols=parseInt(document.getElementById('gridSize').value);
+  const total=cols*cols;
+  const pattern=document.getElementById('gridPattern').value;
+  const mult=parseInt(document.getElementById('gridMult').value)||7;
+
+  const highlighted=new Set();
+  const primes=new Set();
+  for(let i=2;i<=total;i++){let p=true;for(let j=2;j*j<=i;j++)if(i%j===0){p=false;break}if(p)primes.add(i)}
+
+  const triangulars=new Set();
+  for(let i=1;i*(i+1)/2<=total;i++)triangulars.add(i*(i+1)/2);
+
+  const squares=new Set();
+  for(let i=1;i*i<=total;i++)squares.add(i*i);
+
+  for(let n=1;n<=total;n++){
+    if(pattern==='primes'&&primes.has(n))highlighted.add(n);
+    else if(pattern==='squares'&&squares.has(n))highlighted.add(n);
+    else if(pattern==='triangular'&&triangulars.has(n))highlighted.add(n);
+    else if(pattern==='mult'&&n%mult===0)highlighted.add(n);
+    else if(pattern==='even'&&n%2===0)highlighted.add(n);
+    else if(pattern==='odd'&&n%2===1)highlighted.add(n);
+  }
+
+  let html='<table class="grid-table">';
+  for(let r=0;r<cols;r++){
+    html+='<tr>';
+    for(let c=0;c<cols;c++){
+      const n=r*cols+c+1;
+      const cls=highlighted.has(n)?'highlight':'';
+      html+=`<td class="${cls}">${n}</td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</table>';
+  document.getElementById('numberGrid').innerHTML=html;
+
+  const labels={primes:'Prime Numbers',squares:'Perfect Squares',triangular:'Triangular Numbers',mult:'Multiples of '+mult,even:'Even Numbers',odd:'Odd Numbers'};
+  const stats=document.getElementById('gridStats');
+  stats.style.display='block';
+  stats.innerHTML=`<strong style="color:var(--cyan)">${labels[pattern]}</strong> found: ${highlighted.size} out of ${total} (${(highlighted.size/total*100).toFixed(1)}%)<br>Values: ${[...highlighted].slice(0,30).join(', ')}${highlighted.size>30?'...':''}`;
+}
+
+// ============ FRACTALS ============
+function drawFractal(){
+  const type=document.getElementById('fractalType').value;
+  const depth=Math.min(parseInt(document.getElementById('fractalDepth').value)||5,
+    type==='dragon'?15:type==='koch'?7:type==='tree'?12:10);
+  const canvas=document.getElementById('fractalCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  if(type==='sierpinski')drawSierpinski(ctx,W,H,depth);
+  else if(type==='koch')drawKoch(ctx,W,H,depth);
+  else if(type==='tree')drawTree(ctx,W,H,depth);
+  else if(type==='cantor')drawCantor(ctx,W,H,depth);
+  else if(type==='dragon')drawDragon(ctx,W,H,depth);
+
+  const info=document.getElementById('fractalInfo');
+  const descriptions={
+    sierpinski:'<strong style="color:var(--cyan)">Sierpinski Triangle:</strong> Self-similar fractal. At each step, the middle triangle is removed. Has Hausdorff dimension log(3)/log(2) ≈ 1.585.',
+    koch:'<strong style="color:var(--purple)">Koch Snowflake:</strong> Infinite perimeter enclosing finite area. Each iteration adds triangular bumps to every line segment. Dimension log(4)/log(3) ≈ 1.262.',
+    tree:'<strong style="color:var(--gold)">Fractal Tree:</strong> Recursive branching structure found in nature. Each branch splits into two at a given angle, modeling real tree growth patterns.',
+    cantor:'<strong style="color:var(--pink)">Cantor Set:</strong> Remove the middle third of each line segment repeatedly. The resulting set has measure zero but is uncountably infinite. Dimension log(2)/log(3) ≈ 0.631.',
+    dragon:'<strong style="color:var(--cyan)">Dragon Curve:</strong> A space-filling curve created by repeatedly folding a strip of paper. It tiles the plane and has dimension 2.'
+  };
+  info.innerHTML=descriptions[type];
+}
+
+function drawSierpinski(ctx,W,H,depth){
+  ctx.strokeStyle='#00e5ff';ctx.lineWidth=1;
+  function tri(x1,y1,x2,y2,x3,y3,d){
+    if(d===0){
+      ctx.fillStyle=`hsla(${180+d*30},100%,50%,0.6)`;
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.lineTo(x3,y3);ctx.closePath();ctx.fill();ctx.stroke();
+      return;
+    }
+    const mx1=(x1+x2)/2,my1=(y1+y2)/2;
+    const mx2=(x2+x3)/2,my2=(y2+y3)/2;
+    const mx3=(x1+x3)/2,my3=(y1+y3)/2;
+    tri(x1,y1,mx1,my1,mx3,my3,d-1);
+    tri(mx1,my1,x2,y2,mx2,my2,d-1);
+    tri(mx3,my3,mx2,my2,x3,y3,d-1);
+  }
+  const margin=40;
+  tri(W/2,margin,margin,H-margin,W-margin,H-margin,depth);
+}
+
+function drawKoch(ctx,W,H,depth){
+  function kochPoints(x1,y1,x2,y2,d){
+    if(d===0)return[[x1,y1]];
+    const dx=x2-x1,dy=y2-y1;
+    const ax=x1+dx/3,ay=y1+dy/3;
+    const bx=x1+2*dx/3,by=y1+2*dy/3;
+    const px=(ax+bx)/2-Math.sqrt(3)/2*(by-ay);
+    const py=(ay+by)/2+Math.sqrt(3)/2*(bx-ax);
+    return[...kochPoints(x1,y1,ax,ay,d-1),...kochPoints(ax,ay,px,py,d-1),...kochPoints(px,py,bx,by,d-1),...kochPoints(bx,by,x2,y2,d-1)];
+  }
+  const cx=W/2,cy=H/2+30,r=Math.min(W,H)*0.4;
+  const pts=[[cx,cy-r],[cx+r*Math.cos(Math.PI/6),cy+r*Math.sin(Math.PI/6)],[cx-r*Math.cos(Math.PI/6),cy+r*Math.sin(Math.PI/6)]];
+
+  let all=[];
+  for(let i=0;i<3;i++){
+    const j=(i+1)%3;
+    all=all.concat(kochPoints(pts[i][0],pts[i][1],pts[j][0],pts[j][1],depth));
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(all[0][0],all[0][1]);
+  for(let i=1;i<all.length;i++)ctx.lineTo(all[i][0],all[i][1]);
+  ctx.closePath();
+  ctx.strokeStyle='#a855f7';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle='rgba(168,85,247,0.1)';ctx.fill();
+}
+
+function drawTree(ctx,W,H,depth){
+  function branch(x,y,len,angle,d){
+    if(d===0||len<2)return;
+    const x2=x+len*Math.cos(angle);
+    const y2=y+len*Math.sin(angle);
+    const hue=120-d*10;
+    ctx.strokeStyle=`hsl(${hue},70%,${40+d*5}%)`;
+    ctx.lineWidth=d*1.2;
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke();
+    branch(x2,y2,len*0.7,angle-0.45,d-1);
+    branch(x2,y2,len*0.7,angle+0.45,d-1);
+  }
+  branch(W/2,H-30,H*0.28,-Math.PI/2,depth);
+}
+
+function drawCantor(ctx,W,H,depth){
+  const margin=50;
+  const barH=12;
+  const gap=30;
+  function cantor(x,w,y,d){
+    ctx.fillStyle=`hsl(${330-d*20},80%,60%)`;
+    ctx.fillRect(x,y,w,barH);
+    if(d>=depth)return;
+    cantor(x,w/3,y+gap,d+1);
+    cantor(x+2*w/3,w/3,y+gap,d+1);
+  }
+  cantor(margin,W-2*margin,30,0);
+}
+
+function drawDragon(ctx,W,H,depth){
+  let turns=[];
+  for(let i=0;i<depth;i++){
+    const rev=[...turns].reverse().map(t=>1-t);
+    turns=[...turns,1,...rev];
+  }
+
+  const points=[[0,0]];
+  let dir=0;
+  const dx=[1,0,-1,0],dy=[0,-1,0,1];
+  let x=0,y=0;
+  for(const t of turns){
+    dir=t===1?(dir+1)%4:(dir+3)%4;
+    x+=dx[dir];y+=dy[dir];
+    points.push([x,y]);
+  }
+
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const [px,py] of points){minX=Math.min(minX,px);maxX=Math.max(maxX,px);minY=Math.min(minY,py);maxY=Math.max(maxY,py)}
+
+  const scaleX=(W-60)/(maxX-minX||1);
+  const scaleY=(H-60)/(maxY-minY||1);
+  const scale=Math.min(scaleX,scaleY);
+  const offX=(W-(maxX-minX)*scale)/2-minX*scale;
+  const offY=(H-(maxY-minY)*scale)/2-minY*scale;
+
+  ctx.beginPath();
+  ctx.moveTo(points[0][0]*scale+offX,points[0][1]*scale+offY);
+  for(let i=1;i<points.length;i++){
+    const hue=(i/points.length)*360;
+    ctx.strokeStyle=`hsl(${hue},80%,60%)`;
+    ctx.lineWidth=1.5;
+    ctx.lineTo(points[i][0]*scale+offX,points[i][1]*scale+offY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(points[i][0]*scale+offX,points[i][1]*scale+offY);
+  }
+}
+
+function animateFractal(){
+  const type=document.getElementById('fractalType').value;
+  const maxDepth=type==='dragon'?12:type==='koch'?6:type==='tree'?10:8;
+  let d=0;
+  const depthInput=document.getElementById('fractalDepth');
+  const interval=setInterval(()=>{
+    depthInput.value=d;
+    drawFractal();
+    d++;
+    if(d>maxDepth){clearInterval(interval);depthInput.value=maxDepth}
+  },500);
+}
+
+// Initialize
+drawPascal();
+generateMagic();
+drawNumberGrid();
+drawFractal();
+</script>
+</body>
+</html>

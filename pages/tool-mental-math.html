@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mental Math Trainer | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/>
+<link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1000px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:var(--muted);font-family:Poppins,sans-serif;font-size:.82rem;cursor:pointer;transition:all .3s;text-align:center}
+.tab-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.tab-btn:hover{border-color:var(--cyan)}
+.tab-content{display:none}.tab-content.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.trick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.trick-card{background:rgba(0,229,255,.03);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .3s;text-align:center}
+.trick-card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.trick-card.mastered{border-color:var(--gold);background:rgba(250,204,21,.05)}
+.trick-card .trick-icon{font-size:2rem;margin-bottom:8px}
+.trick-card .trick-name{font-size:.85rem;font-weight:600}
+.trick-card .trick-status{font-size:.7rem;color:var(--muted);margin-top:4px}
+.demo-area{background:rgba(17,17,37,.5);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.step{padding:12px;margin:8px 0;border-left:3px solid var(--cyan);background:rgba(0,229,255,.05);border-radius:0 8px 8px 0;font-family:'JetBrains Mono',monospace;font-size:.9rem;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.practice-area{text-align:center;padding:20px}
+.problem{font-family:'Orbitron',sans-serif;font-size:2rem;margin:20px 0}
+.answer-input{padding:12px;width:180px;background:rgba(17,17,37,.8);border:2px solid var(--border);border-radius:10px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:1.3rem;text-align:center;outline:none}
+.answer-input:focus{border-color:var(--cyan)}
+.btn{padding:10px 24px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:Poppins,sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s;margin:4px}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border:none;font-weight:600}
+.result-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-family:Orbitron,sans-serif;font-size:.85rem;margin:8px}
+.result-badge.gold{background:rgba(250,204,21,.15);color:var(--gold);border:1px solid var(--gold)}
+.result-badge.silver{background:rgba(148,163,184,.15);color:#c0c0c0;border:1px solid #c0c0c0}
+.result-badge.bronze{background:rgba(205,127,50,.15);color:#cd7f32;border:1px solid #cd7f32}
+.result-badge.miss{background:rgba(239,68,68,.15);color:var(--pink);border:1px solid var(--pink)}
+.xp-bar{width:100%;height:20px;background:var(--border);border-radius:10px;overflow:hidden;margin:8px 0}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .5s;border-radius:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.stat-card{text-align:center;padding:16px;background:rgba(0,229,255,.05);border:1px solid var(--border);border-radius:10px}
+.stat-card .val{font-family:Orbitron,sans-serif;font-size:1.3rem;color:var(--cyan)}
+.stat-card .lbl{font-size:.7rem;color:var(--muted);margin-top:4px}
+.chart-wrap{max-width:500px;margin:20px auto}
+@media(max-width:600px){h1{font-size:1.5rem}.trick-grid{grid-template-columns:1fr 1fr}.problem{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+
+<div class="wrapper">
+<h1>🧠 Mental Math Trainer</h1>
+<p class="subtitle">Master mental math with Vedic tricks, estimation, and brain workouts</p>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tricks',this)">🎯 Vedic Tricks</button>
+  <button class="tab-btn" onclick="switchTab('estimate',this)">📏 Estimation</button>
+  <button class="tab-btn" onclick="switchTab('workout',this)">💪 Brain Workout</button>
+  <button class="tab-btn" onclick="switchTab('progress',this)">📊 Progress</button>
+</div>
+
+<!-- VEDIC TRICKS -->
+<div class="tab-content active" id="tab-tricks">
+<div class="trick-grid" id="trick-grid"></div>
+<div id="trick-detail" style="display:none">
+  <button class="btn" onclick="document.getElementById('trick-detail').style.display='none';document.getElementById('trick-grid').style.display='grid'">← Back to Tricks</button>
+  <h2 style="font-family:Orbitron;font-size:1.1rem;color:var(--cyan);margin:16px 0" id="trick-title"></h2>
+  <div class="demo-area" id="trick-demo"></div>
+  <div class="practice-area" id="trick-practice"></div>
+</div>
+</div>
+
+<!-- ESTIMATION -->
+<div class="tab-content" id="tab-estimate">
+<div class="card">
+  <div class="practice-area">
+    <p style="color:var(--muted);margin-bottom:12px">Estimate the answer — scored by closeness!</p>
+    <div class="problem" id="est-problem">Click Start</div>
+    <input type="number" class="answer-input" id="est-input" placeholder="≈ ?" style="margin:12px">
+    <br>
+    <button class="btn btn-primary" id="est-btn" onclick="checkEstimate()">Submit Estimate</button>
+    <div id="est-result" style="margin-top:16px"></div>
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem" id="est-stats">Score: 0 | Round: 0/10</div>
+  </div>
+</div>
+</div>
+
+<!-- BRAIN WORKOUT -->
+<div class="tab-content" id="tab-workout">
+<div class="card">
+  <div class="practice-area" id="workout-setup">
+    <p style="color:var(--muted);margin-bottom:12px">Mixed operations, adaptive difficulty</p>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn" onclick="startWorkout(300)">5 min</button>
+      <button class="btn btn-primary" onclick="startWorkout(600)">10 min</button>
+      <button class="btn" onclick="startWorkout(900)">15 min</button>
+    </div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    <div style="font-size:.8rem;color:var(--muted)" id="xp-text">Level 1 — Novice (0 XP)</div>
+  </div>
+  <div id="workout-game" style="display:none">
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <span style="color:var(--muted);font-size:.85rem" id="w-timer">10:00</span>
+      <span style="color:var(--cyan);font-family:Orbitron;font-size:.9rem" id="w-score">Score: 0</span>
+      <span style="color:var(--gold);font-size:.85rem" id="w-streak">🔥 0</span>
+    </div>
+    <div class="problem" id="w-problem"></div>
+    <input type="text" class="answer-input" id="w-input" inputmode="numeric" autocomplete="off">
+    <div id="w-feedback" style="min-height:30px;margin-top:8px"></div>
+  </div>
+  <div id="workout-results" style="display:none"></div>
+</div>
+</div>
+
+<!-- PROGRESS -->
+<div class="tab-content" id="tab-progress">
+<div class="stats-grid" id="progress-stats"></div>
+<div class="card" style="margin-top:16px"><div class="chart-wrap"><canvas id="progress-chart"></canvas></div></div>
+</div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+function switchTab(id,btn){document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');if(id==='progress')renderProgress()}
+
+const tricks=[
+  {id:'mult11',name:'Multiply by 11',icon:'1️⃣1️⃣',desc:'Insert the sum of digits between them',demo:function(n){const s=String(n),d=s.split('').map(Number);let carry=0,result=[];for(let i=d.length-1;i>=0;i--){if(i===d.length-1)result.unshift(d[i]);const sum=d[i]+(d[i-1]||0)+carry;if(i>0){result.unshift(sum%10);carry=Math.floor(sum/10)}}if(carry)result.unshift(carry);return{steps:['Take '+n+' × 11','Split digits: '+d.join(' , '),'Sum adjacent pairs and insert','Result: '+result.join('')],answer:n*11}},gen:()=>{const n=randInt(12,95);return{q:n+' × 11',a:n*11}}},
+  {id:'sq5',name:'Square ending in 5',icon:'5️⃣²',desc:'n5² = n×(n+1) followed by 25',demo:function(n){const tens=Math.floor(n/10);return{steps:[n+'² where last digit is 5','Take tens digit: '+tens,'Multiply by next: '+tens+' × '+(tens+1)+' = '+(tens*(tens+1)),'Append 25','Result: '+(tens*(tens+1))+'25'],answer:n*n}},gen:()=>{const t=randInt(1,9);const n=t*10+5;return{q:n+'²',a:n*n}}},
+  {id:'near100',name:'Multiply near 100',icon:'💯',desc:'Use complements from 100',demo:function(a,b){const da=100-a,db=100-b;return{steps:[a+' × '+b,'Deficits: '+(100-a)+' and '+(100-b),'Cross subtract: '+a+' − '+db+' = '+(a-db),'Multiply deficits: '+da+' × '+db+' = '+(da*db),'Result: '+(a-db)+''+String(da*db).padStart(2,'0')],answer:a*b}},gen:()=>{const a=randInt(91,99),b=randInt(91,99);return{q:a+' × '+b,a:a*b}}},
+  {id:'double',name:'Double & Halve',icon:'✖️',desc:'16×25 = 8×50 = 4×100',demo:function(a,b){const steps=[a+' × '+b];let x=a,y=b;for(let i=0;i<3&&x%2===0;i++){x/=2;y*=2;steps.push('= '+x+' × '+y)}steps.push('= '+(x*y));return{steps,answer:a*b}},gen:()=>{const a=randInt(2,12)*4;const b=randInt(5,25);return{q:a+' × '+b,a:a*b}}},
+  {id:'mult5',name:'Multiply by 5',icon:'5️⃣',desc:'Divide by 2, multiply by 10',demo:function(n){return{steps:[n+' × 5','Divide '+n+' by 2 = '+(n/2),'Multiply by 10 = '+(n/2*10),'Result: '+(n*5)],answer:n*5}},gen:()=>{const n=randInt(12,198)*2;return{q:n+' × 5',a:n*5}}},
+  {id:'sub1000',name:'Subtract from 1000',icon:'🔢',desc:'Complement: subtract each digit from 9, last from 10',demo:function(n){const s=String(n).padStart(3,'0').split('').map(Number);return{steps:['1000 − '+n,'Subtract each digit from 9 (last from 10)','9−'+s[0]+'='+(9-s[0])+', 9−'+s[1]+'='+(9-s[1])+', 10−'+s[2]+'='+(10-s[2]),'Result: '+(1000-n)],answer:1000-n}},gen:()=>{const n=randInt(100,999);return{q:'1000 − '+n,a:1000-n}}},
+  {id:'pct',name:'Percentage Shortcuts',icon:'%',desc:'15% of 80 = 80% of 15 = 12',demo:function(p,n){return{steps:[p+'% of '+n,'Swap: '+n+'% of '+p+' (same answer!)','= '+(n*p/100)],answer:n*p/100}},gen:()=>{const pairs=[[15,80],[25,44],[50,68],[12,50],[8,25]];const[p,n]=pairs[randInt(0,4)];return{q:p+'% of '+n,a:n*p/100}}},
+  {id:'castout',name:'Casting Out 9s',icon:'9️⃣',desc:'Check answers using digit sums',demo:function(a,b){const ds=n=>n.toString().split('').reduce((s,d)=>s+parseInt(d),0)%9;return{steps:[a+' × '+b+' = '+(a*b),'Digit sum of '+a+': '+ds(a),'Digit sum of '+b+': '+ds(b),'Product of sums: '+(ds(a)*ds(b)%9),'Digit sum of answer: '+ds(a*b),'Match? '+(ds(a)*ds(b)%9===ds(a*b)?'✓ Yes':'✗ No')],answer:a*b}},gen:()=>{const a=randInt(12,99),b=randInt(12,99);return{q:a+' × '+b,a:a*b}}},
+  {id:'lradd',name:'Left-to-Right Addition',icon:'⬅️',desc:'Add from left: 347+286 → 500+120+13',demo:function(a,b){const h=Math.floor(a/100)*100+Math.floor(b/100)*100;const t=Math.floor(a%100/10)*10+Math.floor(b%100/10)*10;const u=a%10+b%10;return{steps:[a+' + '+b,'Hundreds: '+h,'Tens: +'+t+' = '+(h+t),'Units: +'+u+' = '+(h+t+u)],answer:a+b}},gen:()=>{const a=randInt(100,500),b=randInt(100,500);return{q:a+' + '+b,a:a+b}}},
+  {id:'comp',name:'Complement Multiply',icon:'🔄',desc:'8×7: use (10-2)(10-3)=10(8-3)+2×3',demo:function(a,b){const ca=10-a,cb=10-b;return{steps:[a+' × '+b,'Complements from 10: '+ca+' and '+cb,'Cross: '+a+' − '+cb+' = '+(a-cb)+' (tens)','Multiply complements: '+ca+' × '+cb+' = '+(ca*cb),'Result: '+(a-cb)+''+String(ca*cb)],answer:a*b}},gen:()=>{const a=randInt(6,9),b=randInt(6,9);return{q:a+' × '+b,a:a*b}}}
+];
+
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+let mastered=JSON.parse(localStorage.getItem('mm_mastered')||'{}');
+
+function renderTricks(){
+  const g=document.getElementById('trick-grid');
+  g.innerHTML=tricks.map(t=>'<div class="trick-card'+(mastered[t.id]?' mastered':'')+'" onclick="showTrick(\''+t.id+'\')"><div class="trick-icon">'+t.icon+'</div><div class="trick-name">'+t.name+'</div><div class="trick-status">'+(mastered[t.id]?'✓ Mastered':'Click to learn')+'</div></div>').join('');
+}
+
+let currentTrick=null,trickScore=0,trickRound=0;
+function showTrick(id){
+  currentTrick=tricks.find(t=>t.id===id);
+  document.getElementById('trick-grid').style.display='none';
+  document.getElementById('trick-detail').style.display='block';
+  document.getElementById('trick-title').textContent=currentTrick.name+' — '+currentTrick.desc;
+  // Show demo
+  const p=currentTrick.gen();
+  const demo=currentTrick.demo(...(currentTrick.id==='near100'?[randInt(91,99),randInt(91,99)]:currentTrick.id==='pct'?[15,80]:currentTrick.id==='castout'?[23,47]:currentTrick.id==='lradd'?[347,286]:currentTrick.id==='comp'?[8,7]:currentTrick.id==='double'?[16,25]:[currentTrick.id==='sq5'?35:currentTrick.id==='sub1000'?743:currentTrick.id==='mult5'?48:42]));
+  document.getElementById('trick-demo').innerHTML='<h3 style="color:var(--gold);font-size:.85rem;margin-bottom:12px">Step-by-Step Demo</h3>'+demo.steps.map(s=>'<div class="step">'+s+'</div>').join('');
+  trickScore=0;trickRound=0;nextTrickPractice();
+}
+
+function nextTrickPractice(){
+  if(trickRound>=10){
+    if(trickScore>=7){mastered[currentTrick.id]=true;localStorage.setItem('mm_mastered',JSON.stringify(mastered));renderTricks()}
+    document.getElementById('trick-practice').innerHTML='<h3 style="color:var(--gold)">Practice Complete! '+trickScore+'/10</h3><p style="color:var(--muted)">'+(trickScore>=7?'🏆 Trick Mastered!':'Keep practicing!')+'</p><button class="btn btn-primary" onclick="trickScore=0;trickRound=0;nextTrickPractice()">Try Again</button>';
+    return;
+  }
+  const p=currentTrick.gen();
+  document.getElementById('trick-practice').innerHTML='<div style="color:var(--muted);font-size:.8rem">Round '+(trickRound+1)+'/10 | Score: '+trickScore+'</div><div class="problem">'+p.q+' = ?</div><input type="number" class="answer-input" id="tp-input" autofocus><br><button class="btn btn-primary" onclick="checkTrickAnswer('+p.a+')">Check</button>';
+  setTimeout(()=>{const i=document.getElementById('tp-input');if(i){i.focus();i.onkeydown=e=>{if(e.key==='Enter')checkTrickAnswer(p.a)}}},100);
+}
+
+function checkTrickAnswer(correct){
+  const v=parseFloat(document.getElementById('tp-input').value);
+  trickRound++;
+  if(v===correct){trickScore++;document.getElementById('trick-practice').innerHTML+='<div style="color:#22c55e;margin-top:8px">✓ Correct!</div>'}
+  else{document.getElementById('trick-practice').innerHTML+='<div style="color:var(--pink);margin-top:8px">✗ Answer: '+correct+'</div>'}
+  setTimeout(nextTrickPractice,1000);
+}
+
+// ESTIMATION
+let estScore=0,estRound=0,estAnswer=0;
+function genEstimation(){
+  const r=Math.random();
+  let q,a;
+  if(r<.3){const x=randInt(100,999),y=randInt(10,99);a=x*y;q=x+' × '+y}
+  else if(r<.5){const x=randInt(1000,9999),y=randInt(2,19);a=Math.round(x/y);q=x+' ÷ '+y}
+  else if(r<.7){const p=randInt(5,45),n=randInt(100,999);a=Math.round(n*p/100);q=p+'% of '+n}
+  else{const x=randInt(100,999);a=Math.round(Math.sqrt(x)*10)/10;q='√'+x}
+  return{q,a};
+}
+
+function startEstimation(){estScore=0;estRound=0;nextEstimation()}
+function nextEstimation(){
+  if(estRound>=10){document.getElementById('est-result').innerHTML='<h3 style="color:var(--gold)">Final Score: '+estScore+'</h3>';saveProgress('estimation',estScore);return}
+  const p=genEstimation();estAnswer=p.a;
+  document.getElementById('est-problem').textContent=p.q+' ≈ ?';
+  document.getElementById('est-input').value='';document.getElementById('est-result').innerHTML='';
+  document.getElementById('est-stats').textContent='Score: '+estScore+' | Round: '+(estRound+1)+'/10';
+  document.getElementById('est-input').focus();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{startEstimation();document.getElementById('est-input').onkeydown=e=>{if(e.key==='Enter')checkEstimate()}});
+
+function checkEstimate(){
+  const v=parseFloat(document.getElementById('est-input').value);
+  if(isNaN(v))return;
+  const pct=Math.abs(v-estAnswer)/Math.abs(estAnswer)*100;
+  let badge,pts;
+  if(pct<=5){badge='gold';pts=3}else if(pct<=10){badge='silver';pts=2}else if(pct<=20){badge='bronze';pts=1}else{badge='miss';pts=0}
+  estScore+=pts;estRound++;
+  document.getElementById('est-result').innerHTML='<div class="result-badge '+badge+'">'+(badge==='gold'?'🥇 Within 5%!':badge==='silver'?'🥈 Within 10%':badge==='bronze'?'🥉 Within 20%':'❌ Off by '+Math.round(pct)+'%')+'</div><div style="color:var(--muted);font-size:.85rem;margin-top:4px">Exact: '+estAnswer+' | Your guess: '+v+' ('+Math.round(pct)+'% off)</div>';
+  setTimeout(nextEstimation,1500);
+}
+
+// BRAIN WORKOUT
+let wTimer=null,wTime=0,wScore=0,wStreak=0,wLevel=3,wCorrect=0,wTotal=0;
+function startWorkout(secs){
+  wTime=secs;wScore=0;wStreak=0;wLevel=3;wCorrect=0;wTotal=0;
+  document.getElementById('workout-setup').style.display='none';
+  document.getElementById('workout-game').style.display='block';
+  document.getElementById('workout-results').style.display='none';
+  nextWorkoutProblem();
+  wTimer=setInterval(()=>{
+    wTime--;document.getElementById('w-timer').textContent=Math.floor(wTime/60)+':'+String(wTime%60).padStart(2,'0');
+    if(wTime<=0){clearInterval(wTimer);endWorkout()}
+  },1000);
+  const inp=document.getElementById('w-input');
+  inp.value='';inp.focus();
+  inp.onkeydown=e=>{if(e.key==='Enter')checkWorkout()};
+}
+
+let wAnswer=0;
+function nextWorkoutProblem(){
+  let a,b,q;
+  const ops=['+','-','×','÷'];
+  const op=ops[randInt(0,Math.min(3,Math.floor(wLevel/2)))];
+  if(op==='+'){a=randInt(wLevel*5,wLevel*20);b=randInt(wLevel*3,wLevel*15);wAnswer=a+b;q=a+' + '+b}
+  else if(op==='-'){a=randInt(wLevel*10,wLevel*25);b=randInt(1,a);wAnswer=a-b;q=a+' − '+b}
+  else if(op==='×'){a=randInt(2,wLevel+5);b=randInt(2,wLevel+5);wAnswer=a*b;q=a+' × '+b}
+  else{b=randInt(2,wLevel+3);wAnswer=randInt(2,wLevel+8);a=wAnswer*b;q=a+' ÷ '+b}
+  document.getElementById('w-problem').textContent=q+' = ?';
+  document.getElementById('w-input').value='';document.getElementById('w-input').focus();
+}
+
+function checkWorkout(){
+  const v=parseInt(document.getElementById('w-input').value);if(isNaN(v))return;
+  wTotal++;
+  if(v===wAnswer){wCorrect++;wScore+=10;wStreak++;wLevel+=.5;document.getElementById('w-feedback').innerHTML='<span style="color:#22c55e">✓ Correct! +10</span>'}
+  else{wStreak=0;if(wLevel>1)wLevel-=.3;document.getElementById('w-feedback').innerHTML='<span style="color:var(--pink)">✗ '+wAnswer+'</span>'}
+  document.getElementById('w-score').textContent='Score: '+wScore;
+  document.getElementById('w-streak').textContent='🔥 '+wStreak;
+  setTimeout(nextWorkoutProblem,600);
+}
+
+function endWorkout(){
+  document.getElementById('workout-game').style.display='none';
+  document.getElementById('workout-results').style.display='block';
+  const acc=wTotal?Math.round(wCorrect/wTotal*100):0;
+  const xp=wScore;addXP(xp);
+  document.getElementById('workout-results').innerHTML='<h2 style="text-align:center;color:var(--gold);font-family:Orbitron;margin-bottom:16px">Workout Complete!</h2><div class="stats-grid"><div class="stat-card"><div class="val">'+wScore+'</div><div class="lbl">Score</div></div><div class="stat-card"><div class="val">'+wCorrect+'</div><div class="lbl">Correct</div></div><div class="stat-card"><div class="val">'+acc+'%</div><div class="lbl">Accuracy</div></div><div class="stat-card"><div class="val">+'+xp+'</div><div class="lbl">XP Earned</div></div></div><div style="text-align:center;margin-top:20px"><button class="btn btn-primary" onclick="document.getElementById(\'workout-setup\').style.display=\'block\';document.getElementById(\'workout-results\').style.display=\'none\';updateXPDisplay()">Back</button></div>';
+  saveProgress('workout',wScore);
+}
+
+function addXP(xp){let data=JSON.parse(localStorage.getItem('mm_xp')||'{"xp":0}');data.xp+=xp;localStorage.setItem('mm_xp',JSON.stringify(data))}
+function getLevel(xp){if(xp>=500)return{name:'Expert',lvl:5};if(xp>=300)return{name:'Advanced',lvl:4};if(xp>=150)return{name:'Intermediate',lvl:3};if(xp>=50)return{name:'Beginner',lvl:2};return{name:'Novice',lvl:1}}
+function updateXPDisplay(){const data=JSON.parse(localStorage.getItem('mm_xp')||'{"xp":0}');const l=getLevel(data.xp);const thresholds=[0,50,150,300,500,1000];const next=thresholds[l.lvl]||1000;const prev=thresholds[l.lvl-1]||0;const pct=Math.min(100,((data.xp-prev)/(next-prev))*100);document.getElementById('xp-fill').style.width=pct+'%';document.getElementById('xp-text').textContent='Level '+l.lvl+' — '+l.name+' ('+data.xp+' XP)'}
+
+function saveProgress(type,score){let hist=JSON.parse(localStorage.getItem('mm_history')||'[]');hist.push({type,score,date:new Date().toISOString().slice(0,10)});if(hist.length>50)hist=hist.slice(-50);localStorage.setItem('mm_history',JSON.stringify(hist))}
+
+function renderProgress(){
+  const hist=JSON.parse(localStorage.getItem('mm_history')||'[]');
+  const data=JSON.parse(localStorage.getItem('mm_xp')||'{"xp":0}');
+  const l=getLevel(data.xp);
+  const masteredCount=Object.keys(mastered).length;
+  document.getElementById('progress-stats').innerHTML='<div class="stat-card"><div class="val">'+data.xp+'</div><div class="lbl">Total XP</div></div><div class="stat-card"><div class="val">'+l.name+'</div><div class="lbl">Level '+l.lvl+'</div></div><div class="stat-card"><div class="val">'+masteredCount+'/10</div><div class="lbl">Tricks Mastered</div></div><div class="stat-card"><div class="val">'+hist.length+'</div><div class="lbl">Sessions</div></div>';
+  // Chart
+  const last10=hist.slice(-10);
+  const ctx=document.getElementById('progress-chart').getContext('2d');
+  if(window.progressChartInst)window.progressChartInst.destroy();
+  window.progressChartInst=new Chart(ctx,{type:'line',data:{labels:last10.map((_,i)=>'#'+(i+1)),datasets:[{label:'Score',data:last10.map(h=>h.score),borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,.1)',fill:true,tension:.3}]},options:{responsive:true,plugins:{legend:{labels:{color:'#94a3b8'}}},scales:{x:{ticks:{color:'#94a3b8'},grid:{color:'rgba(30,30,58,.5)'}},y:{ticks:{color:'#94a3b8'},grid:{color:'rgba(30,30,58,.5)'}}}}});
+}
+
+renderTricks();updateXPDisplay();
+</script>
+</body>
+</html>

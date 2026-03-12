@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Math History Timeline | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/><link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1100px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-chip{padding:8px 16px;border:1.5px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);font-family:Poppins;font-size:.8rem;cursor:pointer;transition:all .2s}
+.filter-chip:hover{border-color:var(--cyan);color:var(--cyan)}
+.filter-chip.active{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border-color:transparent;font-weight:600}
+.search-box{padding:10px 16px;background:rgba(17,17,37,.8);border:1.5px solid var(--border);border-radius:10px;color:#e8e8ff;font-family:Poppins;font-size:.9rem;outline:none;width:220px}
+.search-box:focus{border-color:var(--cyan)}
+.era-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.era-chip{padding:6px 14px;border:1px solid var(--border);border-radius:16px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.era-chip:hover{border-color:var(--gold);color:var(--gold)}
+.era-chip.active{border-color:var(--gold);color:var(--gold);background:rgba(250,204,21,.1)}
+
+/* Timeline */
+.timeline{position:relative;padding:20px 0}
+.timeline::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--cyan),var(--purple),var(--pink),var(--gold));border-radius:2px;transform:translateX(-50%)}
+.tl-item{display:flex;align-items:flex-start;margin-bottom:24px;position:relative;opacity:0;transform:translateY(20px);animation:fadeUp .4s forwards}
+.tl-item:nth-child(odd){flex-direction:row-reverse}
+.tl-item:nth-child(odd) .tl-content{margin-right:auto;margin-left:40px;text-align:right}
+.tl-item:nth-child(even) .tl-content{margin-left:auto;margin-right:40px}
+.tl-content{width:45%;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;cursor:pointer;transition:all .3s}
+.tl-content:hover{border-color:var(--cyan);transform:scale(1.02)}
+.tl-dot{position:absolute;left:50%;top:20px;width:16px;height:16px;border-radius:50%;border:3px solid var(--cyan);background:#0d0d1a;transform:translateX(-50%);z-index:2;transition:all .3s}
+.tl-item:hover .tl-dot{background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.tl-year{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--gold);margin-bottom:4px}
+.tl-title{font-size:1rem;font-weight:600;margin-bottom:4px;color:#e8e8ff}
+.tl-branch{display:inline-block;padding:2px 10px;border-radius:10px;font-size:.7rem;font-weight:600;margin-bottom:6px}
+.tl-desc{color:var(--muted);font-size:.82rem;line-height:1.5}
+.tl-expanded{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem;line-height:1.6}
+
+.branch-algebra{background:rgba(0,229,255,.15);color:var(--cyan)}
+.branch-geometry{background:rgba(168,85,247,.15);color:var(--purple)}
+.branch-calculus{background:rgba(236,72,153,.15);color:var(--pink)}
+.branch-number{background:rgba(250,204,21,.15);color:var(--gold)}
+.branch-statistics{background:rgba(34,197,94,.15);color:#22c55e}
+.branch-logic{background:rgba(249,115,22,.15);color:#f97316}
+.branch-applied{background:rgba(56,189,248,.15);color:#38bdf8}
+
+.stats-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.stat{text-align:center;padding:12px 20px;background:rgba(0,229,255,.05);border:1px solid var(--border);border-radius:10px;flex:1;min-width:100px}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--cyan)}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:2px}
+
+.profile-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.profile-modal.open{display:flex}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
+.profile-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer}
+.profile-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.profile-dates{color:var(--gold);font-size:.85rem;margin-bottom:12px}
+.profile-bio{color:var(--muted);font-size:.85rem;line-height:1.7}
+.profile-contributions{margin-top:12px}
+.profile-contributions h4{color:var(--cyan);font-size:.85rem;margin-bottom:6px}
+.profile-contributions li{color:var(--muted);font-size:.82rem;margin-bottom:4px;list-style:none;padding-left:16px;position:relative}
+.profile-contributions li::before{content:'→';position:absolute;left:0;color:var(--purple)}
+
+#noResults{display:none;text-align:center;padding:40px;color:var(--muted)}
+
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){
+  h1{font-size:1.5rem}
+  .timeline::before{left:20px}
+  .tl-item,.tl-item:nth-child(odd){flex-direction:column;padding-left:50px}
+  .tl-content,.tl-item:nth-child(odd) .tl-content{width:100%;margin:0;text-align:left}
+  .tl-dot{left:20px}
+  .search-box{width:100%}
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+<div class="wrapper">
+<h1>📜 Math History Timeline</h1>
+<p class="subtitle">Explore the evolution of mathematics through the ages</p>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num" id="totalEvents">0</div><div class="stat-label">Events</div></div>
+  <div class="stat"><div class="stat-num" id="totalYears">0</div><div class="stat-label">Years Span</div></div>
+  <div class="stat"><div class="stat-num" id="totalPeople">0</div><div class="stat-label">Mathematicians</div></div>
+  <div class="stat"><div class="stat-num" id="totalBranches">0</div><div class="stat-label">Branches</div></div>
+</div>
+
+<div class="card">
+  <div class="filters">
+    <input class="search-box" id="searchBox" placeholder="Search events, people..." oninput="filterTimeline()">
+    <button class="filter-chip active" data-branch="all" onclick="setBranch('all',this)">All</button>
+    <button class="filter-chip" data-branch="algebra" onclick="setBranch('algebra',this)">Algebra</button>
+    <button class="filter-chip" data-branch="geometry" onclick="setBranch('geometry',this)">Geometry</button>
+    <button class="filter-chip" data-branch="calculus" onclick="setBranch('calculus',this)">Calculus</button>
+    <button class="filter-chip" data-branch="number" onclick="setBranch('number',this)">Number Theory</button>
+    <button class="filter-chip" data-branch="statistics" onclick="setBranch('statistics',this)">Statistics</button>
+    <button class="filter-chip" data-branch="logic" onclick="setBranch('logic',this)">Logic</button>
+    <button class="filter-chip" data-branch="applied" onclick="setBranch('applied',this)">Applied</button>
+  </div>
+  <div class="era-chips">
+    <button class="era-chip active" data-era="all" onclick="setEra('all',this)">All Eras</button>
+    <button class="era-chip" data-era="ancient" onclick="setEra('ancient',this)">Ancient (–500 BC)</button>
+    <button class="era-chip" data-era="classical" onclick="setEra('classical',this)">Classical (500 BC–500 AD)</button>
+    <button class="era-chip" data-era="medieval" onclick="setEra('medieval',this)">Medieval (500–1400)</button>
+    <button class="era-chip" data-era="renaissance" onclick="setEra('renaissance',this)">Renaissance (1400–1700)</button>
+    <button class="era-chip" data-era="modern" onclick="setEra('modern',this)">Modern (1700–1900)</button>
+    <button class="era-chip" data-era="contemporary" onclick="setEra('contemporary',this)">Contemporary (1900+)</button>
+  </div>
+</div>
+
+<div class="timeline" id="timeline"></div>
+<div id="noResults">No events match your filters.</div>
+</div>
+
+<div class="profile-modal" id="profileModal">
+  <div class="profile-card">
+    <button class="profile-close" onclick="closeProfile()">✕</button>
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+const events=[
+{year:-3400,title:"Earliest Known Numerals",branch:"number",era:"ancient",desc:"Sumerians develop cuneiform numerals for trade and record-keeping in Mesopotamia.",detail:"The base-60 (sexagesimal) system they created still influences how we measure time (60 seconds, 60 minutes) and angles (360 degrees) today.",person:null},
+{year:-2600,title:"Egyptian Mathematical Papyri",branch:"applied",era:"ancient",desc:"Egyptians use mathematics for pyramid construction, land surveying, and astronomy.",detail:"The Rhind Papyrus (c. 1650 BC) contains 84 problems covering fractions, algebra, and geometry. Egyptians used unit fractions exclusively.",person:null},
+{year:-1800,title:"Babylonian Algebra",branch:"algebra",era:"ancient",desc:"Babylonians solve quadratic equations using geometric methods on clay tablets.",detail:"The YBC 7289 tablet shows they knew √2 to remarkable accuracy: 1.41421296... (actual: 1.41421356...). They also had tables for squares and cubes.",person:null},
+{year:-600,title:"Thales' Geometry",branch:"geometry",era:"ancient",desc:"Thales of Miletus introduces deductive reasoning and proves geometric theorems.",detail:"Thales' theorem states that any angle inscribed in a semicircle is a right angle. He is considered the first true mathematician to use logical proof.",person:{name:"Thales of Miletus",dates:"c. 624–546 BC",bio:"Greek philosopher and mathematician, one of the Seven Sages of Greece. He predicted a solar eclipse and measured the height of pyramids using shadows.",contributions:["First to use deductive reasoning in geometry","Thales' theorem (angle in semicircle)","Measured pyramid heights using similar triangles","Predicted solar eclipse of 585 BC"]}},
+{year:-570,title:"Pythagorean Theorem",branch:"geometry",era:"ancient",desc:"Pythagoras formalizes the relationship a² + b² = c² and founds a mathematical school.",detail:"While the theorem was known earlier in Babylon and India, Pythagoras provided one of the first known proofs. His school also discovered irrational numbers (√2), which was initially kept secret.",person:{name:"Pythagoras",dates:"c. 570–495 BC",bio:"Greek philosopher who founded the Pythagorean school in Croton. His followers believed 'All is Number' and found mathematical relationships in music, astronomy, and nature.",contributions:["Pythagorean theorem and its proof","Discovery of irrational numbers","Mathematical relationships in musical harmony","Concept of mathematical proof"]}},
+{year:-300,title:"Euclid's Elements",branch:"geometry",era:"classical",desc:"Euclid compiles 13 books covering geometry, number theory, and mathematical rigor.",detail:"The Elements remained the standard geometry textbook for over 2000 years. It introduced the axiomatic method: starting from definitions and postulates to prove theorems. Lincoln studied it to sharpen his logical thinking.",person:{name:"Euclid",dates:"c. 325–265 BC",bio:"Known as the 'Father of Geometry,' Euclid taught at the Library of Alexandria. When King Ptolemy asked for an easier way to learn geometry, Euclid replied: 'There is no royal road to geometry.'",contributions:["Elements — 13 books of rigorous mathematics","Axiomatic method of proof","Euclidean algorithm for GCD","Proof that primes are infinite"]}},
+{year:-250,title:"Archimedes' Discoveries",branch:"applied",era:"classical",desc:"Archimedes calculates π, discovers buoyancy, and invents proto-calculus methods.",detail:"His 'method of exhaustion' to find areas and volumes anticipated integral calculus by nearly 2000 years. He computed π between 3+10/71 and 3+1/7.",person:{name:"Archimedes",dates:"c. 287–212 BC",bio:"Greatest mathematician of antiquity. He designed war machines to defend Syracuse from Roman siege. His last words were reportedly 'Do not disturb my circles!' as a Roman soldier killed him.",contributions:["Approximation of π","Method of exhaustion (proto-calculus)","Area of a parabolic segment","Surface area and volume of a sphere","Archimedes' principle of buoyancy"]}},
+{year:-200,title:"Apollonius' Conic Sections",branch:"geometry",era:"classical",desc:"Apollonius systematically studies ellipses, parabolas, and hyperbolas.",detail:"His work on conics was essential 1800 years later when Kepler discovered planetary orbits are ellipses. The terms ellipse, parabola, and hyperbola come from Apollonius.",person:null},
+{year:-150,title:"Hipparchus & Trigonometry",branch:"geometry",era:"classical",desc:"Hipparchus creates the first trigonometric table (chord table) for astronomy.",detail:"He compiled a table of chords in a circle, equivalent to modern sine values. This enabled precise astronomical calculations and navigation.",person:null},
+{year:250,title:"Diophantus' Arithmetica",branch:"number",era:"classical",desc:"Diophantus writes the first treatise on algebra, solving equations with integer solutions.",detail:"His work inspired Fermat to write his famous 'Last Theorem' in the margin: 'I have discovered a truly marvelous proof of this, which this margin is too narrow to contain.'",person:{name:"Diophantus",dates:"c. 200–284 AD",bio:"Known as the 'Father of Algebra.' Almost nothing is known about his life except from a mathematical riddle describing his age at death (84 years).",contributions:["Arithmetica — 13 books on equations","Diophantine equations (integer solutions)","Symbolic notation for algebra","Inspired Fermat's Last Theorem"]}},
+{year:500,title:"Aryabhata's Contributions",branch:"algebra",era:"medieval",desc:"Indian mathematician Aryabhata introduces zero-related concepts and sine tables.",detail:"He calculated π ≈ 3.1416, gave the area of a triangle, and solved linear equations. His work on astronomy included a heliocentric model.",person:{name:"Aryabhata",dates:"476–550 AD",bio:"Indian mathematician and astronomer who headed the university at Nalanda. His works were translated into Arabic and influenced Islamic mathematics.",contributions:["Approximation of π to 4 decimal places","Sine difference table","Solutions to linear Diophantine equations","Place-value numeral system"]}},
+{year:628,title:"Brahmagupta & Zero",branch:"number",era:"medieval",desc:"Brahmagupta defines rules for arithmetic with zero and negative numbers.",detail:"His Brahmasphutasiddhanta was the first text to treat zero as a number with defined operations: a + 0 = a, a × 0 = 0. He also gave the formula for cyclic quadrilateral area.",person:{name:"Brahmagupta",dates:"598–668 AD",bio:"Indian mathematician who headed the astronomical observatory at Ujjain. He was the first to give rules for computing with zero and negative numbers.",contributions:["Rules for zero and negative number arithmetic","Brahmagupta's formula for cyclic quadrilaterals","Solutions to Pell's equation","Brahmagupta–Fibonacci identity"]}},
+{year:820,title:"Al-Khwarizmi's Algebra",branch:"algebra",era:"medieval",desc:"Al-Khwarizmi writes 'Al-Kitab al-mukhtasar,' founding systematic algebra.",detail:"The word 'algebra' comes from 'al-jabr' in his title. The word 'algorithm' derives from the Latin form of his name. He classified and solved all types of linear and quadratic equations.",person:{name:"Al-Khwarizmi",dates:"c. 780–850 AD",bio:"Persian mathematician working in Baghdad's House of Wisdom. His works on algebra and Hindu-Arabic numerals transformed mathematics and gave us the words 'algebra' and 'algorithm.'",contributions:["Founded systematic algebra","Introduced Hindu-Arabic numerals to the West","Classified linear and quadratic equations","Astronomical and geographic tables"]}},
+{year:1070,title:"Omar Khayyam's Cubic Solutions",branch:"algebra",era:"medieval",desc:"Omar Khayyam solves cubic equations geometrically using conic section intersections.",detail:"He also reformed the Persian calendar with remarkable accuracy (the Jalali calendar, more precise than the Gregorian), and is famous for his poetry (Rubaiyat).",person:{name:"Omar Khayyam",dates:"1048–1131",bio:"Persian polymath — mathematician, astronomer, and poet. His classification of cubic equations and geometric solutions were not surpassed for 500 years.",contributions:["Geometric solutions to all cubic equation types","Binomial theorem generalization","Calendar reform (Jalali calendar)","Parallel postulate investigations"]}},
+{year:1202,title:"Fibonacci's Liber Abaci",branch:"number",era:"medieval",desc:"Fibonacci introduces Hindu-Arabic numerals to Europe and poses the famous rabbit problem.",detail:"His book revolutionized European commerce by replacing Roman numerals. The 'Fibonacci sequence' (1,1,2,3,5,8,13...) appeared as a solution to a problem about breeding rabbits.",person:{name:"Fibonacci (Leonardo of Pisa)",dates:"c. 1170–1250",bio:"Italian mathematician who traveled throughout the Mediterranean learning from Arab mathematicians. His Liber Abaci changed how Europe did arithmetic.",contributions:["Introduced Hindu-Arabic numeral system to Europe","Fibonacci sequence","Applications of algebra to commerce","Solutions to Diophantine problems"]}},
+{year:1545,title:"Cardano's Ars Magna",branch:"algebra",era:"renaissance",desc:"Cardano publishes formulas for solving cubic and quartic equations.",detail:"The cubic formula was actually discovered by Tartaglia, who shared it with Cardano under oath of secrecy. Cardano published it anyway, crediting Tartaglia but causing a bitter feud.",person:{name:"Gerolamo Cardano",dates:"1501–1576",bio:"Italian polymath who was a mathematician, physician, and gambler. His Ars Magna is one of the great books in the history of mathematics.",contributions:["Published cubic equation formula","Quartic equation solution (via Ferrari)","Early probability theory","Complex numbers (called 'subtle' quantities)"]}},
+{year:1591,title:"Viète's Symbolic Algebra",branch:"algebra",era:"renaissance",desc:"François Viète introduces letters for unknowns, creating modern algebraic notation.",detail:"Before Viète, equations were written entirely in words. His use of vowels for unknowns and consonants for constants made algebra far more powerful and manipulable.",person:null},
+{year:1614,title:"Napier Invents Logarithms",branch:"applied",era:"renaissance",desc:"John Napier publishes tables of logarithms, revolutionizing calculation.",detail:"Laplace said logarithms 'doubled the life of an astronomer' by simplifying tedious multiplications into additions. Napier also popularized the decimal point.",person:null},
+{year:1637,title:"Descartes' Coordinate Geometry",branch:"geometry",era:"renaissance",desc:"René Descartes unifies algebra and geometry by introducing the coordinate system.",detail:"His 'La Géométrie' showed that geometric curves could be described by algebraic equations, creating analytic geometry. The Cartesian plane is named after him.",person:{name:"René Descartes",dates:"1596–1650",bio:"French philosopher and mathematician famous for 'I think, therefore I am.' His coordinate system bridged algebra and geometry, enabling calculus to develop.",contributions:["Cartesian coordinate system","Analytic geometry","Rule of signs for polynomials","Philosophical foundations of modern science"]}},
+{year:1654,title:"Pascal & Fermat: Probability Theory",branch:"statistics",era:"renaissance",desc:"Pascal and Fermat exchange letters founding the mathematical theory of probability.",detail:"Their correspondence about the 'problem of points' (fairly dividing stakes in an interrupted game) laid the foundation for all of probability and statistics.",person:{name:"Blaise Pascal",dates:"1623–1662",bio:"French mathematician, physicist, and philosopher. Built a mechanical calculator at age 19. Pascal's triangle, Pascal's wager, and the pascal (unit of pressure) bear his name.",contributions:["Co-founded probability theory","Pascal's triangle and binomial coefficients","Mechanical calculator (Pascaline)","Contributions to projective geometry"]}},
+{year:1665,title:"Newton's Calculus",branch:"calculus",era:"renaissance",desc:"Isaac Newton develops 'the method of fluxions' — differential and integral calculus.",detail:"Newton developed calculus to solve problems in physics: motion, gravity, and optics. He kept his work largely private until the priority dispute with Leibniz erupted.",person:{name:"Isaac Newton",dates:"1643–1727",bio:"English physicist and mathematician. His Principia Mathematica unified terrestrial and celestial mechanics. He served as Warden of the Royal Mint and President of the Royal Society.",contributions:["Invented calculus (fluxions)","Laws of motion and universal gravitation","Generalized binomial theorem","Newton's method for root-finding","Optics and theory of color"]}},
+{year:1684,title:"Leibniz Publishes Calculus",branch:"calculus",era:"renaissance",desc:"Gottfried Wilhelm Leibniz independently publishes calculus with superior notation.",detail:"Leibniz's notation (dy/dx, ∫) proved far more practical than Newton's dots. The bitter priority dispute divided British and Continental mathematics for a century.",person:{name:"Gottfried Wilhelm Leibniz",dates:"1646–1716",bio:"German polymath who independently invented calculus. His notation became standard. He also designed an early mechanical calculator and envisioned symbolic logic.",contributions:["Independent invention of calculus","Modern calculus notation (dx, ∫)","Binary number system","Early symbolic logic","Leibniz's rule for derivatives"]}},
+{year:1736,title:"Euler & Graph Theory",branch:"logic",era:"modern",desc:"Leonhard Euler solves the Königsberg Bridge Problem, founding graph theory and topology.",detail:"Euler proved it was impossible to walk through Königsberg crossing each bridge exactly once. This paper is considered the origin of both graph theory and topology.",person:{name:"Leonhard Euler",dates:"1707–1783",bio:"The most prolific mathematician in history, publishing over 800 papers — even after going blind. He made foundational contributions to virtually every branch of mathematics.",contributions:["Founded graph theory","Euler's formula: e^(iπ) + 1 = 0","Euler's identity and number e","Contributions to number theory, topology, mechanics","Modern mathematical notation (f(x), Σ, i)"]}},
+{year:1799,title:"Gauss' Fundamental Theorem of Algebra",branch:"algebra",era:"modern",desc:"Carl Friedrich Gauss proves every polynomial has a root in the complex numbers.",detail:"Gauss gave the first rigorous proof in his doctoral thesis at age 22. He went on to make groundbreaking contributions to number theory, statistics, and physics.",person:{name:"Carl Friedrich Gauss",dates:"1777–1855",bio:"Called the 'Prince of Mathematicians.' A child prodigy who at age 10 instantly summed 1+2+...+100=5050. He made deep contributions across all mathematics and physics.",contributions:["Fundamental theorem of algebra","Disquisitiones Arithmeticae (number theory)","Gaussian distribution (bell curve)","Non-Euclidean geometry (unpublished)","Method of least squares"]}},
+{year:1821,title:"Cauchy Rigorous Analysis",branch:"calculus",era:"modern",desc:"Augustin-Louis Cauchy formalizes limits, continuity, and convergence.",detail:"Cauchy's Cours d'Analyse replaced the intuitive arguments of Newton and Leibniz with epsilon-delta definitions, establishing the rigorous foundation of calculus.",person:null},
+{year:1829,title:"Non-Euclidean Geometry",branch:"geometry",era:"modern",desc:"Lobachevsky and Bolyai independently discover hyperbolic geometry.",detail:"By denying Euclid's parallel postulate, they proved consistent alternative geometries exist. Einstein later used non-Euclidean geometry for general relativity.",person:{name:"Nikolai Lobachevsky",dates:"1792–1856",bio:"Russian mathematician who published the first account of non-Euclidean geometry. Initially ridiculed, his work was later recognized as revolutionary.",contributions:["Hyperbolic (non-Euclidean) geometry","Lobachevsky function","Challenged 2000 years of geometric assumptions","Paved the way for general relativity"]}},
+{year:1832,title:"Galois Theory",branch:"algebra",era:"modern",desc:"Évariste Galois creates group theory and proves the quintic equation has no general formula.",detail:"Galois wrote down his revolutionary ideas the night before dying in a duel at age 20. His work connecting field extensions to group symmetry is one of the most beautiful in mathematics.",person:{name:"Évariste Galois",dates:"1811–1832",bio:"French mathematician who died in a duel at 20. The night before, he frantically wrote down his mathematical ideas, creating group theory. His work was not understood for decades.",contributions:["Founded group theory","Galois theory (field extensions)","Proved quintic unsolvability","Connected algebra to symmetry"]}},
+{year:1854,title:"Riemann's Geometry",branch:"geometry",era:"modern",desc:"Bernhard Riemann generalizes geometry to curved spaces of any dimension.",detail:"His habilitation lecture 'On the Hypotheses Which Lie at the Foundations of Geometry' introduced Riemannian geometry, which became the mathematical language of Einstein's general relativity.",person:{name:"Bernhard Riemann",dates:"1826–1866",bio:"German mathematician whose ideas shaped modern mathematics and physics. The Riemann Hypothesis about prime distribution remains the most famous unsolved problem.",contributions:["Riemannian geometry","Riemann Hypothesis (unsolved)","Riemann integral","Riemann surfaces","Foundations of general relativity's math"]}},
+{year:1874,title:"Cantor's Set Theory & Infinity",branch:"logic",era:"modern",desc:"Georg Cantor proves there are different sizes of infinity, creating set theory.",detail:"His diagonal argument showed real numbers are 'more infinite' than natural numbers (uncountable vs countable). This revolutionary idea met fierce opposition from contemporaries.",person:{name:"Georg Cantor",dates:"1845–1918",bio:"German mathematician who created set theory and proved the existence of different sizes of infinity. His work was fiercely opposed by Kronecker, contributing to his mental health struggles.",contributions:["Set theory foundations","Proof of uncountability of reals","Transfinite cardinal and ordinal numbers","Cantor's diagonal argument","Continuum Hypothesis"]}},
+{year:1900,title:"Hilbert's 23 Problems",branch:"logic",era:"contemporary",desc:"David Hilbert presents 23 unsolved problems that shaped 20th-century mathematics.",detail:"At the International Congress of Mathematicians in Paris, Hilbert outlined problems spanning number theory, algebra, geometry, and analysis. Several remain unsolved today.",person:{name:"David Hilbert",dates:"1862–1943",bio:"German mathematician who was the most influential of the early 20th century. His famous motto: 'We must know. We will know.'",contributions:["23 Problems shaping modern math","Hilbert spaces (functional analysis)","Formalist program","Invariant theory","Foundations of geometry axioms"]}},
+{year:1905,title:"Einstein's Special Relativity",branch:"applied",era:"contemporary",desc:"Einstein uses Lorentz transformations and Minkowski spacetime geometry.",detail:"Special relativity unified space and time and gave the famous E = mc². The mathematical framework drew heavily on the work of Lorentz, Poincaré, and Minkowski.",person:null},
+{year:1931,title:"Gödel's Incompleteness Theorems",branch:"logic",era:"contemporary",desc:"Kurt Gödel proves that any consistent mathematical system has unprovable truths.",detail:"His first theorem shattered Hilbert's dream of a complete, consistent foundation for all mathematics. Any system powerful enough for arithmetic contains true statements that cannot be proven within the system.",person:{name:"Kurt Gödel",dates:"1906–1978",bio:"Austrian logician who proved the most important results in mathematical logic. Einstein said walking home with Gödel was his greatest privilege at Princeton.",contributions:["Incompleteness theorems","Completeness theorem","Consistency of continuum hypothesis","Contributions to set theory and philosophy","Rotating universe solutions in GR"]}},
+{year:1936,title:"Turing Machines & Computability",branch:"logic",era:"contemporary",desc:"Alan Turing defines computation and proves the halting problem is undecidable.",detail:"His abstract 'Turing machine' formalized what it means to compute. This theoretical work preceded and enabled the development of electronic computers.",person:{name:"Alan Turing",dates:"1912–1954",bio:"British mathematician who formalized computation, broke the Enigma code in WWII, and pioneered artificial intelligence. He was posthumously pardoned for his prosecution under anti-homosexuality laws.",contributions:["Turing machine model of computation","Proved halting problem undecidable","Enigma code-breaking (WWII)","Turing test for AI","Morphogenesis patterns in biology"]}},
+{year:1943,title:"Erdős' Prolific Career Begins",branch:"number",era:"contemporary",desc:"Paul Erdős begins publishing hundreds of papers on number theory and combinatorics.",detail:"Erdős published more papers (1,500+) with more collaborators (500+) than any other mathematician. The 'Erdős number' measures collaborative distance from him.",person:{name:"Paul Erdős",dates:"1913–1996",bio:"Hungarian mathematician who lived out of a suitcase, traveling between collaborators. He said mathematicians are 'machines for turning coffee into theorems.'",contributions:["Probabilistic method in combinatorics","Erdős–Kac theorem","Prime number theorem (elementary proof)","Ramsey theory contributions","Erdős number concept"]}},
+{year:1950,title:"Nash Equilibrium",branch:"applied",era:"contemporary",desc:"John Nash proves existence of equilibrium in non-cooperative games.",detail:"His 27-page PhD thesis revolutionized economics, political science, and evolutionary biology. He received the Nobel Prize in Economics in 1994.",person:{name:"John Nash",dates:"1928–2015",bio:"American mathematician whose work on game theory won the Nobel Prize. His life struggles with schizophrenia and recovery were depicted in 'A Beautiful Mind.'",contributions:["Nash equilibrium in game theory","Nash embedding theorem","Contributions to partial differential equations","Nobel Prize in Economics (1994)"]}},
+{year:1963,title:"Cohen's Forcing & Continuum Hypothesis",branch:"logic",era:"contemporary",desc:"Paul Cohen proves the continuum hypothesis is independent of standard set theory axioms.",detail:"Combined with Gödel's earlier result, this showed CH can be neither proved nor disproved from ZFC axioms — a fundamental limitation of mathematical knowledge.",person:null},
+{year:1975,title:"Mandelbrot & Fractals",branch:"geometry",era:"contemporary",desc:"Benoit Mandelbrot coins 'fractal' and reveals fractal geometry in nature.",detail:"The Mandelbrot set, generated by z → z² + c, produces infinitely complex beauty from a simple formula. Fractals model coastlines, mountains, blood vessels, and market fluctuations.",person:{name:"Benoit Mandelbrot",dates:"1924–2010",bio:"Polish-French-American mathematician who showed that irregular, rough shapes in nature follow mathematical patterns he called fractals.",contributions:["Coined the term 'fractal'","Mandelbrot set","Fractal geometry of nature","Applications to finance and physics","Self-similarity in mathematics"]}},
+{year:1994,title:"Wiles Proves Fermat's Last Theorem",branch:"number",era:"contemporary",desc:"Andrew Wiles proves xⁿ + yⁿ = zⁿ has no integer solutions for n > 2.",detail:"Fermat claimed to have a proof in 1637 but famously said the margin was too small. Wiles worked in secret for 7 years, proving it via the modularity theorem for elliptic curves.",person:{name:"Andrew Wiles",dates:"b. 1953",bio:"British mathematician who fulfilled his childhood dream of proving Fermat's Last Theorem. His proof connected elliptic curves, modular forms, and Galois representations.",contributions:["Proof of Fermat's Last Theorem","Modularity theorem (partial)","Iwasawa theory contributions","Knighthood for mathematics"]}},
+{year:2003,title:"Perelman Proves Poincaré Conjecture",branch:"geometry",era:"contemporary",desc:"Grigori Perelman proves the Poincaré conjecture using Ricci flow, solving a Millennium Problem.",detail:"He declined both the Fields Medal and the $1 million Millennium Prize, saying 'I'm not interested in money or fame.' He withdrew from mathematics entirely.",person:{name:"Grigori Perelman",dates:"b. 1966",bio:"Russian mathematician who solved the Poincaré conjecture then withdrew from public life. He declined all prizes, saying the proof itself was the reward.",contributions:["Proof of Poincaré conjecture","Geometrization conjecture proof","Ricci flow with surgery","Declined Fields Medal and Millennium Prize"]}},
+{year:2012,title:"Yitang Zhang's Prime Gaps",branch:"number",era:"contemporary",desc:"Unknown mathematician proves bounded gaps between primes, a major breakthrough.",detail:"Zhang, working as a part-time calculus lecturer, proved there are infinitely many pairs of primes less than 70 million apart. This was later refined to gaps of 246.",person:null},
+{year:2019,title:"Verification of Boolean Pythagorean Triples",branch:"logic",era:"contemporary",desc:"Computer-assisted proof resolves the Boolean Pythagorean triples problem with a 200 TB proof.",detail:"The largest mathematical proof ever, verified by computer. It proved that coloring integers red/blue must create a monochromatic Pythagorean triple by number 7,825.",person:null}
+];
+
+// Mathematician profiles for modal
+const mathematicians={};
+events.forEach(e=>{if(e.person)mathematicians[e.person.name]=e.person});
+
+let activeBranch='all',activeEra='all';
+
+function setBranch(b,btn){
+  activeBranch=b;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  filterTimeline();
+}
+
+function setEra(era,btn){
+  activeEra=era;
+  document.querySelectorAll('.era-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  filterTimeline();
+}
+
+function getEra(year){
+  if(year<-500)return 'ancient';
+  if(year<=500)return 'classical';
+  if(year<=1400)return 'medieval';
+  if(year<=1700)return 'renaissance';
+  if(year<=1900)return 'modern';
+  return 'contemporary';
+}
+
+function filterTimeline(){
+  const search=document.getElementById('searchBox').value.toLowerCase();
+  const filtered=events.filter(e=>{
+    if(activeBranch!=='all'&&e.branch!==activeBranch)return false;
+    if(activeEra!=='all'&&getEra(e.year)!==activeEra)return false;
+    if(search){
+      const text=(e.title+' '+e.desc+' '+(e.person?e.person.name:'')+' '+e.branch).toLowerCase();
+      if(!text.includes(search))return false;
+    }
+    return true;
+  });
+
+  const tl=document.getElementById('timeline');
+  const noRes=document.getElementById('noResults');
+
+  if(filtered.length===0){
+    tl.innerHTML='';
+    noRes.style.display='block';
+    return;
+  }
+  noRes.style.display='none';
+
+  let html='';
+  filtered.forEach((e,i)=>{
+    const yearStr=e.year<0?Math.abs(e.year)+' BC':e.year+' AD';
+    const personLink=e.person?` <span style="color:var(--cyan);cursor:pointer;text-decoration:underline" onclick="event.stopPropagation();showProfile('${e.person.name.replace(/'/g,"\\'")}')">${e.person.name}</span>`:'';
+    html+=`
+    <div class="tl-item" style="animation-delay:${i*0.05}s" onclick="toggleDetail(this)">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-year">${yearStr}</div>
+        <span class="tl-branch branch-${e.branch}">${e.branch}</span>
+        <div class="tl-title">${e.title}</div>
+        <div class="tl-desc">${e.desc}${personLink}</div>
+        <div class="tl-expanded">${e.detail}</div>
+      </div>
+    </div>`;
+  });
+  tl.innerHTML=html;
+}
+
+function toggleDetail(item){
+  const exp=item.querySelector('.tl-expanded');
+  exp.style.display=exp.style.display==='block'?'none':'block';
+}
+
+function showProfile(name){
+  const p=mathematicians[name];
+  if(!p)return;
+  let html=`<div class="profile-name">${p.name}</div>`;
+  html+=`<div class="profile-dates">${p.dates}</div>`;
+  html+=`<div class="profile-bio">${p.bio}</div>`;
+  html+=`<div class="profile-contributions"><h4>Key Contributions</h4><ul>`;
+  p.contributions.forEach(c=>{html+=`<li>${c}</li>`});
+  html+=`</ul></div>`;
+  document.getElementById('profileContent').innerHTML=html;
+  document.getElementById('profileModal').classList.add('open');
+}
+
+function closeProfile(){
+  document.getElementById('profileModal').classList.remove('open');
+}
+
+document.getElementById('profileModal').addEventListener('click',function(e){
+  if(e.target===this)closeProfile();
+});
+
+// Stats
+const uniquePeople=new Set(events.filter(e=>e.person).map(e=>e.person.name));
+const uniqueBranches=new Set(events.map(e=>e.branch));
+document.getElementById('totalEvents').textContent=events.length;
+document.getElementById('totalYears').textContent=Math.abs(events[0].year)+events[events.length-1].year;
+document.getElementById('totalPeople').textContent=uniquePeople.size;
+document.getElementById('totalBranches').textContent=uniqueBranches.size;
+
+// Initial render
+filterTimeline();
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Math Dictionary | D'Math Univ</title>
+<link rel="stylesheet" href="../style.css"/><link rel="stylesheet" href="../footer.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script>MathJax={tex:{inlineMath:[['$','$']]},startup:{typeset:false}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+:root{--cyan:#00e5ff;--purple:#a855f7;--pink:#ec4899;--gold:#facc15;--card:#111125;--border:#1e1e3a;--muted:#94a3b8;--r:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d0d1a;color:#e8e8ff;font-family:'Poppins',sans-serif;min-height:100vh}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffffff22,transparent),radial-gradient(2px 2px at 40px 70px,#ffffff11,transparent);background-size:200px 200px;z-index:0;pointer-events:none}
+.back-nav{max-width:1300px;margin:20px auto 0;padding:0 24px;position:relative;z-index:1}
+.back-nav a{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:rgba(17,17,37,.85);border:1.5px solid var(--border);border-radius:10px;color:var(--cyan);font-family:Poppins,sans-serif;font-size:.95rem;text-decoration:none;transition:all .3s}
+.back-nav a:hover{border-color:var(--cyan);transform:translateX(-4px)}
+.wrapper{max-width:1000px;margin:0 auto;padding:30px 24px;position:relative;z-index:1}
+h1{font-family:'Orbitron',sans-serif;font-size:2rem;text-align:center;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:20px;font-size:.9rem}
+.search-bar{display:flex;gap:8px;margin-bottom:16px}
+.search-bar input{flex:1;padding:12px 16px;background:rgba(17,17,37,.8);border:2px solid var(--border);border-radius:12px;color:#e8e8ff;font-family:Poppins;font-size:.95rem;outline:none}
+.search-bar input:focus{border-color:var(--cyan)}
+.btn{padding:10px 20px;border:1.5px solid var(--border);border-radius:10px;background:transparent;color:#e8e8ff;font-family:Poppins;font-size:.85rem;cursor:pointer;transition:all .2s}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#0d0d1a;border:none;font-weight:600}
+.az-strip{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;justify-content:center}
+.az-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.az-btn:hover,.az-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.topic-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;justify-content:center}
+.topic-chip{padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.topic-chip:hover,.topic-chip.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.08)}
+.term-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;transition:border-color .2s}
+.term-card:hover{border-color:rgba(0,229,255,.3)}
+.term-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--cyan);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.term-def{font-size:.85rem;color:#c8c8ff;margin-bottom:8px;line-height:1.5}
+.term-formula{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--purple);background:rgba(168,85,247,.08);padding:8px 12px;border-radius:8px;margin-bottom:8px}
+.term-example{font-size:.8rem;color:var(--muted);font-style:italic}
+.term-topic{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em}
+.bookmark-btn{cursor:pointer;font-size:1.1rem;transition:transform .2s}
+.bookmark-btn:hover{transform:scale(1.3)}
+.letter-header{font-family:'Orbitron',sans-serif;font-size:1.5rem;color:var(--purple);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.count-badge{font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:16px}
+@media(max-width:600px){h1{font-size:1.5rem}.az-btn{width:26px;height:26px;font-size:.65rem}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="header-container"></div>
+<div class="back-nav"><a href="tools.html" onclick="sessionStorage.setItem('toolCat','learn')"><span class="arrow">←</span> Back to Learning Tools</a></div>
+<div class="wrapper">
+<h1>📖 Math Dictionary</h1>
+<p class="subtitle">150+ math terms with definitions, formulas, and examples</p>
+
+<div class="search-bar">
+  <input id="search" placeholder="Search terms..." oninput="filterTerms()">
+  <button class="btn btn-primary" onclick="randomTerm()">🎲 Random</button>
+</div>
+
+<div class="az-strip" id="az-strip"></div>
+<div class="topic-filter" id="topic-filter"></div>
+<div class="count-badge" id="count-badge"></div>
+<div id="terms-container"></div>
+</div>
+<div id="footer-container"></div>
+<div id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:30px;right:30px;width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.2rem;z-index:99;opacity:.7">🔝</div>
+<script>
+fetch('../components/header.html').then(r=>r.text()).then(h=>document.getElementById('header-container').innerHTML=h).catch(()=>{});
+fetch('../components/footer.html').then(r=>r.text()).then(h=>document.getElementById('footer-container').innerHTML=h).catch(()=>{});
+
+const topicColors={Arithmetic:'#00e5ff',Algebra:'#a855f7',Geometry:'#ec4899',Trigonometry:'#facc15',Calculus:'#22c55e',Statistics:'#3b82f6','Number Theory':'#f97316'};
+
+const terms=[
+// Arithmetic (30)
+{name:'Addition',def:'Combining two or more numbers to get a sum.',formula:'a + b = c',example:'5 + 3 = 8',topic:'Arithmetic'},
+{name:'Subtraction',def:'Finding the difference between two numbers.',formula:'a - b = c',example:'10 - 4 = 6',topic:'Arithmetic'},
+{name:'Multiplication',def:'Repeated addition of a number.',formula:'a × b = c',example:'6 × 7 = 42',topic:'Arithmetic'},
+{name:'Division',def:'Splitting a number into equal parts.',formula:'a ÷ b = c',example:'24 ÷ 6 = 4',topic:'Arithmetic'},
+{name:'Factor',def:'A number that divides another exactly.',formula:'',example:'Factors of 12: 1, 2, 3, 4, 6, 12',topic:'Arithmetic'},
+{name:'Multiple',def:'Product of a number and any integer.',formula:'',example:'Multiples of 5: 5, 10, 15, 20...',topic:'Arithmetic'},
+{name:'Prime Number',def:'A number greater than 1 with only two factors: 1 and itself.',formula:'',example:'2, 3, 5, 7, 11, 13...',topic:'Arithmetic'},
+{name:'Composite Number',def:'A number with more than two factors.',formula:'',example:'4, 6, 8, 9, 10, 12...',topic:'Arithmetic'},
+{name:'Even Number',def:'A number divisible by 2.',formula:'2n, n ∈ ℤ',example:'2, 4, 6, 8, 10...',topic:'Arithmetic'},
+{name:'Odd Number',def:'A number not divisible by 2.',formula:'2n + 1, n ∈ ℤ',example:'1, 3, 5, 7, 9...',topic:'Arithmetic'},
+{name:'Integer',def:'Whole numbers including negatives and zero.',formula:'ℤ = {..., -2, -1, 0, 1, 2, ...}',example:'-3, 0, 7 are integers',topic:'Arithmetic'},
+{name:'Rational Number',def:'A number expressible as a fraction p/q where q ≠ 0.',formula:'',example:'1/2, 0.75, -3/4',topic:'Arithmetic'},
+{name:'Irrational Number',def:'A number that cannot be expressed as a simple fraction.',formula:'',example:'π, √2, e',topic:'Arithmetic'},
+{name:'Real Number',def:'All rational and irrational numbers.',formula:'ℝ',example:'Any point on the number line',topic:'Arithmetic'},
+{name:'Absolute Value',def:'Distance of a number from zero on the number line.',formula:'|a|',example:'|-5| = 5, |3| = 3',topic:'Arithmetic'},
+{name:'Exponent',def:'Number of times a base is multiplied by itself.',formula:'$a^n = a × a × ... × a$',example:'$2^3 = 8$',topic:'Arithmetic'},
+{name:'Square Root',def:'A value that when multiplied by itself gives the original number.',formula:'$\\sqrt{a}$',example:'$\\sqrt{25} = 5$',topic:'Arithmetic'},
+{name:'Cube Root',def:'A value that when cubed gives the original number.',formula:'$\\sqrt[3]{a}$',example:'$\\sqrt[3]{27} = 3$',topic:'Arithmetic'},
+{name:'Percentage',def:'A fraction expressed as parts per 100.',formula:'$\\frac{a}{b} × 100\\%$',example:'25% = 1/4',topic:'Arithmetic'},
+{name:'Ratio',def:'Comparison of two quantities by division.',formula:'a : b',example:'3 : 5',topic:'Arithmetic'},
+{name:'Proportion',def:'An equation stating two ratios are equal.',formula:'$\\frac{a}{b} = \\frac{c}{d}$',example:'2/3 = 4/6',topic:'Arithmetic'},
+{name:'Fraction',def:'A part of a whole expressed as numerator over denominator.',formula:'$\\frac{a}{b}$',example:'3/4',topic:'Arithmetic'},
+{name:'Decimal',def:'A number expressed in base-10 with a decimal point.',formula:'',example:'0.75 = 3/4',topic:'Arithmetic'},
+{name:'Numerator',def:'The top number in a fraction.',formula:'',example:'In 3/4, numerator is 3',topic:'Arithmetic'},
+{name:'Denominator',def:'The bottom number in a fraction.',formula:'',example:'In 3/4, denominator is 4',topic:'Arithmetic'},
+{name:'Quotient',def:'The result of division.',formula:'a ÷ b = quotient',example:'20 ÷ 4 = 5',topic:'Arithmetic'},
+{name:'Remainder',def:'Amount left over after division.',formula:'a = bq + r',example:'17 ÷ 5 = 3 remainder 2',topic:'Arithmetic'},
+{name:'Dividend',def:'The number being divided.',formula:'',example:'In 15 ÷ 3, dividend is 15',topic:'Arithmetic'},
+{name:'Divisor',def:'The number you divide by.',formula:'',example:'In 15 ÷ 3, divisor is 3',topic:'Arithmetic'},
+{name:'Modulo',def:'The remainder after division.',formula:'a mod b',example:'17 mod 5 = 2',topic:'Arithmetic'},
+// Algebra (30)
+{name:'Variable',def:'A symbol representing an unknown value.',formula:'x, y, z',example:'In 2x + 3 = 7, x is a variable',topic:'Algebra'},
+{name:'Expression',def:'A combination of numbers, variables, and operations.',formula:'',example:'3x + 2y - 5',topic:'Algebra'},
+{name:'Equation',def:'A statement that two expressions are equal.',formula:'',example:'2x + 3 = 11',topic:'Algebra'},
+{name:'Inequality',def:'A comparison showing one value is greater or less than another.',formula:'<, >, ≤, ≥',example:'x + 3 > 7',topic:'Algebra'},
+{name:'Polynomial',def:'An expression with variables raised to non-negative integer powers.',formula:'$a_nx^n + a_{n-1}x^{n-1} + ... + a_0$',example:'$3x^2 + 2x - 5$',topic:'Algebra'},
+{name:'Monomial',def:'A polynomial with one term.',formula:'$ax^n$',example:'$5x^3$',topic:'Algebra'},
+{name:'Binomial',def:'A polynomial with two terms.',formula:'',example:'$x + 3$, $2x^2 - 1$',topic:'Algebra'},
+{name:'Trinomial',def:'A polynomial with three terms.',formula:'',example:'$x^2 + 3x + 2$',topic:'Algebra'},
+{name:'Coefficient',def:'The numerical factor of a term.',formula:'',example:'In 5x², coefficient is 5',topic:'Algebra'},
+{name:'Constant',def:'A term with no variable.',formula:'',example:'In 3x + 7, constant is 7',topic:'Algebra'},
+{name:'Degree',def:'The highest power of the variable in a polynomial.',formula:'',example:'$x^3 + 2x$ has degree 3',topic:'Algebra'},
+{name:'Linear Equation',def:'An equation where the highest power is 1.',formula:'y = mx + b',example:'2x + 3 = 7',topic:'Algebra'},
+{name:'Quadratic Equation',def:'An equation where the highest power is 2.',formula:'$ax^2 + bx + c = 0$',example:'$x^2 - 5x + 6 = 0$',topic:'Algebra'},
+{name:'Cubic Equation',def:'An equation where the highest power is 3.',formula:'$ax^3 + bx^2 + cx + d = 0$',example:'$x^3 - 1 = 0$',topic:'Algebra'},
+{name:'Slope',def:'The steepness of a line; rise over run.',formula:'$m = \\frac{y_2-y_1}{x_2-x_1}$',example:'Line through (1,2) and (3,6): m = 2',topic:'Algebra'},
+{name:'Y-Intercept',def:'The point where a line crosses the y-axis.',formula:'b in y = mx + b',example:'y = 3x + 5 has y-intercept 5',topic:'Algebra'},
+{name:'Domain',def:'The set of all possible input values of a function.',formula:'',example:'f(x) = √x has domain x ≥ 0',topic:'Algebra'},
+{name:'Range',def:'The set of all possible output values of a function.',formula:'',example:'f(x) = x² has range y ≥ 0',topic:'Algebra'},
+{name:'Function',def:'A relation where each input has exactly one output.',formula:'f(x)',example:'f(x) = 2x + 1',topic:'Algebra'},
+{name:'Inverse Function',def:'A function that reverses another function.',formula:'$f^{-1}(x)$',example:'If f(x) = 2x, then f⁻¹(x) = x/2',topic:'Algebra'},
+{name:'Sequence',def:'An ordered list of numbers following a pattern.',formula:'$a_1, a_2, a_3, ...$',example:'2, 4, 6, 8, ...',topic:'Algebra'},
+{name:'Series',def:'The sum of terms in a sequence.',formula:'$\\sum_{i=1}^{n} a_i$',example:'1 + 2 + 3 + ... + n',topic:'Algebra'},
+{name:'Arithmetic Sequence',def:'A sequence with a constant difference between terms.',formula:'$a_n = a_1 + (n-1)d$',example:'3, 7, 11, 15 (d = 4)',topic:'Algebra'},
+{name:'Geometric Sequence',def:'A sequence with a constant ratio between terms.',formula:'$a_n = a_1 \\cdot r^{n-1}$',example:'2, 6, 18, 54 (r = 3)',topic:'Algebra'},
+{name:'Logarithm',def:'The inverse of exponentiation.',formula:'$\\log_b(a) = c ⟺ b^c = a$',example:'$\\log_2(8) = 3$',topic:'Algebra'},
+{name:'Radical',def:'An expression containing a root.',formula:'$\\sqrt[n]{a}$',example:'$\\sqrt{16} = 4$',topic:'Algebra'},
+{name:'Factoring',def:'Breaking an expression into a product of simpler expressions.',formula:'',example:'$x^2 - 4 = (x-2)(x+2)$',topic:'Algebra'},
+{name:'Completing the Square',def:'Rewriting a quadratic in vertex form.',formula:'$x^2 + bx = (x+b/2)^2 - (b/2)^2$',example:'$x^2 + 6x = (x+3)^2 - 9$',topic:'Algebra'},
+{name:'Discriminant',def:'Part of the quadratic formula that determines the nature of roots.',formula:'$\\Delta = b^2 - 4ac$',example:'Δ > 0: two real roots',topic:'Algebra'},
+{name:'Quadratic Formula',def:'Formula to solve any quadratic equation.',formula:'$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$',example:'Solve $x^2 - 5x + 6 = 0$',topic:'Algebra'},
+// Geometry (30)
+{name:'Point',def:'An exact location in space with no dimensions.',formula:'',example:'Point A at (3, 4)',topic:'Geometry'},
+{name:'Line',def:'A straight path extending infinitely in both directions.',formula:'',example:'y = 2x + 1',topic:'Geometry'},
+{name:'Ray',def:'A part of a line with one endpoint extending infinitely.',formula:'',example:'Ray AB starts at A toward B',topic:'Geometry'},
+{name:'Line Segment',def:'A part of a line between two endpoints.',formula:'',example:'Segment from A(1,1) to B(4,5)',topic:'Geometry'},
+{name:'Angle',def:'Formed by two rays sharing a common endpoint.',formula:'',example:'45°, 90°, 180°',topic:'Geometry'},
+{name:'Acute Angle',def:'An angle less than 90°.',formula:'0° < θ < 90°',example:'45° is acute',topic:'Geometry'},
+{name:'Obtuse Angle',def:'An angle between 90° and 180°.',formula:'90° < θ < 180°',example:'120° is obtuse',topic:'Geometry'},
+{name:'Right Angle',def:'An angle of exactly 90°.',formula:'θ = 90°',example:'Corner of a square',topic:'Geometry'},
+{name:'Triangle',def:'A 3-sided polygon.',formula:'',example:'Equilateral, isosceles, scalene',topic:'Geometry'},
+{name:'Quadrilateral',def:'A 4-sided polygon.',formula:'',example:'Square, rectangle, rhombus',topic:'Geometry'},
+{name:'Circle',def:'Set of all points equidistant from a center.',formula:'$x^2 + y^2 = r^2$',example:'Circle with radius 5',topic:'Geometry'},
+{name:'Radius',def:'Distance from center to edge of a circle.',formula:'r',example:'r = 5 in a circle of diameter 10',topic:'Geometry'},
+{name:'Diameter',def:'A line through the center connecting two points on a circle.',formula:'d = 2r',example:'d = 10 when r = 5',topic:'Geometry'},
+{name:'Circumference',def:'The perimeter of a circle.',formula:'$C = 2\\pi r$',example:'r = 7: C = 14π ≈ 44',topic:'Geometry'},
+{name:'Area of Circle',def:'Space enclosed by a circle.',formula:'$A = \\pi r^2$',example:'r = 5: A = 25π ≈ 78.5',topic:'Geometry'},
+{name:'Area of Triangle',def:'Space enclosed by a triangle.',formula:'$A = \\frac{1}{2}bh$',example:'b = 6, h = 4: A = 12',topic:'Geometry'},
+{name:'Pythagorean Theorem',def:'In a right triangle, the square of the hypotenuse equals the sum of squares of the other sides.',formula:'$a^2 + b^2 = c^2$',example:'3² + 4² = 5²',topic:'Geometry'},
+{name:'Perimeter',def:'Total length of the boundary of a shape.',formula:'',example:'Rectangle 4×6: P = 20',topic:'Geometry'},
+{name:'Volume',def:'Space occupied by a 3D object.',formula:'',example:'Cube side 3: V = 27',topic:'Geometry'},
+{name:'Surface Area',def:'Total area of all faces of a 3D object.',formula:'',example:'Cube side 3: SA = 54',topic:'Geometry'},
+{name:'Congruent',def:'Shapes that have the same size and shape.',formula:'≅',example:'Two triangles with equal sides',topic:'Geometry'},
+{name:'Similar',def:'Shapes with the same shape but possibly different sizes.',formula:'∼',example:'All circles are similar',topic:'Geometry'},
+{name:'Parallel',def:'Lines that never intersect.',formula:'∥',example:'Railroad tracks',topic:'Geometry'},
+{name:'Perpendicular',def:'Lines that meet at right angles.',formula:'⊥',example:'x-axis and y-axis',topic:'Geometry'},
+{name:'Symmetry',def:'A shape is unchanged after a transformation.',formula:'',example:'A circle has infinite lines of symmetry',topic:'Geometry'},
+{name:'Polygon',def:'A closed shape with straight sides.',formula:'',example:'Triangle, square, pentagon',topic:'Geometry'},
+{name:'Pentagon',def:'A 5-sided polygon.',formula:'Sum of angles = 540°',example:'Regular pentagon',topic:'Geometry'},
+{name:'Hexagon',def:'A 6-sided polygon.',formula:'Sum of angles = 720°',example:'Honeycomb shape',topic:'Geometry'},
+{name:'Chord',def:'A line segment with both endpoints on a circle.',formula:'',example:'Diameter is the longest chord',topic:'Geometry'},
+{name:'Tangent Line',def:'A line that touches a circle at exactly one point.',formula:'',example:'Perpendicular to radius at point of tangency',topic:'Geometry'},
+// Trigonometry (20)
+{name:'Sine',def:'Ratio of opposite side to hypotenuse in a right triangle.',formula:'$\\sin(\\theta) = \\frac{\\text{opposite}}{\\text{hypotenuse}}$',example:'sin(30°) = 1/2',topic:'Trigonometry'},
+{name:'Cosine',def:'Ratio of adjacent side to hypotenuse.',formula:'$\\cos(\\theta) = \\frac{\\text{adjacent}}{\\text{hypotenuse}}$',example:'cos(60°) = 1/2',topic:'Trigonometry'},
+{name:'Tangent',def:'Ratio of opposite to adjacent side.',formula:'$\\tan(\\theta) = \\frac{\\sin\\theta}{\\cos\\theta}$',example:'tan(45°) = 1',topic:'Trigonometry'},
+{name:'Cosecant',def:'Reciprocal of sine.',formula:'$\\csc(\\theta) = \\frac{1}{\\sin\\theta}$',example:'csc(30°) = 2',topic:'Trigonometry'},
+{name:'Secant',def:'Reciprocal of cosine.',formula:'$\\sec(\\theta) = \\frac{1}{\\cos\\theta}$',example:'sec(60°) = 2',topic:'Trigonometry'},
+{name:'Cotangent',def:'Reciprocal of tangent.',formula:'$\\cot(\\theta) = \\frac{\\cos\\theta}{\\sin\\theta}$',example:'cot(45°) = 1',topic:'Trigonometry'},
+{name:'Radian',def:'A unit of angle measurement; one full turn = 2π radians.',formula:'$1 \\text{ rad} = \\frac{180°}{\\pi}$',example:'π/2 rad = 90°',topic:'Trigonometry'},
+{name:'Unit Circle',def:'A circle with radius 1 centered at the origin.',formula:'$x^2 + y^2 = 1$',example:'(cos θ, sin θ) lies on it',topic:'Trigonometry'},
+{name:'Amplitude',def:'The maximum displacement from the center of a wave.',formula:'|A| in y = A sin(x)',example:'y = 3sin(x) has amplitude 3',topic:'Trigonometry'},
+{name:'Period',def:'The length of one complete cycle of a wave.',formula:'$T = \\frac{2\\pi}{B}$',example:'y = sin(2x) has period π',topic:'Trigonometry'},
+{name:'Law of Sines',def:'Relates sides to sines of opposite angles.',formula:'$\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}$',example:'Solving non-right triangles',topic:'Trigonometry'},
+{name:'Law of Cosines',def:'Generalizes the Pythagorean theorem.',formula:'$c^2 = a^2 + b^2 - 2ab\\cos C$',example:'Finding a side when you know SAS',topic:'Trigonometry'},
+{name:'Pythagorean Identity',def:'Fundamental trig identity.',formula:'$\\sin^2\\theta + \\cos^2\\theta = 1$',example:'sin²(30°) + cos²(30°) = 1',topic:'Trigonometry'},
+{name:'Double Angle Formula',def:'Express trig of 2θ in terms of θ.',formula:'$\\sin(2\\theta) = 2\\sin\\theta\\cos\\theta$',example:'sin(60°) = 2sin(30°)cos(30°)',topic:'Trigonometry'},
+{name:'Inverse Trigonometry',def:'Functions that reverse trig operations.',formula:'$\\arcsin, \\arccos, \\arctan$',example:'arcsin(1/2) = 30°',topic:'Trigonometry'},
+{name:'Phase Shift',def:'Horizontal displacement of a wave.',formula:'C/B in y = A sin(Bx - C)',example:'y = sin(x - π/2) shifts right by π/2',topic:'Trigonometry'},
+{name:'Reference Angle',def:'Acute angle formed with the x-axis.',formula:'',example:'Reference angle of 150° is 30°',topic:'Trigonometry'},
+{name:'Arc Length',def:'Length of a portion of a circle.',formula:'$s = r\\theta$',example:'r = 5, θ = π/3: s = 5π/3',topic:'Trigonometry'},
+{name:'Frequency',def:'Number of cycles per unit time.',formula:'$f = \\frac{1}{T}$',example:'Period 0.5s → frequency 2Hz',topic:'Trigonometry'},
+{name:'Angular Velocity',def:'Rate of change of angle.',formula:'$\\omega = \\frac{\\theta}{t}$',example:'ω = 2π rad/s (one revolution per second)',topic:'Trigonometry'},
+// Calculus (20)
+{name:'Limit',def:'The value a function approaches as input approaches a point.',formula:'$\\lim_{x\\to a} f(x) = L$',example:'$\\lim_{x\\to 0} \\frac{\\sin x}{x} = 1$',topic:'Calculus'},
+{name:'Derivative',def:'Rate of change of a function.',formula:'$f\'(x) = \\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h}$',example:'If f(x) = x², f\'(x) = 2x',topic:'Calculus'},
+{name:'Integral',def:'The reverse of differentiation; area under a curve.',formula:'$\\int f(x)\\,dx$',example:'$\\int x^2\\,dx = \\frac{x^3}{3}+C$',topic:'Calculus'},
+{name:'Continuity',def:'A function is continuous if there are no breaks or jumps.',formula:'$\\lim_{x\\to a}f(x) = f(a)$',example:'f(x) = x² is continuous everywhere',topic:'Calculus'},
+{name:'Power Rule',def:'Derivative rule for power functions.',formula:'$\\frac{d}{dx}x^n = nx^{n-1}$',example:'d/dx(x³) = 3x²',topic:'Calculus'},
+{name:'Product Rule',def:'Derivative of a product of two functions.',formula:'$(fg)\' = f\'g + fg\'$',example:'d/dx(x·sin x) = sin x + x cos x',topic:'Calculus'},
+{name:'Quotient Rule',def:'Derivative of a quotient of two functions.',formula:'$\\left(\\frac{f}{g}\\right)\' = \\frac{f\'g - fg\'}{g^2}$',example:'d/dx(sin x / x)',topic:'Calculus'},
+{name:'Chain Rule',def:'Derivative of a composite function.',formula:'$\\frac{d}{dx}f(g(x)) = f\'(g(x))\\cdot g\'(x)$',example:'d/dx(sin(3x)) = 3cos(3x)',topic:'Calculus'},
+{name:'Definite Integral',def:'Integral with bounds giving a numerical value.',formula:'$\\int_a^b f(x)\\,dx = F(b)-F(a)$',example:'$\\int_0^1 x^2\\,dx = 1/3$',topic:'Calculus'},
+{name:'Fundamental Theorem',def:'Links differentiation and integration.',formula:'$\\frac{d}{dx}\\int_a^x f(t)\\,dt = f(x)$',example:'Integration reverses differentiation',topic:'Calculus'},
+{name:'Mean Value Theorem',def:'There exists a point where the tangent equals the secant slope.',formula:'$f\'(c) = \\frac{f(b)-f(a)}{b-a}$',example:'Exists c in (a,b)',topic:'Calculus'},
+{name:'Critical Point',def:'A point where f\'(x) = 0 or is undefined.',formula:'f\'(c) = 0',example:'f(x) = x²: critical point at x = 0',topic:'Calculus'},
+{name:'Inflection Point',def:'A point where concavity changes.',formula:'f\'\'(x) = 0 and changes sign',example:'f(x) = x³ at x = 0',topic:'Calculus'},
+{name:'Taylor Series',def:'Infinite polynomial approximation of a function.',formula:'$f(x) = \\sum \\frac{f^{(n)}(a)}{n!}(x-a)^n$',example:'$e^x = 1 + x + x²/2! + ...$',topic:'Calculus'},
+{name:'Convergence',def:'A series or sequence approaches a finite value.',formula:'',example:'1 + 1/2 + 1/4 + ... → 2',topic:'Calculus'},
+{name:'Divergence',def:'A series or sequence does not approach a finite value.',formula:'',example:'1 + 1 + 1 + ... → ∞',topic:'Calculus'},
+{name:"L'Hôpital's Rule",def:'Evaluate limits of indeterminate forms.',formula:'$\\lim\\frac{f}{g} = \\lim\\frac{f\'}{g\'}$',example:'lim(sin x / x) as x→0',topic:'Calculus'},
+{name:'Antiderivative',def:'A function whose derivative is the given function.',formula:'F\'(x) = f(x)',example:'Antiderivative of 2x is x²+C',topic:'Calculus'},
+{name:'Integration by Parts',def:'Integration technique for products.',formula:'$\\int u\\,dv = uv - \\int v\\,du$',example:'∫x·eˣ dx',topic:'Calculus'},
+{name:'U-Substitution',def:'Integration technique using substitution.',formula:'$\\int f(g(x))g\'(x)\\,dx$',example:'∫2x·cos(x²) dx, let u = x²',topic:'Calculus'},
+// Statistics (20)
+{name:'Mean',def:'The average of a set of numbers.',formula:'$\\bar{x} = \\frac{\\sum x_i}{n}$',example:'Mean of 2,4,6 = 4',topic:'Statistics'},
+{name:'Median',def:'The middle value when data is sorted.',formula:'',example:'Median of 1,3,5,7,9 = 5',topic:'Statistics'},
+{name:'Mode',def:'The most frequently occurring value.',formula:'',example:'Mode of 1,2,2,3 = 2',topic:'Statistics'},
+{name:'Range',def:'Difference between the largest and smallest values.',formula:'Range = max - min',example:'Range of 3,7,12 = 9',topic:'Statistics'},
+{name:'Variance',def:'Average of squared deviations from the mean.',formula:'$\\sigma^2 = \\frac{\\sum(x_i-\\bar{x})^2}{n}$',example:'Measures spread of data',topic:'Statistics'},
+{name:'Standard Deviation',def:'Square root of variance; measures spread.',formula:'$\\sigma = \\sqrt{\\text{variance}}$',example:'σ = 2.5 means data varies ±2.5 from mean',topic:'Statistics'},
+{name:'Probability',def:'Likelihood of an event occurring, from 0 to 1.',formula:'$P(A) = \\frac{\\text{favorable}}{\\text{total}}$',example:'P(heads) = 1/2',topic:'Statistics'},
+{name:'Normal Distribution',def:'Bell-shaped probability distribution.',formula:'$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}}e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$',example:'IQ scores follow normal distribution',topic:'Statistics'},
+{name:'Z-Score',def:'Number of standard deviations from the mean.',formula:'$z = \\frac{x - \\mu}{\\sigma}$',example:'x = 85, μ = 75, σ = 5: z = 2',topic:'Statistics'},
+{name:'Correlation',def:'Measure of linear relationship between two variables.',formula:'r ∈ [-1, 1]',example:'r = 0.95 is strong positive',topic:'Statistics'},
+{name:'Regression',def:'Finding the best-fit line through data.',formula:'$y = mx + b$',example:'Predicting y from x',topic:'Statistics'},
+{name:'Combination',def:'Number of ways to choose k items from n without order.',formula:'$C(n,k) = \\frac{n!}{k!(n-k)!}$',example:'C(5,2) = 10',topic:'Statistics'},
+{name:'Permutation',def:'Number of ways to arrange k items from n with order.',formula:'$P(n,k) = \\frac{n!}{(n-k)!}$',example:'P(5,2) = 20',topic:'Statistics'},
+{name:'Expected Value',def:'The long-run average of a random variable.',formula:'$E(X) = \\sum x_i \\cdot P(x_i)$',example:'Fair die: E(X) = 3.5',topic:'Statistics'},
+{name:'Binomial Distribution',def:'Probability of k successes in n trials.',formula:'$P(k) = C(n,k)p^k(1-p)^{n-k}$',example:'Coin flips',topic:'Statistics'},
+{name:'Confidence Interval',def:'Range likely to contain the true population parameter.',formula:'$\\bar{x} \\pm z\\frac{\\sigma}{\\sqrt{n}}$',example:'95% CI: mean ± 1.96·SE',topic:'Statistics'},
+{name:'Hypothesis Testing',def:'Procedure to test claims about population parameters.',formula:'H₀ vs H₁',example:'Testing if a coin is fair',topic:'Statistics'},
+{name:'Outlier',def:'A data point significantly different from others.',formula:'',example:'In {2,3,4,5,100}, 100 is an outlier',topic:'Statistics'},
+{name:'Sample',def:'A subset of a population used for analysis.',formula:'',example:'Surveying 100 out of 10000 students',topic:'Statistics'},
+{name:'Population',def:'The entire group being studied.',formula:'N',example:'All students in a university',topic:'Statistics'}
+];
+
+let bookmarks=JSON.parse(localStorage.getItem('dict_bookmarks')||'[]');
+let activeFilter='All',activeLetter='';
+
+function init(){
+  // A-Z strip
+  const az=document.getElementById('az-strip');
+  let azHtml='<button class="az-btn active" onclick="filterLetter(\'\',this)">All</button>';
+  for(let i=65;i<=90;i++)azHtml+='<button class="az-btn" onclick="filterLetter(\''+String.fromCharCode(i)+'\',this)">'+String.fromCharCode(i)+'</button>';
+  az.innerHTML=azHtml;
+  // Topics
+  const topics=['All',...new Set(terms.map(t=>t.topic))];
+  document.getElementById('topic-filter').innerHTML=topics.map(t=>'<span class="topic-chip'+(t==='All'?' active':'')+'" onclick="filterTopic(\''+t+'\',this)">'+t+'</span>').join('');
+  renderTerms();
+}
+
+function filterTerms(){
+  renderTerms();
+}
+
+function filterLetter(l,btn){
+  activeLetter=l;
+  document.querySelectorAll('.az-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTerms();
+}
+
+function filterTopic(t,btn){
+  activeFilter=t;
+  document.querySelectorAll('.topic-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTerms();
+}
+
+function renderTerms(){
+  const search=document.getElementById('search').value.toLowerCase();
+  let filtered=terms.filter(t=>{
+    if(activeLetter&&!t.name.toUpperCase().startsWith(activeLetter))return false;
+    if(activeFilter!=='All'&&t.topic!==activeFilter)return false;
+    if(search&&!t.name.toLowerCase().includes(search)&&!t.def.toLowerCase().includes(search))return false;
+    return true;
+  });
+  document.getElementById('count-badge').textContent='Showing '+filtered.length+' of '+terms.length+' terms';
+
+  // Group by letter
+  let html='';let lastLetter='';
+  filtered.sort((a,b)=>a.name.localeCompare(b.name));
+  filtered.forEach(t=>{
+    const first=t.name[0].toUpperCase();
+    if(first!==lastLetter&&!search){lastLetter=first;html+='<div class="letter-header" id="letter-'+first+'">'+first+'</div>'}
+    const isBookmarked=bookmarks.includes(t.name);
+    const color=topicColors[t.topic]||'#94a3b8';
+    html+='<div class="term-card">';
+    html+='<div class="term-name"><span class="bookmark-btn" onclick="toggleBookmark(\''+t.name.replace(/'/g,"\\'")+'\',this)">'+(isBookmarked?'⭐':'☆')+'</span>'+t.name+'<span class="term-topic" style="background:'+color+'22;color:'+color+';border:1px solid '+color+'44">'+t.topic+'</span></div>';
+    html+='<div class="term-def">'+t.def+'</div>';
+    if(t.formula)html+='<div class="term-formula">'+t.formula+'</div>';
+    if(t.example)html+='<div class="term-example">Example: '+t.example+'</div>';
+    html+='</div>';
+  });
+  document.getElementById('terms-container').innerHTML=html;
+  if(window.MathJax)MathJax.typesetPromise();
+}
+
+function toggleBookmark(name,btn){
+  const idx=bookmarks.indexOf(name);
+  if(idx>=0)bookmarks.splice(idx,1);else bookmarks.push(name);
+  localStorage.setItem('dict_bookmarks',JSON.stringify(bookmarks));
+  btn.textContent=bookmarks.includes(name)?'⭐':'☆';
+}
+
+function randomTerm(){
+  const t=terms[Math.floor(Math.random()*terms.length)];
+  document.getElementById('search').value=t.name;
+  filterTerms();
+  window.scrollTo({top:200,behavior:'smooth'});
+}
+
+init();
+</script>
+</body>
+</html>
