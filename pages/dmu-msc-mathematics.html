@@ -60,6 +60,82 @@
     .cta-sub { margin-top:14px; font-size:.85rem; color:var(--muted); }
     #btt { display:none; position:fixed; bottom:28px; right:28px; width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#0d0d1a; font-size:1.2rem; font-weight:700; border:none; cursor:pointer; align-items:center; justify-content:center; z-index:999; box-shadow:0 4px 18px rgba(255,140,0,.35); }
     @media(max-width:900px){ .stats-row,.modules-grid,.why-grid { grid-template-columns:repeat(2,1fr); } .overview-grid,.careers-grid { grid-template-columns:1fr; } }
+  
+    /* == Mobile Responsive == */
+    @media(max-width:768px){
+      .page-main { padding:40px 16px 60px; }
+      .hero { padding:40px 0 32px; }
+      .hero h1 { font-size:clamp(1.5rem,5vw,2.2rem); }
+      .hero-desc { font-size:.92rem; line-height:1.6; }
+      .hero-pills { gap:8px; }
+      .pill { padding:6px 14px; font-size:.78rem; }
+      .stats-row { grid-template-columns:repeat(2,1fr); gap:14px; margin:32px 0; }
+      .stat-box { padding:20px 14px; }
+      .stat-num { font-size:1.6rem; }
+      .stat-label { font-size:.72rem; }
+      .section { margin:40px 0; }
+      .section-heading { font-size:1.15rem; margin-bottom:24px; }
+      .overview-grid { grid-template-columns:1fr; gap:16px; }
+      .overview-card { padding:22px 16px; }
+      .overview-card h3 { font-size:.9rem; }
+      .overview-card li { font-size:.85rem; }
+      .modules-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
+      .module-card { padding:18px 14px; }
+      .module-icon { font-size:1.5rem; margin-bottom:8px; }
+      .module-name { font-size:.72rem; }
+      .module-desc { font-size:.75rem; }
+      .careers-grid { grid-template-columns:1fr; gap:14px; }
+      .career-card { padding:20px 16px; }
+      .career-title { font-size:.78rem; }
+      .career-desc { font-size:.78rem; }
+      .why-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
+      .why-card { padding:20px 14px; }
+      .why-title { font-size:.78rem; }
+      .why-desc { font-size:.75rem; }
+      .uni-pills { gap:8px; }
+      .uni-pill { padding:8px 16px; font-size:.8rem; }
+      .cta-btn { padding:14px 32px; font-size:.85rem; }
+      .cta-sub { font-size:.78rem; }
+      #btt { bottom:18px; right:18px; width:40px; height:40px; font-size:1rem; }
+    }
+    @media(max-width:480px){
+      .page-main { padding:30px 12px 50px; }
+      .hero { padding:28px 0 24px; }
+      .hero-eyebrow { font-size:.65rem; letter-spacing:.1em; }
+      .hero h1 { font-size:clamp(1.3rem,5vw,1.8rem); }
+      .hero-desc { font-size:.84rem; margin-bottom:20px; }
+      .pill { padding:5px 12px; font-size:.72rem; }
+      .stats-row { gap:10px; margin:24px 0; }
+      .stat-box { padding:16px 10px; border-radius:10px; }
+      .stat-num { font-size:1.3rem; }
+      .section-heading { font-size:1.05rem; margin-bottom:18px; }
+      .overview-card { padding:18px 14px; border-radius:12px; }
+      .modules-grid { grid-template-columns:1fr 1fr; gap:10px; }
+      .module-card { padding:14px 10px; border-radius:10px; }
+      .module-icon { font-size:1.3rem; }
+      .module-name { font-size:.68rem; }
+      .module-desc { font-size:.7rem; }
+      .careers-grid { gap:10px; }
+      .career-card { padding:16px 14px; border-radius:10px; }
+      .why-grid { grid-template-columns:1fr 1fr; gap:10px; }
+      .why-card { padding:16px 12px; border-radius:10px; }
+      .uni-pill { padding:7px 14px; font-size:.75rem; min-height:44px; display:inline-flex; align-items:center; }
+      .cta-btn { padding:12px 28px; font-size:.82rem; }
+    }
+    @media(max-width:380px){
+      .page-main { padding:24px 10px 40px; }
+      .hero h1 { font-size:1.2rem; }
+      .stats-row { grid-template-columns:1fr 1fr; gap:8px; }
+      .stat-num { font-size:1.1rem; }
+      .stat-label { font-size:.65rem; }
+      .modules-grid { gap:8px; }
+      .module-card { padding:12px 8px; }
+      .module-name { font-size:.65rem; }
+      .why-grid { gap:8px; }
+      .why-card { padding:14px 10px; }
+      .overview-card li { font-size:.8rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -176,7 +252,7 @@
   <div id="footer-container"></div>
   <button id="btt" aria-label="Back to top">&#8593;</button>
   <script>
-    fetch('../components/header.html').then(r=>r.text()).then(h=>{document.getElementById('header-container').innerHTML=h;});
+    fetch('../components/header.html').then(r=>r.text()).then(h=>{var c=document.getElementById('header-container');c.innerHTML=h;c.querySelectorAll('script').forEach(s=>{var n=document.createElement('script');n.textContent=s.textContent;document.body.appendChild(n)})});
     fetch('../components/footer.html').then(r=>r.text()).then(f=>{document.getElementById('footer-container').innerHTML=f;});
     const btt=document.getElementById('btt');
     window.addEventListener('scroll',()=>{btt.style.display=scrollY>300?'flex':'none';});

@@ -62,6 +62,48 @@
       .stats-row { grid-template-columns:1fr 1fr; }
       .exams-grid { grid-template-columns:1fr; }
       .page-main { padding:44px 18px 60px; }
+      .page-hero { margin-bottom:44px; }
+      .page-hero h1 { font-size:clamp(1.4rem,5vw,2.2rem); }
+      .page-hero p { font-size:.92rem; }
+      .stat-box { padding:18px 14px; }
+      .stat-box .num { font-size:1.2rem; }
+      .exam-entry { padding:16px; }
+      .cta-btn { padding:14px 28px; font-size:.92rem; }
+    }
+    @media (max-width:480px) {
+      .page-main { padding:32px 14px 48px; }
+      .page-hero { margin-bottom:32px; }
+      .page-hero h1 { font-size:1.3rem; }
+      .page-hero p { font-size:.86rem; }
+      .hero-pills { gap:8px; }
+      .hero-pill { padding:4px 12px; font-size:.72rem; }
+      .stats-row { gap:10px; margin-bottom:44px; }
+      .stat-box { padding:14px 10px; }
+      .stat-box .num { font-size:1.1rem; }
+      .stat-box .lbl { font-size:.72rem; }
+      .exams-section { margin-bottom:40px; }
+      .section-title { font-size:.88rem; }
+      .exam-entry { padding:14px 12px; }
+      .exam-entry h3 { font-size:.76rem; }
+      .exam-entry .exam-full { font-size:.68rem; }
+      .exam-entry p { font-size:.76rem; }
+      .exam-tag { font-size:.6rem; padding:2px 6px; }
+      .cta-btn { padding:12px 24px; font-size:.88rem; gap:8px; }
+      .cta-sub { font-size:.8rem; }
+      #backToTop { bottom:16px; right:16px; }
+    }
+    @media (max-width:380px) {
+      .page-main { padding:24px 10px 40px; }
+      .page-hero h1 { font-size:1.15rem; }
+      .page-hero p { font-size:.82rem; line-height:1.6; }
+      .hero-pill { padding:3px 10px; font-size:.68rem; }
+      .stats-row { gap:8px; }
+      .stat-box { padding:12px 8px; border-radius:10px; }
+      .stat-box .num { font-size:1rem; }
+      .stat-box .lbl { font-size:.68rem; }
+      .exam-entry { padding:12px 10px; border-radius:10px; }
+      .exam-entry-header { flex-direction:column; gap:6px; }
+      .cta-btn { padding:12px 20px; font-size:.84rem; width:100%; justify-content:center; min-height:48px; }
     }
   </style>
 </head>

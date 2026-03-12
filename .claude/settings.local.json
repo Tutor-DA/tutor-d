@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -c \"dfrac\\\\|pmatrix\\\\|vmatrix\\\\|sqrt\\\\|\\\\\\\\int\\\\b\\\\|\\\\\\\\lim\\\\|\\\\\\\\sin\\\\|\\\\\\\\cos\" \"c:/Users/gsuge/Downloads/tutor-d-site/tutor-d-site/pages/tools.html\")"
+      "Bash(grep -c \"dfrac\\\\|pmatrix\\\\|vmatrix\\\\|sqrt\\\\|\\\\\\\\int\\\\b\\\\|\\\\\\\\lim\\\\|\\\\\\\\sin\\\\|\\\\\\\\cos\" \"c:/Users/gsuge/Downloads/tutor-d-site/tutor-d-site/pages/tools.html\")",
+      "Bash(ls dmu-*.html)",
+      "Bash(grep -c \"@media\" dmu-*.html)",
+      "Bash(grep -v \":1$\")",
+      "Bash(grep -v \":2$\")",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(sed -i \"s|fetch\\(''../components/header.html''\\).then\\(r=>r.text\\(\\)\\).then\\(h=>{document.getElementById\\(''header-container''\\).innerHTML=h;}\\);|fetch\\(''../components/header.html''\\).then\\(r=>r.text\\(\\)\\).then\\(h=>{var c=document.getElementById\\(''header-container''\\);c.innerHTML=h;c.querySelectorAll\\(''script''\\).forEach\\(s=>{var n=document.createElement\\(''script''\\);n.textContent=s.textContent;document.body.appendChild\\(n\\)}\\)}\\);|g\" \"$f\")",
+      "Bash(sed -i \"s|fetch\\(''../components/header.html''\\).then\\(r=>r.text\\(\\)\\).then\\(h=>{document.getElementById\\(''header-container''\\).innerHTML=h}\\);|fetch\\(''../components/header.html''\\).then\\(r=>r.text\\(\\)\\).then\\(h=>{var c=document.getElementById\\(''header-container''\\);c.innerHTML=h;c.querySelectorAll\\(''script''\\).forEach\\(s=>{var n=document.createElement\\(''script''\\);n.textContent=s.textContent;document.body.appendChild\\(n\\)}\\)}\\);|g\" \"$f\")"
     ]
   }
 }

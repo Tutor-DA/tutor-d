@@ -435,6 +435,82 @@
       padding:10px 22px;color:var(--text);font-size:.88rem;z-index:9999;
       opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
     #toast.show{opacity:1}
+
+    /* ── Mobile responsiveness ─────────────────── */
+    @media (max-width:768px) {
+      .teach-grid { grid-template-columns:1fr; }
+      .field-group { grid-template-columns:1fr; }
+      .field-group.three { grid-template-columns:1fr 1fr; }
+      .ws-options { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:480px) {
+      .wrapper { padding:0 14px 48px; }
+      .hero { padding:40px 14px 28px; }
+      .hero h1 { font-size:1.5rem; }
+      .hero p { font-size:.88rem; }
+      .tool-tabs { gap:6px; }
+      .tool-tab { padding:8px 14px; font-size:.8rem; min-height:44px; }
+      .tool-card { padding:20px 16px; }
+      .tool-title { font-size:.95rem; }
+      .tool-sub { font-size:.8rem; }
+      .field-group { grid-template-columns:1fr; gap:10px; }
+      .field-group.three { grid-template-columns:1fr; }
+      .btn { padding:12px 20px; font-size:.85rem; min-height:44px; }
+      .btn-row { gap:8px; }
+      .result-value { font-size:1.1rem; }
+      .result-value.big { font-size:1.4rem; }
+      .conv-grid { grid-template-columns:1fr; }
+      .conv-arrow { display:none; }
+      .graph-layout { grid-template-columns:1fr; }
+      .graph-controls { grid-template-columns:1fr; }
+      .matrix-layout { grid-template-columns:1fr; }
+      .mat-ops { flex-direction:row; flex-wrap:wrap; padding-top:0; }
+      .mat-ops .btn { width:auto; flex:1; min-width:80px; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .stat-tile { padding:12px 10px; }
+      .stat-tile .st-val { font-size:1rem; }
+      .fdp-tabs { gap:4px; }
+      .fdp-tab { padding:8px 4px; font-size:.75rem; }
+      .fraction-input-row { gap:6px; flex-wrap:wrap; justify-content:center; }
+      .frac-stack input { width:56px; }
+      .conversion-table td, .conversion-table th { padding:6px 8px; font-size:.82rem; }
+      .ws-grade-grid { grid-template-columns:repeat(auto-fill,minmax(60px,1fr)); gap:6px; }
+      .grade-btn { padding:8px 4px; }
+      .grade-btn .grade-num { font-size:.88rem; }
+      .topic-grid { grid-template-columns:1fr 1fr; gap:6px; }
+      .topic-btn { padding:8px 10px; font-size:.76rem; }
+      .ws-options { grid-template-columns:1fr; gap:8px; }
+      .ws-q-preview { grid-template-columns:1fr; }
+      .btn-generate { padding:14px; font-size:.95rem; min-height:48px; }
+      .difficulty-row { gap:6px; }
+      .diff-pill { padding:8px 6px; font-size:.76rem; min-height:44px; }
+      .category-toggle { max-width:100%; }
+      .cat-toggle-btn { padding:10px 14px; font-size:.8rem; min-height:44px; }
+      .teach-card { padding:20px 16px; }
+      .teach-card .tc-title { font-size:.82rem; }
+      .teach-card .tc-desc { font-size:.78rem; }
+      .unit-category-row { gap:6px; }
+      .cat-btn { padding:6px 12px; font-size:.76rem; min-height:44px; }
+      .pop-chip { padding:6px 12px; min-height:36px; }
+      .freq-table td, .freq-table th { padding:5px 8px; font-size:.8rem; }
+    }
+    @media (max-width:380px) {
+      .wrapper { padding:0 10px 40px; }
+      .hero { padding:32px 10px 24px; }
+      .hero h1 { font-size:1.3rem; }
+      .tool-tab span.tab-text { display:none; }
+      .tool-tab { padding:8px 12px; }
+      .tool-card { padding:16px 12px; }
+      .tool-title { font-size:.88rem; }
+      .result-value { font-size:1rem; }
+      .result-value.big { font-size:1.2rem; }
+      .stats-grid { grid-template-columns:1fr; }
+      .topic-grid { grid-template-columns:1fr; }
+      .mat-grid input { padding:6px; font-size:.82rem; }
+      .frac-stack input { width:48px; padding:8px 4px; }
+      .teach-card { padding:16px 12px; }
+      #toast { font-size:.78rem; padding:8px 16px; }
+    }
   </style>
 </head>
 
